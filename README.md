@@ -1,2 +1,2 @@
 # SimpleGraphing
-SimpleGraphing provides simple graphing primitives used to draw charts and graphs.
+SimpleGraphing provides simple graphing primitives used to draw charts and graphs in C#.
