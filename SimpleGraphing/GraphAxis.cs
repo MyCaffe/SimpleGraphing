@@ -1,0 +1,227 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SimpleGraphing
+{
+    public class GraphAxis : IDisposable
+    {
+        protected ConfigurationAxis m_config = new ConfigurationAxis();
+        protected GraphAxisStyle m_style = null;
+        protected Rectangle m_rcBounds;
+        protected double m_dfMin = 0;
+        protected double m_dfMax = 1;
+        protected double m_dfInc = -1;
+        protected List<int> m_rgTickPositions = new List<int>();
+        protected List<string> m_rgTickValues = new List<string>();
+        protected PlotCollectionSet m_data;
+        protected int m_nZeroPosition = -1;
+        protected int m_nStartPosition = 0;
+
+        public GraphAxis()
+        {
+        }
+
+        protected virtual void dispose()
+        {
+        }
+
+        public void Dispose()
+        {
+            if (m_style != null)
+            {
+                m_style.Dispose();
+                m_style = null;
+            }
+
+            dispose();
+        }
+
+        public ConfigurationAxis Configuration
+        {
+            get { return m_config; }
+        }
+
+        public void SetMinMax(double dfMin, double dfMax)
+        {
+            m_dfMin = Math.Min(dfMin, m_config.InitialMinimum);
+            m_dfMax = Math.Max(dfMax, m_config.InitialMaximum);
+        }
+
+        public int StartPosition
+        {
+            get { return m_nStartPosition; }
+            set { m_nStartPosition = value; }
+        }
+
+        public int ZeroLinePosition
+        {
+            get { return m_nZeroPosition; }
+        }
+
+        public virtual int Width
+        {
+            get { return 0; }
+        }
+
+        public virtual int Height
+        {
+            get { return 0; }
+        }
+
+        public Rectangle Bounds
+        {
+            get { return m_rcBounds; }
+            set { m_rcBounds = value; }
+        }
+
+        public List<int> TickPositions
+        {
+            get { return m_rgTickPositions; }
+        }
+
+        public List<string> TickValues
+        {
+            get { return m_rgTickValues; }
+        }
+
+        protected string getValueString(double dfVal, ConfigurationAxis config)
+        {
+            if (config.ValueType == ConfigurationAxis.VALUE_TYPE.TIME)
+            {
+                DateTime dt = DateTime.FromFileTime((long)dfVal);
+                return dt.Hour.ToString("00") + ":" + dt.Minute.ToString("00") + ":" + dt.Second.ToString("00");
+            }
+            else
+            {
+                string strFmt = "N" + config.Decimals.ToString();
+                dfVal = Math.Round(dfVal, m_config.Decimals);
+                return dfVal.ToString(strFmt);
+            }
+        }
+
+        protected virtual float plot_min
+        {
+            get { return 0; }
+        }
+
+        protected virtual float plot_max
+        {
+            get { return 1; }
+        }
+
+        public virtual float ScaleValue(double dfVal, bool bInvert)
+        {
+            float fPlotMin = plot_min;
+            float fPlotMax = plot_max;
+            float fDataMin = (float)m_dfMin;
+            float fDataMax = (float)m_dfMax;
+            float fPlotRange = fPlotMax - fPlotMin;
+            float fDataRange = fDataMax - fDataMin;
+
+            float fVal = (float)dfVal;
+
+            fVal = (fVal - fDataMin) / fDataRange;
+            fVal *= fPlotRange;
+
+            if (bInvert)
+                fVal = fPlotMax - fVal;
+            else
+                fVal = fPlotMin + fVal;
+
+            return fVal;
+        }
+
+        public static int ConvertRange(
+            int originalStart, int originalEnd, // original range
+            int newStart, int newEnd, // desired range
+            int value) // value to convert
+        {
+            double scale = (double)(newEnd - newStart) / (originalEnd - originalStart);
+            return (int)(newStart + ((value - originalStart) * scale));
+        }
+
+        public virtual void BuildGraph(ConfigurationAxis config, PlotCollectionSet data)
+        {
+            m_data = data;
+            m_style = createStyle(config);
+        }
+
+        private GraphAxisStyle createStyle(ConfigurationAxis c)
+        {
+            if (m_style != null && m_config != null && m_config.Compare(c))
+                return m_style;
+
+            if (m_style != null)
+                m_style.Dispose();
+
+            m_config = c;
+            return new SimpleGraphing.GraphAxisStyle(m_config);
+        }
+
+        public virtual void Resize(int nX, int nY, int nWidth, int nHeight)
+        {
+        }
+
+        public virtual void Render(Graphics g)
+        {
+        }
+
+        public virtual void Scroll(double dfPct)
+        {
+        }
+    }
+
+    public class GraphAxisStyle : IDisposable
+    {
+        Pen m_penZeroLine;
+        Pen m_penTick;
+        Brush m_brLabel;
+
+        public GraphAxisStyle(ConfigurationAxis c)
+        {
+            m_penZeroLine = new Pen(c.ZeroLineColor, 1.0f);
+            m_penTick = new Pen(c.TickColor, 1.0f);
+            m_brLabel = new SolidBrush(c.LabelColor);    
+        }
+
+        public Pen ZeroLinePen
+        {
+            get { return m_penZeroLine; }
+        }
+
+        public Pen TickPen
+        {
+            get { return m_penTick; }
+        }
+
+        public Brush LabelBrush
+        {
+            get { return m_brLabel; }
+        }
+
+        public void Dispose()
+        {
+            if (m_penZeroLine != null)
+            {
+                m_penZeroLine.Dispose();
+                m_penZeroLine = null;
+            }
+
+            if (m_penTick != null)
+            {
+                m_penTick.Dispose();
+                m_penTick = null;
+            }
+
+            if (m_brLabel != null)
+            {
+                m_brLabel.Dispose();
+                m_brLabel = null;
+            }
+        }
+    }
+}
