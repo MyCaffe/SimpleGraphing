@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("SignalPop LLC")]
 [assembly: AssemblyProduct("SimpleGraphing")]
-[assembly: AssemblyCopyright("Copyright ©  2017 SignalPop LLC.  All rights reserved.")]
+[assembly: AssemblyCopyright("Copyright ©  2017-2018 SignalPop LLC.  All rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.10.0.76")]
-[assembly: AssemblyFileVersion("0.10.0.76")]
+[assembly: AssemblyVersion("0.10.0.78")]
+[assembly: AssemblyFileVersion("0.10.0.78")]
