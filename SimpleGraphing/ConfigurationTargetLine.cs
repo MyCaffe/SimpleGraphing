@@ -33,6 +33,14 @@ namespace SimpleGraphing
         {
         }
 
+        public ConfigurationTargetLine(double dfY, Color clrLine, LINE_TYPE type = LINE_TYPE.VALUE, bool bEnableFlag = false)
+        {
+            m_dfYValue = dfY;
+            m_clrLine = clrLine;
+            m_bEnableFlag = bEnableFlag;
+            m_lineType = type;
+        }
+
         public bool Compare(ConfigurationTargetLine c)
         {
             if (m_clrLine != c.m_clrLine)

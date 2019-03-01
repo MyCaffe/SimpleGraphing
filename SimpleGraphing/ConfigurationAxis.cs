@@ -25,11 +25,19 @@ namespace SimpleGraphing
         int m_nDecimals = 0;
         bool m_bShowAllNumbers = false;
         VALUE_TYPE m_valueType = VALUE_TYPE.NUMBER;
+        VALUE_RESOLUTION m_valueRes = VALUE_RESOLUTION.NUMBER;
 
         public enum VALUE_TYPE
         {
             NUMBER,
             TIME
+        }
+
+        public enum VALUE_RESOLUTION
+        {
+            NUMBER,
+            MINUTE,
+            DAY,
         }
 
         public ConfigurationAxis()
@@ -71,6 +79,9 @@ namespace SimpleGraphing
             if (m_valueType != c.m_valueType)
                 return false;
 
+            if (m_valueRes != c.m_valueRes)
+                return false;
+
             return true;
         }
 
@@ -100,6 +111,12 @@ namespace SimpleGraphing
         {
             get { return m_valueType; }
             set { m_valueType = value; }
+        }
+
+        public VALUE_RESOLUTION ValueResolution
+        {
+            get { return m_valueRes; }
+            set { m_valueRes = value; }
         }
 
         public int Decimals
@@ -175,6 +192,7 @@ namespace SimpleGraphing
             ser.Add("Decimals", m_nDecimals);
             ser.Add("ShowAllNumbers", m_bShowAllNumbers);
             ser.Add("ValueType", m_valueType.ToString());
+            ser.Add("ValueRes", m_valueRes.ToString());
             ser.Close();            
         }
     }

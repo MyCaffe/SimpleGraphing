@@ -10,15 +10,26 @@ namespace SimpleGraphing
     {
         bool m_bActive;
         string m_strName;
-        double m_dfY;
+        List<double> m_rgdfY = new List<double>();
         double m_dfX;
+        int m_nIdxPrimaryY = 0;
 
         public Plot(double dfX, double dfY, string strName = null, bool bActive = true)
         {
             m_strName = strName;
             m_dfX = dfX;
-            m_dfY = dfY;
+            m_rgdfY.Add(dfY);
             m_bActive = bActive;
+            m_nIdxPrimaryY = 0;
+        }
+
+        public Plot(double dfX, List<double> rgdfY, string strName = null, bool bActive = true)
+        {
+            m_strName = strName;
+            m_dfX = dfX;
+            m_rgdfY = new List<double>(rgdfY);
+            m_bActive = bActive;
+            m_nIdxPrimaryY = rgdfY.Count - 1;
         }
 
         public string Name
@@ -35,14 +46,40 @@ namespace SimpleGraphing
 
         public double Y
         {
-            get { return m_dfY; }
-            set { m_dfY = value; }
+            get { return m_rgdfY[m_nIdxPrimaryY]; }
+            set { m_rgdfY[m_nIdxPrimaryY] = value; }
+        }
+
+        public List<double> Y_values
+        {
+            get { return m_rgdfY; }
+        }
+
+        public int PrimaryIndexY
+        {
+            get { return m_nIdxPrimaryY; }
+            set { m_nIdxPrimaryY = value; }
         }
 
         public bool Active
         {
             get { return m_bActive; }
             set { m_bActive = value; }
+        }
+
+        public override string ToString()
+        {
+            string str = "{ ";
+
+            foreach (double df in Y_values)
+            {
+                str += df.ToString() + ", ";
+            }
+
+            str = str.TrimEnd(',', ' ');
+            str += " }";
+
+            return str;
         }
     }
 }

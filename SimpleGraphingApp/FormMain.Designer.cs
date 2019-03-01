@@ -34,8 +34,10 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.simpleGraphingControl1 = new SimpleGraphing.SimpleGraphingControl();
+            this.lineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.candleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.simpleGraphingControl1 = new SimpleGraphing.SimpleGraphingControl();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -76,10 +78,33 @@
             // 
             // showDataToolStripMenuItem
             // 
+            this.showDataToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lineToolStripMenuItem,
+            this.candleToolStripMenuItem});
             this.showDataToolStripMenuItem.Name = "showDataToolStripMenuItem";
-            this.showDataToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.showDataToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.showDataToolStripMenuItem.Text = "&Show Data";
-            this.showDataToolStripMenuItem.Click += new System.EventHandler(this.showDataToolStripMenuItem_Click);
+            // 
+            // lineToolStripMenuItem
+            // 
+            this.lineToolStripMenuItem.Name = "lineToolStripMenuItem";
+            this.lineToolStripMenuItem.Size = new System.Drawing.Size(111, 22);
+            this.lineToolStripMenuItem.Text = "Line";
+            this.lineToolStripMenuItem.Click += new System.EventHandler(this.lineToolStripMenuItem_Click);
+            // 
+            // candleToolStripMenuItem
+            // 
+            this.candleToolStripMenuItem.Name = "candleToolStripMenuItem";
+            this.candleToolStripMenuItem.Size = new System.Drawing.Size(111, 22);
+            this.candleToolStripMenuItem.Text = "Candle";
+            this.candleToolStripMenuItem.Click += new System.EventHandler(this.candleToolStripMenuItem_Click);
+            // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // simpleGraphingControl1
             // 
@@ -88,21 +113,14 @@
             this.simpleGraphingControl1.Location = new System.Drawing.Point(0, 24);
             this.simpleGraphingControl1.Name = "simpleGraphingControl1";
             this.simpleGraphingControl1.ShowScrollBar = true;
-            this.simpleGraphingControl1.Size = new System.Drawing.Size(762, 612);
+            this.simpleGraphingControl1.Size = new System.Drawing.Size(762, 932);
             this.simpleGraphingControl1.TabIndex = 2;
-            // 
-            // saveToolStripMenuItem
-            // 
-            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.saveToolStripMenuItem.Text = "Save";
-            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(762, 636);
+            this.ClientSize = new System.Drawing.Size(762, 956);
             this.Controls.Add(this.simpleGraphingControl1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -123,5 +141,7 @@
         private System.Windows.Forms.ToolStripMenuItem showDataToolStripMenuItem;
         private SimpleGraphing.SimpleGraphingControl simpleGraphingControl1;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem lineToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem candleToolStripMenuItem;
     }
 }

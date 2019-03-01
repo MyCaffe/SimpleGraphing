@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleGraphing.GraphData;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -71,8 +72,10 @@ namespace SimpleGraphing
             get { return m_rgPlots; }
         }
 
-        public void BuildGraph(ConfigurationFrame config, List<ConfigurationPlot> plots, PlotCollectionSet data)
+        public PlotCollectionSet BuildGraph(ConfigurationFrame config, List<ConfigurationPlot> plots, PlotCollectionSet data)
         {
+            PlotCollectionSet data1 = new PlotCollectionSet();
+
             data.GetAbsMinMax(out m_dfAbsMinY, out m_dfAbsMaxY);
 
             foreach (ConfigurationTargetLine line in config.TargetLines)
@@ -121,12 +124,14 @@ namespace SimpleGraphing
                 if (plots[i].Visible)
                 {
                     GraphPlot graphPlot = new SimpleGraphing.GraphPlot(m_gx, m_gy);
-                    graphPlot.BuildGraph(plots[i], data[plots[i].DataIndex]);
+                    data1.Add(graphPlot.BuildGraph(plots[i], data[plots[i].DataIndex]));
                     m_rgPlots.Add(graphPlot);
                 }
             }
 
             m_style = createStyle(config);
+
+            return data1;
         }
 
         private PlotAreaStyle createStyle(ConfigurationFrame c)

@@ -58,9 +58,9 @@ namespace SimpleGraphing
             m_config = config;
             m_data = data;
 
+            data = m_plotArea.BuildGraph(config, config.Plots, data);
             m_gx.BuildGraph(config.XAxis, data);
             m_gy.BuildGraph(config.YAxis, data);
-            m_plotArea.BuildGraph(config, config.Plots, data);
             m_gy.SetGraphPlots(m_plotArea.Plots);
             m_gy.SetTargetLines(config.TargetLines);
 

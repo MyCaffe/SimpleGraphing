@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SimpleGraphing.GraphData;
+using SimpleGraphing.GraphRender;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -15,6 +17,8 @@ namespace SimpleGraphing
         ConfigurationPlot m_config = new ConfigurationPlot();
         GraphPlotStyle m_style = null;
         PlotCollection m_rgPlots = new PlotCollection("");
+        IGraphPlotData m_idata;
+        IGraphPlotRender m_irender;
 
         public GraphPlot(GraphAxis gx, GraphAxis gy)
         {
@@ -64,11 +68,17 @@ namespace SimpleGraphing
             set { m_rgPlots = value; }
         }
 
-        public void BuildGraph(ConfigurationPlot config, PlotCollection data)
+        public PlotCollection BuildGraph(ConfigurationPlot config, PlotCollection data)
         {
             m_config = config;
-            m_style = new GraphPlotStyle(m_config);
-            m_rgPlots = getData(data, config);
+            m_style = createStyle(m_config);
+
+            if (m_idata != null)
+                data = m_idata.GetData(data);
+
+            m_rgPlots = data;
+
+            return data;
         }
 
         private GraphPlotStyle createStyle(ConfigurationPlot c)
@@ -81,27 +91,27 @@ namespace SimpleGraphing
 
             m_config = c;
 
-            return new SimpleGraphing.GraphPlotStyle(c);
-        }
+            GraphPlotStyle style = new SimpleGraphing.GraphPlotStyle(c);
 
-        public PlotCollection getData(PlotCollection data, ConfigurationPlot config)
-        {
-            if (config.PlotType == ConfigurationPlot.PLOTTYPE.SMA)
+            m_idata = null;
+            m_irender = new GraphRenderLine(m_config, m_gx, m_gy, style);
+
+            switch (c.PlotType)
             {
-                PlotCollection data1 = new PlotCollection(data.Name);
-                double dfSma = 0;
-                double dfInc = 1.0 / config.Interval;
+                case ConfigurationPlot.PLOTTYPE.SMA:
+                    m_idata = new GraphDataSMA(m_config);
+                    break;
 
-                for (int i = 0; i < data.Count; i++)
-                {
-                    dfSma = (dfSma * (1 - dfInc)) + data[i].Y * dfInc;
-                    data1.Add(dfSma, (i >= config.Interval) ? true : false);
-                }
+                case ConfigurationPlot.PLOTTYPE.CANDLE:
+                    m_irender = new GraphRenderCandle(m_config, m_gx, m_gy, style);
+                    break;
 
-                data = data1;
+                case ConfigurationPlot.PLOTTYPE.RSI:
+                    m_idata = new GraphDataRSI(m_config);
+                    break;
             }
 
-            return data;
+            return style;
         }
 
         public void Render(Graphics g)
@@ -109,54 +119,14 @@ namespace SimpleGraphing
             if (!m_config.Visible)
                 return;
 
-            List<int> rgX = m_gx.TickPositions;
-            int nStartIdx = m_gx.StartPosition;
+            if (m_rgPlots == null)
+                return;           
 
-            Plot plotLast = null;
-            float fXLast = 0;
-            float fYLast = 0;
-
-            for (int i = 0; i < rgX.Count; i++)
-            {
-                int nIdx = nStartIdx + i;
-
-                if (nIdx < m_rgPlots.Count)
-                {
-                    Plot plot = m_rgPlots[nStartIdx + i];
-                    float fX = rgX[i];
-                    float fY = m_gy.ScaleValue(plot.Y, true);
-
-                    if (plotLast != null && plotLast.Active && plot.Active)
-                        g.DrawLine(m_style.LinePen, fXLast, fYLast, fX, fY);
-
-                    plotLast = plot;
-                    fXLast = fX;
-                    fYLast = fY;
-                }
-            }
-
-            for (int i = 0; i < rgX.Count; i++)
-            {
-                int nIdx = nStartIdx + i;
-
-                if (nIdx < m_rgPlots.Count)
-                {
-                    Plot plot = m_rgPlots[nStartIdx + i];
-                    float fX = rgX[i];
-                    float fY = m_gy.ScaleValue(plot.Y, true);
-
-                    Brush brFill = (plot.Active) ? m_style.PlotFillBrush : Brushes.Transparent;
-                    Pen pLine = (plot.Active) ? m_style.PlotLinePen : Pens.Transparent;
-
-                    RectangleF rcPlot = new RectangleF(fX - 2.0f, fY - 2.0f, 4.0f, 4.0f);
-                    g.FillEllipse(brFill, rcPlot);
-                    g.DrawEllipse(pLine, rcPlot);
-                }
-            }
+            m_irender.Render(g, m_rgPlots);
         }
     }
 
-    class GraphPlotStyle : IDisposable
+    public class GraphPlotStyle : IDisposable
     {
         Brush m_brPlotFill;
         Pen m_penPlotLine;

@@ -75,6 +75,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GraphData\GraphDataRSI.cs" />
+    <Compile Include="GraphData\GraphDataSMA.cs" />
+    <Compile Include="GraphRender\GraphRenderCandle.cs" />
+    <Compile Include="GraphRender\GraphRenderLine.cs" />
+    <Compile Include="Interfaces.cs" />
     <Compile Include="PenCollection.cs" />
     <Compile Include="BrushCollection.cs" />
     <Compile Include="Configuration.cs" />
@@ -113,6 +118,7 @@
   <ItemGroup>
     <None Include="simplegraphing.sn.pfx" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

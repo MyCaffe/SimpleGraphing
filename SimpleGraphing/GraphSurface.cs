@@ -96,7 +96,8 @@ namespace SimpleGraphing
                     else
                         frame = m_frames[nFrameIdx];
 
-                    frame.BuildGraph(config.Frames[i], rgData[i]);
+                    if (frame.Configuration.Visible)
+                        frame.BuildGraph(config.Frames[i], rgData[i]);
 
                     if (nFrameIdx >= nFrameCount)
                         m_frames.Add(frame);
@@ -169,10 +170,12 @@ namespace SimpleGraphing
             }
 
             if (m_graphics == null)
-            {
                 m_graphics = Graphics.FromImage(m_bmp);
+
+            if (m_config.EnableSmoothing)
                 m_graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-            }
+            else
+                m_graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
 
             m_graphics.FillRectangle(m_style.BackBrush, m_rcBounds);
 

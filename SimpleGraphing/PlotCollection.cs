@@ -104,6 +104,29 @@ namespace SimpleGraphing
             m_dfMinVal = Math.Min(m_dfMinVal, dfY);
         }
 
+        public void Add(List<double> rgdfY, bool bActive = true)
+        {
+            m_rgPlot.Add(new SimpleGraphing.Plot(m_dfXPosition, rgdfY, null, bActive));
+            m_dfXPosition += m_dfXIncrement;
+
+            if (m_rgPlot.Count > m_nMax)
+                m_rgPlot.RemoveAt(0);
+
+            m_dfMaxVal = Math.Max(m_dfMaxVal, rgdfY.Max(p => p));
+            m_dfMinVal = Math.Min(m_dfMinVal, rgdfY.Min(p => p));
+        }
+
+        public void Add(double dfX, List<double> rgdfY, bool bActive = true)
+        {
+            m_rgPlot.Add(new SimpleGraphing.Plot(dfX, rgdfY, null, bActive));
+
+            if (m_rgPlot.Count > m_nMax)
+                m_rgPlot.RemoveAt(0);
+
+            m_dfMaxVal = Math.Max(m_dfMaxVal, rgdfY.Max(p => p));
+            m_dfMinVal = Math.Min(m_dfMinVal, rgdfY.Min(p => p));
+        }
+
         public void Add(Plot p)
         {
             m_rgPlot.Add(p);

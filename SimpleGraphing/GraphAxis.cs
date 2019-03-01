@@ -105,7 +105,11 @@ namespace SimpleGraphing
             if (config.ValueType == ConfigurationAxis.VALUE_TYPE.TIME)
             {
                 DateTime dt = DateTime.FromFileTime((long)dfVal);
-                return dt.Hour.ToString("00") + ":" + dt.Minute.ToString("00") + ":" + dt.Second.ToString("00");
+
+                if (config.ValueResolution == ConfigurationAxis.VALUE_RESOLUTION.DAY)
+                    return dt.ToShortDateString();
+                else
+                    return dt.Hour.ToString("00") + ":" + dt.Minute.ToString("00") + ":" + dt.Second.ToString("00");
             }
             else
             {

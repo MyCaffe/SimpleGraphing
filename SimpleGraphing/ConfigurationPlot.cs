@@ -29,14 +29,16 @@ namespace SimpleGraphing
         public enum PLOTTYPE
         {
             LINE,
-            SMA
+            SMA,
+            CANDLE,
+            RSI
         }
 
         public ConfigurationPlot()
         {
         }
 
-        public bool Compare(ConfigurationPlot c)
+        public virtual bool Compare(ConfigurationPlot c)
         {
             if (m_clrLine != c.m_clrLine)
                 return false;
@@ -163,7 +165,7 @@ namespace SimpleGraphing
             set { m_nDataIdx = value; }
         }
 
-        public void Serialize(SerializeToXml ser)
+        public virtual void Serialize(SerializeToXml ser)
         {
             ser.Open("Plot");
             ser.Add("LineColor", m_clrLine);

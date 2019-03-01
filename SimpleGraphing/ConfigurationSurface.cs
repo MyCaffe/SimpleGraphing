@@ -13,6 +13,7 @@ namespace SimpleGraphing
     public class ConfigurationSurface
     {
         Color m_clrBack = Color.SkyBlue;
+        bool m_bEnableSmoothing = true;
 
         public ConfigurationSurface()
         {
@@ -24,9 +25,18 @@ namespace SimpleGraphing
             set { m_clrBack = value; }
         }
 
+        public bool EnableSmoothing
+        {
+            get { return m_bEnableSmoothing; }
+            set { m_bEnableSmoothing = value; }
+        }
+
         public bool Compare(ConfigurationSurface c)
         {
             if (m_clrBack != c.m_clrBack)
+                return false;
+
+            if (m_bEnableSmoothing != c.m_bEnableSmoothing)
                 return false;
 
             return true;
@@ -36,6 +46,7 @@ namespace SimpleGraphing
         {
             ser.Open("Surface");
             ser.Add("BackColor", m_clrBack);
+            ser.Add("EnableSmoothing", m_bEnableSmoothing.ToString());
             ser.Close();
         }
     }

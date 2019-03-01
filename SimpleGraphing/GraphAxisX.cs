@@ -87,7 +87,9 @@ namespace SimpleGraphing
 
             for (int i = m_nStartPosition; i < primaryPlot.Count; i++)
             {
-                m_rgTickValues.Add(getValueString(primaryPlot[i].X, m_config));
+                double dfX = primaryPlot[i].X;
+                string strVal = getValueString(dfX, m_config);
+                m_rgTickValues.Add(strVal);
 
                 if (m_rgTickValues.Count == m_rgTickPositions.Count)
                     break;
