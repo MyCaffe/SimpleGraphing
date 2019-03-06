@@ -102,6 +102,10 @@ namespace SimpleGraphing
                     m_idata = new GraphDataSMA(m_config);
                     break;
 
+                case ConfigurationPlot.PLOTTYPE.EMA:
+                    m_idata = new GraphDataEMA(m_config);
+                    break;
+
                 case ConfigurationPlot.PLOTTYPE.CANDLE:
                     m_irender = new GraphRenderCandle(m_config, m_gx, m_gy, style);
                     break;

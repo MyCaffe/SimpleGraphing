@@ -30,6 +30,7 @@ namespace SimpleGraphing
         {
             LINE,
             SMA,
+            EMA,
             CANDLE,
             RSI
         }
@@ -182,6 +183,11 @@ namespace SimpleGraphing
             ser.Add("Interval", m_nInterval);
             ser.Add("PlotType", m_plotType.ToString());
             ser.Close();
+        }
+
+        public override string ToString()
+        {
+            return m_plotType.ToString();
         }
     }
 }

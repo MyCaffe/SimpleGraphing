@@ -76,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GraphData\GraphDataRSI.cs" />
+    <Compile Include="GraphData\GraphDataEMA.cs" />
     <Compile Include="GraphData\GraphDataSMA.cs" />
     <Compile Include="GraphRender\GraphRenderCandle.cs" />
     <Compile Include="GraphRender\GraphRenderLine.cs" />

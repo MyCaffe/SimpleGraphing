@@ -12,6 +12,7 @@ namespace SimpleGraphing
 {
     public partial class SimpleGraphingControl : UserControl
     {
+        List<PlotCollectionSet> m_data;
         Configuration m_config = new Configuration();
         GraphSurface m_surface = new GraphSurface();
         bool m_bScrolling = false;
@@ -31,6 +32,7 @@ namespace SimpleGraphing
 
         public void BuildGraph(List<PlotCollectionSet> data)
         {
+            m_data = data;
             m_surface.BuildGraph(m_config, data);
             SimpleGraphingControl_Resize(this, new EventArgs());
         }
@@ -49,6 +51,13 @@ namespace SimpleGraphing
 
                 m_surface.Resize(pbImage.Width, pbImage.Height);
             }
+        }
+
+        public void UpdateGraph()
+        {
+            m_surface.BuildGraph(m_config, m_data);
+            SimpleGraphingControl_Resize(this, new EventArgs());
+            Invalidate(true);
         }
 
         private void SimpleGraphingControl_Resize(object sender, EventArgs e)
