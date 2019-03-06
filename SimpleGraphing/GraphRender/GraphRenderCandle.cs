@@ -23,8 +23,9 @@ namespace SimpleGraphing.GraphRender
             m_style = style;
         }
 
-        public void Render(Graphics g, PlotCollection plots)
+        public void Render(Graphics g, PlotCollectionSet dataset)
         {
+            PlotCollection plots = dataset[0];
             List<int> rgX = m_gx.TickPositions;
             int nStartIdx = m_gx.StartPosition;
 
