@@ -32,7 +32,8 @@ namespace SimpleGraphing
             SMA,
             EMA,
             CANDLE,
-            RSI
+            RSI,
+            HIGHLOW
         }
 
         public ConfigurationPlot()
