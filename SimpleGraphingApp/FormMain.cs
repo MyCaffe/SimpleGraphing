@@ -13,6 +13,8 @@ namespace SimpleGraphingApp
 {
     public partial class FormMain : Form
     {
+        FormMovingAverages m_dlgMovAve = null;
+
         public FormMain()
         {
             InitializeComponent();
@@ -122,7 +124,7 @@ namespace SimpleGraphingApp
         {
             simpleGraphingControl1.Configuration.Surface.EnableSmoothing = false;
 
-            for (int i=0; i<simpleGraphingControl1.Configuration.Frames.Count; i++)
+            for (int i = 0; i < simpleGraphingControl1.Configuration.Frames.Count; i++)
             {
                 ConfigurationFrame frame = simpleGraphingControl1.Configuration.Frames[i];
 
@@ -176,6 +178,35 @@ namespace SimpleGraphingApp
                 frame.YAxis.InitialMaximum = 1;
                 frame.YAxis.InitialMinimum = 0;
             }
+        }
+
+        private void movingAveragesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (m_dlgMovAve == null)
+            {
+                m_dlgMovAve = new FormMovingAverages();
+                m_dlgMovAve.OnChange += m_dlgMovAve_OnChange;
+                m_dlgMovAve.OnClosing += m_dlgMovAve_OnClosing;
+            }
+
+            m_dlgMovAve.Show(this);
+        }
+
+        private void m_dlgMovAve_OnClosing(object sender, EventArgs e)
+        {
+            m_dlgMovAve = null;
+        }
+
+        private void m_dlgMovAve_OnChange(object sender, MovingAverageChangeArgs e)
+        {
+            simpleGraphingControl1.Configuration.Frames[0].Plots[1].Interval = (uint)e.SMAInterval;
+            simpleGraphingControl1.Configuration.Frames[0].Plots[2].Interval = (uint)e.EMAInterval;
+            simpleGraphingControl1.UpdateGraph();
+        }
+
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
