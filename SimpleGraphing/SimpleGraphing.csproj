@@ -75,10 +75,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GraphData\GraphDataHighLow.cs" />
     <Compile Include="GraphData\GraphDataRSI.cs" />
     <Compile Include="GraphData\GraphDataEMA.cs" />
     <Compile Include="GraphData\GraphDataSMA.cs" />
     <Compile Include="GraphRender\GraphRenderCandle.cs" />
+    <Compile Include="GraphRender\GraphRenderHighLow.cs" />
     <Compile Include="GraphRender\GraphRenderLine.cs" />
     <Compile Include="Interfaces.cs" />
     <Compile Include="PenCollection.cs" />
