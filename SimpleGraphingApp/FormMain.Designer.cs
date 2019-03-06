@@ -86,7 +86,7 @@
             this.lineToolStripMenuItem,
             this.candleToolStripMenuItem});
             this.showDataToolStripMenuItem.Name = "showDataToolStripMenuItem";
-            this.showDataToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.showDataToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.showDataToolStripMenuItem.Text = "&Show Data";
             // 
             // lineToolStripMenuItem
@@ -106,19 +106,19 @@
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(172, 6);
             // 
             // movingAveragesToolStripMenuItem
             // 
             this.movingAveragesToolStripMenuItem.Name = "movingAveragesToolStripMenuItem";
-            this.movingAveragesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.movingAveragesToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.movingAveragesToolStripMenuItem.Text = "Moving Averages...";
             this.movingAveragesToolStripMenuItem.Click += new System.EventHandler(this.movingAveragesToolStripMenuItem_Click);
             // 

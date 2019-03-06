@@ -13,7 +13,7 @@ namespace SimpleGraphingApp
     public partial class FormMovingAverages : Form
     {
         public event EventHandler<MovingAverageChangeArgs> OnChange;
-        public event EventHandler OnClosing;
+        public event EventHandler OnClosingWindow;
 
         public FormMovingAverages()
         {
@@ -38,8 +38,8 @@ namespace SimpleGraphingApp
 
         private void FormMovingAverages_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (OnClosing != null)
-                OnClosing(this, new EventArgs());
+            if (OnClosingWindow != null)
+                OnClosingWindow(this, new EventArgs());
         }
     }
 

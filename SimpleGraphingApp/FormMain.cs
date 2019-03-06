@@ -186,7 +186,7 @@ namespace SimpleGraphingApp
             {
                 m_dlgMovAve = new FormMovingAverages();
                 m_dlgMovAve.OnChange += m_dlgMovAve_OnChange;
-                m_dlgMovAve.OnClosing += m_dlgMovAve_OnClosing;
+                m_dlgMovAve.OnClosingWindow += m_dlgMovAve_OnClosing;
             }
 
             m_dlgMovAve.Show(this);
