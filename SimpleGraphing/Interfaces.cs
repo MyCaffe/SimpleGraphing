@@ -9,11 +9,11 @@ namespace SimpleGraphing
 {
     public interface IGraphPlotData
     {
-        PlotCollection GetData(PlotCollection data);
+        PlotCollectionSet GetData(PlotCollectionSet data, int nDataIdx);
     }
 
     public interface IGraphPlotRender
     {
-        void Render(Graphics g, PlotCollection plots);
+        void Render(Graphics g, PlotCollectionSet plots);
     }
 }

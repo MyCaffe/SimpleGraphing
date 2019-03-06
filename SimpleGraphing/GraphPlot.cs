@@ -16,7 +16,7 @@ namespace SimpleGraphing
         Rectangle m_rcBounds;
         ConfigurationPlot m_config = new ConfigurationPlot();
         GraphPlotStyle m_style = null;
-        PlotCollection m_rgPlots = new PlotCollection("");
+        PlotCollectionSet m_rgPlots = new PlotCollectionSet();
         IGraphPlotData m_idata;
         IGraphPlotRender m_irender;
 
@@ -46,7 +46,7 @@ namespace SimpleGraphing
                 if (nIdx >= m_rgPlots.Count)
                     nIdx = m_rgPlots.Count - 1;
 
-                return m_rgPlots[nIdx];
+                return m_rgPlots[0][nIdx];
             }
         }
 
@@ -62,19 +62,19 @@ namespace SimpleGraphing
             set { m_config = value; }
         }
 
-        public PlotCollection Plots
+        public PlotCollectionSet Plots
         {
             get { return m_rgPlots; }
             set { m_rgPlots = value; }
         }
 
-        public PlotCollection BuildGraph(ConfigurationPlot config, PlotCollection data)
+        public PlotCollectionSet BuildGraph(ConfigurationPlot config, PlotCollectionSet data, int nDataIdx)
         {
             m_config = config;
             m_style = createStyle(m_config);
 
             if (m_idata != null)
-                data = m_idata.GetData(data);
+                data = m_idata.GetData(data, nDataIdx);
 
             m_rgPlots = data;
 
@@ -112,6 +112,11 @@ namespace SimpleGraphing
 
                 case ConfigurationPlot.PLOTTYPE.RSI:
                     m_idata = new GraphDataRSI(m_config);
+                    break;
+
+                case ConfigurationPlot.PLOTTYPE.HIGHLOW:
+                    m_idata = new GraphDataHighLow(m_config);
+                    m_irender = new GraphRenderHighLow(m_config, m_gx, m_gy, style);
                     break;
             }
 
