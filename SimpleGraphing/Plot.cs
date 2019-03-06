@@ -69,7 +69,7 @@ namespace SimpleGraphing
 
         public override string ToString()
         {
-            string str = "{ ";
+            string str = m_bActive.ToString() + " { ";
 
             foreach (double df in Y_values)
             {
