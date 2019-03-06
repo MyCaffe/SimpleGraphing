@@ -11,8 +11,10 @@ namespace SimpleGraphing
     {
         public List<PlotCollection> m_rgSet = new List<PlotCollection>();
 
-        public PlotCollectionSet()
+        public PlotCollectionSet(List<PlotCollection> rgPlots = null)
         {
+            if (rgPlots != null && rgPlots.Count > 0)
+                m_rgSet.AddRange(rgPlots);
         }
 
         public void GetAbsMinMax(out double dfAbsMinY, out double dfAbsMaxY)
@@ -69,6 +71,11 @@ namespace SimpleGraphing
         public void Add(PlotCollection rg)
         {
             m_rgSet.Add(rg);
+        }
+
+        public void Add(PlotCollectionSet set)
+        {
+            m_rgSet.AddRange(set.m_rgSet);
         }
 
         public bool Remove(PlotCollection rg)
