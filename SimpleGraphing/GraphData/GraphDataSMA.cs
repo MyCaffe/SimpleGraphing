@@ -15,9 +15,10 @@ namespace SimpleGraphing.GraphData
             m_config = config;
         }
 
-        public PlotCollection GetData(PlotCollection data)
+        public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx)
         {
-            PlotCollection data1 = new PlotCollection(data.Name);
+            PlotCollection data = dataset[nDataIdx];
+            PlotCollection data1 = new PlotCollection(data.Name + " SMA");
             double dfSma = 0;
             double dfInc = 1.0 / m_config.Interval;
 
@@ -27,7 +28,7 @@ namespace SimpleGraphing.GraphData
                 data1.Add(dfSma, (i >= m_config.Interval) ? true : false);
             }
 
-            return data1;
+            return new PlotCollectionSet(new List<PlotCollection>() { data1 });
         }
     }
 }

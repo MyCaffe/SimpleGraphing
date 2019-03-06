@@ -15,9 +15,10 @@ namespace SimpleGraphing.GraphData
             m_config = config;
         }
 
-        public PlotCollection GetData(PlotCollection data)
+        public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx)
         {
-            PlotCollection data1 = new PlotCollection(data.Name);
+            PlotCollection data = dataset[nDataIdx];
+            PlotCollection data1 = new PlotCollection(data.Name + " EMA");
             double dfTotal = 0;
             double dfEma = 0;
             double dfMult = 2.0 / (m_config.Interval + 1);
@@ -40,7 +41,7 @@ namespace SimpleGraphing.GraphData
                 i++;
             }
 
-            return data1;
+            return new PlotCollectionSet(new List<PlotCollection>() { data1 });
         }
     }
 }

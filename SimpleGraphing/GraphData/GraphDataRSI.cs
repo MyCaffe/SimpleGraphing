@@ -22,17 +22,20 @@ namespace SimpleGraphing.GraphData
         /// <remarks>
         /// @see [Relative Strength Index](https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:relative_strength_index_rsi)
         /// </remarks>
-        /// <param name="data">Specifies the original plot data.</param>
+        /// <param name="dataset">Specifies the original plot data.</param>
+        /// <param name="nDataIdx">Specifies the data index of the plot data to use.</param>
         /// <returns>The new plot data containing the RSI calculation is returned.</returns>
-        public PlotCollection GetData(PlotCollection data)
+        public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx)
         {
+            PlotCollection data = dataset[nDataIdx];
+
             if (data.Count < m_config.Interval * 5)
             {
                 Trace.WriteLine("There is not enough data for an RSI calculation!");
                 return null;
             }
 
-            PlotCollection data1 = new PlotCollection(data.Name);
+            PlotCollection data1 = new PlotCollection(data.Name + " RSI");
             List<double> rgGain = new List<double>();
             List<double> rgLoss = new List<double>();
 
@@ -72,7 +75,7 @@ namespace SimpleGraphing.GraphData
                 data1.Add(new Plot(data[i].X, dfRSI, null, bActive));
             }
 
-            return data1;
+            return new PlotCollectionSet(new List<PlotCollection>() { data1 });
         }
     }
 }
