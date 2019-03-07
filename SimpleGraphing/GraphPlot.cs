@@ -46,6 +46,9 @@ namespace SimpleGraphing
                 if (nIdx >= m_rgPlots.Count)
                     nIdx = m_rgPlots.Count - 1;
 
+                if (m_rgPlots.Count == 0 || nIdx >= m_rgPlots[0].Count)
+                    return null;
+
                 return m_rgPlots[0][nIdx];
             }
         }
@@ -74,7 +77,10 @@ namespace SimpleGraphing
             m_style = createStyle(m_config);
 
             if (m_idata != null)
+            {
                 data = m_idata.GetData(data, nDataIdx);
+                m_config.DataIndex = 0;
+            }
 
             m_rgPlots = data;
 

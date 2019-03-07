@@ -34,8 +34,8 @@ namespace SimpleGraphing.GraphRender
                 if (nIdx + 1 >= dataset.Count)
                     break;
 
-                PlotCollection plotsLow = dataset[nIdx + 0];
-                PlotCollection plotsHigh = dataset[nIdx + 1];
+                PlotCollection plotsLow = dataset[m_config.DataIndex + nIdx + 0];
+                PlotCollection plotsHigh = dataset[m_config.DataIndex + nIdx + 1];
 
                 Pen pHigh = (i < 2) ? Pens.DarkGreen : Pens.DarkBlue;
                 Pen pLow = (i < 2) ? Pens.DarkRed : Pens.Purple;

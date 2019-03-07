@@ -147,13 +147,17 @@ namespace SimpleGraphing
 
         private void drawFlag(Graphics g, GraphPlot plot, GraphAxisStyle style)
         {
-            if (plot.Plots.Count == 0)
+            if (plot.Plots.Count == 0 || plot.Plots[0].Count == 0)
                 return;
 
-            if (!plot.LastVisiblePlot.Active)
+            Plot plotLast = plot.LastVisiblePlot;
+            if (plotLast == null)
                 return;
 
-            drawFlag(g, plot.LastVisiblePlot.Y, plot.Configuration.EnableFlag, plot.Configuration.FlagColor, plot.Configuration.FlagTextColor, plot.Configuration.FlagBorderColor);
+            if (!plotLast.Active)
+                return;
+
+            drawFlag(g, plotLast.Y, plot.Configuration.EnableFlag, plot.Configuration.FlagColor, plot.Configuration.FlagTextColor, plot.Configuration.FlagBorderColor);
         }
 
         private void drawFlag(Graphics g, ConfigurationTargetLine line)
