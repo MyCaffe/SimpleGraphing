@@ -29,17 +29,17 @@ namespace SimpleGraphing
         string m_strCustomName = "";
 
         [NonSerialized]
-        PropertySet m_properties = new PropertySet();
+        PropertyBag m_properties = new PropertyBag();
 
         public enum PLOTTYPE
         {
-            CUSTOM,
             LINE,
             SMA,
             EMA,
             CANDLE,
             RSI,
-            HIGHLOW
+            HIGHLOW,
+            CUSTOM
         }
 
         public ConfigurationPlot()
@@ -179,7 +179,7 @@ namespace SimpleGraphing
             set { m_nDataIdx = value; }
         }
 
-        public PropertySet Properties
+        public PropertyBag Properties
         {
             get { return m_properties; }
             set { m_properties = value; }
@@ -234,11 +234,11 @@ namespace SimpleGraphing
         }
     }
 
-    public class PropertySet : IEnumerable<PropertyValue>
+    public class PropertyBag : IEnumerable<PropertyValue>
     {
         List<PropertyValue> m_rgProperties = new List<PropertyValue>();
 
-        public PropertySet()
+        public PropertyBag()
         {
         }
 
