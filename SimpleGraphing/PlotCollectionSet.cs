@@ -17,6 +17,20 @@ namespace SimpleGraphing
                 m_rgSet.AddRange(rgPlots);
         }
 
+        public bool Contains(PlotCollection plots)
+        {
+            if (m_rgSet.Count == 0)
+                return false;
+
+            foreach (PlotCollection plots0 in m_rgSet)
+            {
+                if (!plots0.ComparePlots(plots))
+                    return false;
+            }
+
+            return true;
+        }
+
         public PlotCollectionSet GetPlotsContaining(string strName)
         {
             List<PlotCollection> rgPlots = m_rgSet.Where(p => p.Name.Contains(strName)).ToList();
