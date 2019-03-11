@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -25,9 +26,14 @@ namespace SimpleGraphing
         bool m_bVisible = true;
         uint m_nInterval = 20;
         PLOTTYPE m_plotType = PLOTTYPE.LINE;
+        string m_strCustomName = "";
+
+        [NonSerialized]
+        PropertySet m_properties = new PropertySet();
 
         public enum PLOTTYPE
         {
+            CUSTOM,
             LINE,
             SMA,
             EMA,
@@ -88,6 +94,12 @@ namespace SimpleGraphing
         {
             get { return m_plotType; }
             set { m_plotType = value; }
+        }
+
+        public string CustomName
+        {
+            get { return m_strCustomName; }
+            set { m_strCustomName = value; }
         }
 
         public bool VirtualPlot
@@ -167,6 +179,12 @@ namespace SimpleGraphing
             set { m_nDataIdx = value; }
         }
 
+        public PropertySet Properties
+        {
+            get { return m_properties; }
+            set { m_properties = value; }
+        }
+
         public virtual void Serialize(SerializeToXml ser)
         {
             ser.Open("Plot");
@@ -189,6 +207,112 @@ namespace SimpleGraphing
         public override string ToString()
         {
             return m_plotType.ToString();
+        }
+    }
+
+    public class PropertyValue
+    {
+        string m_strName;
+        double m_dfVal;
+
+        public PropertyValue(string strName = "", double dfVal = 0)
+        {
+            m_strName = strName;
+            m_dfVal = dfVal;
+        }
+
+        public string Name
+        {
+            get { return m_strName; }
+            set { m_strName = value; }
+        }
+
+        public double Value
+        {
+            get { return m_dfVal; }
+            set { m_dfVal = value; }
+        }
+    }
+
+    public class PropertySet : IEnumerable<PropertyValue>
+    {
+        List<PropertyValue> m_rgProperties = new List<PropertyValue>();
+
+        public PropertySet()
+        {
+        }
+
+        public int Count
+        {
+            get { return m_rgProperties.Count; }
+        }
+
+        public PropertyValue this[int nIdx]
+        {
+            get { return m_rgProperties[nIdx]; }
+            set { m_rgProperties[nIdx] = value; }
+        }
+
+        public double GetProperty(string strName, double dfDefault)
+        {
+            PropertyValue val = Find(strName);
+            if (val == null)
+                return dfDefault;
+
+            return val.Value;
+        }
+
+        public PropertyValue Find(string strName)
+        {
+            foreach (PropertyValue val in m_rgProperties)
+            {
+                if (val.Name == strName)
+                    return val;
+            }
+
+            return null;
+        }
+
+        public void Add(string strName, double dfVal)
+        {
+            Add(new PropertyValue(strName, dfVal));
+        }
+
+        public void Add(PropertyValue val)
+        {
+            PropertyValue existing = Find(val.Name);
+            if (existing != null)
+            {
+                existing.Value = val.Value;
+                return;
+            }
+
+            m_rgProperties.Add(val);
+        }
+
+        public bool Remove(PropertyValue val)
+        {
+            return m_rgProperties.Remove(val);
+        }
+
+        public void RemoveAt(int nIdx)
+        {
+            m_rgProperties.RemoveAt(nIdx);
+        }
+
+        public void Clear()
+        {
+            m_rgProperties.Clear();
+        }
+
+        public IEnumerator<PropertyValue> GetEnumerator()
+        {
+            return m_rgProperties.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return m_rgProperties.GetEnumerator();
         }
     }
 }
