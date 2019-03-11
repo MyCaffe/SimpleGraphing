@@ -17,6 +17,12 @@ namespace SimpleGraphing
                 m_rgSet.AddRange(rgPlots);
         }
 
+        public PlotCollectionSet GetPlotsContaining(string strName)
+        {
+            List<PlotCollection> rgPlots = m_rgSet.Where(p => p.Name.Contains(strName)).ToList();
+            return new PlotCollectionSet(rgPlots);
+        }
+
         public void GetAbsMinMax(out double dfAbsMinY, out double dfAbsMaxY)
         {
             dfAbsMinY = double.MaxValue;
