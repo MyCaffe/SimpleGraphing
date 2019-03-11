@@ -10,6 +10,7 @@
 *.bak
 
 # Private Files
+**/CustomTargetLines/*
 **/MyCaffe.app.setup/*
 **/MyCaffe.app.setup.vs/*
 **/_private/*
