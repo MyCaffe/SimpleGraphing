@@ -43,7 +43,7 @@ namespace SimpleGraphing
             set { m_config = value; }
         }
 
-        public PlotCollectionSet GetLastData()
+        public PlotCollectionSet GetLastData(bool bRemove = false)
         {
             if (m_data.Count == 0)
                 return null;
@@ -67,9 +67,19 @@ namespace SimpleGraphing
                         return null;
 
                     plots.Add(framePlots[framePlots.Count - 1]);
+
+                    if (bRemove)
+                        framePlots.RemoveAt(framePlots.Count - 1);
                 }
 
                 lastData.Add(plots);
+            }
+
+            if (bRemove)
+            {
+                m_surface.BuildGraph(m_config, m_data);
+                SimpleGraphingControl_Resize(this, new EventArgs());
+                ScrollToEnd();
             }
 
             return lastData;
