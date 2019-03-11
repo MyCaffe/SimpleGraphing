@@ -60,6 +60,14 @@ namespace SimpleGraphing
             m_config = config;
             m_data = data;
 
+            for (int i = 0; i < data.Count; i++)
+            {
+                for (int j = 0; j < data[i].Count; j++)
+                {
+                    data[i][j].Index = j;
+                }
+            }
+
             data = m_plotArea.BuildGraph(config, config.Plots, data);
             m_gx.BuildGraph(config.XAxis, data);
             m_gy.BuildGraph(config.YAxis, data);
