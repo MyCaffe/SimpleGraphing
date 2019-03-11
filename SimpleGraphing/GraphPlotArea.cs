@@ -10,6 +10,7 @@ namespace SimpleGraphing
 {
     public class GraphPlotArea : IDisposable
     {
+        ModuleCache m_cache;
         ConfigurationFrame m_config = new ConfigurationFrame();
         PlotAreaStyle m_style = null;
         GraphPlotCollection m_rgPlots = new GraphPlotCollection();
@@ -22,8 +23,9 @@ namespace SimpleGraphing
         BrushCollection m_colLineBrushes = new BrushCollection();
         PenCollection m_colLinePens = new PenCollection();
 
-        public GraphPlotArea(GraphAxis gx, GraphAxis gy)
+        public GraphPlotArea(ModuleCache cache, GraphAxis gx, GraphAxis gy)
         {
+            m_cache = cache;
             m_gx = gx;
             m_gy = gy;
         }
@@ -123,7 +125,7 @@ namespace SimpleGraphing
             {
                 if (plots[i].Visible)
                 {
-                    GraphPlot graphPlot = new SimpleGraphing.GraphPlot(m_gx, m_gy);
+                    GraphPlot graphPlot = new SimpleGraphing.GraphPlot(m_cache, m_gx, m_gy);
                     data1.Add(graphPlot.BuildGraph(plots[i], data, plots[i].DataIndex));
                     m_rgPlots.Add(graphPlot);
                 }

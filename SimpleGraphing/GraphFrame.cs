@@ -9,6 +9,7 @@ namespace SimpleGraphing
 {
     public class GraphFrame : IDisposable
     {
+        ModuleCache m_cache;
         Rectangle m_rcBounds;
         ConfigurationFrame m_config = new ConfigurationFrame();
         GraphAxisX m_gx = new GraphAxisX();
@@ -16,9 +17,10 @@ namespace SimpleGraphing
         GraphPlotArea m_plotArea;
         PlotCollectionSet m_data;
 
-        public GraphFrame()
+        public GraphFrame(ModuleCache cache)
         {
-            m_plotArea = new GraphPlotArea(m_gx, m_gy);
+            m_cache = cache;
+            m_plotArea = new GraphPlotArea(m_cache, m_gx, m_gy);
         }
 
         public void Dispose()

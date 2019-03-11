@@ -9,6 +9,7 @@ namespace SimpleGraphing
 {
     public class GraphSurface : IDisposable
     {
+        ModuleCache m_cache;
         ConfigurationSurface m_config;
         SurfaceStyle m_style = null;
         GraphFrameCollection m_frames = new GraphFrameCollection();
@@ -16,8 +17,9 @@ namespace SimpleGraphing
         Bitmap m_bmp = null;
         Graphics m_graphics = null;
 
-        public GraphSurface()
+        public GraphSurface(ModuleCache cache)
         {
+            m_cache = cache;
         }
 
         public void Dispose()
@@ -92,7 +94,7 @@ namespace SimpleGraphing
                     GraphFrame frame = null;
 
                     if (nFrameIdx >= nFrameCount)
-                        frame = new GraphFrame();
+                        frame = new GraphFrame(m_cache);
                     else
                         frame = m_frames[nFrameIdx];
 

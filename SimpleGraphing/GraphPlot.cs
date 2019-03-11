@@ -2,8 +2,11 @@
 using SimpleGraphing.GraphRender;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,6 +14,7 @@ namespace SimpleGraphing
 {
     public class GraphPlot : IDisposable
     {
+        ModuleCache m_cache;
         GraphAxis m_gx;
         GraphAxis m_gy;
         Rectangle m_rcBounds;
@@ -20,8 +24,9 @@ namespace SimpleGraphing
         IGraphPlotData m_idata;
         IGraphPlotRender m_irender;
 
-        public GraphPlot(GraphAxis gx, GraphAxis gy)
+        public GraphPlot(ModuleCache cache, GraphAxis gx, GraphAxis gy)
         {
+            m_cache = cache;
             m_gx = gx;
             m_gy = gy;
         }
@@ -124,10 +129,18 @@ namespace SimpleGraphing
                     m_idata = new GraphDataHighLow(m_config);
                     m_irender = new GraphRenderHighLow(m_config, m_gx, m_gy, style);
                     break;
+
+                case ConfigurationPlot.PLOTTYPE.CUSTOM:
+                    IGraphPlotDataEx idata = m_cache.Find(m_config.CustomName, true);
+                    idata.Initialize(m_config);
+                    m_irender = idata.CreateRender(m_config, m_gx, m_gy, style);
+                    m_idata = idata;
+                    break;
             }
 
             return style;
         }
+
 
         public void Render(Graphics g)
         {
