@@ -15,22 +15,47 @@ namespace SimpleGraphing
         double m_dfX;
         int m_nIdxPrimaryY = 0;
 
-        public Plot(double dfX, double dfY, string strName = null, bool bActive = true)
+        public Plot(double dfX, double dfY, string strName = null, bool bActive = true, int nIdx = 0)
         {
             m_strName = strName;
             m_dfX = dfX;
             m_rgdfY.Add(dfY);
             m_bActive = bActive;
             m_nIdxPrimaryY = 0;
+            m_nIndex = nIdx;
         }
 
-        public Plot(double dfX, List<double> rgdfY, string strName = null, bool bActive = true)
+        public Plot(double dfX, List<double> rgdfY, string strName = null, bool bActive = true, int nIdx = 0)
         {
             m_strName = strName;
             m_dfX = dfX;
             m_rgdfY = new List<double>(rgdfY);
             m_bActive = bActive;
             m_nIdxPrimaryY = rgdfY.Count - 1;
+            m_nIndex = nIdx;
+        }
+
+        public bool Compare(Plot p)
+        {
+            if (m_nIndex != p.Index)
+                return false;
+
+            if (m_bActive != p.Active)
+                return false;
+
+            if (m_dfX != p.X)
+                return false;
+
+            if (m_rgdfY.Count != p.m_rgdfY.Count)
+                return false;
+
+            for (int i = 0; i < m_rgdfY.Count; i++)
+            {
+                if (m_rgdfY[i] != p.m_rgdfY[i])
+                    return false;
+            }
+
+            return true;
         }
 
         public int Index
