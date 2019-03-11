@@ -112,6 +112,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Moving Averages";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMovingAverages_FormClosing);
+            this.Load += new System.EventHandler(this.FormMovingAverages_Load);
             ((System.ComponentModel.ISupportInitialize)(this.tbSMA)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbEMA)).EndInit();
             this.ResumeLayout(false);

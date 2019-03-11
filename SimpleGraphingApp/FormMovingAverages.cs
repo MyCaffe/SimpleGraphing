@@ -41,6 +41,11 @@ namespace SimpleGraphingApp
             if (OnClosingWindow != null)
                 OnClosingWindow(this, new EventArgs());
         }
+
+        private void FormMovingAverages_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 
     public class MovingAverageChangeArgs : EventArgs
