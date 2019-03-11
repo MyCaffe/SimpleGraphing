@@ -25,6 +25,20 @@ namespace SimpleGraphing
             m_strName = strName;
         }
 
+        public bool ComparePlots(PlotCollection plots)
+        {
+            if (m_rgPlot.Count != plots.Count)
+                return false;
+
+            for (int i = 0; i < m_rgPlot.Count; i++)
+            {
+                if (m_rgPlot[i].Compare(plots[i]))
+                    return false;
+            }
+
+            return true;
+        }
+
         public void GetMinMaxOverWindow(int nStartIdx, int nCount, out double dfMinX, out double dfMinY, out double dfMaxX, out double dfMaxY)
         {
             dfMinX = double.MaxValue;
@@ -88,9 +102,9 @@ namespace SimpleGraphing
             get { return m_dfMaxVal; }
         }
 
-        public void Add(double dfY, bool bActive = true)
+        public void Add(double dfY, bool bActive = true, int nIdx = 0)
         {
-            m_rgPlot.Add(new SimpleGraphing.Plot(m_dfXPosition, dfY, null, bActive));
+            m_rgPlot.Add(new SimpleGraphing.Plot(m_dfXPosition, dfY, null, bActive, nIdx));
             m_dfXPosition += m_dfXIncrement;
 
             if (m_rgPlot.Count > m_nMax)
@@ -173,6 +187,56 @@ namespace SimpleGraphing
         public override string ToString()
         {
             return m_strName;
+        }
+
+        /// <summary>
+        /// Calculate the A and B regression values.
+        /// </summary>
+        /// <remarks>
+        /// @see [Linear Regresssion: Simple Steps](https://www.statisticshowto.datasciencecentral.com/probability-and-statistics/regression-analysis/find-a-linear-regression-equation/)
+        /// </remarks>
+        /// <returns>A tuple containing the A and B values is returned.</returns>
+        public Tuple<double, double> CalculateLinearRegressionAB()
+        {
+            double dfSumX = 0;
+            double dfSumY = 0;
+            double dfSumX2 = 0;
+            double dfSumXY = 0;
+            int nN = 0;
+
+            for (int i = 0; i < m_rgPlot.Count; i++)
+            {
+                Plot p = m_rgPlot[i];
+
+                if (p.Active)
+                {
+                    dfSumX += p.Index;
+                    dfSumY += p.Y;
+                    dfSumX2 += p.Index * p.Index;
+                    dfSumXY += p.Index * p.Y;
+                    nN++;
+                }
+            }
+
+            double dfA1 = (dfSumY * dfSumX2) - (dfSumX * dfSumXY);
+            double dfB1 = (nN * dfSumXY) - (dfSumX * dfSumY);
+            double dfDiv = (nN * dfSumX2) - Math.Pow(dfSumX, 2.0);
+            double dfA = dfA1 / dfDiv;
+            double dfB = dfB1 / dfDiv;
+
+            return new Tuple<double, double>(dfA, dfB);
+        }
+
+        /// <summary>
+        /// Calculate the linear regression y value when given an x (the index) value.
+        /// </summary>
+        /// <param name="dfX">Specifies the x (index) value of a plot.</param>
+        /// <param name="dfA">Specifies the linear regression A value.</param>
+        /// <param name="dfB">Specifies the linear regression B value.</param>
+        /// <returns>The Y value of the linear regression plot is returned.</returns>
+        public double CalculateLinearRegressionY(double dfX, double dfA, double dfB)
+        {
+            return dfA + dfB * dfX;
         }
     }
 }
