@@ -13,11 +13,44 @@ namespace SimpleGraphingApp
 {
     public partial class FormMain : Form
     {
+        int m_nDataCount = 600;
         FormMovingAverages m_dlgMovAve = null;
+        Random m_random = new Random();
 
         public FormMain()
         {
             InitializeComponent();
+            List<string> rgstrNames = simpleGraphingControl1.LoadModuleCache();
+
+            foreach (string strName in rgstrNames)
+            {
+                IGraphPlotDataEx idata = simpleGraphingControl1.CustomModules.Find(strName, false);
+                if (idata != null)
+                {
+                    IGraphPlotUserEdit iedit = idata.CreateUserEdit();
+                    ToolStripItem item = testToolStripMenuItem.DropDownItems.Add(iedit.Name + "...");
+                    item.Tag = iedit;
+                    item.Click += Item_Click;
+
+                    ConfigurationPlot plotConfig = new ConfigurationPlot();
+                    plotConfig.PlotType = ConfigurationPlot.PLOTTYPE.CUSTOM;
+                    plotConfig.CustomName = idata.Name;
+                    simpleGraphingControl1.Configuration.Frames[0].Plots.Add(plotConfig);
+                }
+            }
+        }
+
+        private void Item_Click(object sender, EventArgs e)
+        {
+            ToolStripItem item = sender as ToolStripItem;
+            if (item == null)
+                return;
+
+            IGraphPlotUserEdit iedit = item.Tag as IGraphPlotUserEdit;
+            if (iedit == null)
+                return;
+
+            iedit.Edit(this, simpleGraphingControl1);
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -32,8 +65,11 @@ namespace SimpleGraphingApp
 
         private void lineToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            timerData.Enabled = false;
+            toolStrip1.Visible = false;
+
             List<PlotCollectionSet> rgSet = new List<PlotCollectionSet>();
-            int nCount = 300;
+            int nCount = m_nDataCount;
 
             for (int i = 0; i < 4; i++)
             {
@@ -67,11 +103,10 @@ namespace SimpleGraphingApp
         private void candleToolStripMenuItem_Click(object sender, EventArgs e)
         {
             List<PlotCollectionSet> rgSet = new List<PlotCollectionSet>();
-            int nCount = 300;
+            int nCount = m_nDataCount;
             double dfInc = TimeSpan.FromDays(1).TotalMinutes;
             DateTime dtStart = DateTime.Today - TimeSpan.FromDays(nCount);
             double dfTimeStart = dtStart.ToFileTime();
-            Random rand = new Random();
             PlotCollection plotsLast = null;
 
             for (int i = 0; i < 4; i++)
@@ -91,16 +126,16 @@ namespace SimpleGraphingApp
                     for (int j = 0; j < nCount; j++)
                     {
                         double dfO = dfVal;
-                        double dfC = dfVal + (-1 + (2 * rand.NextDouble()));
-                        double dfH = Math.Max(dfO, dfC) + (Math.Abs(dfC - dfO) * rand.NextDouble());
-                        double dfL = Math.Min(dfO, dfC) - (Math.Abs(dfC - dfO) * rand.NextDouble());
+                        double dfC = dfVal + (-1 + (2 * m_random.NextDouble()));
+                        double dfH = Math.Max(dfO, dfC) + (Math.Abs(dfC - dfO) * m_random.NextDouble());
+                        double dfL = Math.Min(dfO, dfC) - (Math.Abs(dfC - dfO) * m_random.NextDouble());
                         List<double> rgdfVal = new List<double>() { dfO, dfH, dfL, dfC };
 
                         plots.Add(new Plot(dfTime, rgdfVal));
 
                         dtStart += TimeSpan.FromDays(1);
                         dfTime = dtStart.ToFileTime();
-                        dfVal += -1 + (2 * rand.NextDouble());
+                        dfVal += -1 + (2 * m_random.NextDouble());
                     }
                 }
 
@@ -122,6 +157,9 @@ namespace SimpleGraphingApp
 
         private void configureCandleCharts()
         {
+            timerData.Enabled = false;
+            toolStrip1.Visible = true;
+
             simpleGraphingControl1.Configuration.Surface.EnableSmoothing = false;
 
             for (int i = 0; i < simpleGraphingControl1.Configuration.Frames.Count; i++)
@@ -142,7 +180,13 @@ namespace SimpleGraphingApp
                     frame.Plots[0].LineWidth = 2.0f;
                     frame.Plots[0].PlotFillColor = Color.Transparent;
                     frame.Plots[0].PlotLineColor = Color.Transparent;
-                    frame.Plots[1].Visible = false;
+
+                    if (frame.Plots.Count > 1)
+                        frame.Plots[1].Visible = false;
+
+                    if (frame.Plots.Count > 2)
+                        frame.Plots[2].Visible = false;
+
                     frame.TargetLines.Add(new ConfigurationTargetLine(30, Color.Maroon));
                     frame.TargetLines.Add(new ConfigurationTargetLine(70, Color.Green));
                     frame.YAxis.InitialMaximum = 100;
@@ -154,6 +198,18 @@ namespace SimpleGraphingApp
                 frame.XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.TIME;
                 frame.XAxis.ValueResolution = ConfigurationAxis.VALUE_RESOLUTION.DAY;
                 frame.YAxis.Decimals = 2;
+            }
+
+            if (Modules.CustomGraphingExists("CustomGraphing.TargetLines"))
+            {
+                if (simpleGraphingControl1.Configuration.Frames[0].Plots.Count == 4)
+                {
+                    simpleGraphingControl1.Configuration.Frames[0].Plots.Add(new ConfigurationPlot());
+                    simpleGraphingControl1.Configuration.Frames[0].Plots[4].PlotType = ConfigurationPlot.PLOTTYPE.CUSTOM;
+                    simpleGraphingControl1.Configuration.Frames[0].Plots[4].CustomName = "HOUGH";
+                }
+
+                simpleGraphingControl1.Configuration.Frames[0].Plots[4].Visible = true;
             }
         }
 
@@ -170,7 +226,13 @@ namespace SimpleGraphingApp
                 frame.Plots[0].LineWidth = 1.0f;
                 frame.Plots[0].PlotFillColor = Color.Cyan;
                 frame.Plots[0].PlotLineColor = Color.Black;
-                frame.Plots[1].Visible = true;
+
+                if (frame.Plots.Count > 1)
+                    frame.Plots[1].Visible = true;
+
+                if (frame.Plots.Count > 2)
+                    frame.Plots[2].Visible = true;
+
                 frame.XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.NUMBER;
                 frame.XAxis.ValueResolution = ConfigurationAxis.VALUE_RESOLUTION.NUMBER;
                 frame.YAxis.Decimals = 0;
@@ -178,6 +240,9 @@ namespace SimpleGraphingApp
                 frame.YAxis.InitialMaximum = 1;
                 frame.YAxis.InitialMinimum = 0;
             }
+
+            if (simpleGraphingControl1.Configuration.Frames[0].Plots.Count > 4)
+                simpleGraphingControl1.Configuration.Frames[0].Plots[4].Visible = false;
         }
 
         private void movingAveragesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -204,9 +269,64 @@ namespace SimpleGraphingApp
             simpleGraphingControl1.UpdateGraph();
         }
 
+        private void houghLinesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+        }
+
         private void FormMain_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void timerUI_Tick(object sender, EventArgs e)
+        {
+            btnRun.Enabled = !timerData.Enabled;
+            btnStop.Enabled = timerData.Enabled;
+        }
+
+        private void timerData_Tick(object sender, EventArgs e)
+        {
+            PlotCollectionSet newData = new PlotCollectionSet();
+            PlotCollectionSet lastData = simpleGraphingControl1.GetLastData();
+            if (lastData == null)
+                return;
+
+            for (int i = 0; i < lastData.Count; i++)
+            {
+                PlotCollection frameData = lastData[i];
+                PlotCollection frameNewData = new PlotCollection(frameData.Name);
+
+                for (int j = 0; j < frameData.Count; j++)
+                {
+                    double dfTime = frameData[j].X;
+                    DateTime dtStart = DateTime.FromFileTime((long)dfTime);
+                    dtStart += TimeSpan.FromDays(1);
+                    dfTime = dtStart.ToFileTime();
+
+                    double dfVal = frameData[j].Y += -1 + (2 * m_random.NextDouble());
+                    double dfO = dfVal;
+                    double dfC = dfVal + (-1 + (2 * m_random.NextDouble()));
+                    double dfH = Math.Max(dfO, dfC) + (Math.Abs(dfC - dfO) * m_random.NextDouble());
+                    double dfL = Math.Min(dfO, dfC) - (Math.Abs(dfC - dfO) * m_random.NextDouble());
+                    List<double> rgdfVal = new List<double>() { dfO, dfH, dfL, dfC };
+
+                    frameNewData.Add(new Plot(dfTime, rgdfVal));
+                }
+
+                newData.Add(frameNewData);
+            }
+
+            simpleGraphingControl1.AddData(newData, true);
+        }
+
+        private void btnRun_Click(object sender, EventArgs e)
+        {
+            timerData.Enabled = true;
+        }
+
+        private void btnStop_Click(object sender, EventArgs e)
+        {
+            timerData.Enabled = false;
         }
     }
 }
