@@ -116,12 +116,12 @@ namespace SimpleGraphing.GraphData
                     if (dfHigh1 > dfHigh0 && dfHigh1 > dfHigh2)
                         bHigh = true;
 
-                    dataHigh.Add(new Plot(data[nIdxCurrent].X, dfHigh1, null, bHigh));
+                    dataHigh.Add(new Plot(data[nIdxCurrent].X, dfHigh1, null, bHigh, data[nIdxCurrent].Index));
                     nIdx++;
                 }
                 else
                 {
-                    dataHigh.Add(new Plot(data[i].X, data[i].Y_values[nHigh], null, false));
+                    dataHigh.Add(new Plot(data[i].X, data[i].Y_values[nHigh], null, false, data[i].Index));
                 }
             }
 
@@ -180,12 +180,12 @@ namespace SimpleGraphing.GraphData
                     if (dfLow1 < dfLow0 && dfLow1 < dfLow2)
                         bLow = true;
 
-                    dataLow.Add(new Plot(data[nIdxCurrent].X, dfLow1, null, bLow));
+                    dataLow.Add(new Plot(data[nIdxCurrent].X, dfLow1, null, bLow, data[nIdxCurrent].Index));
                     nIdx++;
                 }
                 else
                 {
-                    dataLow.Add(new Plot(data[i].X, data[i].Y_values[nLow], null, false));
+                    dataLow.Add(new Plot(data[i].X, data[i].Y_values[nLow], null, false, data[i].Index));
                 }
             }
 

@@ -37,7 +37,7 @@ namespace SimpleGraphing.GraphData
             while (i < data.Count && i<m_config.Interval)
             {
                 dfTotal += data[i].Y;
-                data1.Add(dfTotal / (i + 1), false);
+                data1.Add(dfTotal / (i + 1), false, data[i].Index);
                 i++;
             }
 
@@ -47,7 +47,7 @@ namespace SimpleGraphing.GraphData
             {
                 double dfVal = data[i].Y;
                 dfEma = (dfVal - dfEma) * dfMult + dfEma;
-                data1.Add(dfEma, true);
+                data1.Add(dfEma, true, data[i].Index);
                 i++;
             }
 
