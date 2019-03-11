@@ -16,6 +16,16 @@ namespace SimpleGraphing.GraphData
             m_config = config;
         }
 
+        public string Name
+        {
+            get { return "RSI"; }
+        }
+
+        public string RenderType
+        {
+            get { return "LINE"; }
+        }
+
         /// <summary>
         /// Calculate the RSI based on Wilder's formula.
         /// </summary>

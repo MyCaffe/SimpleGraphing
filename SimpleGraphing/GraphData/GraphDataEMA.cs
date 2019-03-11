@@ -15,6 +15,16 @@ namespace SimpleGraphing.GraphData
             m_config = config;
         }
 
+        public string Name
+        {
+            get { return "EMA"; }
+        }
+
+        public string RenderType
+        {
+            get { return "LINE"; }
+        }
+
         public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx)
         {
             PlotCollection data = dataset[nDataIdx];
