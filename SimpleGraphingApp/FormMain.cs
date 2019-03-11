@@ -16,6 +16,7 @@ namespace SimpleGraphingApp
         int m_nDataCount = 600;
         FormMovingAverages m_dlgMovAve = null;
         Random m_random = new Random();
+        List<PlotCollectionSet> m_rgLastData = new List<PlotCollectionSet>();
 
         public FormMain()
         {
@@ -284,8 +285,25 @@ namespace SimpleGraphingApp
             btnStop.Enabled = timerData.Enabled;
         }
 
-        private void timerData_Tick(object sender, EventArgs e)
+        private void stepPrev()
         {
+            PlotCollectionSet lastData = simpleGraphingControl1.GetLastData(true);
+            if (lastData == null)
+                return;
+
+            m_rgLastData.Add(lastData);
+        }
+
+        private void stepNext()
+        {
+            if (m_rgLastData.Count > 0)
+            {
+                PlotCollectionSet lastData1 = m_rgLastData[m_rgLastData.Count - 1];
+                m_rgLastData.RemoveAt(m_rgLastData.Count - 1);
+                simpleGraphingControl1.AddData(lastData1, true);
+                return;
+            }
+
             PlotCollectionSet newData = new PlotCollectionSet();
             PlotCollectionSet lastData = simpleGraphingControl1.GetLastData();
             if (lastData == null)
@@ -319,6 +337,11 @@ namespace SimpleGraphingApp
             simpleGraphingControl1.AddData(newData, true);
         }
 
+        private void timerData_Tick(object sender, EventArgs e)
+        {
+            stepNext();
+        }
+
         private void btnRun_Click(object sender, EventArgs e)
         {
             timerData.Enabled = true;
@@ -327,6 +350,16 @@ namespace SimpleGraphingApp
         private void btnStop_Click(object sender, EventArgs e)
         {
             timerData.Enabled = false;
+        }
+
+        private void btnStepPrev_Click(object sender, EventArgs e)
+        {
+            stepPrev();
+        }
+
+        private void btnStepNext_Click(object sender, EventArgs e)
+        {
+            stepNext();
         }
     }
 }
