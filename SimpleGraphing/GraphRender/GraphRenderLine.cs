@@ -22,6 +22,11 @@ namespace SimpleGraphing.GraphRender
             m_style = style;
         }
 
+        public string Name
+        {
+            get { return "LINE"; }
+        }
+
         public void Render(Graphics g, PlotCollectionSet dataset)
         {
             PlotCollection plots = dataset[m_config.DataIndex];

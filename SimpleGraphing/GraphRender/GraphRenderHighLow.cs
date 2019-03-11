@@ -22,6 +22,11 @@ namespace SimpleGraphing.GraphRender
             m_style = style;
         }
 
+        public string Name
+        {
+            get { return "HIGHLOW"; }
+        }
+
         public void Render(Graphics g, PlotCollectionSet dataset)
         {
             List<int> rgX = m_gx.TickPositions;
