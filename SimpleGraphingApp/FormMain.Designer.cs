@@ -41,12 +41,12 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.movingAveragesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
+            this.simpleGraphingControl1 = new SimpleGraphing.SimpleGraphingControl();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.btnRun = new System.Windows.Forms.ToolStripButton();
             this.btnStop = new System.Windows.Forms.ToolStripButton();
             this.timerUI = new System.Windows.Forms.Timer(this.components);
             this.timerData = new System.Windows.Forms.Timer(this.components);
-            this.simpleGraphingControl1 = new SimpleGraphing.SimpleGraphingControl();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -97,39 +97,39 @@
             this.lineToolStripMenuItem,
             this.candleToolStripMenuItem});
             this.showDataToolStripMenuItem.Name = "showDataToolStripMenuItem";
-            this.showDataToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.showDataToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.showDataToolStripMenuItem.Text = "&Show Data";
             // 
             // lineToolStripMenuItem
             // 
             this.lineToolStripMenuItem.Name = "lineToolStripMenuItem";
-            this.lineToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.lineToolStripMenuItem.Size = new System.Drawing.Size(111, 22);
             this.lineToolStripMenuItem.Text = "Line";
             this.lineToolStripMenuItem.Click += new System.EventHandler(this.lineToolStripMenuItem_Click);
             // 
             // candleToolStripMenuItem
             // 
             this.candleToolStripMenuItem.Name = "candleToolStripMenuItem";
-            this.candleToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.candleToolStripMenuItem.Size = new System.Drawing.Size(111, 22);
             this.candleToolStripMenuItem.Text = "Candle";
             this.candleToolStripMenuItem.Click += new System.EventHandler(this.candleToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(172, 6);
             // 
             // movingAveragesToolStripMenuItem
             // 
             this.movingAveragesToolStripMenuItem.Name = "movingAveragesToolStripMenuItem";
-            this.movingAveragesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.movingAveragesToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.movingAveragesToolStripMenuItem.Text = "Moving Averages...";
             this.movingAveragesToolStripMenuItem.Click += new System.EventHandler(this.movingAveragesToolStripMenuItem_Click);
             // 
@@ -150,6 +150,16 @@
             // toolStripContainer1.TopToolStripPanel
             // 
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStrip1);
+            // 
+            // simpleGraphingControl1
+            // 
+            this.simpleGraphingControl1.Configuration = ((SimpleGraphing.Configuration)(resources.GetObject("simpleGraphingControl1.Configuration")));
+            this.simpleGraphingControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.simpleGraphingControl1.Location = new System.Drawing.Point(0, 0);
+            this.simpleGraphingControl1.Name = "simpleGraphingControl1";
+            this.simpleGraphingControl1.ShowScrollBar = true;
+            this.simpleGraphingControl1.Size = new System.Drawing.Size(762, 932);
+            this.simpleGraphingControl1.TabIndex = 0;
             // 
             // toolStrip1
             // 
@@ -195,16 +205,6 @@
             // 
             this.timerData.Interval = 1000;
             this.timerData.Tick += new System.EventHandler(this.timerData_Tick);
-            // 
-            // simpleGraphingControl1
-            // 
-            this.simpleGraphingControl1.Configuration = ((SimpleGraphing.Configuration)(resources.GetObject("simpleGraphingControl1.Configuration")));
-            this.simpleGraphingControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.simpleGraphingControl1.Location = new System.Drawing.Point(0, 0);
-            this.simpleGraphingControl1.Name = "simpleGraphingControl1";
-            this.simpleGraphingControl1.ShowScrollBar = true;
-            this.simpleGraphingControl1.Size = new System.Drawing.Size(762, 932);
-            this.simpleGraphingControl1.TabIndex = 0;
             // 
             // FormMain
             // 
