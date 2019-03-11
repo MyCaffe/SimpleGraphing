@@ -33,6 +33,9 @@ namespace SimpleGraphing
 
         public IGraphPlotDataEx Find(string strName, bool bThrowException = true)
         {
+            if (string.IsNullOrEmpty(strName))
+                return null;
+
             if (!m_rgModules.ContainsKey(strName))
             {
                 if (bThrowException)
