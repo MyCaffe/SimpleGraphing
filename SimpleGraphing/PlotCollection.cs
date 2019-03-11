@@ -16,6 +16,7 @@ namespace SimpleGraphing
         int m_nMax;
         double m_dfMinVal = double.MaxValue;
         double m_dfMaxVal = -double.MaxValue;
+        object m_tag = null;
 
         public PlotCollection(string strName, int nMax = int.MaxValue, double dfXInc = 1.0)
         {
@@ -46,6 +47,12 @@ namespace SimpleGraphing
                     dfMaxY = Math.Max(dfMaxY, dfValY);
                 }
             }
+        }
+
+        public object Tag
+        {
+            get { return m_tag; }
+            set { m_tag = value; }
         }
 
         public string Name
@@ -161,6 +168,11 @@ namespace SimpleGraphing
         IEnumerator IEnumerable.GetEnumerator()
         {
             return m_rgPlot.GetEnumerator();
+        }
+
+        public override string ToString()
+        {
+            return m_strName;
         }
     }
 }
