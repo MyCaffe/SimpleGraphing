@@ -8,6 +8,7 @@ namespace SimpleGraphing
 {
     public class Plot
     {
+        int m_nIndex = 0;
         bool m_bActive;
         string m_strName;
         List<double> m_rgdfY = new List<double>();
@@ -30,6 +31,12 @@ namespace SimpleGraphing
             m_rgdfY = new List<double>(rgdfY);
             m_bActive = bActive;
             m_nIdxPrimaryY = rgdfY.Count - 1;
+        }
+
+        public int Index
+        {
+            get { return m_nIndex; }
+            set { m_nIndex = value; }
         }
 
         public string Name
@@ -70,6 +77,8 @@ namespace SimpleGraphing
         public override string ToString()
         {
             string str = m_bActive.ToString() + " { ";
+
+            str += X.ToString() + " }x{ ";
 
             foreach (double df in Y_values)
             {
