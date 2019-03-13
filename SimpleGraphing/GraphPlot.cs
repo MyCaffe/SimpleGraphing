@@ -40,6 +40,17 @@ namespace SimpleGraphing
             }
         }
 
+        public string DataName
+        {
+            get
+            {
+                if (m_idata == null)
+                    return null;
+
+                return m_idata.Name;
+            }
+        }
+
         public Plot LastVisiblePlot
         {
             get
@@ -76,13 +87,32 @@ namespace SimpleGraphing
             set { m_rgPlots = value; }
         }
 
-        public PlotCollectionSet BuildGraph(ConfigurationPlot config, PlotCollectionSet data, int nDataIdx)
+        public PlotCollectionSet BuildGraph(ConfigurationPlot config, PlotCollectionSet data, int nDataIdx, GraphPlotCollection plots)
         {
             m_config = config;
             m_style = createStyle(m_config);
 
             if (m_idata != null)
             {
+                IGraphPlotDataEx idata = m_idata as IGraphPlotDataEx;
+                if (idata != null)
+                {
+                    if (idata.RequiredDataName != null)
+                    {
+                        foreach (GraphPlot plot in plots)
+                        {
+                            if (plot.DataName == idata.RequiredDataName)
+                            {
+                                PlotCollectionSet data1 = new PlotCollectionSet();
+                                data1.Add(data);
+                                data1.Add(plot.Plots);
+                                data = data1;
+                                break;
+                            }
+                        }
+                    }
+                }
+
                 data = m_idata.GetData(data, nDataIdx);
                 m_config.DataIndex = 0;
             }
