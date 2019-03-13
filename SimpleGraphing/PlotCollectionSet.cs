@@ -17,6 +17,14 @@ namespace SimpleGraphing
                 m_rgSet.AddRange(rgPlots);
         }
 
+        public PlotCollectionSet(PlotCollectionSet set, int nStart)
+        {
+            for (int i = nStart; i < set.Count; i++)
+            {
+                m_rgSet.Add(set[i]);
+            }
+        }
+
         public void RemoveAllButFirst()
         {
             if (m_rgSet.Count > 1)
