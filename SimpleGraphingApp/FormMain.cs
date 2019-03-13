@@ -276,7 +276,7 @@ namespace SimpleGraphingApp
 
         private void FormMain_Load(object sender, EventArgs e)
         {
-
+            m_nDataCount = simpleGraphingControl1.VisiblePlotCount;
         }
 
         private void timerUI_Tick(object sender, EventArgs e)
@@ -360,6 +360,11 @@ namespace SimpleGraphingApp
         private void btnStepNext_Click(object sender, EventArgs e)
         {
             stepNext();
+        }
+
+        private void FormMain_Resize(object sender, EventArgs e)
+        {
+            m_nDataCount = simpleGraphingControl1.VisiblePlotCount;
         }
     }
 }

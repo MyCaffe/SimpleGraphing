@@ -45,10 +45,10 @@
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.btnRun = new System.Windows.Forms.ToolStripButton();
             this.btnStop = new System.Windows.Forms.ToolStripButton();
-            this.timerUI = new System.Windows.Forms.Timer(this.components);
-            this.timerData = new System.Windows.Forms.Timer(this.components);
             this.btnStepPrev = new System.Windows.Forms.ToolStripButton();
             this.btnStepNext = new System.Windows.Forms.ToolStripButton();
+            this.timerUI = new System.Windows.Forms.Timer(this.components);
+            this.timerData = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -141,7 +141,7 @@
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.simpleGraphingControl1);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(762, 907);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(762, 932);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 24);
             this.toolStripContainer1.Name = "toolStripContainer1";
@@ -160,7 +160,7 @@
             this.simpleGraphingControl1.Location = new System.Drawing.Point(0, 0);
             this.simpleGraphingControl1.Name = "simpleGraphingControl1";
             this.simpleGraphingControl1.ShowScrollBar = true;
-            this.simpleGraphingControl1.Size = new System.Drawing.Size(762, 907);
+            this.simpleGraphingControl1.Size = new System.Drawing.Size(762, 932);
             this.simpleGraphingControl1.TabIndex = 0;
             // 
             // toolStrip1
@@ -173,7 +173,7 @@
             this.btnStepNext});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(135, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(104, 25);
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Visible = false;
             // 
@@ -199,17 +199,6 @@
             this.btnStop.Text = "Stop";
             this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
             // 
-            // timerUI
-            // 
-            this.timerUI.Enabled = true;
-            this.timerUI.Interval = 250;
-            this.timerUI.Tick += new System.EventHandler(this.timerUI_Tick);
-            // 
-            // timerData
-            // 
-            this.timerData.Interval = 1000;
-            this.timerData.Tick += new System.EventHandler(this.timerData_Tick);
-            // 
             // btnStepPrev
             // 
             this.btnStepPrev.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -232,6 +221,17 @@
             this.btnStepNext.Text = "Step Next";
             this.btnStepNext.Click += new System.EventHandler(this.btnStepNext_Click);
             // 
+            // timerUI
+            // 
+            this.timerUI.Enabled = true;
+            this.timerUI.Interval = 250;
+            this.timerUI.Tick += new System.EventHandler(this.timerUI_Tick);
+            // 
+            // timerData
+            // 
+            this.timerData.Interval = 1000;
+            this.timerData.Tick += new System.EventHandler(this.timerData_Tick);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -243,6 +243,7 @@
             this.Name = "FormMain";
             this.Text = "FormMain";
             this.Load += new System.EventHandler(this.FormMain_Load);
+            this.Resize += new System.EventHandler(this.FormMain_Resize);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.toolStripContainer1.ContentPanel.ResumeLayout(false);
