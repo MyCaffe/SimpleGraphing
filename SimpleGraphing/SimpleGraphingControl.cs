@@ -43,6 +43,17 @@ namespace SimpleGraphing
             set { m_config = value; }
         }
 
+        public int VisiblePlotCount
+        {
+            get
+            {
+                if (m_config.Frames.Count == 0)
+                    return 0;
+
+                return m_surface.Bounds.Width / m_config.Frames[0].XAxis.PlotSpacing;
+            }
+        }
+
         public PlotCollectionSet GetLastData(bool bRemove = false)
         {
             if (m_data.Count == 0)
