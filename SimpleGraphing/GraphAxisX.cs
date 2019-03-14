@@ -69,7 +69,7 @@ namespace SimpleGraphing
 
             m_rgTickPositions = new List<int>();
 
-            for (int x = m_rcBounds.Right; x >= m_rcBounds.Left; x -= m_config.PlotSpacing)
+            for (int x = m_rcBounds.Right - m_config.PlotSpacing; x >= m_rcBounds.Left; x -= m_config.PlotSpacing)
             {
                 if (x >= m_rcBounds.Left)
                     m_rgTickPositions.Insert(0, x);
