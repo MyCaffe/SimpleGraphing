@@ -17,6 +17,9 @@ namespace SimpleGraphingApp
         FormMovingAverages m_dlgMovAve = null;
         Random m_random = new Random();
         List<PlotCollectionSet> m_rgLastData = new List<PlotCollectionSet>();
+        Size m_szMinBounds;
+        Size m_szMaxBounds;
+        List<PlotCollectionSet> m_rgSet = null;
 
         public FormMain()
         {
@@ -96,9 +99,7 @@ namespace SimpleGraphingApp
 
             configureLineCharts();
 
-            simpleGraphingControl1.BuildGraph(rgSet);
-            simpleGraphingControl1.Invalidate();
-            simpleGraphingControl1.ScrollToEnd();
+            updateGraph(rgSet);
         }
 
         private void candleToolStripMenuItem_Click(object sender, EventArgs e)
@@ -151,6 +152,12 @@ namespace SimpleGraphingApp
 
             configureCandleCharts();
 
+            updateGraph(rgSet);
+        }
+
+        private void updateGraph(List<PlotCollectionSet> rgSet)
+        {
+            m_rgSet = rgSet;
             simpleGraphingControl1.BuildGraph(rgSet);
             simpleGraphingControl1.Invalidate();
             simpleGraphingControl1.ScrollToEnd();
@@ -276,6 +283,8 @@ namespace SimpleGraphingApp
 
         private void FormMain_Load(object sender, EventArgs e)
         {
+            m_szMinBounds = MinimumSize;
+            m_szMaxBounds = MaximumSize;
             m_nDataCount = simpleGraphingControl1.VisiblePlotCount;
         }
 
@@ -283,6 +292,7 @@ namespace SimpleGraphingApp
         {
             btnRun.Enabled = !timerData.Enabled;
             btnStop.Enabled = timerData.Enabled;
+            btnReDraw.Enabled = (m_rgSet != null) ? true : false;
         }
 
         private void stepPrev()
@@ -296,45 +306,51 @@ namespace SimpleGraphingApp
 
         private void stepNext()
         {
-            if (m_rgLastData.Count > 0)
-            {
-                PlotCollectionSet lastData1 = m_rgLastData[m_rgLastData.Count - 1];
-                m_rgLastData.RemoveAt(m_rgLastData.Count - 1);
-                simpleGraphingControl1.AddData(lastData1, true);
-                return;
-            }
-
-            PlotCollectionSet newData = new PlotCollectionSet();
-            PlotCollectionSet lastData = simpleGraphingControl1.GetLastData();
-            if (lastData == null)
-                return;
-
-            for (int i = 0; i < lastData.Count; i++)
-            {
-                PlotCollection frameData = lastData[i];
-                PlotCollection frameNewData = new PlotCollection(frameData.Name);
-
-                for (int j = 0; j < frameData.Count; j++)
+            try
+            { 
+                if (m_rgLastData.Count > 0)
                 {
-                    double dfTime = frameData[j].X;
-                    DateTime dtStart = DateTime.FromFileTime((long)dfTime);
-                    dtStart += TimeSpan.FromDays(1);
-                    dfTime = dtStart.ToFileTime();
-
-                    double dfVal = frameData[j].Y += -1 + (2 * m_random.NextDouble());
-                    double dfO = dfVal;
-                    double dfC = dfVal + (-1 + (2 * m_random.NextDouble()));
-                    double dfH = Math.Max(dfO, dfC) + (Math.Abs(dfC - dfO) * m_random.NextDouble());
-                    double dfL = Math.Min(dfO, dfC) - (Math.Abs(dfC - dfO) * m_random.NextDouble());
-                    List<double> rgdfVal = new List<double>() { dfO, dfH, dfL, dfC };
-
-                    frameNewData.Add(new Plot(dfTime, rgdfVal));
+                    PlotCollectionSet lastData1 = m_rgLastData[m_rgLastData.Count - 1];
+                    m_rgLastData.RemoveAt(m_rgLastData.Count - 1);
+                    simpleGraphingControl1.AddData(lastData1, true);
+                    return;
                 }
 
-                newData.Add(frameNewData);
-            }
+                PlotCollectionSet newData = new PlotCollectionSet();
+                PlotCollectionSet lastData = simpleGraphingControl1.GetLastData();
+                if (lastData == null)
+                    return;
 
-            simpleGraphingControl1.AddData(newData, true);
+                for (int i = 0; i < lastData.Count; i++)
+                {
+                    PlotCollection frameData = lastData[i];
+                    PlotCollection frameNewData = new PlotCollection(frameData.Name);
+
+                    for (int j = 0; j < frameData.Count; j++)
+                    {
+                        double dfTime = frameData[j].X;
+                        DateTime dtStart = DateTime.FromFileTime((long)dfTime);
+                        dtStart += TimeSpan.FromDays(1);
+                        dfTime = dtStart.ToFileTime();
+
+                        double dfVal = frameData[j].Y + (-1 + (2 * m_random.NextDouble()));
+                        double dfO = dfVal;
+                        double dfC = dfVal + (-1 + (2 * m_random.NextDouble()));
+                        double dfH = Math.Max(dfO, dfC) + (Math.Abs(dfC - dfO) * m_random.NextDouble());
+                        double dfL = Math.Min(dfO, dfC) - (Math.Abs(dfC - dfO) * m_random.NextDouble());
+                        List<double> rgdfVal = new List<double>() { dfO, dfH, dfL, dfC };
+
+                        frameNewData.Add(new Plot(dfTime, rgdfVal));
+                    }
+
+                    newData.Add(frameNewData);
+                }
+
+                simpleGraphingControl1.AddData(newData, true);
+            }
+            finally
+            {
+            }
         }
 
         private void timerData_Tick(object sender, EventArgs e)
@@ -344,27 +360,49 @@ namespace SimpleGraphingApp
 
         private void btnRun_Click(object sender, EventArgs e)
         {
+            MaximumSize = Size;
+            MinimumSize = Size;
+            btnStepPrev.Enabled = false;
+            btnStepNext.Enabled = false;
             timerData.Enabled = true;
         }
 
         private void btnStop_Click(object sender, EventArgs e)
         {
             timerData.Enabled = false;
+            MaximumSize = m_szMaxBounds;
+            MinimumSize = m_szMinBounds;
+            btnStepPrev.Enabled = true;
+            btnStepNext.Enabled = true;
         }
 
         private void btnStepPrev_Click(object sender, EventArgs e)
         {
+            MaximumSize = Size;
+            MinimumSize = Size;
             stepPrev();
+            MaximumSize = m_szMaxBounds;
+            MinimumSize = m_szMinBounds;
         }
 
         private void btnStepNext_Click(object sender, EventArgs e)
         {
+            MaximumSize = Size;
+            MinimumSize = Size;
             stepNext();
+            MaximumSize = m_szMaxBounds;
+            MinimumSize = m_szMinBounds;
         }
 
         private void FormMain_Resize(object sender, EventArgs e)
         {
             m_nDataCount = simpleGraphingControl1.VisiblePlotCount;
+        }
+
+        private void btnReDraw_Click(object sender, EventArgs e)
+        {
+            if (m_rgSet != null)
+                updateGraph(m_rgSet);
         }
     }
 }

@@ -49,6 +49,7 @@
             this.btnStepNext = new System.Windows.Forms.ToolStripButton();
             this.timerUI = new System.Windows.Forms.Timer(this.components);
             this.timerData = new System.Windows.Forms.Timer(this.components);
+            this.btnReDraw = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -170,10 +171,11 @@
             this.btnRun,
             this.btnStop,
             this.btnStepPrev,
-            this.btnStepNext});
+            this.btnStepNext,
+            this.btnReDraw});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(104, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(158, 25);
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Visible = false;
             // 
@@ -232,6 +234,17 @@
             this.timerData.Interval = 1000;
             this.timerData.Tick += new System.EventHandler(this.timerData_Tick);
             // 
+            // btnReDraw
+            // 
+            this.btnReDraw.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnReDraw.Image = ((System.Drawing.Image)(resources.GetObject("btnReDraw.Image")));
+            this.btnReDraw.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.btnReDraw.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnReDraw.Name = "btnReDraw";
+            this.btnReDraw.Size = new System.Drawing.Size(23, 22);
+            this.btnReDraw.Text = "Re-draw";
+            this.btnReDraw.Click += new System.EventHandler(this.btnReDraw_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -278,5 +291,6 @@
         private SimpleGraphing.SimpleGraphingControl simpleGraphingControl1;
         private System.Windows.Forms.ToolStripButton btnStepPrev;
         private System.Windows.Forms.ToolStripButton btnStepNext;
+        private System.Windows.Forms.ToolStripButton btnReDraw;
     }
 }
