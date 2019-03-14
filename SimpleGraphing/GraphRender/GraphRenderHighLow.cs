@@ -42,6 +42,9 @@ namespace SimpleGraphing.GraphRender
                 PlotCollection plotsLow = dataset[m_config.DataIndex + nIdx + 0];
                 PlotCollection plotsHigh = dataset[m_config.DataIndex + nIdx + 1];
 
+                if (plotsLow == null || plotsHigh == null)
+                    continue;
+
                 Pen pHigh = (i < 2) ? Pens.DarkGreen : Pens.DarkBlue;
                 Pen pLow = (i < 2) ? Pens.DarkRed : Pens.Purple;
                 Brush brHigh = (i < 1) ? Brushes.Lime : (i < 2) ? Brushes.Green : Brushes.Blue;
