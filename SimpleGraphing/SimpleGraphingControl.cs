@@ -101,9 +101,15 @@ namespace SimpleGraphing
             if (data.Count != m_data.Count)
                 throw new Exception("The number of plot collections must match the number of plot sets used by the graph.");
 
+            List<string> rgUpdated = new List<string>();
+
             for (int i = 0; i < data.Count; i++)
             {
                 PlotCollectionSet dataFrame = m_data[i];
+
+                if (rgUpdated.Contains(dataFrame[0].Name))
+                    continue;
+
                 PlotCollection dataToAdd = data[i];
 
                 if (dataFrame.Count != dataToAdd.Count)
@@ -119,11 +125,21 @@ namespace SimpleGraphing
                     if (bMaintainCount)
                         dataFrameItems.RemoveAt(0);
                 }
+
+                rgUpdated.Add(dataFrame[0].Name);
             }
 
             m_surface.BuildGraph(m_config, m_data);
             SimpleGraphingControl_Resize(this, new EventArgs());
             ScrollToEnd();
+        }
+
+        public void ClearGraph()
+        {
+            foreach (PlotCollectionSet set in m_data)
+            {
+                set.ClearData();
+            }
         }
 
         public void BuildGraph(List<PlotCollectionSet> data)
