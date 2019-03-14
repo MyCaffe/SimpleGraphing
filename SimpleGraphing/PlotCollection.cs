@@ -25,6 +25,73 @@ namespace SimpleGraphing
             m_strName = strName;
         }
 
+        public void ShiftLeft(int nCount)
+        {
+            if (nCount > m_rgPlot.Count)
+                nCount = m_rgPlot.Count;
+
+            for (int i = 0; i < nCount; i++)
+            {
+                m_rgPlot.RemoveAt(0);
+            }
+
+            ReIndex();
+        }
+
+        public void ReIndex()
+        {
+            for (int i = 0; i < m_rgPlot.Count; i++)
+            {
+                m_rgPlot[i].Index = i;
+            }
+        }
+
+        public double? GetSlope(out double dfEndY, out int nIdxStart, out int nIdxEnd)
+        {
+            nIdxStart = m_rgPlot[0].Index;
+            nIdxEnd = m_rgPlot[m_rgPlot.Count-1].Index;
+            dfEndY = 0;
+
+            if (nIdxStart < 0 || nIdxEnd <= nIdxStart)
+                return null;
+            
+            double dfY0 = m_rgPlot[0].Y;
+            double dfY1 = m_rgPlot[m_rgPlot.Count-1].Y;
+            int nSteps = nIdxEnd - nIdxStart;
+
+            dfEndY = dfY1;
+
+            return (dfY1 - dfY0) / nSteps;
+        }
+
+        public int FirstActiveIndex
+        {
+            get
+            {
+                for (int i = 0; i < m_rgPlot.Count; i++)
+                {
+                    if (m_rgPlot[i].Active)
+                        return i;
+                }
+
+                return -1;
+            }
+        }
+
+        public int LastActiveIndex
+        {
+            get
+            {
+                for (int i = m_rgPlot.Count - 1; i >= 0; i--)
+                {
+                    if (m_rgPlot[i].Active)
+                        return i;
+                }
+
+                return -1;
+            }
+        }
+
         public bool ComparePlots(PlotCollection plots)
         {
             if (m_rgPlot.Count != plots.Count)
