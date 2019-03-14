@@ -104,7 +104,9 @@ namespace SimpleGraphing
                             if (plot.DataName == idata.RequiredDataName)
                             {
                                 PlotCollectionSet data1 = new PlotCollectionSet();
-                                data1.Add(data);
+                                if (data.Count > 1 || plot.Plots[0] != data[0])
+                                    data1.Add(data);
+
                                 data1.Add(plot.Plots);
                                 data = data1;
                                 break;
