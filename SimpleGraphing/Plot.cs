@@ -58,6 +58,13 @@ namespace SimpleGraphing
             return true;
         }
 
+        public Plot Clone(List<double> rgY, bool bActive, int nPrimaryIdx)
+        {
+            Plot p = new Plot(m_dfX, rgY, m_strName, bActive, m_nIndex);
+            p.m_nIdxPrimaryY = nPrimaryIdx;
+            return p;
+        }
+
         public int Index
         {
             get { return m_nIndex; }
