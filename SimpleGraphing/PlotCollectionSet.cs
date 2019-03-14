@@ -25,6 +25,14 @@ namespace SimpleGraphing
             }
         }
 
+        public void ClearData()
+        {
+            foreach (PlotCollection data in m_rgSet)
+            {
+                data.Clear();
+            }
+        }
+
         public void RemoveAllButFirst()
         {
             if (m_rgSet.Count > 1)
@@ -78,6 +86,9 @@ namespace SimpleGraphing
                 double dfMaxX1;
                 double dfMinY1;
                 double dfMaxY1;
+
+                if (m_rgSet[i] == null)
+                    continue;
 
                 m_rgSet[i].GetMinMaxOverWindow(nStartIdx, nCount, out dfMinX1, out dfMinY1, out dfMaxX1, out dfMaxY1);
 
