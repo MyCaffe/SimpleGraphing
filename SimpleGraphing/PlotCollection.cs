@@ -17,12 +17,19 @@ namespace SimpleGraphing
         double m_dfMinVal = double.MaxValue;
         double m_dfMaxVal = -double.MaxValue;
         object m_tag = null;
+        double? m_dfCalculatedEndY = null;
 
         public PlotCollection(string strName, int nMax = int.MaxValue, double dfXInc = 1.0)
         {
             m_nMax = nMax;
             m_dfXIncrement = dfXInc;
             m_strName = strName;
+        }
+
+        public double? CalculatedEndY
+        {
+            get { return m_dfCalculatedEndY; }
+            set { m_dfCalculatedEndY = value; }
         }
 
         public void ShiftLeft(int nCount)
