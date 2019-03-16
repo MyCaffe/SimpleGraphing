@@ -25,6 +25,11 @@ namespace SimpleGraphing.GraphData
             get { return "HIGHLOW"; }
         }
 
+        public string RequiredDataName
+        {
+            get { return m_config.DataName; }
+        }
+
         public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx)
         {
             PlotCollection data = dataset[nDataIdx];

@@ -26,6 +26,11 @@ namespace SimpleGraphing.GraphData
             get { return "LINE"; }
         }
 
+        public string RequiredDataName
+        {
+            get { return m_config.DataName; }
+        }
+
         /// <summary>
         /// Calculate the RSI based on Wilder's formula.
         /// </summary>
