@@ -118,9 +118,19 @@ namespace SimpleGraphing
             m_rgSet.Add(rg);
         }
 
-        public void Add(PlotCollectionSet set)
+        public void Add(PlotCollectionSet set, bool bUniqueOnly = false)
         {
-            m_rgSet.AddRange(set.m_rgSet);
+            if (!bUniqueOnly)
+            {
+                m_rgSet.AddRange(set.m_rgSet);
+                return;
+            }
+
+            foreach (PlotCollection plots in set)
+            {
+                if (!m_rgSet.Contains(plots))
+                    m_rgSet.Add(plots);
+            }
         }
 
         public bool Remove(PlotCollection rg)
