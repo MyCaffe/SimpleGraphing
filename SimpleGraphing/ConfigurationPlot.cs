@@ -22,6 +22,7 @@ namespace SimpleGraphing
         Color m_clrFlagBorder = Color.Black;
         Color m_clrFlagText = Color.Black;
         int m_nDataIdx = 0;
+        string m_strDataName = null;
         string m_strName = "";
         bool m_bVisible = true;
         uint m_nInterval = 20;
@@ -100,6 +101,12 @@ namespace SimpleGraphing
         {
             get { return m_strCustomName; }
             set { m_strCustomName = value; }
+        }
+
+        public string DataName
+        {
+            get { return m_strDataName; }
+            set { m_strDataName = value; }
         }
 
         public bool VirtualPlot
