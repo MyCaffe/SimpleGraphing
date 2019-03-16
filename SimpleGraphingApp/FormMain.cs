@@ -40,6 +40,12 @@ namespace SimpleGraphingApp
                     plotConfig.PlotType = ConfigurationPlot.PLOTTYPE.CUSTOM;
                     plotConfig.CustomName = idata.Name;
                     simpleGraphingControl1.Configuration.Frames[0].Plots.Add(plotConfig);
+
+                    plotConfig = new ConfigurationPlot();
+                    plotConfig.PlotType = ConfigurationPlot.PLOTTYPE.CUSTOM;
+                    plotConfig.CustomName = idata.Name;
+                    plotConfig.DataIndex = 1;
+                    simpleGraphingControl1.Configuration.Frames[1].Plots.Add(plotConfig);
                 }
             }
         }
@@ -190,10 +196,22 @@ namespace SimpleGraphingApp
                     frame.Plots[0].PlotLineColor = Color.Transparent;
 
                     if (frame.Plots.Count > 1)
-                        frame.Plots[1].Visible = false;
+                    {
+                        frame.Plots[1].PlotType = ConfigurationPlot.PLOTTYPE.HIGHLOW;
+                        frame.Plots[1].DataName = "RSI";
+                        frame.Plots[1].DataIndex = 1;
+                        frame.Plots[1].Visible = true;
+                    }
 
                     if (frame.Plots.Count > 2)
+                    {
                         frame.Plots[2].Visible = false;
+
+                        for (int j = 3; j < frame.Plots.Count; j++)
+                        {
+                            frame.Plots[j].Visible = true;
+                        }
+                    }
 
                     frame.TargetLines.Add(new ConfigurationTargetLine(30, Color.Maroon));
                     frame.TargetLines.Add(new ConfigurationTargetLine(70, Color.Green));
@@ -206,18 +224,6 @@ namespace SimpleGraphingApp
                 frame.XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.TIME;
                 frame.XAxis.ValueResolution = ConfigurationAxis.VALUE_RESOLUTION.DAY;
                 frame.YAxis.Decimals = 2;
-            }
-
-            if (Modules.CustomGraphingExists("CustomGraphing.TargetLines"))
-            {
-                if (simpleGraphingControl1.Configuration.Frames[0].Plots.Count == 4)
-                {
-                    simpleGraphingControl1.Configuration.Frames[0].Plots.Add(new ConfigurationPlot());
-                    simpleGraphingControl1.Configuration.Frames[0].Plots[4].PlotType = ConfigurationPlot.PLOTTYPE.CUSTOM;
-                    simpleGraphingControl1.Configuration.Frames[0].Plots[4].CustomName = "HOUGH";
-                }
-
-                simpleGraphingControl1.Configuration.Frames[0].Plots[4].Visible = true;
             }
         }
 
@@ -236,10 +242,22 @@ namespace SimpleGraphingApp
                 frame.Plots[0].PlotLineColor = Color.Black;
 
                 if (frame.Plots.Count > 1)
+                {
+                    frame.Plots[1].PlotType = ConfigurationPlot.PLOTTYPE.SMA;
+                    frame.Plots[1].DataName = null;
+                    frame.Plots[1].DataIndex = 0;
                     frame.Plots[1].Visible = true;
+                }
 
                 if (frame.Plots.Count > 2)
+                {
                     frame.Plots[2].Visible = true;
+
+                    for (int j = 3; j < frame.Plots.Count; j++)
+                    {
+                        frame.Plots[j].Visible = false;
+                    }
+                }
 
                 frame.XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.NUMBER;
                 frame.XAxis.ValueResolution = ConfigurationAxis.VALUE_RESOLUTION.NUMBER;
