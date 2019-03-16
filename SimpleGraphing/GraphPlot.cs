@@ -94,29 +94,27 @@ namespace SimpleGraphing
 
             if (m_idata != null)
             {
-                IGraphPlotDataEx idata = m_idata as IGraphPlotDataEx;
-                if (idata != null)
-                {
-                    if (idata.RequiredDataName != null)
-                    {
-                        foreach (GraphPlot plot in plots)
-                        {
-                            if (plot.DataName == idata.RequiredDataName)
-                            {
-                                PlotCollectionSet data1 = new PlotCollectionSet();
-                                if (data.Count > 1 || plot.Plots[0] != data[0])
-                                    data1.Add(data);
+                string strRequiredDataName = m_idata.RequiredDataName;
 
-                                data1.Add(plot.Plots);
-                                data = data1;
-                                break;
-                            }
+                if (strRequiredDataName != null)
+                {
+                    foreach (GraphPlot plot in plots)
+                    {
+                        if (plot.DataName == strRequiredDataName)
+                        {
+                            PlotCollectionSet data1 = new PlotCollectionSet();
+
+                            if (data.Count > 1 || plot.Plots[0] != data[0])
+                                data1.Add(data);
+
+                            data1.Add(plot.Plots);
+                            data = data1;
+                            break;
                         }
                     }
                 }
 
                 data = m_idata.GetData(data, nDataIdx);
-                m_config.DataIndex = 0;
             }
 
             m_rgPlots = data;

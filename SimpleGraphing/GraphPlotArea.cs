@@ -22,6 +22,7 @@ namespace SimpleGraphing
         BrushCollection m_colLabelBrushes = new BrushCollection();
         BrushCollection m_colLineBrushes = new BrushCollection();
         PenCollection m_colLinePens = new PenCollection();
+        PlotCollectionSet m_rgData = new PlotCollectionSet();
 
         public GraphPlotArea(ModuleCache cache, GraphAxis gx, GraphAxis gy)
         {
@@ -121,13 +122,17 @@ namespace SimpleGraphing
             if (data.Count < nDataPlotCount)
                 throw new Exception("The plot configuration count must equal the plot collection set count.");
 
+            m_rgData = new PlotCollectionSet();
+            m_rgData.Add(data);
+
             for (int i = 0; i < plots.Count; i++)
             {
                 if (plots[i].Visible)
                 {
                     GraphPlot graphPlot = new SimpleGraphing.GraphPlot(m_cache, m_gx, m_gy);
-                    data1.Add(graphPlot.BuildGraph(plots[i], data, plots[i].DataIndex, m_rgPlots));
+                    data1.Add(graphPlot.BuildGraph(plots[i], m_rgData, plots[i].DataIndex, m_rgPlots));
                     m_rgPlots.Add(graphPlot);
+                    m_rgData.Add(graphPlot.Plots, true);
                 }
             }
 
