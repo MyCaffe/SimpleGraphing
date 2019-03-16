@@ -18,6 +18,7 @@ namespace SimpleGraphing
     {
         string Name { get; }
         PlotCollectionSet GetData(PlotCollectionSet data, int nDataIdx);
+        string RequiredDataName { get; }
     }
 
     public interface IGraphPlotDataEx : IGraphPlotData
@@ -25,7 +26,6 @@ namespace SimpleGraphing
         void Initialize(ConfigurationPlot config);
         IGraphPlotRender CreateRender(ConfigurationPlot c, GraphAxis gx, GraphAxis gy, GraphPlotStyle style);
         IGraphPlotUserEdit CreateUserEdit();
-        string RequiredDataName { get; }
     }
 
     public interface IGraphPlotRender
