@@ -25,6 +25,35 @@ namespace SimpleGraphing
             }
         }
 
+        private int findStart(PlotCollectionSet set, params string[] rgstrContains)
+        {
+            for (int i = 0; i < set.Count; i++)
+            {
+                string strName = set.m_rgSet[i].Name;
+
+                for (int j = 0; j < rgstrContains.Length; j++)
+                {
+                    string strTarget = rgstrContains[j];
+
+                    if (strName.IndexOf(strTarget) >= 0)
+                        return i;
+                }
+            }
+
+            return 0;
+        }
+
+
+        public PlotCollectionSet(PlotCollectionSet set, params string[] rgstrContains)
+        {
+            int nStart = findStart(set, rgstrContains);
+
+            for (int i = nStart; i < set.Count; i++)
+            {
+                m_rgSet.Add(set[i]);
+            }
+        }
+
         public void ClearData()
         {
             foreach (PlotCollection data in m_rgSet)
