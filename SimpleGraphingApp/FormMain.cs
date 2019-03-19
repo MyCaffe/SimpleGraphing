@@ -36,12 +36,12 @@ namespace SimpleGraphingApp
                     item.Tag = iedit;
                     item.Click += Item_Click;
 
-                    ConfigurationPlot plotConfig = new ConfigurationPlot();
+                    ConfigurationPlot plotConfig = new ConfigurationPlot(Guid.NewGuid());
                     plotConfig.PlotType = ConfigurationPlot.PLOTTYPE.CUSTOM;
                     plotConfig.CustomName = idata.Name;
                     simpleGraphingControl1.Configuration.Frames[0].Plots.Add(plotConfig);
 
-                    plotConfig = new ConfigurationPlot();
+                    plotConfig = new ConfigurationPlot(Guid.NewGuid());
                     plotConfig.PlotType = ConfigurationPlot.PLOTTYPE.CUSTOM;
                     plotConfig.CustomName = idata.Name;
                     plotConfig.DataIndex = 1;
