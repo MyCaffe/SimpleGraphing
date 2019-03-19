@@ -30,7 +30,7 @@ namespace SimpleGraphing.GraphData
             get { return m_config.DataName; }
         }
 
-        public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx)
+        public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx, Guid? guid = null)
         {
             PlotCollection data = dataset[nDataIdx];
             PlotCollection data1 = new PlotCollection(data.Name + " SMA");

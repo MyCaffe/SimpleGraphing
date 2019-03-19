@@ -40,7 +40,7 @@ namespace SimpleGraphing.GraphData
         /// <param name="dataset">Specifies the original plot data.</param>
         /// <param name="nDataIdx">Specifies the data index of the plot data to use.</param>
         /// <returns>The new plot data containing the RSI calculation is returned.</returns>
-        public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx)
+        public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx, Guid? guid = null)
         {
             PlotCollection data = dataset[nDataIdx];
 

@@ -17,7 +17,7 @@ namespace SimpleGraphing
     public interface IGraphPlotData
     {
         string Name { get; }
-        PlotCollectionSet GetData(PlotCollectionSet data, int nDataIdx);
+        PlotCollectionSet GetData(PlotCollectionSet data, int nDataIdx, Guid? guid = null);
         string RequiredDataName { get; }
     }
 
