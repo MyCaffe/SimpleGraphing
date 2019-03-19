@@ -9,6 +9,7 @@ namespace SimpleGraphing
 {
     public class PlotCollection : IEnumerable<Plot>
     {
+        string m_strSrcName = "";
         string m_strName;
         List<Plot> m_rgPlot = new List<Plot>();
         double m_dfXIncrement = 1.0;
@@ -141,6 +142,12 @@ namespace SimpleGraphing
         {
             get { return m_tag; }
             set { m_tag = value; }
+        }
+
+        public string SourceName
+        {
+            get { return m_strSrcName; }
+            set { m_strSrcName = value; }
         }
 
         public string Name
