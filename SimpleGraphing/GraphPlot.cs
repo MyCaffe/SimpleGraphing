@@ -114,7 +114,7 @@ namespace SimpleGraphing
                     }
                 }
 
-                data = m_idata.GetData(data, nDataIdx);
+                data = m_idata.GetData(data, nDataIdx, config.ID);
             }
 
             m_rgPlots = data;
