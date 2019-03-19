@@ -30,6 +30,9 @@ namespace SimpleGraphing
         string m_strCustomName = "";
 
         [NonSerialized]
+        Guid? m_guid = null;
+
+        [NonSerialized]
         PropertyBag m_properties = new PropertyBag();
 
         public enum PLOTTYPE
@@ -43,8 +46,14 @@ namespace SimpleGraphing
             CUSTOM
         }
 
-        public ConfigurationPlot()
+        public ConfigurationPlot(Guid? guid = null)
         {
+            m_guid = guid;
+        }
+
+        public Guid? ID
+        {
+            get { return m_guid; }
         }
 
         public virtual bool Compare(ConfigurationPlot c)
