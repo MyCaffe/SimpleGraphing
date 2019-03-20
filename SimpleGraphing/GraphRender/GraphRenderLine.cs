@@ -29,7 +29,7 @@ namespace SimpleGraphing.GraphRender
 
         public void Render(Graphics g, PlotCollectionSet dataset)
         {
-            PlotCollection plots = dataset[0];
+            PlotCollection plots = dataset[m_config.DataIndexOnRender];
             List<int> rgX = m_gx.TickPositions;
             int nStartIdx = m_gx.StartPosition;
 

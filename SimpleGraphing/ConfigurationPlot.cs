@@ -22,6 +22,7 @@ namespace SimpleGraphing
         Color m_clrFlagBorder = Color.Black;
         Color m_clrFlagText = Color.Black;
         int m_nDataIdx = 0;
+        int m_nDataIdxOnRender = 0;
         string m_strDataName = null;
         string m_strName = "";
         bool m_bVisible = true;
@@ -83,6 +84,9 @@ namespace SimpleGraphing
                 return false;
 
             if (m_nDataIdx != c.m_nDataIdx)
+                return false;
+
+            if (m_nDataIdxOnRender != c.m_nDataIdxOnRender)
                 return false;
 
             if (m_strName != c.m_strName)
@@ -193,6 +197,12 @@ namespace SimpleGraphing
         {
             get { return m_nDataIdx; }
             set { m_nDataIdx = value; }
+        }
+
+        public int DataIndexOnRender
+        {
+            get { return m_nDataIdxOnRender; }
+            set { m_nDataIdxOnRender = value; }
         }
 
         public PropertyBag Properties
