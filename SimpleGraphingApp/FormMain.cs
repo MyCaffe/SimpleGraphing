@@ -213,6 +213,8 @@ namespace SimpleGraphingApp
                     {
                         if (frame.Plots[j].PlotType == ConfigurationPlot.PLOTTYPE.CUSTOM)
                             frame.Plots[j].Visible = true;
+                        else
+                            frame.Plots[j].Visible = false;
                     }
 
                     frame.TargetLines.Add(new ConfigurationTargetLine(30, Color.Maroon));
@@ -257,6 +259,8 @@ namespace SimpleGraphingApp
                 {
                     if (frame.Plots[j].PlotType == ConfigurationPlot.PLOTTYPE.CUSTOM)
                         frame.Plots[j].Visible = false;
+                    else
+                        frame.Plots[j].Visible = true;
                 }
 
                 frame.XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.NUMBER;
