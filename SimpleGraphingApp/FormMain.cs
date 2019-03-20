@@ -184,6 +184,12 @@ namespace SimpleGraphingApp
                 {
                     frame.Visible = true;
                     frame.Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.CANDLE;
+
+                    for (int j = 2; j < frame.Plots.Count; j++)
+                    {
+                        if (frame.Plots[j].PlotType == ConfigurationPlot.PLOTTYPE.CUSTOM)
+                            frame.Plots[j].Visible = true;
+                    }
                 }
                 else if (i == 1)
                 {
@@ -203,14 +209,10 @@ namespace SimpleGraphingApp
                         frame.Plots[1].Visible = true;
                     }
 
-                    if (frame.Plots.Count > 2)
+                    for (int j = 2; j < frame.Plots.Count; j++)
                     {
-                        frame.Plots[2].Visible = false;
-
-                        for (int j = 3; j < frame.Plots.Count; j++)
-                        {
+                        if (frame.Plots[j].PlotType == ConfigurationPlot.PLOTTYPE.CUSTOM)
                             frame.Plots[j].Visible = true;
-                        }
                     }
 
                     frame.TargetLines.Add(new ConfigurationTargetLine(30, Color.Maroon));
@@ -219,7 +221,9 @@ namespace SimpleGraphingApp
                     frame.YAxis.InitialMinimum = 0;
                 }
                 else
+                {
                     frame.Visible = false;
+                }
 
                 frame.XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.TIME;
                 frame.XAxis.ValueResolution = ConfigurationAxis.VALUE_RESOLUTION.DAY;
@@ -249,14 +253,10 @@ namespace SimpleGraphingApp
                     frame.Plots[1].Visible = true;
                 }
 
-                if (frame.Plots.Count > 2)
+                for (int j = 2; j < frame.Plots.Count; j++)
                 {
-                    frame.Plots[2].Visible = true;
-
-                    for (int j = 3; j < frame.Plots.Count; j++)
-                    {
+                    if (frame.Plots[j].PlotType == ConfigurationPlot.PLOTTYPE.CUSTOM)
                         frame.Plots[j].Visible = false;
-                    }
                 }
 
                 frame.XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.NUMBER;
