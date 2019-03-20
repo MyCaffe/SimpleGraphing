@@ -59,13 +59,10 @@ namespace SimpleGraphing
                 if (nIdx < 0)
                     nIdx = 0;
 
-                if (nIdx >= m_rgPlots.Count)
-                    nIdx = m_rgPlots.Count - 1;
-
-                if (m_rgPlots.Count == 0 || nIdx >= m_rgPlots[0].Count)
+                if (m_config.DataIndexOnRender >= m_rgPlots.Count || nIdx >= m_rgPlots[m_config.DataIndexOnRender].Count)
                     return null;
 
-                return m_rgPlots[0][nIdx];
+                return m_rgPlots[m_config.DataIndexOnRender][nIdx];
             }
         }
 
@@ -171,7 +168,6 @@ namespace SimpleGraphing
             return style;
         }
 
-
         public void Render(Graphics g)
         {
             if (!m_config.Visible)
@@ -181,6 +177,11 @@ namespace SimpleGraphing
                 return;           
 
             m_irender.Render(g, m_rgPlots);
+        }
+
+        public override string ToString()
+        {
+            return m_config.Name;
         }
     }
 
