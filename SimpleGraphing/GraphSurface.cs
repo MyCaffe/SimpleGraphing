@@ -72,8 +72,9 @@ namespace SimpleGraphing
                 return;
             }
 
-            if (config.Frames.Count != rgData.Count)
-                throw new Exception("The number of frame configurations must match the number of plot collection sets.");
+            int nMaxIdx = config.Frames.Max(p => p.DataIndex);
+            if (nMaxIdx >= rgData.Count)
+                throw new Exception("The plot collection set count is less than the max data index of '" + nMaxIdx.ToString() + "'!");
 
             if (!m_frames.Compare(config.Frames))
             {
