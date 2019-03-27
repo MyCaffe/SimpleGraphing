@@ -27,6 +27,14 @@ namespace SimpleGraphing
             m_surface.BuildGraph(m_config, null);
         }
 
+        public Bitmap Image
+        {
+            get
+            {
+                return new Bitmap(pbImage.Image);
+            }
+        }
+
         public List<string> LoadModuleCache()
         {
             return m_cache.Load();
@@ -142,10 +150,12 @@ namespace SimpleGraphing
             }
         }
 
-        public void BuildGraph(List<PlotCollectionSet> data)
+        public void BuildGraph(List<PlotCollectionSet> data = null)
         {
-            m_data = data;
-            m_surface.BuildGraph(m_config, data);
+            if (data != null)
+                m_data = data;
+
+            m_surface.BuildGraph(m_config, m_data);
             SimpleGraphingControl_Resize(this, new EventArgs());
         }
 
