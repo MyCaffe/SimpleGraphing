@@ -27,6 +27,11 @@ namespace SimpleGraphing
             m_strName = strName;
         }
 
+        public int MaximumCount
+        {
+            get { return m_nMax; }
+        }
+
         public double? CalculatedEndY
         {
             get { return m_dfCalculatedEndY; }
