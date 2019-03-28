@@ -54,8 +54,10 @@ namespace SimpleGraphing
             get { return m_rcBounds; }
         }
 
-        public void BuildGraph(Configuration config, List<PlotCollectionSet> rgData)
+        public List<PlotCollectionSet> BuildGraph(Configuration config, List<PlotCollectionSet> rgData)
         {
+            List<PlotCollectionSet> rgOutputData = new List<PlotCollectionSet>();
+
             m_style = createStyle(config.Surface);
 
             if (m_frames == null)
@@ -69,7 +71,7 @@ namespace SimpleGraphing
                     m_frames = new GraphFrameCollection();
                 }
 
-                return;
+                return rgOutputData;
             }
 
             int nMaxIdx = config.Frames.Max(p => p.DataIndex);
@@ -90,6 +92,8 @@ namespace SimpleGraphing
 
             for (int i = 0; i < config.Frames.Count; i++)
             {
+                PlotCollectionSet dataOutput = null;
+
                 if (config.Frames[i].Visible)
                 {
                     GraphFrame frame = null;
@@ -100,14 +104,18 @@ namespace SimpleGraphing
                         frame = m_frames[nFrameIdx];
 
                     if (frame.Configuration.Visible)
-                        frame.BuildGraph(config.Frames[i], rgData[i]);
+                        dataOutput = frame.BuildGraph(config.Frames[i], rgData[i]);
 
                     if (nFrameIdx >= nFrameCount)
                         m_frames.Add(frame);
 
                     nFrameIdx++;
                 }
+
+                rgOutputData.Add(dataOutput);
             }
+
+            return rgOutputData;
         }
 
         private SurfaceStyle createStyle(ConfigurationSurface c)

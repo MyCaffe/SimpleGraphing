@@ -55,7 +55,7 @@ namespace SimpleGraphing
             set { m_rcBounds = value; }
         }
 
-        public void BuildGraph(ConfigurationFrame config, PlotCollectionSet data)
+        public PlotCollectionSet BuildGraph(ConfigurationFrame config, PlotCollectionSet data)
         {
             m_config = config;
             m_data = data;
@@ -106,6 +106,8 @@ namespace SimpleGraphing
             }
 
             m_gy.SetMinMax(dfMin, dfMax);
+
+            return data;
         }
 
         public void Resize(int nX, int nY, int nWidth, int nHeight)

@@ -14,6 +14,7 @@ namespace SimpleGraphing
     {
         ModuleCache m_cache;
         List<PlotCollectionSet> m_data;
+        List<PlotCollectionSet> m_output;
         Configuration m_config = new Configuration();
         GraphSurface m_surface;
         bool m_bScrolling = false;
@@ -24,7 +25,7 @@ namespace SimpleGraphing
             InitializeComponent();
             m_cache = new ModuleCache();
             m_surface = new GraphSurface(m_cache);
-            m_surface.BuildGraph(m_config, null);
+            m_output = m_surface.BuildGraph(m_config, null);
         }
 
         public Bitmap Image
@@ -81,11 +82,15 @@ namespace SimpleGraphing
 
                 for (int j = 0; j < dataFrame.Count; j++)
                 {
-                    PlotCollection framePlots = dataFrame[dataFrame.Count - 1];
+                    PlotCollection framePlots = dataFrame[j];
                     if (framePlots.Count == 0)
                         return null;
 
-                    plots.Add(framePlots[framePlots.Count - 1]);
+                    Plot last = framePlots[framePlots.Count - 1];
+                    if (last.Name == null)
+                        last.Name = framePlots.Name;
+
+                    plots.Add(last);
 
                     if (bRemove)
                         framePlots.RemoveAt(framePlots.Count - 1);
@@ -96,9 +101,45 @@ namespace SimpleGraphing
 
             if (bRemove)
             {
-                m_surface.BuildGraph(m_config, m_data);
+                m_output = m_surface.BuildGraph(m_config, m_data);
                 SimpleGraphingControl_Resize(this, new EventArgs());
                 ScrollToEnd();
+            }
+
+            return lastData;
+        }
+
+        public PlotCollectionSet GetLastOutput()
+        {
+            if (m_output == null || m_output.Count == 0)
+                return null;
+
+            PlotCollectionSet lastData = new PlotCollectionSet();
+            List<PlotCollection> rgPlots = new List<PlotCollection>();
+
+            for (int i = 0; i < m_output.Count; i++)
+            {
+                PlotCollectionSet dataFrame = m_output[i];
+
+                if (dataFrame.Count == 0)
+                    return null;
+
+                PlotCollection plots = new PlotCollection("Frame " + i.ToString());
+
+                for (int j = 0; j < dataFrame.Count; j++)
+                {
+                    PlotCollection framePlots = dataFrame[j];
+                    if (framePlots.Count == 0)
+                        return null;
+
+                    Plot last = framePlots[framePlots.Count - 1];
+                    if (last.Name == null)
+                        last.Name = framePlots.Name;
+
+                    plots.Add(last);
+                }
+
+                lastData.Add(plots);
             }
 
             return lastData;
@@ -137,7 +178,7 @@ namespace SimpleGraphing
                 rgUpdated.Add(dataFrame[0].Name);
             }
 
-            m_surface.BuildGraph(m_config, m_data);
+            m_output = m_surface.BuildGraph(m_config, m_data);
             SimpleGraphingControl_Resize(this, new EventArgs());
             ScrollToEnd();
         }
@@ -150,13 +191,15 @@ namespace SimpleGraphing
             }
         }
 
-        public void BuildGraph(List<PlotCollectionSet> data = null)
+        public List<PlotCollectionSet> BuildGraph(List<PlotCollectionSet> data = null)
         {
             if (data != null)
                 m_data = data;
 
-            m_surface.BuildGraph(m_config, m_data);
+            m_output = m_surface.BuildGraph(m_config, m_data);
             SimpleGraphingControl_Resize(this, new EventArgs());
+
+            return m_output;
         }
 
         public bool ShowScrollBar
@@ -177,7 +220,7 @@ namespace SimpleGraphing
 
         public void UpdateGraph()
         {
-            m_surface.BuildGraph(m_config, m_data);
+            m_output = m_surface.BuildGraph(m_config, m_data);
             SimpleGraphingControl_Resize(this, new EventArgs());
             Invalidate(true);
         }
