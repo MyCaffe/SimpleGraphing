@@ -29,6 +29,7 @@ namespace SimpleGraphing
         uint m_nInterval = 20;
         PLOTTYPE m_plotType = PLOTTYPE.LINE;
         string m_strCustomName = "";
+        bool m_bExcludeFromMinMax = false;
 
         [NonSerialized]
         Guid? m_guid = null;
@@ -99,6 +100,9 @@ namespace SimpleGraphing
                 return false;
 
             if (m_plotType != c.m_plotType)
+                return false;
+
+            if (m_bExcludeFromMinMax != c.m_bExcludeFromMinMax)
                 return false;
 
             return true;
@@ -211,6 +215,12 @@ namespace SimpleGraphing
             set { m_properties = value; }
         }
 
+        public bool ExcludeFromMinMax
+        {
+            get { return m_bExcludeFromMinMax; }
+            set { m_bExcludeFromMinMax = value; }
+        }
+
         public virtual void Serialize(SerializeToXml ser)
         {
             ser.Open("Plot");
@@ -227,6 +237,7 @@ namespace SimpleGraphing
             ser.Add("Visible", m_bVisible);
             ser.Add("Interval", m_nInterval);
             ser.Add("PlotType", m_plotType.ToString());
+            ser.Add("ExcludeFromMinMax", m_bExcludeFromMinMax);
             ser.Close();
         }
 

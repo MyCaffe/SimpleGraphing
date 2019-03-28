@@ -19,12 +19,19 @@ namespace SimpleGraphing
         double m_dfMaxVal = -double.MaxValue;
         object m_tag = null;
         double? m_dfCalculatedEndY = null;
+        bool m_bExcludeFromMinMax = false;
 
         public PlotCollection(string strName, int nMax = int.MaxValue, double dfXInc = 1.0)
         {
             m_nMax = nMax;
             m_dfXIncrement = dfXInc;
             m_strName = strName;
+        }
+
+        public bool ExcludeFromMinMax
+        {
+            get { return m_bExcludeFromMinMax; }
+            set { m_bExcludeFromMinMax = value; }
         }
 
         public int MaximumCount
@@ -130,7 +137,7 @@ namespace SimpleGraphing
             {
                 int nIdx = nStartIdx + i;
 
-                if (nIdx < m_rgPlot.Count)
+                if (nIdx < m_rgPlot.Count && m_rgPlot[i].Active)
                 {
                     double dfValX = m_rgPlot[nIdx].X;
                     dfMinX = Math.Min(dfMinX, dfValX);
@@ -188,6 +195,21 @@ namespace SimpleGraphing
             get { return m_dfMaxVal; }
         }
 
+        private void setMinMax()
+        {
+            m_dfMinVal = double.MaxValue;
+            m_dfMaxVal = -double.MaxValue;
+
+            for (int i = 0; i < m_rgPlot.Count; i++)
+            {
+                if (m_rgPlot[i].Active)
+                {
+                    m_dfMinVal = Math.Min(m_dfMinVal, m_rgPlot[i].Y_values.Min(p => p));
+                    m_dfMaxVal = Math.Max(m_dfMaxVal, m_rgPlot[i].Y_values.Max(p => p));
+                }
+            }
+        }
+
         public void Add(double dfY, bool bActive = true, int nIdx = 0)
         {
             m_rgPlot.Add(new SimpleGraphing.Plot(m_dfXPosition, dfY, null, bActive, nIdx));
@@ -196,8 +218,8 @@ namespace SimpleGraphing
             if (m_rgPlot.Count > m_nMax)
                 m_rgPlot.RemoveAt(0);
 
-            m_dfMaxVal = Math.Max(m_dfMaxVal, dfY);
-            m_dfMinVal = Math.Min(m_dfMinVal, dfY);
+            if (bActive)
+                setMinMax();
         }
 
         public void Add(double dfX, double dfY, bool bActive = true)
@@ -207,8 +229,8 @@ namespace SimpleGraphing
             if (m_rgPlot.Count > m_nMax)
                 m_rgPlot.RemoveAt(0);
 
-            m_dfMaxVal = Math.Max(m_dfMaxVal, dfY);
-            m_dfMinVal = Math.Min(m_dfMinVal, dfY);
+            if (bActive)
+                setMinMax();
         }
 
         public void Add(List<double> rgdfY, bool bActive = true)
@@ -219,8 +241,8 @@ namespace SimpleGraphing
             if (m_rgPlot.Count > m_nMax)
                 m_rgPlot.RemoveAt(0);
 
-            m_dfMaxVal = Math.Max(m_dfMaxVal, rgdfY.Max(p => p));
-            m_dfMinVal = Math.Min(m_dfMinVal, rgdfY.Min(p => p));
+            if (bActive)
+                setMinMax();
         }
 
         public void Add(double dfX, List<double> rgdfY, bool bActive = true)
@@ -230,8 +252,8 @@ namespace SimpleGraphing
             if (m_rgPlot.Count > m_nMax)
                 m_rgPlot.RemoveAt(0);
 
-            m_dfMaxVal = Math.Max(m_dfMaxVal, rgdfY.Max(p => p));
-            m_dfMinVal = Math.Min(m_dfMinVal, rgdfY.Min(p => p));
+            if (bActive)
+                setMinMax();
         }
 
         public void Add(Plot p)
@@ -241,8 +263,8 @@ namespace SimpleGraphing
             if (m_rgPlot.Count > m_nMax)
                 m_rgPlot.RemoveAt(0);
 
-            m_dfMaxVal = Math.Max(m_dfMaxVal, p.Y);
-            m_dfMinVal = Math.Min(m_dfMinVal, p.Y);
+            if (p.Active)
+                setMinMax();
         }
 
         public bool Remove(Plot p)

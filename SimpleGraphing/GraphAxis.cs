@@ -12,8 +12,8 @@ namespace SimpleGraphing
         protected ConfigurationAxis m_config = new ConfigurationAxis();
         protected GraphAxisStyle m_style = null;
         protected Rectangle m_rcBounds;
-        protected double m_dfMin = 0;
-        protected double m_dfMax = 1;
+        protected double m_dfMin = double.MaxValue;
+        protected double m_dfMax = -double.MaxValue;
         protected double m_dfInc = -1;
         protected List<int> m_rgTickPositions = new List<int>();
         protected List<string> m_rgTickValues = new List<string>();

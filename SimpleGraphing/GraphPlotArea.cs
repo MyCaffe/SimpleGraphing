@@ -79,7 +79,7 @@ namespace SimpleGraphing
         {
             PlotCollectionSet data1 = new PlotCollectionSet();
 
-            data.GetAbsMinMax(out m_dfAbsMinY, out m_dfAbsMaxY);
+            data.GetAbsMinMax(0, out m_dfAbsMinY, out m_dfAbsMaxY);
 
             foreach (ConfigurationTargetLine line in config.TargetLines)
             {

@@ -12,10 +12,10 @@ namespace SimpleGraphing
     {
         int m_nLongOffset = 0;
         double m_dfMinLast = 0;
-        double m_dfMinY = 0;
-        double m_dfMaxY = 1;
-        double m_dfAbsMinY = 0;
-        double m_dfAbsMaxY = 1;
+        double m_dfMinY = double.MaxValue;
+        double m_dfMaxY = -double.MaxValue;
+        double m_dfAbsMinY = double.MaxValue;
+        double m_dfAbsMaxY = -double.MaxValue;
 
         public GraphAxisX()
         {

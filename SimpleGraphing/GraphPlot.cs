@@ -112,6 +112,7 @@ namespace SimpleGraphing
                 }
 
                 data = m_idata.GetData(data, nDataIdx, config.ID);
+                data.ExcludeFromMinMax(config.ExcludeFromMinMax);
             }
 
             m_rgPlots = data;

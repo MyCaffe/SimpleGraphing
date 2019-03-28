@@ -148,6 +148,49 @@ namespace SimpleGraphing
             set { m_nDataIndex = value; }
         }
 
+        public void ExcludeFromMinMax(params ConfigurationPlot.PLOTTYPE[] rgTypes)
+        {
+            foreach (ConfigurationPlot plot in m_rgPlots)
+            {
+                if (rgTypes.Contains(plot.PlotType))
+                    plot.ExcludeFromMinMax = true;
+                else
+                    plot.ExcludeFromMinMax = false;
+            }
+        }
+
+        public void EnableRelativeScaling(bool bEnable)
+        {
+            List<int> rgRemoveIdx = new List<int>();
+
+            for (int i=0; i<TargetLines.Count; i++)
+            {
+                if (TargetLines[i].LineType == ConfigurationTargetLine.LINE_TYPE.MIN ||
+                    TargetLines[i].LineType == ConfigurationTargetLine.LINE_TYPE.MAX)
+                    rgRemoveIdx.Add(i);
+            }
+
+            for (int i = rgRemoveIdx.Count - 1; i >= 0; i--)
+            {
+                TargetLines.RemoveAt(rgRemoveIdx[i]);
+            }
+
+            if (bEnable)
+            {
+                TargetLines.Add(new ConfigurationTargetLine(0, Color.Transparent, ConfigurationTargetLine.LINE_TYPE.MIN));
+                TargetLines.Add(new ConfigurationTargetLine(1, Color.Transparent, ConfigurationTargetLine.LINE_TYPE.MAX));
+                YAxis.InitialMaximum = -double.MaxValue;
+                YAxis.InitialMinimum = double.MaxValue;
+                ExcludeFromMinMax(ConfigurationPlot.PLOTTYPE.SMA);
+            }
+            else
+            {
+                YAxis.InitialMaximum = -double.MaxValue;
+                YAxis.InitialMinimum = double.MaxValue;
+                ExcludeFromMinMax();
+            }
+        }
+
         public ConfigurationFrame(SerializationInfo info, StreamingContext context)
         {
             int nCount = info.GetInt32("plotCount");

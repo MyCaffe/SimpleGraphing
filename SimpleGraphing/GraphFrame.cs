@@ -96,7 +96,7 @@ namespace SimpleGraphing
             {
                 double dfAbsMin;
                 double dfAbsMax;
-                data.GetAbsMinMax(out dfAbsMin, out dfAbsMax);
+                data.GetAbsMinMax(0, out dfAbsMin, out dfAbsMax);
 
                 if (bMin)
                     dfMin = Math.Min(dfMin, dfAbsMin);

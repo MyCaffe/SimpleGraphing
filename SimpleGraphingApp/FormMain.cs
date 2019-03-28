@@ -122,7 +122,7 @@ namespace SimpleGraphingApp
                 PlotCollectionSet set = new PlotCollectionSet();
                 PlotCollection plots;
                 double dfTime = dfTimeStart;
-                double dfVal = 10;
+                double dfVal = 100;
 
                 if (plotsLast != null)
                 {
@@ -175,6 +175,7 @@ namespace SimpleGraphingApp
             toolStrip1.Visible = true;
 
             simpleGraphingControl1.Configuration.Surface.EnableSmoothing = false;
+            simpleGraphingControl1.Configuration.Frames[0].EnableRelativeScaling(true);
 
             for (int i = 0; i < simpleGraphingControl1.Configuration.Frames.Count; i++)
             {
@@ -236,6 +237,7 @@ namespace SimpleGraphingApp
         private void configureLineCharts()
         {
             simpleGraphingControl1.Configuration.Surface.EnableSmoothing = true;
+            simpleGraphingControl1.Configuration.Frames[0].EnableRelativeScaling(false);
 
             foreach (ConfigurationFrame frame in simpleGraphingControl1.Configuration.Frames)
             {
@@ -425,6 +427,11 @@ namespace SimpleGraphingApp
         {
             if (m_rgSet != null)
                 updateGraph(m_rgSet);
+        }
+
+        private void simpleGraphingControl1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
