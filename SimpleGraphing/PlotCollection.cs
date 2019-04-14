@@ -222,9 +222,9 @@ namespace SimpleGraphing
                 setMinMax();
         }
 
-        public void Add(double dfX, double dfY, bool bActive = true)
+        public void Add(double dfX, double dfY, bool bActive = true, int nIdx = 0)
         {
-            m_rgPlot.Add(new SimpleGraphing.Plot(dfX, dfY, null, bActive));
+            m_rgPlot.Add(new SimpleGraphing.Plot(dfX, dfY, null, bActive, nIdx));
 
             if (m_rgPlot.Count > m_nMax)
                 m_rgPlot.RemoveAt(0);
