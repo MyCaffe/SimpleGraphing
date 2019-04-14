@@ -108,6 +108,12 @@ namespace SimpleGraphing
             }
             catch (Exception excpt)
             {
+                if (excpt is System.Reflection.ReflectionTypeLoadException)
+                {
+                    var typeLoadException = excpt as ReflectionTypeLoadException;
+                    var loaderExceptions = typeLoadException.LoaderExceptions;
+                }
+
                 err = excpt;
                 return null;
             }
