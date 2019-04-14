@@ -40,7 +40,7 @@ namespace SimpleGraphing.GraphData
             for (int i = 0; i < data.Count; i++)
             {
                 dfSma = (dfSma * (1 - dfInc)) + data[i].Y * dfInc;
-                data1.Add(dfSma, (i >= m_config.Interval) ? true : false, data[i].Index);
+                data1.Add(data[i].X, dfSma, (i >= m_config.Interval) ? true : false, data[i].Index);
             }
 
             return new PlotCollectionSet(new List<PlotCollection>() { data1 });

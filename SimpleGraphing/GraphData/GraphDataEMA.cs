@@ -42,7 +42,7 @@ namespace SimpleGraphing.GraphData
             while (i < data.Count && i<m_config.Interval)
             {
                 dfTotal += data[i].Y;
-                data1.Add(dfTotal / (i + 1), false, data[i].Index);
+                data1.Add(data[i].X, dfTotal / (i + 1), false, data[i].Index);
                 i++;
             }
 
