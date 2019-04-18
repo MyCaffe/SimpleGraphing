@@ -195,10 +195,44 @@ namespace SimpleGraphing
             get { return m_dfMaxVal; }
         }
 
-        private void setMinMax()
+        private void setMinMax(Plot last, List<double> rgdfY)
         {
             m_dfMinVal = double.MaxValue;
             m_dfMaxVal = -double.MaxValue;
+
+            double dfMin = (rgdfY.Count == 1) ? rgdfY[0] : rgdfY.Min(p => p);
+            double dfMax = (rgdfY.Count == 1) ? rgdfY[0] : rgdfY.Max(p => p);
+
+            if (last == null)
+            {
+                m_dfMinVal = Math.Min(m_dfMinVal, dfMin);
+                m_dfMaxVal = Math.Max(m_dfMaxVal, dfMax);
+                return;
+            }
+
+            double dfMin0 = (last.Y_values.Count == 1) ? last.Y : last.Y_values.Min(p => p);
+            double dfMax0 = (last.Y_values.Count == 1) ? last.Y : last.Y_values.Max(p => p);
+
+            if (dfMin0 > m_dfMinVal && dfMax0 < m_dfMaxVal)
+            {
+                m_dfMinVal = Math.Min(m_dfMinVal, dfMin);
+                m_dfMaxVal = Math.Max(m_dfMaxVal, dfMax);
+                return;
+            }
+
+            if (m_rgPlot.Count > 1)
+            {
+                Plot last1 = m_rgPlot[0];
+                double dfMin1 = (last1.Y_values.Count == 1) ? last.Y : last1.Y_values.Min(p => p);
+                double dfMax1 = (last1.Y_values.Count == 1) ? last.Y : last1.Y_values.Max(p => p);
+
+                if (dfMin0 == dfMin1 && dfMax0 == dfMax1)
+                {
+                    m_dfMinVal = Math.Min(m_dfMinVal, dfMin);
+                    m_dfMaxVal = Math.Max(m_dfMaxVal, dfMax);
+                    return;
+                }
+            }
 
             for (int i = 0; i < m_rgPlot.Count; i++)
             {
@@ -215,22 +249,32 @@ namespace SimpleGraphing
             m_rgPlot.Add(new SimpleGraphing.Plot(m_dfXPosition, dfY, null, bActive, nIdx));
             m_dfXPosition += m_dfXIncrement;
 
+            Plot last = null;
+
             if (m_rgPlot.Count > m_nMax)
+            {
+                last = m_rgPlot[0];
                 m_rgPlot.RemoveAt(0);
+            }
 
             if (bActive)
-                setMinMax();
+                setMinMax(last, new List<double>() { dfY });
         }
 
         public void Add(double dfX, double dfY, bool bActive = true, int nIdx = 0)
         {
             m_rgPlot.Add(new SimpleGraphing.Plot(dfX, dfY, null, bActive, nIdx));
 
+            Plot last = null;
+
             if (m_rgPlot.Count > m_nMax)
+            {
+                last = m_rgPlot[0];
                 m_rgPlot.RemoveAt(0);
+            }
 
             if (bActive)
-                setMinMax();
+                setMinMax(last, new List<double>() { dfY });
         }
 
         public void Add(List<double> rgdfY, bool bActive = true)
@@ -238,33 +282,48 @@ namespace SimpleGraphing
             m_rgPlot.Add(new SimpleGraphing.Plot(m_dfXPosition, rgdfY, null, bActive));
             m_dfXPosition += m_dfXIncrement;
 
+            Plot last = null;
+
             if (m_rgPlot.Count > m_nMax)
+            {
+                last = m_rgPlot[0];
                 m_rgPlot.RemoveAt(0);
+            }
 
             if (bActive)
-                setMinMax();
+                setMinMax(last, rgdfY);
         }
 
         public void Add(double dfX, List<double> rgdfY, bool bActive = true)
         {
             m_rgPlot.Add(new SimpleGraphing.Plot(dfX, rgdfY, null, bActive));
 
+            Plot last = null;
+
             if (m_rgPlot.Count > m_nMax)
+            {
+                last = m_rgPlot[0];
                 m_rgPlot.RemoveAt(0);
+            }
 
             if (bActive)
-                setMinMax();
+                setMinMax(last, rgdfY);
         }
 
         public void Add(Plot p)
         {
             m_rgPlot.Add(p);
 
+            Plot last = null;
+
             if (m_rgPlot.Count > m_nMax)
+            {
+                last = m_rgPlot[0];
                 m_rgPlot.RemoveAt(0);
+            }
 
             if (p.Active)
-                setMinMax();
+                setMinMax(last, p.Y_values);
         }
 
         public bool Remove(Plot p)
