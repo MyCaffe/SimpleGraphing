@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -108,16 +109,23 @@ namespace SimpleGraphing
             }
             catch (Exception excpt)
             {
+                Exception[] rgLoaderExceptions = null;
+
                 if (excpt is System.Reflection.ReflectionTypeLoadException)
                 {
                     var typeLoadException = excpt as ReflectionTypeLoadException;
-                    var loaderExceptions = typeLoadException.LoaderExceptions;
+                    rgLoaderExceptions = typeLoadException.LoaderExceptions;
+                }
+
+                if (rgLoaderExceptions != null && rgLoaderExceptions.Length > 0)
+                {
+                    excpt = new Exception(excpt.Message, rgLoaderExceptions[0]);
+                    Trace.WriteLine("Loader Exception: " + rgLoaderExceptions[0].Message);
                 }
 
                 err = excpt;
                 return null;
             }
         }
-
     }
 }
