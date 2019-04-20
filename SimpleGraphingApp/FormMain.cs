@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -421,6 +422,7 @@ namespace SimpleGraphingApp
         private void FormMain_Resize(object sender, EventArgs e)
         {
             m_nDataCount = simpleGraphingControl1.VisiblePlotCount;
+            Trace.WriteLine("Visible Plot Count: " + m_nDataCount.ToString());
         }
 
         private void btnReDraw_Click(object sender, EventArgs e)
