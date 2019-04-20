@@ -365,7 +365,10 @@ namespace SimpleGraphingApp
                         double dfL = Math.Min(dfO, dfC) - (Math.Abs(dfC - dfO) * m_random.NextDouble());
                         List<double> rgdfVal = new List<double>() { dfO, dfH, dfL, dfC };
 
-                        frameNewData.Add(new Plot(dfTime, rgdfVal));
+                        Plot p = new Plot(dfTime, rgdfVal);
+                        p.ActionActive = enableActionStripMenuItem.Checked;
+
+                        frameNewData.Add(p);
                     }
 
                     newData.Add(frameNewData);
@@ -434,6 +437,11 @@ namespace SimpleGraphingApp
         private void simpleGraphingControl1_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void enableActionStripMenuItem_Click(object sender, EventArgs e)
+        {
+            enableActionStripMenuItem.Checked = !enableActionStripMenuItem.Checked;
         }
     }
 }

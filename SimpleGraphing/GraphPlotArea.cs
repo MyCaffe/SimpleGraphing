@@ -200,6 +200,13 @@ namespace SimpleGraphing
 
             g.SetClip(Bounds);
 
+            // Draw the action actives (if any)
+            foreach (GraphPlot graphPlot in m_rgPlots)
+            {
+                graphPlot.RenderActions(g);
+            }
+
+            // Draw the plots
             foreach (GraphPlot graphPlot in m_rgPlots)
             {
                 graphPlot.Render(g);

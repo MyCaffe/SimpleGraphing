@@ -39,6 +39,7 @@
             this.candleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.enableActionStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.movingAveragesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.simpleGraphingControl1 = new SimpleGraphing.SimpleGraphingControl();
@@ -89,6 +90,7 @@
             this.showDataToolStripMenuItem,
             this.saveToolStripMenuItem,
             this.toolStripSeparator1,
+            this.enableActionStripMenuItem,
             this.movingAveragesToolStripMenuItem});
             this.testToolStripMenuItem.Name = "testToolStripMenuItem";
             this.testToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
@@ -128,6 +130,13 @@
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(172, 6);
+            // 
+            // enableActionStripMenuItem
+            // 
+            this.enableActionStripMenuItem.Name = "enableActionStripMenuItem";
+            this.enableActionStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.enableActionStripMenuItem.Text = "Enable Action";
+            this.enableActionStripMenuItem.Click += new System.EventHandler(this.enableActionStripMenuItem_Click);
             // 
             // movingAveragesToolStripMenuItem
             // 
@@ -293,5 +302,6 @@
         private System.Windows.Forms.ToolStripButton btnStepPrev;
         private System.Windows.Forms.ToolStripButton btnStepNext;
         private System.Windows.Forms.ToolStripButton btnReDraw;
+        private System.Windows.Forms.ToolStripMenuItem enableActionStripMenuItem;
     }
 }

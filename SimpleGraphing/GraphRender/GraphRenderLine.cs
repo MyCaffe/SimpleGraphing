@@ -7,24 +7,21 @@ using System.Threading.Tasks;
 
 namespace SimpleGraphing.GraphRender
 {
-    public class GraphRenderLine : IGraphPlotRender
+    public class GraphRenderLine : GraphRenderBase, IGraphPlotRender
     {
-        ConfigurationPlot m_config;
-        GraphAxis m_gx;
-        GraphAxis m_gy;
-        GraphPlotStyle m_style;
-
         public GraphRenderLine(ConfigurationPlot config, GraphAxis gx, GraphAxis gy, GraphPlotStyle style)
+            : base(config, gx, gy, style)
         {
-            m_config = config;
-            m_gx = gx;
-            m_gy = gy;
-            m_style = style;
         }
 
         public string Name
         {
             get { return "LINE"; }
+        }
+
+        public void RenderActions(Graphics g, PlotCollectionSet dataset)
+        {
+            renderActions(g, dataset);
         }
 
         public void Render(Graphics g, PlotCollectionSet dataset)

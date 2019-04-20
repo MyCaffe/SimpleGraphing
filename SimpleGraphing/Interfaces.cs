@@ -32,5 +32,6 @@ namespace SimpleGraphing
     {
         string Name { get; }
         void Render(Graphics g, PlotCollectionSet plots);
+        void RenderActions(Graphics g, PlotCollectionSet plots);
     }
 }

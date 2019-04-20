@@ -180,6 +180,17 @@ namespace SimpleGraphing
             m_irender.Render(g, m_rgPlots);
         }
 
+        public void RenderActions(Graphics g)
+        {
+            if (!m_config.Visible)
+                return;
+
+            if (m_rgPlots == null)
+                return;
+
+            m_irender.RenderActions(g, m_rgPlots);
+        }
+
         public override string ToString()
         {
             return m_config.Name;

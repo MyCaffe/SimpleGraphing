@@ -16,6 +16,8 @@ namespace SimpleGraphing
         Color m_clrLine = Color.Black;
         Color m_clrPlotFill = Color.Cyan;
         Color m_clrPlotLine = Color.Black;
+        Color m_clrActionActive = Color.Transparent;
+        int m_nActionActiveAlpha = 32;
         float m_fLineWidth = 1.0f;
         bool m_bEnableFlag = true;
         Color m_clrFlag = Color.Cyan;
@@ -103,6 +105,12 @@ namespace SimpleGraphing
                 return false;
 
             if (m_bExcludeFromMinMax != c.m_bExcludeFromMinMax)
+                return false;
+
+            if (m_clrActionActive != c.m_clrActionActive)
+                return false;
+
+            if (m_nActionActiveAlpha != c.m_nActionActiveAlpha)
                 return false;
 
             return true;
@@ -221,6 +229,18 @@ namespace SimpleGraphing
             set { m_bExcludeFromMinMax = value; }
         }
 
+        public Color ActionActiveColor
+        {
+            get { return m_clrActionActive; }
+            set { m_clrActionActive = value; }
+        }
+
+        public int ActionActiveColorAlpha
+        {
+            get { return m_nActionActiveAlpha; }
+            set { m_nActionActiveAlpha = value; }
+        }
+
         public virtual void Serialize(SerializeToXml ser)
         {
             ser.Open("Plot");
@@ -238,6 +258,8 @@ namespace SimpleGraphing
             ser.Add("Interval", m_nInterval);
             ser.Add("PlotType", m_plotType.ToString());
             ser.Add("ExcludeFromMinMax", m_bExcludeFromMinMax);
+            ser.Add("ActionActiveColor", m_clrActionActive);
+            ser.Add("ActionActiveColorAlpha", m_nActionActiveAlpha);
             ser.Close();
         }
 

@@ -10,12 +10,13 @@ namespace SimpleGraphing
     {
         int m_nIndex = 0;
         bool m_bActive;
+        bool m_bActionActive = false;
         string m_strName;
         List<double> m_rgdfY = new List<double>();
         double m_dfX;
         int m_nIdxPrimaryY = 0;
 
-        public Plot(double dfX, double dfY, string strName = null, bool bActive = true, int nIdx = 0)
+        public Plot(double dfX, double dfY, string strName = null, bool bActive = true, int nIdx = 0, bool bActionActive = false)
         {
             m_strName = strName;
             m_dfX = dfX;
@@ -23,9 +24,10 @@ namespace SimpleGraphing
             m_bActive = bActive;
             m_nIdxPrimaryY = 0;
             m_nIndex = nIdx;
+            m_bActionActive = bActionActive;
         }
 
-        public Plot(double dfX, List<double> rgdfY, string strName = null, bool bActive = true, int nIdx = 0)
+        public Plot(double dfX, List<double> rgdfY, string strName = null, bool bActive = true, int nIdx = 0, bool bActionActive = false)
         {
             m_strName = strName;
             m_dfX = dfX;
@@ -33,6 +35,7 @@ namespace SimpleGraphing
             m_bActive = bActive;
             m_nIdxPrimaryY = rgdfY.Count - 1;
             m_nIndex = nIdx;
+            m_bActionActive = bActionActive;
         }
 
         public bool Compare(Plot p)
@@ -41,6 +44,9 @@ namespace SimpleGraphing
                 return false;
 
             if (m_bActive != p.Active)
+                return false;
+
+            if (m_bActionActive != p.ActionActive)
                 return false;
 
             if (m_dfX != p.X)
@@ -62,6 +68,7 @@ namespace SimpleGraphing
         {
             Plot p = new Plot(m_dfX, rgY, m_strName, bActive, m_nIndex);
             p.m_nIdxPrimaryY = nPrimaryIdx;
+            p.ActionActive = ActionActive;
             return p;
         }
 
@@ -106,9 +113,15 @@ namespace SimpleGraphing
             set { m_bActive = value; }
         }
 
+        public bool ActionActive
+        {
+            get { return m_bActionActive; }
+            set { m_bActionActive = value; }
+        }
+
         public override string ToString()
         {
-            string str = m_bActive.ToString() + " { ";
+            string str = m_bActive.ToString() + ", " + m_bActionActive.ToString() + " { ";
 
             str += X.ToString() + " }x{ ";
 
