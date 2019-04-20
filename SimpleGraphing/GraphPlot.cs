@@ -104,7 +104,7 @@ namespace SimpleGraphing
                             if (data.Count > 1 || plot.Plots[0] != data[0])
                                 data1.Add(data);
 
-                            data1.Add(plot.Plots);
+                            data1.Add(plot.Plots, true);
                             data = data1;
                             break;
                         }
