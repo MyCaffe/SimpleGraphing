@@ -15,6 +15,7 @@ namespace SimpleGraphing
         List<double> m_rgdfY = new List<double>();
         double m_dfX;
         int m_nIdxPrimaryY = 0;
+        object m_tag = null;
 
         public Plot(double dfX, double dfY, string strName = null, bool bActive = true, int nIdx = 0, bool bActionActive = false)
         {
@@ -64,11 +65,18 @@ namespace SimpleGraphing
             return true;
         }
 
+        public object Tag
+        {
+            get { return m_tag; }
+            set { m_tag = value; }
+        }
+
         public Plot Clone(List<double> rgY, bool bActive, int nPrimaryIdx)
         {
             Plot p = new Plot(m_dfX, rgY, m_strName, bActive, m_nIndex);
             p.m_nIdxPrimaryY = nPrimaryIdx;
             p.ActionActive = ActionActive;
+            p.m_tag = m_tag;
             return p;
         }
 
@@ -121,7 +129,8 @@ namespace SimpleGraphing
 
         public override string ToString()
         {
-            string str = m_bActive.ToString() + ", " + m_bActionActive.ToString() + " { ";
+            string strTag = (m_tag != null) ? m_tag.ToString() : "";
+            string str = m_strName + " " + strTag + " " + m_bActive.ToString() + ", " + m_bActionActive.ToString() + " { ";
 
             str += X.ToString() + " }x{ ";
 
