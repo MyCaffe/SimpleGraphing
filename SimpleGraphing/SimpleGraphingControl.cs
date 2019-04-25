@@ -109,40 +109,54 @@ namespace SimpleGraphing
             return lastData;
         }
 
-        public PlotCollectionSet GetLastOutput()
+        public List<PlotCollectionSet> GetLastOutput(int nSequenceLength = 1)
         {
+            List<PlotCollectionSet> rgOutput = new List<PlotCollectionSet>();
+
             if (m_output == null || m_output.Count == 0)
-                return null;
+                return rgOutput;
 
-            PlotCollectionSet lastData = new PlotCollectionSet();
-            List<PlotCollection> rgPlots = new List<PlotCollection>();
-
-            for (int i = 0; i < m_output.Count; i++)
+            int nStart = m_output[0][0].Count - nSequenceLength;
+            if (nStart < 0)
             {
-                PlotCollectionSet dataFrame = m_output[i];
-
-                if (dataFrame.Count == 0)
-                    return null;
-
-                PlotCollection plots = new PlotCollection("Frame " + i.ToString());
-
-                for (int j = 0; j < dataFrame.Count; j++)
-                {
-                    PlotCollection framePlots = dataFrame[j];
-                    if (framePlots.Count == 0)
-                        return null;
-
-                    Plot last = framePlots[framePlots.Count - 1];
-                    if (last.Name == null)
-                        last.Name = framePlots.Name;
-
-                    plots.Add(last);
-                }
-
-                lastData.Add(plots);
+                nStart = 0;
+                nSequenceLength = m_output[0][0].Count;
             }
 
-            return lastData;
+            for (int k = nStart; k < nStart + nSequenceLength; k++)
+            {
+                PlotCollectionSet lastData = new PlotCollectionSet();
+                List<PlotCollection> rgPlots = new List<PlotCollection>();
+
+                for (int i = 0; i < m_output.Count; i++)
+                {
+                    PlotCollectionSet dataFrame = m_output[i];
+
+                    if (dataFrame.Count == 0)
+                        return null;
+
+                    PlotCollection plots = new PlotCollection("Frame " + i.ToString());
+
+                    for (int j = 0; j < dataFrame.Count; j++)
+                    {
+                        PlotCollection framePlots = dataFrame[j];
+                        if (framePlots.Count == 0)
+                            return null;
+
+                        Plot last = framePlots[k];
+                        if (last.Name == null)
+                            last.Name = framePlots.Name;
+
+                        plots.Add(last);
+                    }
+
+                    lastData.Add(plots);
+                }
+
+                rgOutput.Add(lastData);
+            }
+
+            return rgOutput;
         }
 
         public void AddData(PlotCollectionSet data, bool bMaintainCount)
