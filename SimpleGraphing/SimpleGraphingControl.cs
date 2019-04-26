@@ -116,11 +116,13 @@ namespace SimpleGraphing
             if (m_output == null || m_output.Count == 0)
                 return rgOutput;
 
-            int nStart = m_output[0][0].Count - nSequenceLength;
+            int nCount = m_output[0][0].Count;
+
+            int nStart = nCount - nSequenceLength;
             if (nStart < 0)
             {
                 nStart = 0;
-                nSequenceLength = m_output[0][0].Count;
+                nSequenceLength = nCount;
             }
 
             for (int k = nStart; k < nStart + nSequenceLength; k++)
@@ -132,25 +134,23 @@ namespace SimpleGraphing
                 {
                     PlotCollectionSet dataFrame = m_output[i];
 
-                    if (dataFrame.Count == 0)
-                        return null;
-
-                    PlotCollection plots = new PlotCollection("Frame " + i.ToString());
-
-                    for (int j = 0; j < dataFrame.Count; j++)
+                    if (dataFrame.Count > 0)
                     {
-                        PlotCollection framePlots = dataFrame[j];
-                        if (framePlots.Count == 0)
-                            return null;
+                        PlotCollection plots = new PlotCollection("Frame " + i.ToString());
 
-                        Plot last = framePlots[k];
-                        if (last.Name == null)
-                            last.Name = framePlots.Name;
+                        for (int j = 0; j < dataFrame.Count; j++)
+                        {
+                            PlotCollection framePlots = dataFrame[j];
+                            if (framePlots.Count == nCount)
+                            {
+                                Plot last = framePlots[k];
+                                last.Name = framePlots.Name;
+                                plots.Add(last);
+                            }
+                        }
 
-                        plots.Add(last);
+                        lastData.Add(plots);
                     }
-
-                    lastData.Add(plots);
                 }
 
                 rgOutput.Add(lastData);
