@@ -212,6 +212,17 @@ namespace SimpleGraphing
                 graphPlot.Render(g);
             }
 
+            // Draw the look ahead bar if one exists
+            if (m_config.PlotArea.Lookahead > 0)
+            {
+                float fX1 = m_rgPlots[0].GetXPositionFromEnd(m_config.PlotArea.Lookahead);
+                Pen pen = new Pen(Color.FromArgb(64, 0, 0, 255), 1.0f);
+                pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                g.DrawLine(pen, fX1, m_rcBounds.Top, fX1, m_rcBounds.Bottom);
+
+                pen.Dispose();
+            }
+
             g.ResetClip();
 
             float fX = 3;

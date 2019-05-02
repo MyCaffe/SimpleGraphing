@@ -40,6 +40,17 @@ namespace SimpleGraphing
             }
         }
 
+        public float GetXPositionFromEnd(int nPos)
+        {
+            nPos = m_gx.TickPositions.Count - nPos;
+            nPos--;
+
+            if (nPos < 0)
+                nPos = 0;
+
+            return m_gx.TickPositions[nPos];
+        }
+
         public string DataName
         {
             get

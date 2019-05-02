@@ -28,6 +28,27 @@ namespace SimpleGraphing
             m_strName = strName;
         }
 
+        public Tuple<PlotCollection, PlotCollection> Split(int nCount)
+        {
+            PlotCollection p1 = new PlotCollection(m_strName + " 1", m_nMax, m_dfXIncrement);
+            PlotCollection p2 = new PlotCollection(m_strName + " 2", m_nMax, m_dfXIncrement);
+
+            if (nCount < 0)
+                nCount = m_rgPlot.Count + nCount;
+
+            for (int i = 0; i < nCount && i < m_rgPlot.Count; i++)
+            {
+                p1.Add(m_rgPlot[i]);
+            }
+
+            for (int i = nCount; i < m_rgPlot.Count; i++)
+            {
+                p2.Add(m_rgPlot[i]);
+            }
+
+            return new Tuple<PlotCollection, PlotCollection>(p1, p2);
+        }
+
         public bool ExcludeFromMinMax
         {
             get { return m_bExcludeFromMinMax; }

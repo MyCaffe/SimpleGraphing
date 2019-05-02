@@ -54,6 +54,21 @@ namespace SimpleGraphing
             }
         }
 
+        public Tuple<PlotCollectionSet, PlotCollectionSet> Split(int nCount)
+        {
+            PlotCollectionSet p1 = new PlotCollectionSet();
+            PlotCollectionSet p2 = new PlotCollectionSet();
+
+            foreach (PlotCollection plots in m_rgSet)
+            {
+                Tuple<PlotCollection, PlotCollection> p = plots.Split(nCount);
+                p1.Add(p.Item1);
+                p2.Add(p.Item2);
+            }
+
+            return new Tuple<PlotCollectionSet, PlotCollectionSet>(p1, p2);
+        }
+
         public void ExcludeFromMinMax(bool bExcludeFromMinMax)
         {
             foreach (PlotCollection plots in m_rgSet)

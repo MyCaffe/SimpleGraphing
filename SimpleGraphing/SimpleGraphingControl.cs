@@ -28,6 +28,14 @@ namespace SimpleGraphing
             m_output = m_surface.BuildGraph(m_config, null);
         }
 
+        public void SetLookahead(int nLookahead)
+        {
+            foreach (ConfigurationFrame frame in m_config.Frames)
+            {
+                frame.PlotArea.Lookahead = nLookahead;
+            }
+        }
+
         public Bitmap Image
         {
             get

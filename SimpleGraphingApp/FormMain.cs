@@ -233,6 +233,8 @@ namespace SimpleGraphingApp
                 frame.XAxis.ValueResolution = ConfigurationAxis.VALUE_RESOLUTION.DAY;
                 frame.YAxis.Decimals = 2;
             }
+
+            simpleGraphingControl1.SetLookahead(3);
         }
 
         private void configureLineCharts()

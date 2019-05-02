@@ -16,6 +16,7 @@ namespace SimpleGraphing
         Color m_clrBack = Color.White;
         Color m_clrZeroLine = Color.Gray;
         Font m_fontLabels = new Font("Century Gothic", 8.0f, FontStyle.Regular);
+        int m_nLookahead = 0;
 
         public ConfigurationPlotArea()
         {
@@ -36,6 +37,12 @@ namespace SimpleGraphing
                 return false;
 
             return true;
+        }
+
+        public int Lookahead
+        {
+            get { return m_nLookahead; }
+            set { m_nLookahead = value; }
         }
 
         public Color GridColor
