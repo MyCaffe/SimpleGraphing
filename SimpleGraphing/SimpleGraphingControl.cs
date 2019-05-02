@@ -71,10 +71,13 @@ namespace SimpleGraphing
             }
         }
 
-        public PlotCollectionSet GetLastData(bool bRemove = false)
+        public PlotCollectionSet GetLastData(int nLookahead = 0, bool bRemove = false)
         {
             if (m_data.Count == 0)
                 return null;
+
+            if (nLookahead > 0 && bRemove)
+                throw new Exception("Removing data is not supported when retrieving data with a lookahead.");
 
             PlotCollectionSet lastData = new PlotCollectionSet();
             List<PlotCollection> rgPlots = new List<PlotCollection>();
@@ -94,7 +97,7 @@ namespace SimpleGraphing
                     if (framePlots.Count == 0)
                         return null;
 
-                    Plot last = framePlots[framePlots.Count - 1];
+                    Plot last = framePlots[framePlots.Count - (1 + nLookahead)];
                     if (last.Name == null)
                         last.Name = framePlots.Name;
 

@@ -30,7 +30,7 @@ namespace SimpleGraphing.GraphData
             get { return m_config.DataName; }
         }
 
-        public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx, Guid? guid = null)
+        public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx, int nLookahead, Guid? guid = null)
         {
             PlotCollection data = dataset[nDataIdx];
             PlotCollection data1 = new PlotCollection(data.Name + " SMA");
@@ -39,8 +39,14 @@ namespace SimpleGraphing.GraphData
 
             for (int i = 0; i < data.Count; i++)
             {
-                dfSma = (dfSma * (1 - dfInc)) + data[i].Y * dfInc;
-                data1.Add(data[i].X, dfSma, (i >= m_config.Interval) ? true : false, data[i].Index);
+                bool bActive = (i >= m_config.Interval) ? true : false;
+
+                if (i < data.Count - nLookahead)
+                    dfSma = (dfSma * (1 - dfInc)) + data[i].Y * dfInc;
+                else
+                    bActive = false;
+
+                data1.Add(data[i].X, dfSma, bActive, data[i].Index);
             }
 
             return new PlotCollectionSet(new List<PlotCollection>() { data1 });

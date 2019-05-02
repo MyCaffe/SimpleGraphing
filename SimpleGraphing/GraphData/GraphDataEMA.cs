@@ -30,7 +30,7 @@ namespace SimpleGraphing.GraphData
             get { return m_config.DataName; }
         }
 
-        public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx, Guid? guid = null)
+        public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx, int nLookahead, Guid? guid = null)
         {
             PlotCollection data = dataset[nDataIdx];
             PlotCollection data1 = new PlotCollection(data.Name + " EMA");
@@ -39,7 +39,7 @@ namespace SimpleGraphing.GraphData
             double dfMult = 2.0 / (m_config.Interval + 1);
             int i = 0;
 
-            while (i < data.Count && i<m_config.Interval)
+            while (i < data.Count && i < m_config.Interval)
             {
                 dfTotal += data[i].Y;
                 data1.Add(data[i].X, dfTotal / (i + 1), false, data[i].Index);
@@ -50,9 +50,19 @@ namespace SimpleGraphing.GraphData
 
             while (i < data.Count)
             {
-                double dfVal = data[i].Y;
-                dfEma = (dfVal - dfEma) * dfMult + dfEma;
-                data1.Add(dfEma, true, data[i].Index);
+                bool bActive = true;
+
+                if (i < data.Count - nLookahead)
+                {
+                    double dfVal = data[i].Y;
+                    dfEma = (dfVal - dfEma) * dfMult + dfEma;
+                }
+                else
+                {
+                    bActive = false;
+                }
+
+                data1.Add(dfEma, bActive, data[i].Index);
                 i++;
             }
 

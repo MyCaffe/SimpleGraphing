@@ -39,8 +39,10 @@ namespace SimpleGraphing.GraphData
         /// </remarks>
         /// <param name="dataset">Specifies the original plot data.</param>
         /// <param name="nDataIdx">Specifies the data index of the plot data to use.</param>
+        /// <param name="nLookahead">Specifies the look ahead value if any.</param>
+        /// <param name="guid">Specifies the unique GUID for the data.</param>
         /// <returns>The new plot data containing the RSI calculation is returned.</returns>
-        public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx, Guid? guid = null)
+        public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx, int nLookahead, Guid? guid = null)
         {
             PlotCollection data = dataset[nDataIdx];
 
@@ -53,6 +55,7 @@ namespace SimpleGraphing.GraphData
             PlotCollection data1 = new PlotCollection(data.Name + " RSI");
             List<double> rgGain = new List<double>();
             List<double> rgLoss = new List<double>();
+            double dfRSI = 0;
 
             data1.Add(new Plot(data[0].X, 0, null, false, data[0].Index, data[0].ActionActive));
 
@@ -61,7 +64,6 @@ namespace SimpleGraphing.GraphData
                 double dfC0 = data[i - 1].Y_values[3];
                 double dfC1 = data[i].Y_values[3];
                 double dfChange = dfC1 - dfC0;
-                double dfRSI = 0;
                 bool bActive = false;
 
                 if (dfChange < 0)
@@ -80,8 +82,14 @@ namespace SimpleGraphing.GraphData
                     double dfAveGain = rgGain.Average(p => p);
                     double dfAveLoss = Math.Abs(rgLoss.Average(p => p));
                     double dfRS = (dfAveLoss == 0) ? 0 : dfAveGain / dfAveLoss;
-                    dfRSI = 100.0 - (100 / (1 + dfRS));
-                    bActive = true;
+
+                    // make sure to only calculate a new RSI if we are before the lookahead 
+                    // so as to avoid impacting the last RSI with future data.
+                    if (i < data.Count - nLookahead)
+                    {
+                        dfRSI = 100.0 - (100 / (1 + dfRS));
+                        bActive = true;
+                    }
 
                     rgGain.RemoveAt(0);
                     rgLoss.RemoveAt(0);

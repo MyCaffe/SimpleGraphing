@@ -19,12 +19,12 @@ namespace SimpleGraphing.GraphRender
             get { return "HIGHLOW"; }
         }
 
-        public void RenderActions(Graphics g, PlotCollectionSet dataset)
+        public void RenderActions(Graphics g, PlotCollectionSet dataset, int nLookahead)
         {
-            renderActions(g, dataset);
+            renderActions(g, dataset, nLookahead);
         }
 
-        public void Render(Graphics g, PlotCollectionSet dataset)
+        public void Render(Graphics g, PlotCollectionSet dataset, int nLookahead)
         {
             List<int> rgX = m_gx.TickPositions;
             int nStartIdx = m_gx.StartPosition;

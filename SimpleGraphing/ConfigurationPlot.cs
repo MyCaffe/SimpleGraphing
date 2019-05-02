@@ -32,6 +32,7 @@ namespace SimpleGraphing
         PLOTTYPE m_plotType = PLOTTYPE.LINE;
         string m_strCustomName = "";
         bool m_bExcludeFromMinMax = false;
+        bool m_bLookaheadActive = true;
 
         [NonSerialized]
         Guid? m_guid = null;
@@ -113,7 +114,16 @@ namespace SimpleGraphing
             if (m_nActionActiveAlpha != c.m_nActionActiveAlpha)
                 return false;
 
+            if (m_bLookaheadActive != c.m_bLookaheadActive)
+                return false;
+
             return true;
+        }
+
+        public bool LookaheadActive
+        {
+            get { return m_bLookaheadActive; }
+            set { m_bLookaheadActive = value; }
         }
 
         public PLOTTYPE PlotType
@@ -260,6 +270,7 @@ namespace SimpleGraphing
             ser.Add("ExcludeFromMinMax", m_bExcludeFromMinMax);
             ser.Add("ActionActiveColor", m_clrActionActive);
             ser.Add("ActionActiveColorAlpha", m_nActionActiveAlpha);
+            ser.Add("LookaheadActive", m_bLookaheadActive);
             ser.Close();
         }
 

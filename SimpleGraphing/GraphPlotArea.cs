@@ -130,7 +130,7 @@ namespace SimpleGraphing
                 if (plots[i].Visible)
                 {
                     GraphPlot graphPlot = new SimpleGraphing.GraphPlot(m_cache, m_gx, m_gy);
-                    data1.Add(graphPlot.BuildGraph(plots[i], m_rgData, plots[i].DataIndex, m_rgPlots));
+                    data1.Add(graphPlot.BuildGraph(plots[i], m_rgData, plots[i].DataIndex, config.PlotArea.Lookahead, m_rgPlots));
                     m_rgPlots.Add(graphPlot);
                     m_rgData.Add(graphPlot.Plots, true);
                 }
@@ -203,13 +203,13 @@ namespace SimpleGraphing
             // Draw the action actives (if any)
             foreach (GraphPlot graphPlot in m_rgPlots)
             {
-                graphPlot.RenderActions(g);
+                graphPlot.RenderActions(g, m_config.PlotArea.Lookahead);
             }
 
             // Draw the plots
             foreach (GraphPlot graphPlot in m_rgPlots)
             {
-                graphPlot.Render(g);
+                graphPlot.Render(g, m_config.PlotArea.Lookahead);
             }
 
             // Draw the look ahead bar if one exists

@@ -19,12 +19,12 @@ namespace SimpleGraphing.GraphRender
             get { return "LINE"; }
         }
 
-        public void RenderActions(Graphics g, PlotCollectionSet dataset)
+        public void RenderActions(Graphics g, PlotCollectionSet dataset, int nLookahead)
         {
-            renderActions(g, dataset);
+            renderActions(g, dataset, nLookahead);
         }
 
-        public void Render(Graphics g, PlotCollectionSet dataset)
+        public void Render(Graphics g, PlotCollectionSet dataset, int nLookahead)
         {
             PlotCollection plots = dataset[m_config.DataIndexOnRender];
             List<int> rgX = m_gx.TickPositions;
@@ -44,7 +44,7 @@ namespace SimpleGraphing.GraphRender
                     float fX = rgX[i];
                     float fY = m_gy.ScaleValue(plot.Y, true);
 
-                    if (plotLast != null && plotLast.Active && plot.Active)
+                    if (plotLast != null && plotLast.Active && plot.Active && ((plot.LookaheadActive && m_config.LookaheadActive) || i < rgX.Count - nLookahead))
                         g.DrawLine(m_style.LinePen, fXLast, fYLast, fX, fY);
 
                     plotLast = plot;

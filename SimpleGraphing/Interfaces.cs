@@ -17,7 +17,7 @@ namespace SimpleGraphing
     public interface IGraphPlotData
     {
         string Name { get; }
-        PlotCollectionSet GetData(PlotCollectionSet data, int nDataIdx, Guid? guid = null);
+        PlotCollectionSet GetData(PlotCollectionSet data, int nDataIdx, int nLookahead, Guid? guid = null);
         string RequiredDataName { get; }
     }
 
@@ -31,7 +31,7 @@ namespace SimpleGraphing
     public interface IGraphPlotRender
     {
         string Name { get; }
-        void Render(Graphics g, PlotCollectionSet plots);
-        void RenderActions(Graphics g, PlotCollectionSet plots);
+        void Render(Graphics g, PlotCollectionSet plots, int nLookahead);
+        void RenderActions(Graphics g, PlotCollectionSet plots, int nLookahead);
     }
 }

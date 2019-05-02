@@ -22,7 +22,7 @@ namespace SimpleGraphing.GraphRender
             m_style = style;
         }
 
-        protected void renderActions(Graphics g, PlotCollectionSet dataset)
+        protected void renderActions(Graphics g, PlotCollectionSet dataset, int nLookahead)
         {
             if (m_config.ActionActiveColor == Color.Transparent ||
                 m_config.ActionActiveColorAlpha == 0 ||
@@ -32,12 +32,16 @@ namespace SimpleGraphing.GraphRender
 
             RectangleF rc = g.ClipBounds;
             PlotCollection plots = dataset[m_config.DataIndexOnRender];
+
+            if (plots == null)
+                return;
+
             List<int> rgX = m_gx.TickPositions;
             int nStartIdx = m_gx.StartPosition;
             float fLastX = -1;
             Brush br = null;
 
-            for (int i = 0; i < rgX.Count; i++)
+            for (int i = 0; i < rgX.Count - nLookahead; i++)
             {
                 int nIdx = nStartIdx + i;
 
@@ -59,7 +63,7 @@ namespace SimpleGraphing.GraphRender
                 }
             }
 
-            if (fLastX != -1)
+            if (fLastX != -1 && nLookahead == 0)
             {
                 RectangleF rc1 = new RectangleF(fLastX, rc.Top, rc.Right - fLastX, rc.Bottom - rc.Top);
 

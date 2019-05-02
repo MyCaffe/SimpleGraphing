@@ -20,12 +20,12 @@ namespace SimpleGraphing.GraphRender
             get { return "CANDLE"; }
         }
 
-        public void RenderActions(Graphics g, PlotCollectionSet dataset)
+        public void RenderActions(Graphics g, PlotCollectionSet dataset, int nLookahead)
         {
-            renderActions(g, dataset);
+            renderActions(g, dataset, nLookahead);
         }
 
-        public void Render(Graphics g, PlotCollectionSet dataset)
+        public void Render(Graphics g, PlotCollectionSet dataset, int nLookahead)
         {
             PlotCollection plots = dataset[m_config.DataIndexOnRender];
             List<int> rgX = m_gx.TickPositions;

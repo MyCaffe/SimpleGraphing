@@ -95,7 +95,7 @@ namespace SimpleGraphing
             set { m_rgPlots = value; }
         }
 
-        public PlotCollectionSet BuildGraph(ConfigurationPlot config, PlotCollectionSet data, int nDataIdx, GraphPlotCollection plots)
+        public PlotCollectionSet BuildGraph(ConfigurationPlot config, PlotCollectionSet data, int nDataIdx, int nLookahead, GraphPlotCollection plots)
         {
             m_config = config;
             m_style = createStyle(m_config);
@@ -122,7 +122,7 @@ namespace SimpleGraphing
                     }
                 }
 
-                data = m_idata.GetData(data, nDataIdx, config.ID);
+                data = m_idata.GetData(data, nDataIdx, nLookahead, config.ID);
                 data.ExcludeFromMinMax(config.ExcludeFromMinMax);
             }
 
@@ -180,7 +180,7 @@ namespace SimpleGraphing
             return style;
         }
 
-        public void Render(Graphics g)
+        public void Render(Graphics g, int nLookahead)
         {
             if (!m_config.Visible)
                 return;
@@ -188,10 +188,10 @@ namespace SimpleGraphing
             if (m_rgPlots == null)
                 return;           
 
-            m_irender.Render(g, m_rgPlots);
+            m_irender.Render(g, m_rgPlots, nLookahead);
         }
 
-        public void RenderActions(Graphics g)
+        public void RenderActions(Graphics g, int nLookahead)
         {
             if (!m_config.Visible)
                 return;
@@ -199,7 +199,7 @@ namespace SimpleGraphing
             if (m_rgPlots == null)
                 return;
 
-            m_irender.RenderActions(g, m_rgPlots);
+            m_irender.RenderActions(g, m_rgPlots, nLookahead);
         }
 
         public override string ToString()

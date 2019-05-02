@@ -11,6 +11,7 @@ namespace SimpleGraphing
         int m_nIndex = 0;
         bool m_bActive;
         bool m_bActionActive = false;
+        bool m_bLookaheadActive = true;
         string m_strName;
         List<double> m_rgdfY = new List<double>();
         double m_dfX;
@@ -76,6 +77,7 @@ namespace SimpleGraphing
             Plot p = new Plot(m_dfX, rgY, m_strName, bActive, m_nIndex);
             p.m_nIdxPrimaryY = nPrimaryIdx;
             p.ActionActive = ActionActive;
+            p.LookaheadActive = LookaheadActive;
             p.m_tag = m_tag;
             return p;
         }
@@ -125,6 +127,12 @@ namespace SimpleGraphing
         {
             get { return m_bActionActive; }
             set { m_bActionActive = value; }
+        }
+
+        public bool LookaheadActive
+        {
+            get { return m_bLookaheadActive; }
+            set { m_bLookaheadActive = value; }
         }
 
         public override string ToString()

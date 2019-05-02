@@ -324,7 +324,7 @@ namespace SimpleGraphingApp
 
         private void stepPrev()
         {
-            PlotCollectionSet lastData = simpleGraphingControl1.GetLastData(true);
+            PlotCollectionSet lastData = simpleGraphingControl1.GetLastData(0, true);
             if (lastData == null)
                 return;
 
