@@ -121,7 +121,7 @@ namespace SimpleGraphing
                     {
                         string strVal = m_rgTickValues[i];
                         SizeF sz = g.MeasureString(strVal, m_config.LabelFont);
-                        DrawRotatedTextAt(g, 270.0f, strVal, nX - (sz.Width * 0.25f), nY + 2, m_config.LabelFont, m_style.LabelBrush);
+                        DrawRotatedTextAt(g, 270.0f, strVal, nX - m_config.PlotSpacing, nY + 2, m_config.LabelFont, m_style.LabelBrush);
                     }
                 }
             }
