@@ -58,7 +58,7 @@ namespace SimpleGraphing
         {
             List<PlotCollectionSet> rgOutputData = new List<PlotCollectionSet>();
 
-            m_style = createStyle(config.Surface);
+            m_config = config.Surface;
 
             if (m_frames == null)
                 m_frames = new SimpleGraphing.GraphFrameCollection();
@@ -166,6 +166,8 @@ namespace SimpleGraphing
 
         public Image Render()
         {
+            m_style = createStyle(m_config);
+
             if (m_bmp == null || m_bmp.Height != m_rcBounds.Height || m_bmp.Width != m_rcBounds.Width)
             {
                 if (m_bmp != null)
