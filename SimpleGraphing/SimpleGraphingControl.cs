@@ -114,7 +114,7 @@ namespace SimpleGraphing
             {
                 m_output = m_surface.BuildGraph(m_config, m_data);
                 SimpleGraphingControl_Resize(this, new EventArgs());
-                ScrollToEnd();
+                ScrollToEnd(false);
             }
 
             return lastData;
@@ -205,7 +205,7 @@ namespace SimpleGraphing
 
             m_output = m_surface.BuildGraph(m_config, m_data);
             SimpleGraphingControl_Resize(this, new EventArgs());
-            ScrollToEnd();
+            ScrollToEnd(false);
         }
 
         public void ClearGraph()
@@ -292,13 +292,14 @@ namespace SimpleGraphing
             }
         }
 
-        public void ScrollToEnd()
+        public void ScrollToEnd(bool bRender)
         {
             hScrollBar1.Value = hScrollBar1.Maximum;
             m_surface.Scroll(1.0);
             m_surface.Resize(pbImage.Width, pbImage.Height);
 
-            pbImage.Image = m_surface.Render();
+            if (bRender)
+                pbImage.Image = m_surface.Render();
         }
     }
 }

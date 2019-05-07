@@ -167,7 +167,7 @@ namespace SimpleGraphingApp
             m_rgSet = rgSet;
             simpleGraphingControl1.BuildGraph(rgSet);
             simpleGraphingControl1.Invalidate();
-            simpleGraphingControl1.ScrollToEnd();
+            simpleGraphingControl1.ScrollToEnd(true);
         }
 
         private void configureCandleCharts()
