@@ -57,7 +57,7 @@ namespace SimpleGraphing.GraphData
             List<double> rgLoss = new List<double>();
             double dfRSI = 0;
 
-            data1.Add(new Plot(data[0].X, 0, null, false, data[0].Index, data[0].ActionActive));
+            data1.Add(new Plot(data[0].X, 0, null, false, data[0].Index, data[0].Action1Active));
 
             for (int i = 1; i < data.Count; i++)
             {
@@ -95,7 +95,7 @@ namespace SimpleGraphing.GraphData
                     rgLoss.RemoveAt(0);
                 }
 
-                data1.Add(new Plot(data[i].X, dfRSI, null, bActive, data[i].Index, data[i].ActionActive));
+                data1.Add(new Plot(data[i].X, dfRSI, null, bActive, data[i].Index, data[i].Action1Active, data[i].Action2Active));
             }
 
             return new PlotCollectionSet(new List<PlotCollection>() { data1 });

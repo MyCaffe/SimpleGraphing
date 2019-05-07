@@ -368,7 +368,8 @@ namespace SimpleGraphingApp
                         List<double> rgdfVal = new List<double>() { dfO, dfH, dfL, dfC };
 
                         Plot p = new Plot(dfTime, rgdfVal);
-                        p.ActionActive = enableActionStripMenuItem.Checked;
+                        p.Action1Active = enableActionStripMenuItem.Checked;
+                        p.Action2Active = enableActionStripMenuItem.Checked;
 
                         frameNewData.Add(p);
                     }

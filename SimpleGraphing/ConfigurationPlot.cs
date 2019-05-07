@@ -16,7 +16,8 @@ namespace SimpleGraphing
         Color m_clrLine = Color.Black;
         Color m_clrPlotFill = Color.Cyan;
         Color m_clrPlotLine = Color.Black;
-        Color m_clrActionActive = Color.Transparent;
+        Color m_clrAction1Active = Color.Transparent;
+        Color m_clrAction2Active = Color.Transparent;
         int m_nActionActiveAlpha = 32;
         float m_fLineWidth = 1.0f;
         bool m_bEnableFlag = true;
@@ -108,7 +109,10 @@ namespace SimpleGraphing
             if (m_bExcludeFromMinMax != c.m_bExcludeFromMinMax)
                 return false;
 
-            if (m_clrActionActive != c.m_clrActionActive)
+            if (m_clrAction1Active != c.m_clrAction1Active)
+                return false;
+
+            if (m_clrAction2Active != c.m_clrAction2Active)
                 return false;
 
             if (m_nActionActiveAlpha != c.m_nActionActiveAlpha)
@@ -239,10 +243,16 @@ namespace SimpleGraphing
             set { m_bExcludeFromMinMax = value; }
         }
 
-        public Color ActionActiveColor
+        public Color ActionActive1Color
         {
-            get { return m_clrActionActive; }
-            set { m_clrActionActive = value; }
+            get { return m_clrAction1Active; }
+            set { m_clrAction1Active = value; }
+        }
+
+        public Color ActionActive2Color
+        {
+            get { return m_clrAction2Active; }
+            set { m_clrAction2Active = value; }
         }
 
         public int ActionActiveColorAlpha
@@ -268,7 +278,8 @@ namespace SimpleGraphing
             ser.Add("Interval", m_nInterval);
             ser.Add("PlotType", m_plotType.ToString());
             ser.Add("ExcludeFromMinMax", m_bExcludeFromMinMax);
-            ser.Add("ActionActiveColor", m_clrActionActive);
+            ser.Add("ActionActive1Color", m_clrAction1Active);
+            ser.Add("ActionActive2Color", m_clrAction2Active);
             ser.Add("ActionActiveColorAlpha", m_nActionActiveAlpha);
             ser.Add("LookaheadActive", m_bLookaheadActive);
             ser.Close();

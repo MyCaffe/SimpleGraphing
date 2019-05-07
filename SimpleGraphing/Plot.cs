@@ -10,7 +10,8 @@ namespace SimpleGraphing
     {
         int m_nIndex = 0;
         bool m_bActive;
-        bool m_bActionActive = false;
+        bool m_bAction1Active = false;
+        bool m_bAction2Active = false;
         bool m_bLookaheadActive = true;
         string m_strName;
         List<double> m_rgdfY = new List<double>();
@@ -18,7 +19,7 @@ namespace SimpleGraphing
         int m_nIdxPrimaryY = 0;
         object m_tag = null;
 
-        public Plot(double dfX, double dfY, string strName = null, bool bActive = true, int nIdx = 0, bool bActionActive = false)
+        public Plot(double dfX, double dfY, string strName = null, bool bActive = true, int nIdx = 0, bool bAction1Active = false, bool bAction2Active = false)
         {
             m_strName = strName;
             m_dfX = dfX;
@@ -26,10 +27,11 @@ namespace SimpleGraphing
             m_bActive = bActive;
             m_nIdxPrimaryY = 0;
             m_nIndex = nIdx;
-            m_bActionActive = bActionActive;
+            m_bAction1Active = bAction1Active;
+            m_bAction2Active = bAction2Active;
         }
 
-        public Plot(double dfX, List<double> rgdfY, string strName = null, bool bActive = true, int nIdx = 0, bool bActionActive = false)
+        public Plot(double dfX, List<double> rgdfY, string strName = null, bool bActive = true, int nIdx = 0, bool bAction1Active = false, bool bAction2Active = false)
         {
             m_strName = strName;
             m_dfX = dfX;
@@ -37,7 +39,8 @@ namespace SimpleGraphing
             m_bActive = bActive;
             m_nIdxPrimaryY = rgdfY.Count - 1;
             m_nIndex = nIdx;
-            m_bActionActive = bActionActive;
+            m_bAction1Active = bAction1Active;
+            m_bAction2Active = bAction2Active;
         }
 
         public bool Compare(Plot p)
@@ -48,7 +51,10 @@ namespace SimpleGraphing
             if (m_bActive != p.Active)
                 return false;
 
-            if (m_bActionActive != p.ActionActive)
+            if (m_bAction1Active != p.Action1Active)
+                return false;
+
+            if (m_bAction2Active != p.Action2Active)
                 return false;
 
             if (m_dfX != p.X)
@@ -76,7 +82,8 @@ namespace SimpleGraphing
         {
             Plot p = new Plot(m_dfX, rgY, m_strName, bActive, m_nIndex);
             p.m_nIdxPrimaryY = nPrimaryIdx;
-            p.ActionActive = ActionActive;
+            p.Action1Active = Action1Active;
+            p.Action2Active = Action2Active;
             p.LookaheadActive = LookaheadActive;
             p.m_tag = m_tag;
             return p;
@@ -123,10 +130,16 @@ namespace SimpleGraphing
             set { m_bActive = value; }
         }
 
-        public bool ActionActive
+        public bool Action1Active
         {
-            get { return m_bActionActive; }
-            set { m_bActionActive = value; }
+            get { return m_bAction1Active; }
+            set { m_bAction1Active = value; }
+        }
+
+        public bool Action2Active
+        {
+            get { return m_bAction2Active; }
+            set { m_bAction2Active = value; }
         }
 
         public bool LookaheadActive
@@ -138,7 +151,7 @@ namespace SimpleGraphing
         public override string ToString()
         {
             string strTag = (m_tag != null) ? m_tag.ToString() : "";
-            string str = m_strName + " " + strTag + " " + m_bActive.ToString() + ", " + m_bActionActive.ToString() + " { ";
+            string str = m_strName + " " + strTag + " " + m_bActive.ToString() + ", " + m_bAction1Active.ToString() + ", " + m_bAction2Active.ToString() + " { ";
 
             str += X.ToString() + " }x{ ";
 
