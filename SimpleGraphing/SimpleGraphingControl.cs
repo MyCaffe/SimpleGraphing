@@ -170,7 +170,7 @@ namespace SimpleGraphing
             return rgOutput;
         }
 
-        public void AddData(PlotCollectionSet data, bool bMaintainCount)
+        public void AddData(PlotCollectionSet data, bool bMaintainCount, bool bRender = false)
         {
             if (data.Count != m_data.Count)
                 throw new Exception("The number of plot collections must match the number of plot sets used by the graph.");
@@ -205,7 +205,7 @@ namespace SimpleGraphing
 
             m_output = m_surface.BuildGraph(m_config, m_data);
             SimpleGraphingControl_Resize(this, new EventArgs());
-            ScrollToEnd(false);
+            ScrollToEnd(bRender);
         }
 
         public void ClearGraph()
