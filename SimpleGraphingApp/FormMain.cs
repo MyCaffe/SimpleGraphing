@@ -377,7 +377,7 @@ namespace SimpleGraphingApp
                     newData.Add(frameNewData);
                 }
 
-                simpleGraphingControl1.AddData(newData, true);
+                simpleGraphingControl1.AddData(newData, true, true);
             }
             finally
             {
