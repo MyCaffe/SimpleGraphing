@@ -90,7 +90,7 @@ namespace SimpleGraphing.GraphData
 
             List<Tuple<int, Plot>> rgActive = new List<Tuple<int, Plot>>();
 
-            for (int i = 0; i < data.Count; i++)
+            for (int i = 0; i < data.Count - nLookahead; i++)
             {
                 if (data[i].Active)
                     rgActive.Add(new Tuple<int, Plot>(i, data[i]));
@@ -104,7 +104,7 @@ namespace SimpleGraphing.GraphData
             {
                 int nIdxCurrent = rgActive[nIdx].Item1;
 
-                if (i == nIdxCurrent && nIdx < rgActive.Count - (1 + nLookahead))
+                if (i == nIdxCurrent && nIdx < rgActive.Count - 1)
                 {
                     double dfOpen = data[nIdxCurrent].Y_values[nOpen];
                     double dfClose = data[nIdxCurrent].Y_values[nClose];
@@ -154,7 +154,7 @@ namespace SimpleGraphing.GraphData
 
             List<Tuple<int, Plot>> rgActive = new List<Tuple<int, Plot>>();
 
-            for (int i = 0; i < data.Count; i++)
+            for (int i = 0; i < data.Count - nLookahead; i++)
             {
                 if (data[i].Active)
                     rgActive.Add(new Tuple<int, Plot>(i, data[i]));
@@ -168,7 +168,7 @@ namespace SimpleGraphing.GraphData
             {
                 int nIdxCurrent = rgActive[nIdx].Item1;
 
-                if (i == nIdxCurrent && nIdx < rgActive.Count - (1 + nLookahead))
+                if (i == nIdxCurrent && nIdx < rgActive.Count - 1)
                 {
                     double dfOpen = data[nIdxCurrent].Y_values[nOpen];
                     double dfClose = data[nIdxCurrent].Y_values[nClose];
