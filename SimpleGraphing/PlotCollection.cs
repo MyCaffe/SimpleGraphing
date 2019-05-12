@@ -347,6 +347,11 @@ namespace SimpleGraphing
                 setMinMax(last, p.Y_values);
         }
 
+        public void AddToStart(Plot p)
+        {
+            m_rgPlot.Insert(0, p);
+        }
+
         public bool Remove(Plot p)
         {
             return m_rgPlot.Remove(p);
