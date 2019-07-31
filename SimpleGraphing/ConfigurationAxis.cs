@@ -25,7 +25,7 @@ namespace SimpleGraphing
         int m_nDecimals = 0;
         bool m_bShowAllNumbers = false;
         VALUE_TYPE m_valueType = VALUE_TYPE.NUMBER;
-        VALUE_RESOLUTION m_valueRes = VALUE_RESOLUTION.NUMBER;
+        VALUE_RESOLUTION m_valueRes = VALUE_RESOLUTION.MINUTE;
 
         public enum VALUE_TYPE
         {
@@ -35,7 +35,7 @@ namespace SimpleGraphing
 
         public enum VALUE_RESOLUTION
         {
-            NUMBER,
+            SECOND,
             MINUTE,
             DAY,
         }
