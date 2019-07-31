@@ -269,7 +269,7 @@ namespace SimpleGraphingApp
                 }
 
                 frame.XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.NUMBER;
-                frame.XAxis.ValueResolution = ConfigurationAxis.VALUE_RESOLUTION.NUMBER;
+                frame.XAxis.ValueResolution = ConfigurationAxis.VALUE_RESOLUTION.DAY;
                 frame.YAxis.Decimals = 0;
                 frame.TargetLines.Clear();
                 frame.YAxis.InitialMaximum = 1;
