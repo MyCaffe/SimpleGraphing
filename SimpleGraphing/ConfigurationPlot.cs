@@ -52,7 +52,12 @@ namespace SimpleGraphing
             CUSTOM
         }
 
-        public ConfigurationPlot(Guid? guid = null)
+        public ConfigurationPlot()
+        {
+            m_guid = Guid.NewGuid();
+        }
+
+        public ConfigurationPlot(Guid guid)
         {
             m_guid = guid;
         }
