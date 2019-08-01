@@ -10,6 +10,7 @@ namespace SimpleGraphing
     public class PlotCollectionSet : IEnumerable<PlotCollection>
     {
         public List<PlotCollection> m_rgSet = new List<PlotCollection>();
+        double m_dfMarginPct = 0;
 
         public PlotCollectionSet(List<PlotCollection> rgPlots = null)
         {
@@ -69,6 +70,12 @@ namespace SimpleGraphing
             return new Tuple<PlotCollectionSet, PlotCollectionSet>(p1, p2);
         }
 
+        public double MarginPercent
+        {
+            get { return m_dfMarginPct; }
+            set { m_dfMarginPct = value; }
+        }
+
         public void ExcludeFromMinMax(bool bExcludeFromMinMax)
         {
             foreach (PlotCollection plots in m_rgSet)
@@ -121,8 +128,8 @@ namespace SimpleGraphing
             {
                 if (!m_rgSet[i].ExcludeFromMinMax)
                 {
-                    dfAbsMinY = Math.Min(dfAbsMinY, m_rgSet[i].AbsoluteMinYVal);
-                    dfAbsMaxY = Math.Max(dfAbsMaxY, m_rgSet[i].AbsoluteMaxYVal);
+                    dfAbsMinY = Math.Min(dfAbsMinY, m_rgSet[i].AbsoluteMinYVal * (1.0 - m_dfMarginPct));
+                    dfAbsMaxY = Math.Max(dfAbsMaxY, m_rgSet[i].AbsoluteMaxYVal * (1.0 + m_dfMarginPct));
                 }
             }
         }
