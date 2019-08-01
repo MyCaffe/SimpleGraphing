@@ -269,14 +269,7 @@ namespace SimpleGraphing
         {
             m_rgPlot.Add(new SimpleGraphing.Plot(m_dfXPosition, dfY, null, bActive, nIdx));
             m_dfXPosition += m_dfXIncrement;
-
-            Plot last = null;
-
-            if (m_rgPlot.Count > m_nMax)
-            {
-                last = m_rgPlot[0];
-                m_rgPlot.RemoveAt(0);
-            }
+            Plot last = getLast();
 
             if (bActive)
                 setMinMax(last, new List<double>() { dfY });
@@ -285,14 +278,7 @@ namespace SimpleGraphing
         public void Add(double dfX, double dfY, bool bActive = true, int nIdx = 0)
         {
             m_rgPlot.Add(new SimpleGraphing.Plot(dfX, dfY, null, bActive, nIdx));
-
-            Plot last = null;
-
-            if (m_rgPlot.Count > m_nMax)
-            {
-                last = m_rgPlot[0];
-                m_rgPlot.RemoveAt(0);
-            }
+            Plot last = getLast();
 
             if (bActive)
                 setMinMax(last, new List<double>() { dfY });
@@ -302,14 +288,7 @@ namespace SimpleGraphing
         {
             m_rgPlot.Add(new SimpleGraphing.Plot(m_dfXPosition, rgdfY, null, bActive));
             m_dfXPosition += m_dfXIncrement;
-
-            Plot last = null;
-
-            if (m_rgPlot.Count > m_nMax)
-            {
-                last = m_rgPlot[0];
-                m_rgPlot.RemoveAt(0);
-            }
+            Plot last = getLast();
 
             if (bActive)
                 setMinMax(last, rgdfY);
@@ -318,14 +297,7 @@ namespace SimpleGraphing
         public void Add(double dfX, List<double> rgdfY, bool bActive = true)
         {
             m_rgPlot.Add(new SimpleGraphing.Plot(dfX, rgdfY, null, bActive));
-
-            Plot last = null;
-
-            if (m_rgPlot.Count > m_nMax)
-            {
-                last = m_rgPlot[0];
-                m_rgPlot.RemoveAt(0);
-            }
+            Plot last = getLast();
 
             if (bActive)
                 setMinMax(last, rgdfY);
@@ -334,17 +306,32 @@ namespace SimpleGraphing
         public void Add(Plot p)
         {
             m_rgPlot.Add(p);
+            Plot last = getLast();
 
+            if (p.Active)
+                setMinMax(last, p.Y_values);
+        }
+
+        private Plot getLast()
+        {
             Plot last = null;
 
             if (m_rgPlot.Count > m_nMax)
             {
-                last = m_rgPlot[0];
-                m_rgPlot.RemoveAt(0);
+                while (m_rgPlot.Count > 0)
+                {
+                    if (m_rgPlot[0].Active)
+                    {
+                        last = m_rgPlot[0];
+                        m_rgPlot.RemoveAt(0);
+                        return last;
+                    }
+
+                    m_rgPlot.RemoveAt(0);
+                }
             }
 
-            if (p.Active)
-                setMinMax(last, p.Y_values);
+            return last;
         }
 
         public void AddToStart(Plot p)
