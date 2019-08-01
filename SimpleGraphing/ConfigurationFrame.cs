@@ -159,7 +159,15 @@ namespace SimpleGraphing
             }
         }
 
-        public void EnableRelativeScaling(bool bEnable)
+        public void SetMarginPercent(double dfPct)
+        {
+            foreach (ConfigurationPlot plot in m_rgPlots)
+            {
+                plot.MarginPercent = dfPct;
+            }
+        }
+
+        public void EnableRelativeScaling(bool bEnable, double dfPctMargin = 0.05)
         {
             List<int> rgRemoveIdx = new List<int>();
 
@@ -182,6 +190,8 @@ namespace SimpleGraphing
                 YAxis.InitialMaximum = -double.MaxValue;
                 YAxis.InitialMinimum = double.MaxValue;
                 ExcludeFromMinMax(ConfigurationPlot.PLOTTYPE.SMA);
+                ExcludeFromMinMax(ConfigurationPlot.PLOTTYPE.EMA);
+                SetMarginPercent(dfPctMargin);
             }
             else
             {

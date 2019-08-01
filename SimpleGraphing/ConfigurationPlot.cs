@@ -34,6 +34,7 @@ namespace SimpleGraphing
         string m_strCustomName = "";
         bool m_bExcludeFromMinMax = false;
         bool m_bLookaheadActive = true;
+        double m_dfMarginPercent = 0;
 
         [NonSerialized]
         Guid? m_guid = null;
@@ -60,6 +61,12 @@ namespace SimpleGraphing
         public ConfigurationPlot(Guid guid)
         {
             m_guid = guid;
+        }
+
+        public double MarginPercent
+        {
+            get { return m_dfMarginPercent; }
+            set { m_dfMarginPercent = value; }
         }
 
         public Guid? ID
