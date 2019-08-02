@@ -25,6 +25,7 @@ namespace SimpleGraphing
         Font m_fontTitle = new Font("Century Gothic", 11.0f, FontStyle.Bold);
         string m_strName = "";
         bool m_bVisible = true;
+        double m_dfMarginPercent = 0.0;
 
         public ConfigurationFrame()
         {
@@ -161,10 +162,17 @@ namespace SimpleGraphing
 
         public void SetMarginPercent(double dfPct)
         {
+            m_dfMarginPercent = dfPct;
+
             foreach (ConfigurationPlot plot in m_rgPlots)
             {
                 plot.MarginPercent = dfPct;
             }
+        }
+
+        public double MarginPercent
+        {
+            get { return m_dfMarginPercent; }
         }
 
         public void EnableRelativeScaling(bool bEnable, double dfPctMargin = 0.05)

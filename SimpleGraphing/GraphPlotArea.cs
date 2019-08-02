@@ -92,7 +92,12 @@ namespace SimpleGraphing
                     else
                     {
                         line.Enabled = true;
-                        line.YValue = m_dfAbsMinY;
+
+                        double dfMin = m_dfAbsMinY;
+                        if (config.MarginPercent > 0)
+                            dfMin -= (dfMin * config.MarginPercent);
+
+                        line.YValue = dfMin;
                     }
                 }
 
@@ -105,7 +110,12 @@ namespace SimpleGraphing
                     else
                     {
                         line.Enabled = true;
-                        line.YValue = m_dfAbsMaxY;
+
+                        double dfMax = m_dfAbsMaxY;
+                        if (config.MarginPercent > 0)
+                            dfMax += (dfMax * config.MarginPercent);
+
+                        line.YValue = dfMax;
                     }
                 }
             }

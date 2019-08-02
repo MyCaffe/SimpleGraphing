@@ -70,10 +70,14 @@ namespace SimpleGraphing
             return new Tuple<PlotCollectionSet, PlotCollectionSet>(p1, p2);
         }
 
+        public void SetMarginPercent(double dfPct)
+        {
+            m_dfMarginPct = dfPct;
+        }
+
         public double MarginPercent
         {
             get { return m_dfMarginPct; }
-            set { m_dfMarginPct = value; }
         }
 
         public void ExcludeFromMinMax(bool bExcludeFromMinMax)
@@ -128,8 +132,8 @@ namespace SimpleGraphing
             {
                 if (!m_rgSet[i].ExcludeFromMinMax)
                 {
-                    dfAbsMinY = Math.Min(dfAbsMinY, m_rgSet[i].AbsoluteMinYVal * (1.0 - m_dfMarginPct));
-                    dfAbsMaxY = Math.Max(dfAbsMaxY, m_rgSet[i].AbsoluteMaxYVal * (1.0 + m_dfMarginPct));
+                    dfAbsMinY = Math.Min(dfAbsMinY, m_rgSet[i].AbsoluteMinYVal);
+                    dfAbsMaxY = Math.Max(dfAbsMaxY, m_rgSet[i].AbsoluteMaxYVal);
                 }
             }
         }
@@ -162,6 +166,12 @@ namespace SimpleGraphing
 
                 dfAbsMinY = Math.Min(dfAbsMinY, m_rgSet[i].AbsoluteMinYVal);
                 dfAbsMaxY = Math.Max(dfAbsMaxY, m_rgSet[i].AbsoluteMaxYVal);
+            }
+
+            if (m_dfMarginPct > 0)
+            {
+                dfAbsMinY -= (dfAbsMinY * m_dfMarginPct);
+                dfAbsMaxY += (dfAbsMaxY * m_dfMarginPct);
             }
         }
 
