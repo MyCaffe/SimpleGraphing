@@ -51,6 +51,7 @@
             this.btnReDraw = new System.Windows.Forms.ToolStripButton();
             this.timerUI = new System.Windows.Forms.Timer(this.components);
             this.timerData = new System.Windows.Forms.Timer(this.components);
+            this.btnCrossHairs = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -80,7 +81,7 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(93, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -93,7 +94,7 @@
             this.enableActionStripMenuItem,
             this.movingAveragesToolStripMenuItem});
             this.testToolStripMenuItem.Name = "testToolStripMenuItem";
-            this.testToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
+            this.testToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.testToolStripMenuItem.Text = "Test";
             // 
             // showDataToolStripMenuItem
@@ -151,7 +152,7 @@
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.simpleGraphingControl1);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(762, 932);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(762, 907);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 24);
             this.toolStripContainer1.Name = "toolStripContainer1";
@@ -167,10 +168,11 @@
             // 
             this.simpleGraphingControl1.Configuration = ((SimpleGraphing.Configuration)(resources.GetObject("simpleGraphingControl1.Configuration")));
             this.simpleGraphingControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.simpleGraphingControl1.EnableCrossHairs = true;
             this.simpleGraphingControl1.Location = new System.Drawing.Point(0, 0);
             this.simpleGraphingControl1.Name = "simpleGraphingControl1";
             this.simpleGraphingControl1.ShowScrollBar = true;
-            this.simpleGraphingControl1.Size = new System.Drawing.Size(762, 932);
+            this.simpleGraphingControl1.Size = new System.Drawing.Size(762, 907);
             this.simpleGraphingControl1.TabIndex = 0;
             this.simpleGraphingControl1.Load += new System.EventHandler(this.simpleGraphingControl1_Load);
             // 
@@ -182,10 +184,11 @@
             this.btnStop,
             this.btnStepPrev,
             this.btnStepNext,
-            this.btnReDraw});
+            this.btnReDraw,
+            this.btnCrossHairs});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(127, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(181, 25);
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Visible = false;
             // 
@@ -255,6 +258,19 @@
             this.timerData.Interval = 1000;
             this.timerData.Tick += new System.EventHandler(this.timerData_Tick);
             // 
+            // btnCrossHairs
+            // 
+            this.btnCrossHairs.Checked = true;
+            this.btnCrossHairs.CheckOnClick = true;
+            this.btnCrossHairs.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.btnCrossHairs.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnCrossHairs.Image = ((System.Drawing.Image)(resources.GetObject("btnCrossHairs.Image")));
+            this.btnCrossHairs.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnCrossHairs.Name = "btnCrossHairs";
+            this.btnCrossHairs.Size = new System.Drawing.Size(23, 22);
+            this.btnCrossHairs.Text = "Enable Crosshairs";
+            this.btnCrossHairs.Click += new System.EventHandler(this.btnCrossHairs_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -303,5 +319,6 @@
         private System.Windows.Forms.ToolStripButton btnStepNext;
         private System.Windows.Forms.ToolStripButton btnReDraw;
         private System.Windows.Forms.ToolStripMenuItem enableActionStripMenuItem;
+        private System.Windows.Forms.ToolStripButton btnCrossHairs;
     }
 }

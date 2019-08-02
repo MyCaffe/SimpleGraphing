@@ -446,5 +446,11 @@ namespace SimpleGraphingApp
         {
             enableActionStripMenuItem.Checked = !enableActionStripMenuItem.Checked;
         }
+
+        private void btnCrossHairs_Click(object sender, EventArgs e)
+        {
+            simpleGraphingControl1.EnableCrossHairs = btnCrossHairs.Checked;
+            simpleGraphingControl1.Invalidate();
+        }
     }
 }

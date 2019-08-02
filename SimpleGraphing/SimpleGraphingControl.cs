@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace SimpleGraphing
 {
@@ -19,6 +20,10 @@ namespace SimpleGraphing
         GraphSurface m_surface;
         bool m_bScrolling = false;
         Size m_szOriginal;
+        Crosshairs m_crosshairs = new Crosshairs();
+
+        public event EventHandler<PaintEventArgs> OnUserPaint;
+        public event EventHandler<MouseEventArgs> OnUserMouseMove;
 
         public SimpleGraphingControl()
         {
@@ -36,12 +41,15 @@ namespace SimpleGraphing
             }
         }
 
+        public bool EnableCrossHairs
+        {
+            get { return m_crosshairs.EnableCrosshairs; }
+            set { m_crosshairs.EnableCrosshairs = value; }
+        }
+
         public Bitmap Image
         {
-            get
-            {
-                return new Bitmap(pbImage.Image);
-            }
+            get { return new Bitmap(pbImage.Image); }
         }
 
         public List<string> LoadModuleCache()
@@ -300,6 +308,92 @@ namespace SimpleGraphing
 
             if (bRender)
                 pbImage.Image = m_surface.Render();
+        }
+
+        private void pbImage_Paint(object sender, PaintEventArgs e)
+        {
+            m_crosshairs.HandlePaint(e, pbImage.Image);
+
+            if (OnUserPaint != null)
+                OnUserPaint(sender, e);
+        }
+
+        private void pbImage_MouseMove(object sender, MouseEventArgs e)
+        {
+            m_crosshairs.HandleMouseMove(e, pbImage);
+
+            if (OnUserMouseMove != null)
+                OnUserMouseMove(sender, e);
+        }
+    }
+
+    public class Crosshairs
+    {
+        bool m_bEnableCrosshairs = false;
+        Bitmap m_bmpHoriz = null;
+        Bitmap m_bmpVert = null;
+        Point m_ptMouse;
+        Point m_ptMouseOld;
+
+        public Crosshairs()
+        {
+        }
+
+        public bool EnableCrosshairs
+        {
+            get { return m_bEnableCrosshairs; }
+            set { m_bEnableCrosshairs = value; }
+        }
+
+        public void HandleMouseMove(MouseEventArgs e, Control ctrl)
+        {
+            if (!m_bEnableCrosshairs)
+                return;
+
+            m_ptMouse = e.Location;
+            ctrl.Invalidate();
+        }
+
+        public void HandlePaint(PaintEventArgs e, Image imgBack)
+        {
+            if (!m_bEnableCrosshairs)
+                return;
+
+            Graphics gimg = e.Graphics;
+            Point pt = m_ptMouse;
+
+            if (!m_ptMouseOld.IsEmpty)
+            {
+                if (m_bmpHoriz != null)
+                    gimg.DrawImage(m_bmpHoriz, new PointF(0, m_ptMouseOld.Y));
+
+                if (m_bmpVert != null)
+                    gimg.DrawImage(m_bmpVert, new PointF(m_ptMouseOld.X, 0));
+            }
+
+            if (m_bmpHoriz == null)
+                m_bmpHoriz = new Bitmap(imgBack.Width, 1);
+
+            if (m_bmpVert == null)
+                m_bmpVert = new Bitmap(1, imgBack.Height);
+
+            using (Graphics g = Graphics.FromImage(m_bmpVert))
+            {
+                g.DrawImage(imgBack, new Rectangle(0, 0, m_bmpVert.Width, m_bmpVert.Height), new Rectangle(pt.X, 0, 1, imgBack.Height), GraphicsUnit.Pixel);
+            }
+
+            using (Graphics g = Graphics.FromImage(m_bmpHoriz))
+            {
+                g.DrawImage(imgBack, new Rectangle(0, 0, m_bmpHoriz.Width, m_bmpHoriz.Height), new Rectangle(0, pt.Y, imgBack.Width, 1), GraphicsUnit.Pixel);
+            }
+
+            Pen p = new Pen(Color.FromArgb(64, 0, 0, 255), 1.0f);
+            p.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+            gimg.DrawLine(p, new Point(0, pt.Y), new Point(imgBack.Width, pt.Y));
+            gimg.DrawLine(p, new Point(pt.X, 0), new Point(pt.X, imgBack.Height));
+            p.Dispose();
+
+            m_ptMouseOld = m_ptMouse;
         }
     }
 }

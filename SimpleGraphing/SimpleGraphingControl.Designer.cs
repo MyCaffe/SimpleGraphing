@@ -45,12 +45,10 @@
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.pbImage);
-            this.toolStripContainer1.ContentPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1419, 810);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1064, 638);
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
-            this.toolStripContainer1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.toolStripContainer1.Name = "toolStripContainer1";
-            this.toolStripContainer1.Size = new System.Drawing.Size(1419, 810);
+            this.toolStripContainer1.Size = new System.Drawing.Size(1064, 658);
             this.toolStripContainer1.TabIndex = 0;
             this.toolStripContainer1.Text = "toolStripContainer1";
             // 
@@ -58,32 +56,32 @@
             // 
             this.pbImage.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pbImage.Location = new System.Drawing.Point(0, 0);
-            this.pbImage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pbImage.Name = "pbImage";
-            this.pbImage.Size = new System.Drawing.Size(1419, 810);
+            this.pbImage.Size = new System.Drawing.Size(1064, 638);
             this.pbImage.TabIndex = 0;
             this.pbImage.TabStop = false;
+            this.pbImage.Paint += new System.Windows.Forms.PaintEventHandler(this.pbImage_Paint);
+            this.pbImage.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pbImage_MouseMove);
             // 
             // hScrollBar1
             // 
             this.hScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.hScrollBar1.Location = new System.Drawing.Point(0, 814);
+            this.hScrollBar1.Location = new System.Drawing.Point(0, 661);
             this.hScrollBar1.Name = "hScrollBar1";
-            this.hScrollBar1.Size = new System.Drawing.Size(1415, 17);
+            this.hScrollBar1.Size = new System.Drawing.Size(1061, 17);
             this.hScrollBar1.TabIndex = 1;
             this.hScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar1_Scroll);
             // 
             // SimpleGraphingControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.hScrollBar1);
             this.Controls.Add(this.toolStripContainer1);
             this.DoubleBuffered = true;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "SimpleGraphingControl";
-            this.Size = new System.Drawing.Size(1419, 836);
+            this.Size = new System.Drawing.Size(1064, 679);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.SimpleGraphingControl_Paint);
             this.Resize += new System.EventHandler(this.SimpleGraphingControl_Resize);
             this.toolStripContainer1.ContentPanel.ResumeLayout(false);
