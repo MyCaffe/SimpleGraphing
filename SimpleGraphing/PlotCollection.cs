@@ -49,6 +49,12 @@ namespace SimpleGraphing
             return new Tuple<PlotCollection, PlotCollection>(p1, p2);
         }
 
+        public void SetMinMax()
+        {
+            m_dfMinVal = m_rgPlot.Min(p => p.Y_values.Min());
+            m_dfMaxVal = m_rgPlot.Max(p => p.Y_values.Max());
+        }
+
         public bool ExcludeFromMinMax
         {
             get { return m_bExcludeFromMinMax; }
