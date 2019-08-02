@@ -77,18 +77,26 @@ namespace SimpleGraphing
             double dfMin = m_gx.MinimumY;
             double dfMax = m_gx.MaximumY;
 
+            double dfLineMin = 0;
+            double dfLineMax = 0;
             bool bMin = false;
             bool bMax = false;
 
-            foreach (ConfigurationTargetLine line in m_config.TargetLines)
+            foreach (ConfigurationTargetLine line in config.TargetLines)
             {
                 if (line.Enabled)
                 {
                     if (line.LineType == ConfigurationTargetLine.LINE_TYPE.MIN)
+                    {
+                        dfLineMin = line.YValue;
                         bMin = true;
+                    }
 
                     else if (line.LineType == ConfigurationTargetLine.LINE_TYPE.MAX)
+                    {
+                        dfLineMax = line.YValue;
                         bMax = true;
+                    }
                 }
             }
 
@@ -99,12 +107,19 @@ namespace SimpleGraphing
                 data.GetAbsMinMax(0, out dfAbsMin, out dfAbsMax);
 
                 if (bMin)
+                {
                     dfMin = Math.Min(dfMin, dfAbsMin);
+                    dfMin = Math.Min(dfMin, dfLineMin);
+                }
 
                 if (bMax)
+                {
                     dfMax = Math.Max(dfMax, dfAbsMax);
+                    dfMax = Math.Max(dfMax, dfLineMax);
+                }
             }
 
+            m_gx.SetMinMax(dfMin, dfMax);
             m_gy.SetMinMax(dfMin, dfMax);
 
             return data;
@@ -117,7 +132,11 @@ namespace SimpleGraphing
             m_gx.Resize(nX, m_rcBounds.Bottom - m_gx.Height, nWidth - m_gy.Width, m_gx.Height);
             int nGxHeight = (m_gx.Configuration.Visible) ? m_gx.Bounds.Height : 0;
 
-            m_gy.SetMinMax(m_gx.MinimumY, m_gx.MaximumY);
+            if (m_gx.MinimumY == m_gx.MaximumY)
+                m_gy.SetMinMax(m_gx.AbsoluteMinimumY, m_gx.AbsoluteMaximumY);
+            else
+                m_gy.SetMinMax(m_gx.MinimumY, m_gx.MaximumY);
+
             m_gy.Resize(nX + nWidth - m_gy.Width, nY, m_gy.Width, nHeight - nGxHeight);
             m_plotArea.Resize(nX, nY, nWidth - m_gy.Bounds.Width, nHeight - nGxHeight);
         }
