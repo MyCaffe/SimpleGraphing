@@ -403,17 +403,21 @@ namespace SimpleGraphing
             }
         }
 
-        public void Add(Plot p)
+        public void Add(Plot p, bool bCalculateMinMax = true)
         {
             m_rgPlot.Add(p);
-            Plot last = getLast();
 
-            if (p.Active)
+            if (bCalculateMinMax)
             {
-                if (m_minmaxTarget == MINMAX_TARGET.VALUES)
-                    setMinMax(last, p.Y_values);
-                else
-                    setMinMax(last, new List<double>() { p.Count.GetValueOrDefault() });
+                Plot last = getLast();
+
+                if (p.Active)
+                {
+                    if (m_minmaxTarget == MINMAX_TARGET.VALUES)
+                        setMinMax(last, p.Y_values);
+                    else
+                        setMinMax(last, new List<double>() { p.Count.GetValueOrDefault() });
+                }
             }
         }
 
