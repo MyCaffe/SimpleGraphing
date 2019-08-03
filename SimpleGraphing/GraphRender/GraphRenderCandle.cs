@@ -30,6 +30,8 @@ namespace SimpleGraphing.GraphRender
             PlotCollection plots = dataset[m_config.DataIndexOnRender];
             List<int> rgX = m_gx.TickPositions;
             int nStartIdx = m_gx.StartPosition;
+            Dictionary<Color, Pen> rgPens = new Dictionary<Color, Pen>();
+            Dictionary<Color, Brush> rgBrushes = new Dictionary<Color, Brush>();
 
             for (int i = 0; i < rgX.Count; i++)
             {
@@ -42,9 +44,6 @@ namespace SimpleGraphing.GraphRender
 
                     if (plot.Active)
                     {
-                        if (i == rgX.Count - 1)
-                            Trace.WriteLine("end");
-
                         float fOpen = (float)plot.Y_values[0];
                         float fHigh = (float)plot.Y_values[1];
                         float fLow = (float)plot.Y_values[2];
@@ -74,8 +73,14 @@ namespace SimpleGraphing.GraphRender
 
                         RectangleF rc = new RectangleF(fX1, fTop1, fWid - 1, fHt);
 
-                        Brush brFill = new SolidBrush(clrFill);
-                        Pen pLine = new Pen(clrLine, 1.0f);
+                        if (!rgPens.ContainsKey(clrLine))
+                            rgPens.Add(clrLine, new Pen(clrLine, 1.0f));
+
+                        if (!rgBrushes.ContainsKey(clrFill))
+                            rgBrushes.Add(clrFill, new SolidBrush(clrFill));
+
+                        Pen pLine = rgPens[clrLine];
+                        Brush brFill = rgBrushes[clrFill];
 
                         float fTop2 = Math.Min(fTop, fBottom);
                         float fBottom2 = Math.Max(fTop, fBottom);
@@ -86,6 +91,16 @@ namespace SimpleGraphing.GraphRender
                         g.DrawRectangle(pLine, rc.X, rc.Y, rc.Width, rc.Height);
                     }
                 }
+            }
+
+            foreach (KeyValuePair<Color, Pen> kv in rgPens)
+            {
+                kv.Value.Dispose();
+            }
+
+            foreach (KeyValuePair<Color, Brush> kv in rgBrushes)
+            {
+                kv.Value.Dispose();
             }
         }
     }
