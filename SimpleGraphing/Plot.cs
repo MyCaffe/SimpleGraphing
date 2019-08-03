@@ -15,6 +15,7 @@ namespace SimpleGraphing
         bool m_bLookaheadActive = true;
         string m_strName;
         List<double> m_rgdfY = new List<double>();
+        long? m_lCount = null;
         double m_dfX;
         int m_nIdxPrimaryY = 0;
         object m_tag = null;
@@ -43,6 +44,19 @@ namespace SimpleGraphing
             m_bAction2Active = bAction2Active;
         }
 
+        public Plot(double dfX, List<double> rgdfY, long lCount, string strName = null, bool bActive = true, int nIdx = 0, bool bAction1Active = false, bool bAction2Active = false)
+        {
+            m_strName = strName;
+            m_lCount = lCount;
+            m_dfX = dfX;
+            m_rgdfY = new List<double>(rgdfY);
+            m_bActive = bActive;
+            m_nIdxPrimaryY = rgdfY.Count - 1;
+            m_nIndex = nIdx;
+            m_bAction1Active = bAction1Active;
+            m_bAction2Active = bAction2Active;
+        }
+
         public bool Compare(Plot p)
         {
             if (m_nIndex != p.Index)
@@ -55,6 +69,9 @@ namespace SimpleGraphing
                 return false;
 
             if (m_bAction2Active != p.Action2Active)
+                return false;
+
+            if (m_lCount != p.m_lCount)
                 return false;
 
             if (m_dfX != p.X)
@@ -85,6 +102,7 @@ namespace SimpleGraphing
             p.Action1Active = Action1Active;
             p.Action2Active = Action2Active;
             p.LookaheadActive = LookaheadActive;
+            p.Count = Count;
             p.m_tag = m_tag;
             return p;
         }
@@ -99,6 +117,12 @@ namespace SimpleGraphing
         {
             get { return m_strName; }
             set { m_strName = value; }
+        }
+
+        public long? Count
+        {
+            get { return m_lCount; }
+            set { m_lCount = value; }
         }
 
         public double X

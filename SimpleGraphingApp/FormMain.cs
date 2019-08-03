@@ -139,8 +139,9 @@ namespace SimpleGraphingApp
                         double dfH = Math.Max(dfO, dfC) + (Math.Abs(dfC - dfO) * m_random.NextDouble());
                         double dfL = Math.Min(dfO, dfC) - (Math.Abs(dfC - dfO) * m_random.NextDouble());
                         List<double> rgdfVal = new List<double>() { dfO, dfH, dfL, dfC };
+                        long lVol = m_random.Next(10000);
 
-                        plots.Add(new Plot(dfTime, rgdfVal));
+                        plots.Add(new Plot(dfTime, rgdfVal, lVol));
 
                         dtStart += TimeSpan.FromDays(1);
                         dfTime = dtStart.ToFileTime();
@@ -223,6 +224,16 @@ namespace SimpleGraphingApp
                     frame.TargetLines.Add(new ConfigurationTargetLine(70, Color.Green));
                     frame.YAxis.InitialMaximum = 100;
                     frame.YAxis.InitialMinimum = 0;
+                }
+                else if (i == 2)
+                {
+                    frame.Visible = true;
+                    frame.Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.VOLUME;
+                    frame.Plots[0].LineColor = Color.Blue;
+                    frame.Plots[0].LineWidth = 1.0f;
+                    frame.Plots[0].PlotFillColor = Color.Transparent;
+                    frame.Plots[0].PlotLineColor = Color.Transparent;
+                    frame.MinMaxTarget = PlotCollection.MINMAX_TARGET.COUNT;
                 }
                 else
                 {

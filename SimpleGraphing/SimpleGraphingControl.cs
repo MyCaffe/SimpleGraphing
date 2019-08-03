@@ -312,7 +312,11 @@ namespace SimpleGraphing
 
         private void pbImage_Paint(object sender, PaintEventArgs e)
         {
-            m_crosshairs.HandlePaint(e, pbImage.Image);
+            if (DesignMode)
+                return;
+
+            if (m_crosshairs != null)
+                m_crosshairs.HandlePaint(e, pbImage.Image);
 
             if (OnUserPaint != null)
                 OnUserPaint(sender, e);
@@ -320,7 +324,11 @@ namespace SimpleGraphing
 
         private void pbImage_MouseMove(object sender, MouseEventArgs e)
         {
-            m_crosshairs.HandleMouseMove(e, pbImage);
+            if (DesignMode)
+                return;
+
+            if (m_crosshairs != null)
+                m_crosshairs.HandleMouseMove(e, pbImage);
 
             if (OnUserMouseMove != null)
                 OnUserMouseMove(sender, e);

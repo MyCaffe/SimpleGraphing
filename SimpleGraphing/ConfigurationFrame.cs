@@ -26,6 +26,7 @@ namespace SimpleGraphing
         string m_strName = "";
         bool m_bVisible = true;
         double m_dfMarginPercent = 0.0;
+        PlotCollection.MINMAX_TARGET m_minmaxTarget = PlotCollection.MINMAX_TARGET.VALUES;
 
         public ConfigurationFrame()
         {
@@ -78,6 +79,9 @@ namespace SimpleGraphing
             if (m_bVisible != c.m_bVisible)
                 return false;
 
+            if (m_minmaxTarget != c.m_minmaxTarget)
+                return false;
+
             return true;
         }
 
@@ -91,6 +95,12 @@ namespace SimpleGraphing
         {
             get { return m_bVisible; }
             set { m_bVisible = value; }
+        }
+
+        public PlotCollection.MINMAX_TARGET MinMaxTarget
+        {
+            get { return m_minmaxTarget; }
+            set { m_minmaxTarget = value; }
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
@@ -236,6 +246,14 @@ namespace SimpleGraphing
             m_fontTitle = (Font)info.GetValue("fontTitle", typeof(Font));
             m_strName = info.GetString("name");
             m_bVisible = info.GetBoolean("visible");
+
+            try
+            {
+                m_minmaxTarget = (PlotCollection.MINMAX_TARGET)info.GetInt32("minmax_target");
+            }
+            catch (Exception)
+            {
+            }
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -263,6 +281,7 @@ namespace SimpleGraphing
             info.AddValue("fontTitle", m_fontTitle, typeof(Font));
             info.AddValue("name", m_strName);
             info.AddValue("visible", m_bVisible);
+            info.AddValue("minmax_target", (int)m_minmaxTarget);
         }
 
         public void Serialize(SerializeToXml ser)
@@ -274,6 +293,7 @@ namespace SimpleGraphing
             ser.Add("TitleFont", m_fontTitle);
             ser.Add("Name", m_strName);
             ser.Add("Visible", m_bVisible);
+            ser.Add("MinMaxTarget", (int)m_minmaxTarget);
 
             foreach (ConfigurationPlot plot in m_rgPlots)
             {

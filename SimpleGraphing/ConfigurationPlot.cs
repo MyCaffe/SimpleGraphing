@@ -50,7 +50,8 @@ namespace SimpleGraphing
             CANDLE,
             RSI,
             HIGHLOW,
-            CUSTOM
+            CUSTOM,
+            VOLUME
         }
 
         public ConfigurationPlot()
