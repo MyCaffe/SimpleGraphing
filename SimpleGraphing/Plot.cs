@@ -19,6 +19,7 @@ namespace SimpleGraphing
         double m_dfX;
         int m_nIdxPrimaryY = 0;
         object m_tag = null;
+        Dictionary<string, double> m_rgPrams = null;
 
         public Plot(double dfX, double dfY, string strName = null, bool bActive = true, int nIdx = 0, bool bAction1Active = false, bool bAction2Active = false)
         {
@@ -93,6 +94,36 @@ namespace SimpleGraphing
         {
             get { return m_tag; }
             set { m_tag = value; }
+        }
+
+        public void SetParameter(string strParam, double df)
+        {
+            if (m_rgPrams == null)
+                m_rgPrams = new Dictionary<string, double>();
+
+            if (!m_rgPrams.ContainsKey(strParam))
+                m_rgPrams.Add(strParam, df);
+            else
+                m_rgPrams[strParam] = df;
+        }
+
+        public double? GetParameter(string strParam)
+        {
+            if (m_rgPrams == null)
+                m_rgPrams = new Dictionary<string, double>();
+
+            if (!m_rgPrams.ContainsKey(strParam))
+                return null;
+
+            return m_rgPrams[strParam];
+        }
+
+        public void DeleteParameter(string strParam)
+        {
+            if (m_rgPrams == null)
+                return;
+
+            m_rgPrams.Remove(strParam);
         }
 
         public Plot Clone(List<double> rgY, bool bActive, int nPrimaryIdx)
