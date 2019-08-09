@@ -35,6 +35,19 @@ namespace SimpleGraphing
             m_strName = strName;
         }
 
+        public void TransferParameters(PlotCollection col, string strParam)
+        {
+            for (int i = 0; i < m_rgPlot.Count; i++)
+            {
+                double? dfVal = m_rgPlot[i].GetParameter(strParam);
+                if (dfVal.HasValue)
+                {
+                    col[i].SetParameter(strParam, dfVal.Value);
+                    m_rgPlot[i].DeleteParameter(strParam);
+                }
+            }
+        }
+
         public Tuple<PlotCollection, PlotCollection> Split(int nCount)
         {
             PlotCollection p1 = new PlotCollection(m_strName + " 1", m_nMax, m_dfXIncrement);
