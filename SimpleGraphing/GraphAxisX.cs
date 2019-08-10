@@ -75,9 +75,6 @@ namespace SimpleGraphing
                     m_rgTickPositions.Insert(0, x);
             }
 
-            if (m_data.Count > 0)
-                m_data.GetMinMaxOverWindow(m_nStartPosition, m_rgTickPositions.Count, out m_dfMin, out m_dfMinY, out m_dfMax, out m_dfMaxY, out m_dfAbsMinY, out m_dfAbsMaxY);
-
             m_rgTickValues = new List<string>();
 
             if (m_data.Count == 0)
@@ -93,6 +90,15 @@ namespace SimpleGraphing
 
                 if (m_rgTickValues.Count == m_rgTickPositions.Count)
                     break;
+            }
+
+            if (m_data.Count > 0)
+            {
+                int nCount = m_rgTickPositions.Count;
+                if (nCount == 0)
+                    nCount = m_data[0].Count;
+
+                m_data.GetMinMaxOverWindow(m_nStartPosition, m_rgTickPositions.Count, out m_dfMin, out m_dfMinY, out m_dfMax, out m_dfMaxY, out m_dfAbsMinY, out m_dfAbsMaxY);
             }
         }
 
