@@ -38,6 +38,8 @@ namespace SimpleGraphing.GraphData
             double dfInc = 1.0 / m_config.Interval;
             int nCount = 0;
 
+            MinMax minmax = new MinMax();
+
             for (int i = 0; i < data.Count; i++)
             {
                 bool bActive = data[i].Active;
@@ -57,6 +59,8 @@ namespace SimpleGraphing.GraphData
                         data1.Add(data[i].X, dfSma, true, data[i].Index);
                     }
 
+                    minmax.Add(dfSma);
+
                     nCount++;
                 }
                 else
@@ -64,6 +68,8 @@ namespace SimpleGraphing.GraphData
                     data1.Add(data[i].X, data[i].Y, false, data[i].Index);
                 }
             }
+
+            data1.SetMinMax(minmax);
 
             return new PlotCollectionSet(new List<PlotCollection>() { data1 });
         }

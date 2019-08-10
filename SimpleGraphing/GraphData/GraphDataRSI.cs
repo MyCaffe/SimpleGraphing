@@ -57,6 +57,8 @@ namespace SimpleGraphing.GraphData
             List<double> rgLoss = new List<double>();
             double dfRSI = 0;
 
+            MinMax minmax = new MinMax();
+
             data1.Add(new Plot(data[0].X, 0, null, false, data[0].Index, data[0].Action1Active));
 
             for (int i = 1; i < data.Count; i++)
@@ -96,7 +98,10 @@ namespace SimpleGraphing.GraphData
                 }
 
                 data1.Add(new Plot(data[i].X, dfRSI, null, bActive, data[i].Index, data[i].Action1Active, data[i].Action2Active));
+                minmax.Add(dfRSI);
             }
+
+            data1.SetMinMax(minmax);
 
             return new PlotCollectionSet(new List<PlotCollection>() { data1 });
         }

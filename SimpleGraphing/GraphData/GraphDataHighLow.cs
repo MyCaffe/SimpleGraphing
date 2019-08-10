@@ -99,6 +99,8 @@ namespace SimpleGraphing.GraphData
             if (rgActive.Count < 3)
                 return null;
 
+            MinMax minmax = new MinMax();
+
             int nIdx = 1;
             for (int i = 0; i < data.Count; i++)
             {
@@ -121,6 +123,8 @@ namespace SimpleGraphing.GraphData
                     if (dfHigh1 > dfHigh0 && dfHigh1 > dfHigh2)
                         bHigh = true;
 
+                    minmax.Add(dfHigh1);
+
                     dataHigh.Add(new Plot(data[nIdxCurrent].X, dfHigh1, null, bHigh, data[nIdxCurrent].Index));
                     nIdx++;
                 }
@@ -129,6 +133,8 @@ namespace SimpleGraphing.GraphData
                     dataHigh.Add(new Plot(data[i].X, data[i].Y_values[nHigh], null, false, data[i].Index));
                 }
             }
+
+            dataHigh.SetMinMax(minmax);
 
             return dataHigh;
         }
@@ -163,6 +169,8 @@ namespace SimpleGraphing.GraphData
             if (rgActive.Count < 3)
                 return null;
 
+            MinMax minmax = new MinMax();
+
             int nIdx = 1;
             for (int i = 0; i < data.Count; i++)
             {
@@ -185,6 +193,8 @@ namespace SimpleGraphing.GraphData
                     if (dfLow1 < dfLow0 && dfLow1 < dfLow2)
                         bLow = true;
 
+                    minmax.Add(dfLow1);
+
                     dataLow.Add(new Plot(data[nIdxCurrent].X, dfLow1, null, bLow, data[nIdxCurrent].Index));
                     nIdx++;
                 }
@@ -193,6 +203,8 @@ namespace SimpleGraphing.GraphData
                     dataLow.Add(new Plot(data[i].X, data[i].Y_values[nLow], null, false, data[i].Index));
                 }
             }
+
+            dataLow.SetMinMax(minmax);
 
             return dataLow;
         }
