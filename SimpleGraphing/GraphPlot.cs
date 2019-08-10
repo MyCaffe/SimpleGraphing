@@ -221,9 +221,32 @@ namespace SimpleGraphing
 
         public GraphPlotStyle(ConfigurationPlot c)
         {
-            m_brPlotFill = new SolidBrush(c.PlotFillColor);
-            m_penPlotLine = new Pen(c.PlotLineColor, c.LineWidth);
-            m_penLine = new Pen(c.LineColor, c.LineWidth);
+            if (c.Transparency > 0)
+            {
+                double dfTransparency = c.Transparency;
+
+                if (dfTransparency < 0)
+                    dfTransparency = 0;
+
+                if (dfTransparency > 1)
+                    dfTransparency = 1;
+
+                int nAlpha = (int)(255 * (1.0 - dfTransparency));
+
+                Color clrPlotFill = Color.FromArgb(nAlpha, c.PlotFillColor);
+                Color clrPlotLine = Color.FromArgb(nAlpha, c.PlotLineColor);
+                Color clrLine = Color.FromArgb(nAlpha, c.LineColor);
+
+                m_brPlotFill = new SolidBrush(clrPlotFill);
+                m_penPlotLine = new Pen(clrPlotLine, c.LineWidth);
+                m_penLine = new Pen(clrLine, c.LineWidth);
+            }
+            else
+            {
+                m_brPlotFill = new SolidBrush(c.PlotFillColor);
+                m_penPlotLine = new Pen(c.PlotLineColor, c.LineWidth);
+                m_penLine = new Pen(c.LineColor, c.LineWidth);
+            }
         }
 
         public Brush PlotFillBrush
