@@ -79,6 +79,7 @@ namespace SimpleGraphing
         {
             PlotCollectionSet data1 = new PlotCollectionSet();
 
+            data.SetMinMax();
             data.GetAbsMinMax(0, out m_dfAbsMinY, out m_dfAbsMaxY);
 
             foreach (ConfigurationTargetLine line in config.TargetLines)
@@ -122,15 +123,15 @@ namespace SimpleGraphing
 
             m_rgPlots = new SimpleGraphing.GraphPlotCollection();
 
-            int nDataPlotCount = 0;
-            for (int i = 0; i < plots.Count; i++)
-            {
-                if (!plots[i].VirtualPlot && plots[i].Visible)
-                    nDataPlotCount++;
-            }
+            //int nDataPlotCount = 0;
+            //for (int i = 0; i < plots.Count; i++)
+            //{
+            //    if (!plots[i].VirtualPlot && plots[i].Visible)
+            //        nDataPlotCount++;
+            //}
 
-            if (data.Count < nDataPlotCount)
-                throw new Exception("The plot configuration count must equal the plot collection set count.");
+            //if (data.Count < nDataPlotCount)
+            //    throw new Exception("The plot configuration count must equal the plot collection set count.");
 
             m_rgData = new PlotCollectionSet();
             m_rgData.Add(data);
