@@ -145,6 +145,7 @@ namespace SimpleGraphing
             return true;
         }
 
+        [Description("Specifies the transparency as a % value within the range [0.0,1.0]")]
         public double Transparency
         {
             get { return m_dfTransparency; }
