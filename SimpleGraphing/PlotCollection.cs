@@ -25,7 +25,8 @@ namespace SimpleGraphing
         public enum MINMAX_TARGET
         {
             VALUES,
-            COUNT
+            COUNT,
+            PARAMS
         }
 
         public PlotCollection(string strName, int nMax = int.MaxValue, double dfXInc = 1.0)
@@ -33,6 +34,27 @@ namespace SimpleGraphing
             m_nMax = nMax;
             m_dfXIncrement = dfXInc;
             m_strName = strName;
+        }
+
+        public PlotCollection Clone()
+        {
+            PlotCollection col = new PlotCollection(m_strName, m_nMax, m_dfXIncrement);
+
+            col.m_strSrcName = m_strSrcName;
+            col.m_dfXPosition = m_dfXPosition;
+            col.m_dfMinVal = m_dfMinVal;
+            col.m_dfMaxVal = m_dfMaxVal;
+            col.m_tag = m_tag;
+            col.m_dfCalculatedEndY = m_dfCalculatedEndY;
+            col.m_bExcludeFromMinMax = m_bExcludeFromMinMax;
+            col.m_minmaxTarget = m_minmaxTarget;
+
+            foreach (Plot p in m_rgPlot)
+            {
+                col.Add(p.Clone());
+            }
+
+            return col;
         }
 
         public void TransferParameters(PlotCollection col, string strParam)
@@ -99,16 +121,30 @@ namespace SimpleGraphing
 
         public void SetMinMax()
         {
+            if (m_rgPlot.Count <= 1)
+                return;
+
             if (m_minmaxTarget == MINMAX_TARGET.VALUES)
             {
                 m_dfMinVal = m_rgPlot.Min(p => p.Y_values.Min());
                 m_dfMaxVal = m_rgPlot.Max(p => p.Y_values.Max());
             }
-            else
+            else if (m_minmaxTarget == MINMAX_TARGET.COUNT)
             {
                 m_dfMinVal = m_rgPlot.Min(p => p.Count.GetValueOrDefault());
                 m_dfMaxVal = m_rgPlot.Max(p => p.Count.GetValueOrDefault());
             }
+            else
+            {
+                m_dfMinVal = 0;
+                m_dfMaxVal = 1;
+            }
+        }
+
+        public void SetMinMax(MinMax minmax)
+        {
+            m_dfMinVal = minmax.Min;
+            m_dfMaxVal = minmax.Max;
         }
 
         public bool ExcludeFromMinMax
@@ -230,12 +266,18 @@ namespace SimpleGraphing
 
                     if (m_minmaxTarget == MINMAX_TARGET.VALUES)
                         dfValY = m_rgPlot[nIdx].Y;
-                    else
+                    else if (m_minmaxTarget == MINMAX_TARGET.COUNT)
                         dfValY = m_rgPlot[nIdx].Count.GetValueOrDefault();
 
                     dfMinY = Math.Min(dfMinY, dfValY);
                     dfMaxY = Math.Max(dfMaxY, dfValY);
                 }
+            }
+
+            if (m_minmaxTarget == MINMAX_TARGET.PARAMS)
+            {
+                dfMinY = 0.0;
+                dfMaxY = 1.0;
             }
         }
 
@@ -334,7 +376,7 @@ namespace SimpleGraphing
                     }
                 }
             }
-            else
+            else if (m_minmaxTarget == MINMAX_TARGET.COUNT)
             {
                 double dfMin0 = last.Count.GetValueOrDefault();
                 double dfMax0 = last.Count.GetValueOrDefault();
@@ -368,6 +410,11 @@ namespace SimpleGraphing
                         m_dfMaxVal = Math.Max(m_dfMaxVal, m_rgPlot[i].Count.GetValueOrDefault());
                     }
                 }
+            }
+            else
+            {
+                m_dfMinVal = 0;
+                m_dfMaxVal = 1;
             }
         }
 
@@ -419,7 +466,7 @@ namespace SimpleGraphing
             {
                 if (m_minmaxTarget == MINMAX_TARGET.VALUES)
                     setMinMax(last, rgdfY);
-                else
+                else if (m_minmaxTarget == MINMAX_TARGET.COUNT)
                     setMinMax(last, new List<double>() { lCount });
             }
         }
@@ -433,7 +480,7 @@ namespace SimpleGraphing
             {
                 if (m_minmaxTarget == MINMAX_TARGET.VALUES)
                     setMinMax(last, rgdfY);
-                else
+                else if (m_minmaxTarget == MINMAX_TARGET.COUNT)
                     setMinMax(last, new List<double>() { lCount });
             }
         }
@@ -450,8 +497,10 @@ namespace SimpleGraphing
                 {
                     if (m_minmaxTarget == MINMAX_TARGET.VALUES)
                         setMinMax(last, p.Y_values);
-                    else
+                    else if (m_minmaxTarget == MINMAX_TARGET.COUNT)
                         setMinMax(last, new List<double>() { p.Count.GetValueOrDefault() });
+                    else
+                        setMinMax(last, null);
                 }
             }
         }

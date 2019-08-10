@@ -26,6 +26,28 @@ namespace SimpleGraphing
             }
         }
 
+        public PlotCollectionSet Clone()
+        {
+            PlotCollectionSet col = new PlotCollectionSet();
+
+            col.m_dfMarginPct = m_dfMarginPct;
+
+            foreach (PlotCollection pc in m_rgSet)
+            {
+                col.Add(pc.Clone());
+            }
+
+            return col;
+        }
+
+        public void SetMinMax()
+        {
+            foreach (PlotCollection pc in m_rgSet)
+            {
+                pc.SetMinMax();
+            }
+        }
+
         private int findStart(PlotCollectionSet set, params string[] rgstrContains)
         {
             for (int i = 0; i < set.Count; i++)
@@ -132,8 +154,16 @@ namespace SimpleGraphing
             {
                 if (!m_rgSet[i].ExcludeFromMinMax)
                 {
-                    dfAbsMinY = Math.Min(dfAbsMinY, m_rgSet[i].AbsoluteMinYVal);
-                    dfAbsMaxY = Math.Max(dfAbsMaxY, m_rgSet[i].AbsoluteMaxYVal);
+                    if (m_rgSet[i].MinMaxTarget == PlotCollection.MINMAX_TARGET.PARAMS)
+                    {
+                        dfAbsMinY = 0;
+                        dfAbsMaxY = 1;
+                    }
+                    else
+                    {
+                        dfAbsMinY = Math.Min(dfAbsMinY, m_rgSet[i].AbsoluteMinYVal);
+                        dfAbsMaxY = Math.Max(dfAbsMaxY, m_rgSet[i].AbsoluteMaxYVal);
+                    }
                 }
             }
         }

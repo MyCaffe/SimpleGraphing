@@ -126,6 +126,11 @@ namespace SimpleGraphing
             m_rgPrams.Remove(strParam);
         }
 
+        public Plot Clone()
+        {
+            return Clone(m_rgdfY, m_bActive, m_nIdxPrimaryY);
+        }
+
         public Plot Clone(List<double> rgY, bool bActive, int nPrimaryIdx)
         {
             Plot p = new Plot(m_dfX, rgY, m_strName, bActive, m_nIndex);
@@ -135,6 +140,15 @@ namespace SimpleGraphing
             p.LookaheadActive = LookaheadActive;
             p.Count = Count;
             p.m_tag = m_tag;
+
+            if (m_rgPrams != null)
+            {
+                foreach (KeyValuePair<string, double> kv in m_rgPrams)
+                {
+                    p.SetParameter(kv.Key, kv.Value);
+                }
+            }
+
             return p;
         }
 
