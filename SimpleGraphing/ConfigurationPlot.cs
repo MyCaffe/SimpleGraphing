@@ -24,6 +24,7 @@ namespace SimpleGraphing
         Color m_clrFlag = Color.Cyan;
         Color m_clrFlagBorder = Color.Black;
         Color m_clrFlagText = Color.Black;
+        string m_strDataParam = null;
         int m_nDataIdx = 0;
         int m_nDataIdxOnRender = 0;
         string m_strDataName = null;
@@ -35,6 +36,7 @@ namespace SimpleGraphing
         bool m_bExcludeFromMinMax = false;
         bool m_bLookaheadActive = true;
         double m_dfMarginPercent = 0;
+        double m_dfTransparency = 0;
 
         [NonSerialized]
         Guid? m_guid = null;
@@ -134,7 +136,19 @@ namespace SimpleGraphing
             if (m_bLookaheadActive != c.m_bLookaheadActive)
                 return false;
 
+            if (m_strDataParam != c.m_strDataParam)
+                return false;
+
+            if (m_dfTransparency != c.m_dfTransparency)
+                return false;
+
             return true;
+        }
+
+        public double Transparency
+        {
+            get { return m_dfTransparency; }
+            set { m_dfTransparency = value; }
         }
 
         public bool LookaheadActive
@@ -232,6 +246,12 @@ namespace SimpleGraphing
             set { m_clrFlagText = value; }
         }
 
+        public string DataParam
+        {
+            get { return m_strDataParam; }
+            set { m_strDataParam = value; }
+        }
+
         public int DataIndex
         {
             get { return m_nDataIdx; }
@@ -295,6 +315,8 @@ namespace SimpleGraphing
             ser.Add("ActionActive2Color", m_clrAction2Active);
             ser.Add("ActionActiveColorAlpha", m_nActionActiveAlpha);
             ser.Add("LookaheadActive", m_bLookaheadActive);
+            ser.Add("DataParam", m_strDataParam);
+            ser.Add("Transparency", m_dfTransparency);
             ser.Close();
         }
 

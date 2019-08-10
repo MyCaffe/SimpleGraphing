@@ -117,6 +117,10 @@ namespace SimpleGraphingApp
             DateTime dtStart = DateTime.Today - TimeSpan.FromDays(nCount);
             double dfTimeStart = dtStart.ToFileTime();
             PlotCollection plotsLast = null;
+            bool bEnableOverlay = false;
+
+            if (sender == candleWithOverlayToolStripMenuItem)
+                bEnableOverlay = true;
 
             for (int i = 0; i < 4; i++)
             {
@@ -141,7 +145,12 @@ namespace SimpleGraphingApp
                         List<double> rgdfVal = new List<double>() { dfO, dfH, dfL, dfC };
                         long lVol = m_random.Next(10000);
 
-                        plots.Add(new Plot(dfTime, rgdfVal, lVol));
+                        Plot p = new Plot(dfTime, rgdfVal, lVol);
+
+                        if (bEnableOverlay)
+                            p.SetParameter("cos", Math.Cos(j));
+
+                        plots.Add(p);
 
                         dtStart += TimeSpan.FromDays(1);
                         dfTime = dtStart.ToFileTime();
@@ -158,7 +167,7 @@ namespace SimpleGraphingApp
                     plotsLast = null;
             }
 
-            configureCandleCharts();
+            configureCandleCharts(bEnableOverlay);
 
             updateGraph(rgSet);
         }
@@ -171,7 +180,7 @@ namespace SimpleGraphingApp
             simpleGraphingControl1.ScrollToEnd(true);
         }
 
-        private void configureCandleCharts()
+        private void configureCandleCharts(bool bEnableOverlay)
         {
             timerData.Enabled = false;
             toolStrip1.Visible = true;
@@ -193,6 +202,8 @@ namespace SimpleGraphingApp
                         if (frame.Plots[j].PlotType == ConfigurationPlot.PLOTTYPE.CUSTOM)
                             frame.Plots[j].Visible = true;
                     }
+
+                    frame.Plots[4].Visible = bEnableOverlay;
                 }
                 else if (i == 1)
                 {

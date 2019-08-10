@@ -37,6 +37,7 @@
             this.showDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.candleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.candleWithOverlayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.enableActionStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -49,9 +50,9 @@
             this.btnStepPrev = new System.Windows.Forms.ToolStripButton();
             this.btnStepNext = new System.Windows.Forms.ToolStripButton();
             this.btnReDraw = new System.Windows.Forms.ToolStripButton();
+            this.btnCrossHairs = new System.Windows.Forms.ToolStripButton();
             this.timerUI = new System.Windows.Forms.Timer(this.components);
             this.timerData = new System.Windows.Forms.Timer(this.components);
-            this.btnCrossHairs = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -101,48 +102,56 @@
             // 
             this.showDataToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.lineToolStripMenuItem,
-            this.candleToolStripMenuItem});
+            this.candleToolStripMenuItem,
+            this.candleWithOverlayToolStripMenuItem});
             this.showDataToolStripMenuItem.Name = "showDataToolStripMenuItem";
-            this.showDataToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.showDataToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.showDataToolStripMenuItem.Text = "&Show Data";
             // 
             // lineToolStripMenuItem
             // 
             this.lineToolStripMenuItem.Name = "lineToolStripMenuItem";
-            this.lineToolStripMenuItem.Size = new System.Drawing.Size(111, 22);
+            this.lineToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.lineToolStripMenuItem.Text = "Line";
             this.lineToolStripMenuItem.Click += new System.EventHandler(this.lineToolStripMenuItem_Click);
             // 
             // candleToolStripMenuItem
             // 
             this.candleToolStripMenuItem.Name = "candleToolStripMenuItem";
-            this.candleToolStripMenuItem.Size = new System.Drawing.Size(111, 22);
+            this.candleToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.candleToolStripMenuItem.Text = "Candle";
             this.candleToolStripMenuItem.Click += new System.EventHandler(this.candleToolStripMenuItem_Click);
+            // 
+            // candleWithOverlayToolStripMenuItem
+            // 
+            this.candleWithOverlayToolStripMenuItem.Name = "candleWithOverlayToolStripMenuItem";
+            this.candleWithOverlayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.candleWithOverlayToolStripMenuItem.Text = "Candle with Overlay";
+            this.candleWithOverlayToolStripMenuItem.Click += new System.EventHandler(this.candleToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(172, 6);
             // 
             // enableActionStripMenuItem
             // 
             this.enableActionStripMenuItem.Name = "enableActionStripMenuItem";
-            this.enableActionStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.enableActionStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.enableActionStripMenuItem.Text = "Enable Action";
             this.enableActionStripMenuItem.Click += new System.EventHandler(this.enableActionStripMenuItem_Click);
             // 
             // movingAveragesToolStripMenuItem
             // 
             this.movingAveragesToolStripMenuItem.Name = "movingAveragesToolStripMenuItem";
-            this.movingAveragesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.movingAveragesToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.movingAveragesToolStripMenuItem.Text = "Moving Averages...";
             this.movingAveragesToolStripMenuItem.Click += new System.EventHandler(this.movingAveragesToolStripMenuItem_Click);
             // 
@@ -152,7 +161,7 @@
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.simpleGraphingControl1);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(762, 907);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(762, 932);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 24);
             this.toolStripContainer1.Name = "toolStripContainer1";
@@ -172,7 +181,7 @@
             this.simpleGraphingControl1.Location = new System.Drawing.Point(0, 0);
             this.simpleGraphingControl1.Name = "simpleGraphingControl1";
             this.simpleGraphingControl1.ShowScrollBar = true;
-            this.simpleGraphingControl1.Size = new System.Drawing.Size(762, 907);
+            this.simpleGraphingControl1.Size = new System.Drawing.Size(762, 932);
             this.simpleGraphingControl1.TabIndex = 0;
             this.simpleGraphingControl1.Load += new System.EventHandler(this.simpleGraphingControl1_Load);
             // 
@@ -188,7 +197,7 @@
             this.btnCrossHairs});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(181, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(150, 25);
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Visible = false;
             // 
@@ -247,17 +256,6 @@
             this.btnReDraw.Text = "Re-draw";
             this.btnReDraw.Click += new System.EventHandler(this.btnReDraw_Click);
             // 
-            // timerUI
-            // 
-            this.timerUI.Enabled = true;
-            this.timerUI.Interval = 250;
-            this.timerUI.Tick += new System.EventHandler(this.timerUI_Tick);
-            // 
-            // timerData
-            // 
-            this.timerData.Interval = 1000;
-            this.timerData.Tick += new System.EventHandler(this.timerData_Tick);
-            // 
             // btnCrossHairs
             // 
             this.btnCrossHairs.Checked = true;
@@ -270,6 +268,17 @@
             this.btnCrossHairs.Size = new System.Drawing.Size(23, 22);
             this.btnCrossHairs.Text = "Enable Crosshairs";
             this.btnCrossHairs.Click += new System.EventHandler(this.btnCrossHairs_Click);
+            // 
+            // timerUI
+            // 
+            this.timerUI.Enabled = true;
+            this.timerUI.Interval = 250;
+            this.timerUI.Tick += new System.EventHandler(this.timerUI_Tick);
+            // 
+            // timerData
+            // 
+            this.timerData.Interval = 1000;
+            this.timerData.Tick += new System.EventHandler(this.timerData_Tick);
             // 
             // FormMain
             // 
@@ -320,5 +329,6 @@
         private System.Windows.Forms.ToolStripButton btnReDraw;
         private System.Windows.Forms.ToolStripMenuItem enableActionStripMenuItem;
         private System.Windows.Forms.ToolStripButton btnCrossHairs;
+        private System.Windows.Forms.ToolStripMenuItem candleWithOverlayToolStripMenuItem;
     }
 }

@@ -48,6 +48,28 @@ namespace SimpleGraphing
             }
         }
 
+        public void GetParamMinMax(string strParam, out double dfMin, out double dfMax)
+        {
+            dfMin = double.MaxValue;
+            dfMax = -double.MaxValue;
+
+            if (string.IsNullOrEmpty(strParam))
+                return;
+
+            for (int i = 0; i < m_rgPlot.Count; i++)
+            {
+                if (m_rgPlot[i].Active)
+                {
+                    double? dfP = m_rgPlot[i].GetParameter(strParam);
+                    if (dfP.HasValue)
+                    {
+                        dfMin = Math.Min(dfMin, dfP.Value);
+                        dfMax = Math.Max(dfMax, dfP.Value);
+                    }
+                }
+            }
+        }
+
         public Tuple<PlotCollection, PlotCollection> Split(int nCount)
         {
             PlotCollection p1 = new PlotCollection(m_strName + " 1", m_nMax, m_dfXIncrement);
