@@ -85,8 +85,11 @@ namespace SimpleGraphing
                     double? dfP = m_rgPlot[i].GetParameter(strParam);
                     if (dfP.HasValue)
                     {
-                        dfMin = Math.Min(dfMin, dfP.Value);
-                        dfMax = Math.Max(dfMax, dfP.Value);
+                        if (!double.IsNaN(dfP.Value) && !double.IsInfinity(dfP.Value))
+                        {
+                            dfMin = Math.Min(dfMin, dfP.Value);
+                            dfMax = Math.Max(dfMax, dfP.Value);
+                        }
                     }
                 }
             }
