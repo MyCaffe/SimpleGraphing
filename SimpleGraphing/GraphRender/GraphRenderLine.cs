@@ -24,14 +24,17 @@ namespace SimpleGraphing.GraphRender
             renderActions(g, dataset, nLookahead);
         }
 
-        private float getYValue(Plot p, double dfMin, double dfMax, double dfPMin, double dfPMax, string strDataParam)
+        private float? getYValue(Plot p, double dfMin, double dfMax, double dfPMin, double dfPMax, string strDataParam)
         {
             double fY = p.Y;
 
             if (strDataParam != null)
             {
-                double? dfP = p.GetParameter(m_config.DataParam);
-                fY = dfP.GetValueOrDefault(0);
+                double? dfP = p.GetParameter(strDataParam);
+                if (!dfP.HasValue)
+                    return null;
+
+                fY = dfP.Value;
 
                 double dfRange = dfMax - dfMin;
                 double dfPRange = dfPMax - dfPMin;
@@ -84,7 +87,11 @@ namespace SimpleGraphing.GraphRender
                 {
                     Plot plot = plots[nStartIdx + i];
                     float fX = rgX[i];
-                    float fY = getYValue(plot, dfMinY, dfMaxY, dfParamMin, dfParamMax, strDataParam);
+                    float? fY1 = getYValue(plot, dfMinY, dfMaxY, dfParamMin, dfParamMax, strDataParam);
+                    if (!fY1.HasValue)
+                        continue;
+
+                    float fY = fY1.Value;
 
                     if (float.IsNaN(fY) || float.IsInfinity(fY))
                         fY = fYLast;
