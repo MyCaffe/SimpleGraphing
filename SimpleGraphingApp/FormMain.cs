@@ -167,7 +167,7 @@ namespace SimpleGraphingApp
                     plotsLast = null;
             }
 
-            configureCandleCharts(bEnableOverlay);
+            configureCandleCharts(bEnableOverlay, rgSet);
 
             updateGraph(rgSet);
         }
@@ -180,13 +180,19 @@ namespace SimpleGraphingApp
             simpleGraphingControl1.ScrollToEnd(true);
         }
 
-        private void configureCandleCharts(bool bEnableOverlay)
+        private void configureCandleCharts(bool bEnableOverlay, List<PlotCollectionSet> rgSet)
         {
             timerData.Enabled = false;
             toolStrip1.Visible = true;
 
             simpleGraphingControl1.Configuration.Surface.EnableSmoothing = false;
             simpleGraphingControl1.Configuration.Frames[0].EnableRelativeScaling(true);
+
+            DateTime dt0 = DateTime.FromFileTime((long)rgSet[0][0][30].X);
+            DateTime dt1 = DateTime.FromFileTime((long)rgSet[0][0][60].X);
+
+            simpleGraphingControl1.Configuration.Frames[0].PlotArea.TimeZones = new List<ConfigurationTimeZone>();
+            simpleGraphingControl1.Configuration.Frames[0].PlotArea.TimeZones.Add(new ConfigurationTimeZone(dt0, dt1, Color.LightGray, true));
 
             for (int i = 0; i < simpleGraphingControl1.Configuration.Frames.Count; i++)
             {

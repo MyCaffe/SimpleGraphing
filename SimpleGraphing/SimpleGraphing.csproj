@@ -117,6 +117,7 @@
       <DependentUpon>SimpleGraphingControl.cs</DependentUpon>
     </Compile>
     <Compile Include="GraphSurface.cs" />
+    <Compile Include="ConfigurationTimeZone.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SimpleGraphingControl.resx">

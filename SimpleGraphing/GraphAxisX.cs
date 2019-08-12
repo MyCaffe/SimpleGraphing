@@ -57,6 +57,57 @@ namespace SimpleGraphing
             get { return m_rcBounds.Right; }
         }
 
+        public List<int> GetTickPositions(DateTime dt, bool bRelative, int nCount = 1)
+        {
+            List<int> rgTickPos = new List<int>();
+
+            if (m_config.ValueType != ConfigurationAxis.VALUE_TYPE.TIME)
+                return rgTickPos;
+
+            PlotCollection primaryPlot = m_data[0];
+            DateTime dtA = DateTime.FromFileTime((long)primaryPlot[m_nStartPosition].X);
+            DateTime dtB = DateTime.FromFileTime((long)primaryPlot[m_nStartPosition + 1].X);
+            TimeSpan ts = dtB - dtA;
+            int nDay = dtA.Day;
+            bool bFound = false;
+
+            for (int i = m_nStartPosition; i < primaryPlot.Count; i++)
+            {
+                Plot p0 = primaryPlot[i];
+                DateTime dt0 = DateTime.FromFileTime((long)p0.X);
+                DateTime dt1 = dt;
+
+                if (dt0.Day > nDay)
+                {
+                    if (bFound == false && i > m_nStartPosition)
+                        rgTickPos.Add(m_rgTickPositions[i - m_nStartPosition]);
+
+                    bFound = false;
+                    nDay = dt0.Day;
+                }
+
+                if (bRelative)
+                    dt1 = new DateTime(dtA.Year, dtA.Month, nDay, dt.Hour, dt.Minute, dt.Second);
+
+                if (!bFound && dt1 <= dt0)
+                {
+                    rgTickPos.Add(m_rgTickPositions[i - m_nStartPosition]);
+
+                    if (ts.TotalDays >= 1.0)
+                        break;
+
+                    bFound = true;
+                }
+            }
+
+            for (int i = rgTickPos.Count; i < nCount; i++)
+            {
+                rgTickPos.Add(m_rgTickPositions[m_rgTickPositions.Count - 1]);
+            }
+
+            return rgTickPos;
+        }
+
         public override void BuildGraph(ConfigurationAxis config, PlotCollectionSet data)
         {
             base.BuildGraph(config, data);

@@ -122,17 +122,6 @@ namespace SimpleGraphing
             }
 
             m_rgPlots = new SimpleGraphing.GraphPlotCollection();
-
-            //int nDataPlotCount = 0;
-            //for (int i = 0; i < plots.Count; i++)
-            //{
-            //    if (!plots[i].VirtualPlot && plots[i].Visible)
-            //        nDataPlotCount++;
-            //}
-
-            //if (data.Count < nDataPlotCount)
-            //    throw new Exception("The plot configuration count must equal the plot collection set count.");
-
             m_rgData = new PlotCollectionSet();
             m_rgData.Add(data);
 
@@ -298,8 +287,36 @@ namespace SimpleGraphing
         {
             List<int> rgXTicks = m_gx.TickPositions;
             List<int> rgYTicks = m_gy.TickPositions;
+            Dictionary<Color, Brush> rgBrushes = new Dictionary<Color, Brush>();
 
             g.FillRectangle(style.BackBrush, m_rcBounds);
+
+            if (m_config.PlotArea.TimeZones != null)
+            {
+                foreach (ConfigurationTimeZone tz in m_config.PlotArea.TimeZones)
+                {
+                    List<int> rgX0 = ((GraphAxisX)m_gx).GetTickPositions(tz.StartTime, tz.Relative);
+                    List<int> rgX1 = ((GraphAxisX)m_gx).GetTickPositions(tz.EndTime, tz.Relative, rgX0.Count);
+
+                    for (int i = 0; i < rgX0.Count; i++)
+                    {
+                        int nX0 = rgX0[i];
+                        int nX1 = rgX1[i];
+
+                        if (!rgBrushes.ContainsKey(tz.BackColor))
+                            rgBrushes.Add(tz.BackColor, new SolidBrush(tz.BackColor));
+
+                        Brush br = rgBrushes[tz.BackColor];
+                        Rectangle rc = new Rectangle(nX0, m_rcBounds.Top, nX1 - nX0, m_rcBounds.Height);
+                        g.FillRectangle(br, rc);
+                    }
+                }
+
+                foreach (KeyValuePair<Color, Brush> kv in rgBrushes)
+                {
+                    kv.Value.Dispose();
+                }
+            }
 
             for (int i = 0; i < rgXTicks.Count; i++)
             {
