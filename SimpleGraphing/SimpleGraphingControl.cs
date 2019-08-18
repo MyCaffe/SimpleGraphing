@@ -310,6 +310,13 @@ namespace SimpleGraphing
                 pbImage.Image = m_surface.Render();
         }
 
+        public Image Render(int nWidth, int nHeight)
+        {
+            m_surface.Scroll(1.0);
+            m_surface.Resize(nWidth, nHeight);
+            return m_surface.Render();
+        }
+
         private void pbImage_Paint(object sender, PaintEventArgs e)
         {
             if (DesignMode)
