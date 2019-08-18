@@ -127,9 +127,12 @@ namespace SimpleGraphing
             return data;
         }
 
-        public void Resize(int nX, int nY, int nWidth, int nHeight)
+        public void Resize(int nX, int nY, int nWidth, int nHeight, bool bResetStartPos = false)
         {
             m_rcBounds = new Rectangle(nX, nY, nWidth, nHeight);
+
+            if (bResetStartPos)
+                m_gx.StartPosition = 0;
 
             m_gx.Resize(nX, m_rcBounds.Bottom - m_gx.Height, nWidth - m_gy.Width, m_gx.Height);
             int nGxHeight = (m_gx.Configuration.Visible) ? m_gx.Bounds.Height : 0;
