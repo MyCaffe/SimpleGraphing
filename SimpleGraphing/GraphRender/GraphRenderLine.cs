@@ -121,10 +121,22 @@ namespace SimpleGraphing.GraphRender
                     Pen pLine = (plot.Active) ? m_style.PlotLinePen : Pens.Transparent;
 
                     RectangleF rcPlot = new RectangleF(fX - 2.0f, fY - 2.0f, 4.0f, 4.0f);
-                    g.FillEllipse(brFill, rcPlot);
-                    g.DrawEllipse(pLine, rcPlot);
+
+                    if (isValid(rcPlot))
+                    {
+                        g.FillEllipse(brFill, rcPlot);
+                        g.DrawEllipse(pLine, rcPlot);
+                    }
                 }
             }
+        }
+
+        private bool isValid(RectangleF rc)
+        {
+            if (double.IsNaN(rc.Y) || double.IsInfinity(rc.Y))
+                return false;
+
+            return true;
         }
     }
 }

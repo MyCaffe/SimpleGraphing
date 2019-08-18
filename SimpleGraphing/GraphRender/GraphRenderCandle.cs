@@ -85,10 +85,13 @@ namespace SimpleGraphing.GraphRender
                         float fTop2 = Math.Min(fTop, fBottom);
                         float fBottom2 = Math.Max(fTop, fBottom);
 
-                        g.DrawLine(pLine, fX, fTop2, fX, fBottom2);
-                        g.DrawLine(pLine, rc.Left, rc.Top, rc.Right, rc.Top);
-                        g.FillRectangle(brFill, rc);
-                        g.DrawRectangle(pLine, rc.X, rc.Y, rc.Width, rc.Height);
+                        if (isValid(rc))
+                        {
+                            g.DrawLine(pLine, fX, fTop2, fX, fBottom2);
+                            g.DrawLine(pLine, rc.Left, rc.Top, rc.Right, rc.Top);
+                            g.FillRectangle(brFill, rc);
+                            g.DrawRectangle(pLine, rc.X, rc.Y, rc.Width, rc.Height);
+                        }
                     }
                 }
             }
@@ -102,6 +105,17 @@ namespace SimpleGraphing.GraphRender
             {
                 kv.Value.Dispose();
             }
+        }
+
+        private bool isValid(RectangleF rc)
+        {
+            if (double.IsNaN(rc.Width) || double.IsInfinity(rc.Width))
+                return false;
+
+            if (double.IsNaN(rc.Height) || double.IsInfinity(rc.Width))
+                return false;
+
+            return true;
         }
     }
 }
