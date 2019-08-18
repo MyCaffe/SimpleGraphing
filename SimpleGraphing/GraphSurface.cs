@@ -130,7 +130,7 @@ namespace SimpleGraphing
             return new SimpleGraphing.SurfaceStyle(m_config);
         }
 
-        public void Resize(int nWidth, int nHeight)
+        public void Resize(int nWidth, int nHeight, bool bResetStartPos = false)
         {
             m_rcBounds = new Rectangle(0, 0, nWidth, nHeight);
             int nMargin = 5;
@@ -159,7 +159,7 @@ namespace SimpleGraphing
             for (int i=0; i<m_frames.Count; i++)
             {
                 GraphFrame frame = m_frames[i];
-                frame.Resize(nX, nY, nWidth - (nMargin * 2), (int)(nTotalFrameHeight * rgFrameRatios[i]));
+                frame.Resize(nX, nY, nWidth - (nMargin * 2), (int)(nTotalFrameHeight * rgFrameRatios[i]), bResetStartPos);
                 nY = frame.Bounds.Bottom + nMargin;
             }
         }
