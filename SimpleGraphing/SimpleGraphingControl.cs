@@ -224,13 +224,15 @@ namespace SimpleGraphing
             }
         }
 
-        public List<PlotCollectionSet> BuildGraph(List<PlotCollectionSet> data = null)
+        public List<PlotCollectionSet> BuildGraph(List<PlotCollectionSet> data = null, bool bResize = true)
         {
             if (data != null)
                 m_data = data;
 
             m_output = m_surface.BuildGraph(m_config, m_data);
-            SimpleGraphingControl_Resize(this, new EventArgs());
+
+            if (bResize)
+                SimpleGraphingControl_Resize(this, new EventArgs());
 
             return m_output;
         }
@@ -313,7 +315,7 @@ namespace SimpleGraphing
         public Image Render(int nWidth, int nHeight)
         {
             m_surface.Scroll(1.0);
-            m_surface.Resize(nWidth, nHeight);
+            m_surface.Resize(nWidth, nHeight, true);
             return m_surface.Render();
         }
 
