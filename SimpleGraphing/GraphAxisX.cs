@@ -71,6 +71,9 @@ namespace SimpleGraphing
             int nDay = dtA.Day;
             bool bFound = false;
 
+            if (m_rgTickPositions.Count < primaryPlot.Count)
+                m_nStartPosition = primaryPlot.Count - m_rgTickPositions.Count;
+
             for (int i = m_nStartPosition; i < primaryPlot.Count; i++)
             {
                 Plot p0 = primaryPlot[i];
@@ -132,6 +135,9 @@ namespace SimpleGraphing
                 return;
 
             PlotCollection primaryPlot = m_data[0];
+
+            if (m_rgTickPositions.Count < primaryPlot.Count)
+                m_nStartPosition = primaryPlot.Count - m_rgTickPositions.Count;
 
             for (int i = m_nStartPosition; i < primaryPlot.Count; i++)
             {
