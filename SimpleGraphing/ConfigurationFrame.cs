@@ -207,8 +207,7 @@ namespace SimpleGraphing
                 TargetLines.Add(new ConfigurationTargetLine(1, Color.Transparent, ConfigurationTargetLine.LINE_TYPE.MAX));
                 YAxis.InitialMaximum = -double.MaxValue;
                 YAxis.InitialMinimum = double.MaxValue;
-                ExcludeFromMinMax(ConfigurationPlot.PLOTTYPE.SMA);
-                ExcludeFromMinMax(ConfigurationPlot.PLOTTYPE.EMA);
+                ExcludeFromMinMax(ConfigurationPlot.PLOTTYPE.SMA, ConfigurationPlot.PLOTTYPE.EMA);
                 SetMarginPercent(dfPctMargin);
             }
             else
