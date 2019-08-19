@@ -137,10 +137,7 @@ namespace SimpleGraphing
             m_gx.Resize(nX, m_rcBounds.Bottom - m_gx.Height, nWidth - m_gy.Width, m_gx.Height);
             int nGxHeight = (m_gx.Configuration.Visible) ? m_gx.Bounds.Height : 0;
 
-            if (m_gx.MinimumY == m_gx.MaximumY)
-                m_gy.SetMinMax(m_gx.AbsoluteMinimumY, m_gx.AbsoluteMaximumY);
-            else
-                m_gy.SetMinMax(m_gx.MinimumY, m_gx.MaximumY);
+            m_gy.SetMinMax(m_gx.AbsoluteMinimumY, m_gx.AbsoluteMaximumY);
 
             m_gy.Resize(nX + nWidth - m_gy.Width, nY, m_gy.Width, nHeight - nGxHeight);
             m_plotArea.Resize(nX, nY, nWidth - m_gy.Bounds.Width, nHeight - nGxHeight);
