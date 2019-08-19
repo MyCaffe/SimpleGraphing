@@ -21,6 +21,7 @@ namespace SimpleGraphing
         protected int m_nZeroPosition = -1;
         protected int m_nStartPosition = 0;
         int m_nDayLast = -1;
+        int m_nDayCount = 0;
 
         public GraphAxis()
         {
@@ -112,6 +113,14 @@ namespace SimpleGraphing
                 else
                 {
                     if (dt.Day != m_nDayLast)
+                    {
+                        m_nDayLast = dt.Day;
+                        m_nDayCount = 0;
+                    }
+
+                    m_nDayCount++;
+
+                    if (m_nDayCount <= 2)
                     {
                         m_nDayLast = dt.Day;
                         return dt.Day.ToString("00") + " " + dt.Hour.ToString("00") + ":" + dt.Minute.ToString("00") + ":" + dt.Second.ToString("00");
