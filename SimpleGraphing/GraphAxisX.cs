@@ -65,8 +65,8 @@ namespace SimpleGraphing
                 return rgTickPos;
 
             PlotCollection primaryPlot = m_data[0];
-            DateTime dtA = DateTime.FromFileTime((long)primaryPlot[m_nStartPosition].X);
-            DateTime dtB = DateTime.FromFileTime((long)primaryPlot[m_nStartPosition + 1].X);
+            DateTime dtA = DateTime.FromFileTime((long)primaryPlot[StartPosition].X);
+            DateTime dtB = DateTime.FromFileTime((long)primaryPlot[StartPosition + 1].X);
             TimeSpan ts = dtB - dtA;
             int nDay = dtA.Day;
             bool bFound = false;
@@ -74,33 +74,45 @@ namespace SimpleGraphing
             if (m_rgTickPositions.Count < primaryPlot.Count)
                 m_nStartPosition = primaryPlot.Count - m_rgTickPositions.Count;
 
-            for (int i = m_nStartPosition; i < primaryPlot.Count; i++)
+            int nIdx = 0;
+
+            for (int i = StartPosition; i < primaryPlot.Count; i++)
             {
+                if (nIdx >= m_rgTickPositions.Count)
+                    break;
+
                 Plot p0 = primaryPlot[i];
                 DateTime dt0 = DateTime.FromFileTime((long)p0.X);
                 DateTime dt1 = dt;
 
                 if (dt0.Day > nDay)
                 {
-                    if (bFound == false && i > m_nStartPosition)
-                        rgTickPos.Add(m_rgTickPositions[i - m_nStartPosition]);
+                    if (bFound == false && i > StartPosition)
+                        rgTickPos.Add(m_rgTickPositions[i - StartPosition]);
 
                     bFound = false;
                     nDay = dt0.Day;
                 }
 
                 if (bRelative)
+                {
+                    if (DateTime.DaysInMonth(dtA.Year, dtA.Month) < nDay)
+                        nDay = 1;
+
                     dt1 = new DateTime(dtA.Year, dtA.Month, nDay, dt.Hour, dt.Minute, dt.Second);
+                }
 
                 if (!bFound && dt1 <= dt0)
                 {
-                    rgTickPos.Add(m_rgTickPositions[i - m_nStartPosition]);
+                    rgTickPos.Add(m_rgTickPositions[i - StartPosition]);
 
                     if (ts.TotalDays >= 1.0)
                         break;
 
                     bFound = true;
                 }
+
+                nIdx++;
             }
 
             for (int i = rgTickPos.Count; i < nCount; i++)
@@ -139,7 +151,7 @@ namespace SimpleGraphing
             if (m_rgTickPositions.Count < primaryPlot.Count)
                 m_nStartPosition = primaryPlot.Count - m_rgTickPositions.Count;
 
-            for (int i = m_nStartPosition; i < primaryPlot.Count; i++)
+            for (int i = StartPosition; i < primaryPlot.Count; i++)
             {
                 double dfX = primaryPlot[i].X;
                 string strVal = getValueString(dfX, m_config);
@@ -155,7 +167,7 @@ namespace SimpleGraphing
                 if (nCount == 0)
                     nCount = m_data[0].Count;
 
-                m_data.GetMinMaxOverWindow(m_nStartPosition, m_rgTickPositions.Count, out m_dfMin, out m_dfMinY, out m_dfMax, out m_dfMaxY, out m_dfAbsMinY, out m_dfAbsMaxY);
+                m_data.GetMinMaxOverWindow(StartPosition, m_rgTickPositions.Count, out m_dfMin, out m_dfMinY, out m_dfMax, out m_dfMaxY, out m_dfAbsMinY, out m_dfAbsMaxY);
             }
         }
 
@@ -232,11 +244,11 @@ namespace SimpleGraphing
 
             if (nInvisibleCount < 0)
             {
-                m_nStartPosition = 0;
+                m_nScrollOffset = 0;
                 return;
             }
 
-            m_nStartPosition = (int)Math.Round(nInvisibleCount * dfPct);
+            m_nScrollOffset = (int)Math.Round(nInvisibleCount * (1.0 - dfPct));
         }
     }
 }

@@ -20,6 +20,7 @@ namespace SimpleGraphing
         protected PlotCollectionSet m_data;
         protected int m_nZeroPosition = -1;
         protected int m_nStartPosition = 0;
+        protected int m_nScrollOffset = 0;
         int m_nDayLast = -1;
         int m_nDayCount = 0;
 
@@ -67,8 +68,12 @@ namespace SimpleGraphing
 
         public int StartPosition
         {
-            get { return m_nStartPosition; }
-            set { m_nStartPosition = value; }
+            get { return m_nStartPosition - m_nScrollOffset; }
+            set
+            {
+                m_nScrollOffset = 0;
+                m_nStartPosition = value;
+            }
         }
 
         public int ZeroLinePosition
