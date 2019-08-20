@@ -187,9 +187,17 @@ namespace SimpleGraphingApp
 
             simpleGraphingControl1.Configuration.Surface.EnableSmoothing = false;
             simpleGraphingControl1.Configuration.Frames[0].EnableRelativeScaling(true);
+            int nIdx1 = 30;
+            int nIdx2 = 60;
 
-            DateTime dt0 = DateTime.FromFileTime((long)rgSet[0][0][30].X);
-            DateTime dt1 = DateTime.FromFileTime((long)rgSet[0][0][60].X);
+            if (nIdx1 > rgSet[0][0].Count)
+                nIdx1 = rgSet[0][0].Count - 1;
+
+            if (nIdx2 > rgSet[0][0].Count)
+                nIdx2 = rgSet[0][0].Count - 1;
+
+            DateTime dt0 = DateTime.FromFileTime((long)rgSet[0][0][nIdx1].X);
+            DateTime dt1 = DateTime.FromFileTime((long)rgSet[0][0][nIdx2].X);
 
             simpleGraphingControl1.Configuration.Frames[0].PlotArea.TimeZones = new List<ConfigurationTimeZone>();
             simpleGraphingControl1.Configuration.Frames[0].PlotArea.TimeZones.Add(new ConfigurationTimeZone(dt0, dt1, Color.LightGray, true));
