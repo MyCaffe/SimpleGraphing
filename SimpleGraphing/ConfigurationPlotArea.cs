@@ -37,13 +37,19 @@ namespace SimpleGraphing
             if (m_fontLabels.Name != c.m_fontLabels.Name || m_fontLabels.Size != c.m_fontLabels.Size || m_fontLabels.Style != c.m_fontLabels.Style)
                 return false;
 
-            if (m_rgTimeZones.Count != c.m_rgTimeZones.Count)
+            if (m_rgTimeZones == null && c.m_rgTimeZones != null || m_rgTimeZones != null && c.m_rgTimeZones == null)
                 return false;
 
-            for (int i = 0; i < m_rgTimeZones.Count; i++)
+            if (m_rgTimeZones != null && c.m_rgTimeZones != null)
             {
-                if (!m_rgTimeZones[i].Compare(c.m_rgTimeZones[i]))
+                if (m_rgTimeZones.Count != c.m_rgTimeZones.Count)
                     return false;
+
+                for (int i = 0; i < m_rgTimeZones.Count; i++)
+                {
+                    if (!m_rgTimeZones[i].Compare(c.m_rgTimeZones[i]))
+                        return false;
+                }
             }
 
             return true;
