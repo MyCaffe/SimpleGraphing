@@ -160,7 +160,7 @@ namespace SimpleGraphing
 
             float fVal = (float)dfVal;
 
-            fVal = (fVal - fDataMin) / fDataRange;
+            fVal = (fDataRange == 0) ? 0 : (fVal - fDataMin) / fDataRange;
             fVal *= fPlotRange;
 
             if (bInvert)
