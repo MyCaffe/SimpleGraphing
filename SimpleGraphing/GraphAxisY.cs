@@ -177,6 +177,8 @@ namespace SimpleGraphing
                 return;
 
             float fY = ScaleValue(dfY, true);
+            if (float.IsNaN(fY) || float.IsInfinity(fY))
+                return;
 
             string strVal = dfY.ToString("N" + m_config.Decimals.ToString());
             SizeF szVal = g.MeasureString(strVal, m_config.LabelFont);
