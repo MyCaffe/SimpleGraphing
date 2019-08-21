@@ -8,6 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace SimpleGraphing
 {
@@ -31,6 +34,26 @@ namespace SimpleGraphing
             m_cache = new ModuleCache();
             m_surface = new GraphSurface(m_cache);
             m_output = m_surface.BuildGraph(m_config, null);
+        }
+
+        public void SaveConfiguration(string strFile)
+        {
+            IFormatter formatter = new BinaryFormatter();
+
+            using (Stream strm = new FileStream(strFile, FileMode.Create, FileAccess.Write))
+            {
+                formatter.Serialize(strm, Configuration);
+            }
+        }
+
+        public void LoadConfiguration(string strFile)
+        {
+            IFormatter formatter = new BinaryFormatter();
+
+            using (Stream strm = new FileStream(strFile, FileMode.Open, FileAccess.Read))
+            {
+                Configuration = formatter.Deserialize(strm) as Configuration;
+            }
         }
 
         public void SetLookahead(int nLookahead)
