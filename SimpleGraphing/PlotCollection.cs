@@ -129,13 +129,13 @@ namespace SimpleGraphing
 
             if (m_minmaxTarget == MINMAX_TARGET.VALUES)
             {
-                m_dfMinVal = m_rgPlot.Min(p => p.Y_values.Min());
-                m_dfMaxVal = m_rgPlot.Max(p => p.Y_values.Max());
+                m_dfMinVal = m_rgPlot.Where(p => p.Active).Min(p => p.Y_values.Min());
+                m_dfMaxVal = m_rgPlot.Where(p => p.Active).Max(p => p.Y_values.Max());
             }
             else if (m_minmaxTarget == MINMAX_TARGET.COUNT)
             {
-                m_dfMinVal = m_rgPlot.Min(p => p.Count.GetValueOrDefault());
-                m_dfMaxVal = m_rgPlot.Max(p => p.Count.GetValueOrDefault());
+                m_dfMinVal = m_rgPlot.Where(p => p.Active).Min(p => p.Count.GetValueOrDefault());
+                m_dfMaxVal = m_rgPlot.Where(p => p.Active).Max(p => p.Count.GetValueOrDefault());
             }
             else
             {
