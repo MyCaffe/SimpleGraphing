@@ -40,11 +40,21 @@ namespace SimpleGraphing.GraphData
             int i = 0;
 
             MinMax minmax = new MinMax();
+            int nIdx = 0;
 
-            while (i < data.Count && i < m_config.Interval)
+            while (i < data.Count && nIdx < m_config.Interval)
             {
-                dfTotal += data[i].Y;
-                data1.Add(data[i].X, dfTotal / (i + 1), false, data[i].Index);
+                if (data[i].Active)
+                {
+                    dfTotal += data[i].Y;
+                    nIdx++;
+                    data1.Add(data[i].X, dfTotal / (nIdx + 1), false, data[i].Index);
+                }
+                else
+                {
+                    data1.Add(data[i].X, data[i].Y, false, data[i].Index);
+                }
+
                 i++;
             }
 
