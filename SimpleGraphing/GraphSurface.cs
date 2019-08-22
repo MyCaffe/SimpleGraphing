@@ -54,7 +54,7 @@ namespace SimpleGraphing
             get { return m_rcBounds; }
         }
 
-        public List<PlotCollectionSet> BuildGraph(Configuration config, List<PlotCollectionSet> rgData)
+        public List<PlotCollectionSet> BuildGraph(Configuration config, List<PlotCollectionSet> rgData, bool bAddToParams = false)
         {
             List<PlotCollectionSet> rgOutputData = new List<PlotCollectionSet>();
 
@@ -104,7 +104,7 @@ namespace SimpleGraphing
                         frame = m_frames[nFrameIdx];
 
                     if (frame.Configuration.Visible)
-                        dataOutput = frame.BuildGraph(config.Frames[i], rgData[i]);
+                        dataOutput = frame.BuildGraph(config.Frames[i], rgData[i], bAddToParams);
 
                     if (nFrameIdx >= nFrameCount)
                         m_frames.Add(frame);

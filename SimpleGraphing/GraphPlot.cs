@@ -95,10 +95,12 @@ namespace SimpleGraphing
             set { m_rgPlots = value; }
         }
 
-        public PlotCollectionSet BuildGraph(ConfigurationPlot config, PlotCollectionSet data, int nDataIdx, int nLookahead, GraphPlotCollection plots)
+        public PlotCollectionSet BuildGraph(ConfigurationPlot config, PlotCollectionSet data, int nDataIdx, int nLookahead, GraphPlotCollection plots, bool bAddToParams = false)
         {
             m_config = config;
             m_style = createStyle(m_config);
+
+            PlotCollectionSet dataOut = data;
 
             if (m_idata != null)
             {
@@ -116,20 +118,20 @@ namespace SimpleGraphing
                                 data1.Add(data);
 
                             data1.Add(plot.Plots, true);
-                            data = data1;
+                            dataOut = data1;
                             break;
                         }
                     }
                 }
 
-                data = m_idata.GetData(data, nDataIdx, nLookahead, config.ID);
-                data.ExcludeFromMinMax(config.ExcludeFromMinMax);
-                data.SetMarginPercent(config.MarginPercent);
+                dataOut = m_idata.GetData(data, nDataIdx, nLookahead, config.ID, bAddToParams);
+                dataOut.ExcludeFromMinMax(config.ExcludeFromMinMax);
+                dataOut.SetMarginPercent(config.MarginPercent);
             }
 
-            m_rgPlots = data;
+            m_rgPlots = dataOut;
 
-            return data;
+            return dataOut;
         }
 
         private GraphPlotStyle createStyle(ConfigurationPlot c)

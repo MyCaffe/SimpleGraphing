@@ -75,7 +75,7 @@ namespace SimpleGraphing
             get { return m_rgPlots; }
         }
 
-        public PlotCollectionSet BuildGraph(ConfigurationFrame config, List<ConfigurationPlot> plots, PlotCollectionSet data)
+        public PlotCollectionSet BuildGraph(ConfigurationFrame config, List<ConfigurationPlot> plots, PlotCollectionSet data, bool bAddToParams = false)
         {
             PlotCollectionSet data1 = new PlotCollectionSet();
 
@@ -130,7 +130,7 @@ namespace SimpleGraphing
                 if (plots[i].Visible)
                 {
                     GraphPlot graphPlot = new SimpleGraphing.GraphPlot(m_cache, m_gx, m_gy);
-                    data1.Add(graphPlot.BuildGraph(plots[i], m_rgData, plots[i].DataIndex, config.PlotArea.Lookahead, m_rgPlots));
+                    data1.Add(graphPlot.BuildGraph(plots[i], m_rgData, plots[i].DataIndex, config.PlotArea.Lookahead, m_rgPlots, bAddToParams));
                     m_rgPlots.Add(graphPlot);
                     m_rgData.Add(graphPlot.Plots, true);
                 }

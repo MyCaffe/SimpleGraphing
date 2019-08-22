@@ -41,8 +41,9 @@ namespace SimpleGraphing.GraphData
         /// <param name="nDataIdx">Specifies the data index of the plot data to use.</param>
         /// <param name="nLookahead">Specifies the look ahead value if any.</param>
         /// <param name="guid">Specifies the unique GUID for the data.</param>
+        /// <param name="bAddToParams">Optionally, specifies whether or not to add the RSI to the parameters of the original data.</param>
         /// <returns>The new plot data containing the RSI calculation is returned.</returns>
-        public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx, int nLookahead, Guid? guid = null)
+        public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx, int nLookahead, Guid? guid = null, bool bAddToParams = false)
         {
             PlotCollection data = dataset[nDataIdx];
 
@@ -98,6 +99,10 @@ namespace SimpleGraphing.GraphData
                 }
 
                 data1.Add(new Plot(data[i].X, dfRSI, null, bActive, data[i].Index, data[i].Action1Active, data[i].Action2Active));
+
+                if (bAddToParams && bActive)
+                    data[i].SetParameter(data1.Name, dfRSI);
+
                 minmax.Add(dfRSI);
             }
 

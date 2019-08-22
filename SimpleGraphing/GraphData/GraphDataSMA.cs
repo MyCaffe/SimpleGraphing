@@ -30,7 +30,7 @@ namespace SimpleGraphing.GraphData
             get { return m_config.DataName; }
         }
 
-        public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx, int nLookahead, Guid? guid = null)
+        public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx, int nLookahead, Guid? guid = null, bool bAddToParams = false)
         {
             PlotCollection data = dataset[nDataIdx];
             PlotCollection data1 = new PlotCollection(data.Name + " SMA");
@@ -57,6 +57,9 @@ namespace SimpleGraphing.GraphData
                             dfSma = (dfSma * (1 - dfInc)) + data[i].Y * dfInc;
 
                         data1.Add(data[i].X, dfSma, true, data[i].Index);
+
+                        if (bAddToParams)
+                            data[i].SetParameter(data1.Name, dfSma);
                     }
 
                     minmax.Add(dfSma);

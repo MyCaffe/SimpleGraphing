@@ -30,9 +30,10 @@ namespace SimpleGraphing.GraphData
             get { return m_config.DataName; }
         }
 
-        public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx, int nLookahead, Guid? guid = null)
+        public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx, int nLookahead, Guid? guid = null, bool bAddToParams = false)
         {
             PlotCollection data = dataset[nDataIdx];
+
             List<PlotCollection> rgPlots = new List<PlotCollection>();
             PlotCollection plotHigh1 = getHighPoints(data, 1, nLookahead);
             PlotCollection plotLow1 = getLowPoints(data, 1, nLookahead);
@@ -40,6 +41,32 @@ namespace SimpleGraphing.GraphData
             PlotCollection plotLow2 = getLowPoints(plotLow1, 2, nLookahead);
             PlotCollection plotHigh3 = getHighPoints(plotHigh2, 3, nLookahead);
             PlotCollection plotLow3 = getLowPoints(plotLow2, 3, nLookahead);
+
+            if (bAddToParams)
+            {
+                data = dataset[0];
+
+                for (int i = 0; i < data.Count; i++)
+                {
+                    if (plotLow1[i].Active)
+                        data[i].SetParameter(plotLow1.Name, plotLow1[i].Y);
+
+                    if (plotLow2[i].Active)
+                        data[i].SetParameter(plotLow2.Name, plotLow2[i].Y);
+
+                    if (plotLow3[i].Active)
+                        data[i].SetParameter(plotLow3.Name, plotLow3[i].Y);
+
+                    if (plotHigh1[i].Active)
+                        data[i].SetParameter(plotHigh1.Name, plotHigh1[i].Y);
+
+                    if (plotHigh2[i].Active)
+                        data[i].SetParameter(plotHigh2.Name, plotHigh2[i].Y);
+
+                    if (plotHigh3[i].Active)
+                        data[i].SetParameter(plotHigh3.Name, plotHigh3[i].Y);
+                }
+            }
 
             rgPlots.Add(plotLow1);
             rgPlots.Add(plotHigh1);

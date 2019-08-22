@@ -55,7 +55,7 @@ namespace SimpleGraphing
             set { m_rcBounds = value; }
         }
 
-        public PlotCollectionSet BuildGraph(ConfigurationFrame config, PlotCollectionSet data)
+        public PlotCollectionSet BuildGraph(ConfigurationFrame config, PlotCollectionSet data, bool bAddToParams = false)
         {
             m_config = config;
             m_data = data;
@@ -70,7 +70,7 @@ namespace SimpleGraphing
                 data[i].MinMaxTarget = config.MinMaxTarget;
             }
 
-            data = m_plotArea.BuildGraph(config, config.Plots, data);
+            data = m_plotArea.BuildGraph(config, config.Plots, data, bAddToParams);
             m_gx.BuildGraph(config.XAxis, data);
             m_gy.BuildGraph(config.YAxis, data);
             m_gy.SetGraphPlots(m_plotArea.Plots);
