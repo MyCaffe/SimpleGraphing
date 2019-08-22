@@ -19,7 +19,7 @@ namespace SimpleGraphing
         double m_dfX;
         int m_nIdxPrimaryY = 0;
         object m_tag = null;
-        Dictionary<string, double> m_rgPrams = null;
+        Dictionary<string, double> m_rgParams = null;
 
         public Plot(double dfX, double dfY, string strName = null, bool bActive = true, int nIdx = 0, bool bAction1Active = false, bool bAction2Active = false)
         {
@@ -98,32 +98,32 @@ namespace SimpleGraphing
 
         public void SetParameter(string strParam, double df)
         {
-            if (m_rgPrams == null)
-                m_rgPrams = new Dictionary<string, double>();
+            if (m_rgParams == null)
+                m_rgParams = new Dictionary<string, double>();
 
-            if (!m_rgPrams.ContainsKey(strParam))
-                m_rgPrams.Add(strParam, df);
+            if (!m_rgParams.ContainsKey(strParam))
+                m_rgParams.Add(strParam, df);
             else
-                m_rgPrams[strParam] = df;
+                m_rgParams[strParam] = df;
         }
 
         public double? GetParameter(string strParam)
         {
-            if (m_rgPrams == null)
-                m_rgPrams = new Dictionary<string, double>();
+            if (m_rgParams == null)
+                m_rgParams = new Dictionary<string, double>();
 
-            if (!m_rgPrams.ContainsKey(strParam))
+            if (!m_rgParams.ContainsKey(strParam))
                 return null;
 
-            return m_rgPrams[strParam];
+            return m_rgParams[strParam];
         }
 
         public void DeleteParameter(string strParam)
         {
-            if (m_rgPrams == null)
+            if (m_rgParams == null)
                 return;
 
-            m_rgPrams.Remove(strParam);
+            m_rgParams.Remove(strParam);
         }
 
         public Plot Clone()
@@ -141,9 +141,9 @@ namespace SimpleGraphing
             p.Count = Count;
             p.m_tag = m_tag;
 
-            if (m_rgPrams != null)
+            if (m_rgParams != null)
             {
-                foreach (KeyValuePair<string, double> kv in m_rgPrams)
+                foreach (KeyValuePair<string, double> kv in m_rgParams)
                 {
                     p.SetParameter(kv.Key, kv.Value);
                 }
@@ -231,6 +231,9 @@ namespace SimpleGraphing
 
             str = str.TrimEnd(',', ' ');
             str += " }";
+
+            if (m_rgParams != null && m_rgParams.Count > 0)
+                str += " " + m_rgParams.Count.ToString() + " params";
 
             return str;
         }
