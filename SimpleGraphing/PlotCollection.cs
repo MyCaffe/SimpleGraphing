@@ -421,47 +421,60 @@ namespace SimpleGraphing
             }
         }
 
-        public void Add(double dfY, bool bActive = true, int nIdx = 0)
+        public Plot Add(double dfY, bool bActive = true, int nIdx = 0)
         {
-            m_rgPlot.Add(new SimpleGraphing.Plot(m_dfXPosition, dfY, null, bActive, nIdx));
+            Plot p = new SimpleGraphing.Plot(m_dfXPosition, dfY, null, bActive, nIdx);
+            m_rgPlot.Add(p);
             m_dfXPosition += m_dfXIncrement;
             Plot last = getLast();
 
             if (bActive)
                 setMinMax(last, new List<double>() { dfY });
+
+            return p;
         }
 
-        public void Add(double dfX, double dfY, bool bActive = true, int nIdx = 0)
+        public Plot Add(double dfX, double dfY, bool bActive = true, int nIdx = 0)
         {
-            m_rgPlot.Add(new SimpleGraphing.Plot(dfX, dfY, null, bActive, nIdx));
+            Plot p = new SimpleGraphing.Plot(dfX, dfY, null, bActive, nIdx);
+            m_rgPlot.Add(p);
             Plot last = getLast();
 
             if (bActive)
                 setMinMax(last, new List<double>() { dfY });
+
+            return p;
         }
 
-        public void Add(List<double> rgdfY, bool bActive = true)
+        public Plot Add(List<double> rgdfY, bool bActive = true)
         {
-            m_rgPlot.Add(new SimpleGraphing.Plot(m_dfXPosition, rgdfY, null, bActive));
+            Plot p = new SimpleGraphing.Plot(m_dfXPosition, rgdfY, null, bActive);
+            m_rgPlot.Add(p);
             m_dfXPosition += m_dfXIncrement;
             Plot last = getLast();
 
             if (bActive)
                 setMinMax(last, rgdfY);
+
+            return p;
         }
 
-        public void Add(double dfX, List<double> rgdfY, bool bActive = true)
+        public Plot Add(double dfX, List<double> rgdfY, bool bActive = true)
         {
-            m_rgPlot.Add(new SimpleGraphing.Plot(dfX, rgdfY, null, bActive));
+            Plot p = new SimpleGraphing.Plot(dfX, rgdfY, null, bActive);
+            m_rgPlot.Add(p);
             Plot last = getLast();
 
             if (bActive)
                 setMinMax(last, rgdfY);
+
+            return p;
         }
 
-        public void Add(List<double> rgdfY, long lCount, bool bActive = true)
+        public Plot Add(List<double> rgdfY, long lCount, bool bActive = true)
         {
-            m_rgPlot.Add(new SimpleGraphing.Plot(m_dfXPosition, rgdfY, lCount, null, bActive));
+            Plot p = new SimpleGraphing.Plot(m_dfXPosition, rgdfY, lCount, null, bActive);
+            m_rgPlot.Add(p);
             m_dfXPosition += m_dfXIncrement;
             Plot last = getLast();
 
@@ -472,11 +485,14 @@ namespace SimpleGraphing
                 else if (m_minmaxTarget == MINMAX_TARGET.COUNT)
                     setMinMax(last, new List<double>() { lCount });
             }
+
+            return p;
         }
 
-        public void Add(double dfX, List<double> rgdfY, long lCount, bool bActive = true)
+        public Plot Add(double dfX, List<double> rgdfY, long lCount, bool bActive = true)
         {
-            m_rgPlot.Add(new SimpleGraphing.Plot(dfX, rgdfY, lCount, null, bActive));
+            Plot p = new SimpleGraphing.Plot(dfX, rgdfY, lCount, null, bActive);
+            m_rgPlot.Add(p);
             Plot last = getLast();
 
             if (bActive)
@@ -486,9 +502,11 @@ namespace SimpleGraphing
                 else if (m_minmaxTarget == MINMAX_TARGET.COUNT)
                     setMinMax(last, new List<double>() { lCount });
             }
+
+            return p;
         }
 
-        public void Add(Plot p, bool bCalculateMinMax = true)
+        public Plot Add(Plot p, bool bCalculateMinMax = true)
         {
             m_rgPlot.Add(p);
 
@@ -506,6 +524,8 @@ namespace SimpleGraphing
                         setMinMax(last, null);
                 }
             }
+
+            return p;
         }
 
         private Plot getLast()
