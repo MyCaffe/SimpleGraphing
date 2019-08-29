@@ -244,7 +244,7 @@ namespace SimpleGraphing
 
             if (nInvisibleCount < 0)
             {
-                m_nScrollOffset = 0;
+                m_nScrollOffset = m_nStartPosition;
                 return;
             }
 
