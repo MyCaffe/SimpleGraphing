@@ -126,6 +126,12 @@ namespace SimpleGraphing
             m_rgParams.Remove(strParam);
         }
 
+        public Dictionary<string, double> Parameters
+        {
+            get { return m_rgParams; }
+            set { m_rgParams = value; }
+        }
+
         public Plot Clone()
         {
             return Clone(m_rgdfY, m_bActive, m_nIdxPrimaryY);
