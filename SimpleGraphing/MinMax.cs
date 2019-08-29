@@ -10,6 +10,7 @@ namespace SimpleGraphing
     {
         double m_dfMin = double.MaxValue;
         double m_dfMax = -double.MaxValue;
+        double m_dfSum = 0;
 
         public MinMax()
         {
@@ -19,12 +20,14 @@ namespace SimpleGraphing
         {
             m_dfMin = double.MaxValue;
             m_dfMax = -double.MaxValue;
+            m_dfSum = 0;
         }
 
         public void Add(double dfVal)
         {
             m_dfMax = Math.Max(dfVal, m_dfMax);
             m_dfMin = Math.Min(dfVal, m_dfMin);
+            m_dfSum += dfVal;
         }
 
         public double Min
@@ -35,6 +38,11 @@ namespace SimpleGraphing
         public double Max
         {
             get { return m_dfMax; }
+        }
+
+        public double Sum
+        {
+            get { return m_dfSum; }
         }
     }
 }
