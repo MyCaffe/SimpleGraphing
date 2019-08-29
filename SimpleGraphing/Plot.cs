@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace SimpleGraphing
 {
+    [Serializable]
     public class Plot
     {
         int m_nIndex = 0;

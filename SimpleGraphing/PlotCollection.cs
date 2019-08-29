@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SimpleGraphing
 {
+    [Serializable]
     public class PlotCollection : IEnumerable<Plot>
     {
         string m_strSrcName = "";
@@ -27,6 +29,13 @@ namespace SimpleGraphing
             VALUES,
             COUNT,
             PARAMS
+        }
+
+        public PlotCollection()
+        {
+            m_nMax = int.MaxValue;
+            m_dfXIncrement = 1.0;
+            m_strName = "";
         }
 
         public PlotCollection(string strName, int nMax = int.MaxValue, double dfXInc = 1.0)
