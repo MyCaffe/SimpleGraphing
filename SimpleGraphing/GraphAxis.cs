@@ -68,7 +68,14 @@ namespace SimpleGraphing
 
         public int StartPosition
         {
-            get { return m_nStartPosition - m_nScrollOffset; }
+            get
+            {
+                int nPos =  m_nStartPosition - m_nScrollOffset;
+                if (nPos < 0)
+                    nPos = 0;
+
+                return nPos;
+            }
             set
             {
                 m_nScrollOffset = 0;
