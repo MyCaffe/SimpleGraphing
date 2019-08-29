@@ -44,5 +44,15 @@ namespace SimpleGraphing
         {
             get { return m_dfSum; }
         }
+
+        public double Scale(double dfVal)
+        {
+            double dfRange = m_dfMax - m_dfMin;
+
+            if (dfRange == 0)
+                return dfVal;
+
+            return (dfVal - m_dfMin) / dfRange;
+        }
     }
 }
