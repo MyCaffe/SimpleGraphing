@@ -62,6 +62,10 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.DebuggerVisualizers, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio\2017\Professional\Common7\Packages\Debugger\Visualizers\Microsoft.VisualStudio.DebuggerVisualizers.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -120,6 +124,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SimpleGraphingDebug\SimpleGraphingDebug.csproj">
+      <Project>{606E004A-8771-4EA4-8F03-EF710D4A34E6}</Project>
+      <Name>SimpleGraphingDebug</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SimpleGraphing\SimpleGraphing.csproj">
       <Project>{a283c774-e339-4068-8d72-a04ec90655fe}</Project>
       <Name>SimpleGraphing</Name>

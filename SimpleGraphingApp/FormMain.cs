@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SimpleGraphing;
+using SimpleGraphingDebug;
 
 namespace SimpleGraphingApp
 {
@@ -487,6 +488,17 @@ namespace SimpleGraphingApp
         {
             simpleGraphingControl1.EnableCrossHairs = btnCrossHairs.Checked;
             simpleGraphingControl1.Invalidate();
+        }
+
+        private void testPlotCollectionVisualizerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (m_rgSet == null)
+            {
+                MessageBox.Show("You must first create the line or candle data.", "No Data", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            PlotCollectionVisualizer.TestShowVisualizer(m_rgSet[0][0]);
         }
     }
 }

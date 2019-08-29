@@ -42,6 +42,9 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.enableActionStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.movingAveragesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.showPlotCollectionVisualizerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.simpleGraphingControl1 = new SimpleGraphing.SimpleGraphingControl();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -93,7 +96,10 @@
             this.saveToolStripMenuItem,
             this.toolStripSeparator1,
             this.enableActionStripMenuItem,
-            this.movingAveragesToolStripMenuItem});
+            this.movingAveragesToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.showPlotCollectionVisualizerToolStripMenuItem,
+            this.toolStripSeparator3});
             this.testToolStripMenuItem.Name = "testToolStripMenuItem";
             this.testToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.testToolStripMenuItem.Text = "Test";
@@ -105,7 +111,7 @@
             this.candleToolStripMenuItem,
             this.candleWithOverlayToolStripMenuItem});
             this.showDataToolStripMenuItem.Name = "showDataToolStripMenuItem";
-            this.showDataToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.showDataToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
             this.showDataToolStripMenuItem.Text = "&Show Data";
             // 
             // lineToolStripMenuItem
@@ -132,28 +138,45 @@
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(239, 6);
             // 
             // enableActionStripMenuItem
             // 
             this.enableActionStripMenuItem.Name = "enableActionStripMenuItem";
-            this.enableActionStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.enableActionStripMenuItem.Size = new System.Drawing.Size(242, 22);
             this.enableActionStripMenuItem.Text = "Enable Action";
             this.enableActionStripMenuItem.Click += new System.EventHandler(this.enableActionStripMenuItem_Click);
             // 
             // movingAveragesToolStripMenuItem
             // 
             this.movingAveragesToolStripMenuItem.Name = "movingAveragesToolStripMenuItem";
-            this.movingAveragesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.movingAveragesToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
             this.movingAveragesToolStripMenuItem.Text = "Moving Averages...";
             this.movingAveragesToolStripMenuItem.Click += new System.EventHandler(this.movingAveragesToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(239, 6);
+            // 
+            // showPlotCollectionVisualizerToolStripMenuItem
+            // 
+            this.showPlotCollectionVisualizerToolStripMenuItem.Name = "showPlotCollectionVisualizerToolStripMenuItem";
+            this.showPlotCollectionVisualizerToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.showPlotCollectionVisualizerToolStripMenuItem.Text = "Show PlotCollection Visualizer...";
+            this.showPlotCollectionVisualizerToolStripMenuItem.Click += new System.EventHandler(this.testPlotCollectionVisualizerToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(239, 6);
             // 
             // toolStripContainer1
             // 
@@ -289,7 +312,7 @@
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "FormMain";
-            this.Text = "FormMain";
+            this.Text = "SimpleGraph Testing Application";
             this.Load += new System.EventHandler(this.FormMain_Load);
             this.Resize += new System.EventHandler(this.FormMain_Resize);
             this.menuStrip1.ResumeLayout(false);
@@ -330,5 +353,8 @@
         private System.Windows.Forms.ToolStripMenuItem enableActionStripMenuItem;
         private System.Windows.Forms.ToolStripButton btnCrossHairs;
         private System.Windows.Forms.ToolStripMenuItem candleWithOverlayToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem showPlotCollectionVisualizerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
     }
 }
