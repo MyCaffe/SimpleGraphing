@@ -48,22 +48,22 @@ namespace SimpleGraphing.GraphData
 
                 for (int i = 0; i < data.Count; i++)
                 {
-                    if (plotLow1[i].Active)
+                    if (plotLow1 != null && plotLow1[i].Active)
                         data[i].SetParameter(plotLow1.Name, plotLow1[i].Y);
 
-                    if (plotLow2[i].Active)
+                    if (plotLow2 != null && plotLow2[i].Active)
                         data[i].SetParameter(plotLow2.Name, plotLow2[i].Y);
 
-                    if (plotLow3[i].Active)
+                    if (plotLow3 != null && plotLow3[i].Active)
                         data[i].SetParameter(plotLow3.Name, plotLow3[i].Y);
 
-                    if (plotHigh1[i].Active)
+                    if (plotHigh1 != null && plotHigh1[i].Active)
                         data[i].SetParameter(plotHigh1.Name, plotHigh1[i].Y);
 
-                    if (plotHigh2[i].Active)
+                    if (plotHigh2 != null && plotHigh2[i].Active)
                         data[i].SetParameter(plotHigh2.Name, plotHigh2[i].Y);
 
-                    if (plotHigh3[i].Active)
+                    if (plotHigh3 != null && plotHigh3[i].Active)
                         data[i].SetParameter(plotHigh3.Name, plotHigh3[i].Y);
                 }
             }
