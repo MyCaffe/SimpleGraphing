@@ -45,7 +45,71 @@ namespace SimpleGraphing
             m_strName = strName;
         }
 
-        public PlotCollection Clone()
+        public PlotCollection ClipToFirstActive(int nMinConsecutiveCount)
+        {            
+            int nIdx = 0;
+            int nConsecutiveCount = 0;
+
+            while (nIdx < Count)
+            {
+                if (m_rgPlot[nIdx].Active)
+                {
+                    nConsecutiveCount++;
+
+                    if (nConsecutiveCount == nMinConsecutiveCount)
+                        break;
+                }
+                else
+                {
+                    nConsecutiveCount = 0;
+                }
+
+                nIdx++;
+            }
+
+            if (nIdx == 0)
+                return this;
+
+            return Clone(nIdx);
+        }
+
+        public PlotCollection FillInactive(int nConsecutiveInactiveMax)
+        {
+            int nLastActiveIdx = -1;
+
+            for (int i = 0; i < m_rgPlot.Count; i++)
+            {
+                if (m_rgPlot[i].Active)
+                    nLastActiveIdx = i;
+                else if (nLastActiveIdx >= 0)
+                {
+                    int nEndActiveIdx = nLastActiveIdx + nConsecutiveInactiveMax;
+                    if (nEndActiveIdx >= m_rgPlot.Count)
+                        nEndActiveIdx = m_rgPlot.Count - 1;
+
+                    for (int j = nLastActiveIdx + 1; j <= nEndActiveIdx; j++)
+                    {
+                        if (m_rgPlot[j].Active)
+                            break;
+
+                        m_rgPlot[j].Active = true;
+
+                        for (int k = 0; k < m_rgPlot[j].Y_values.Count; k++)
+                        {
+                            m_rgPlot[j].Y_values[k] = m_rgPlot[j - 1].Y;
+                        }
+
+                        m_rgPlot[j].Count = 0;
+
+                        i++;
+                    }
+                }
+            }
+
+            return this;
+        }
+
+        public PlotCollection Clone(int nIdxStart = 0)
         {
             PlotCollection col = new PlotCollection(m_strName, m_nMax, m_dfXIncrement);
 
@@ -58,9 +122,9 @@ namespace SimpleGraphing
             col.m_bExcludeFromMinMax = m_bExcludeFromMinMax;
             col.m_minmaxTarget = m_minmaxTarget;
 
-            foreach (Plot p in m_rgPlot)
+            for (int i=nIdxStart; i<m_rgPlot.Count; i++)
             {
-                col.Add(p.Clone());
+                col.Add(m_rgPlot[i].Clone());
             }
 
             return col;
