@@ -26,6 +26,38 @@ namespace SimpleGraphing
             }
         }
 
+        public void SynchronizeStart()
+        {
+            if (m_rgSet.Count <= 1)
+                return;
+
+            if (m_rgSet[0].Count == 0)
+                return;
+
+            DateTime dtFirst = DateTime.FromFileTime((long)m_rgSet[0][0].X);
+            for (int i = 1; i < m_rgSet.Count; i++)
+            {
+                if (m_rgSet[i].Count > 0)
+                {
+                    DateTime dt = DateTime.FromFileTime((long)m_rgSet[i][0].X);                    
+                    if (dt > dtFirst)
+                        dtFirst = dt;
+                }
+            }
+
+            for (int i = 0; i < m_rgSet.Count; i++)
+            {
+                while (m_rgSet[i].Count > 0)
+                {
+                    DateTime dt = DateTime.FromFileTime((long)m_rgSet[i][0].X);
+                    if (dt < dtFirst)
+                        m_rgSet[i].RemoveAt(0);
+                    else
+                        break;
+                }
+            }
+        }
+
         public PlotCollectionSet Clone()
         {
             PlotCollectionSet col = new PlotCollectionSet();
