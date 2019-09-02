@@ -44,7 +44,7 @@ namespace SimpleGraphing.GraphData
 
             if (bAddToParams)
             {
-                data = dataset[0];
+                data = dataset[nDataIdx];
 
                 for (int i = 0; i < data.Count; i++)
                 {
