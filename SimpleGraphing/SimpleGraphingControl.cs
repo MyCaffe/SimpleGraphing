@@ -399,6 +399,9 @@ namespace SimpleGraphing
             if (!m_bEnableCrosshairs)
                 return;
 
+            if (imgBack == null)
+                return;
+
             Graphics gimg = e.Graphics;
             Point pt = m_ptMouse;
 
