@@ -133,6 +133,21 @@ namespace SimpleGraphing
             set { m_rgParams = value; }
         }
 
+        public string FindParameterNameContaining(string str)
+        {
+            if (m_rgParams == null || m_rgParams.Count == 0)
+                return null;
+
+            foreach (KeyValuePair<string, double> kv in m_rgParams)
+            {
+                string strKey = kv.Key.ToLower();
+                if (strKey.Contains(str.ToLower()))
+                    return kv.Key;
+            }
+
+            return null;
+        }
+
         public Plot Clone()
         {
             return Clone(m_rgdfY, m_bActive, m_nIdxPrimaryY);
