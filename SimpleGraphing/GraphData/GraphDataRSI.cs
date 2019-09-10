@@ -57,8 +57,11 @@ namespace SimpleGraphing.GraphData
             List<double> rgGain = new List<double>();
             List<double> rgLoss = new List<double>();
             double dfRSI = 0;
+            double dfRSILast = 0;
 
             MinMax minmax = new MinMax();
+            minmax.Add(0);
+            minmax.Add(100);
 
             data1.Add(new Plot(data[0].X, 0, null, false, data[0].Index, data[0].Action1Active));
 
@@ -96,14 +99,17 @@ namespace SimpleGraphing.GraphData
 
                     rgGain.RemoveAt(0);
                     rgLoss.RemoveAt(0);
+
+                    if (dfRSI == 0)
+                        dfRSI = dfRSILast;
+
+                    dfRSILast = dfRSI;
                 }
 
                 data1.Add(new Plot(data[i].X, dfRSI, null, bActive, data[i].Index, data[i].Action1Active, data[i].Action2Active));
 
                 if (bAddToParams && bActive)
                     data[i].SetParameter(data1.Name, dfRSI);
-
-                minmax.Add(dfRSI);
             }
 
             data1.SetMinMax(minmax);
