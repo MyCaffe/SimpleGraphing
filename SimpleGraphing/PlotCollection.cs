@@ -45,6 +45,45 @@ namespace SimpleGraphing
             m_strName = strName;
         }
 
+        public void ScaleParametersToCount(bool bCalculateMinMax, double? dfParamMin, double? dfParamMax, params string[] rgstrParams)
+        {
+            double dfMin = m_dfMinVal;
+            double dfMax = m_dfMaxVal;
+
+            if (bCalculateMinMax)
+            {
+                dfMin = 0;
+                dfMax = m_rgPlot.Max(p => p.Count.GetValueOrDefault());
+            }
+
+            double dfRange = dfMax - dfMin;
+
+            if (dfParamMin == null)
+                dfParamMin = m_rgPlot.Min(p => p.Parameters.Min(p1 => p1.Value));
+
+            if (dfParamMax == null)
+                dfParamMax = m_rgPlot.Max(p => p.Parameters.Max(p1 => p1.Value));
+
+            double dfParamRange = dfParamMax.Value - dfParamMin.Value;
+
+            foreach (Plot plot in m_rgPlot)
+            {
+                if (plot.Active)
+                {
+                    for (int i = 0; i < rgstrParams.Length; i++)
+                    {
+                        string strKey = rgstrParams[i];
+                        if (plot.Parameters.ContainsKey(strKey))
+                        {
+                            double dfVal = plot.Parameters[strKey];
+                            dfVal = (dfRange == 0) ? 0 : (((dfVal - dfParamMin.Value) / dfParamRange) * dfRange) + dfMin;
+                            plot.Parameters[strKey] = dfVal;
+                        }
+                    }
+                }
+            }
+        }
+
         public PlotCollection ClipToFirstActive(int nMinConsecutiveCount)
         {            
             int nIdx = 0;
@@ -109,7 +148,7 @@ namespace SimpleGraphing
             return this;
         }
 
-        public PlotCollection Clone(int nIdxStart = 0)
+        public PlotCollection Clone(int nIdxStart = 0, bool bCalculateMinMax = true)
         {
             PlotCollection col = new PlotCollection(m_strName, m_nMax, m_dfXIncrement);
 
@@ -124,7 +163,7 @@ namespace SimpleGraphing
 
             for (int i=nIdxStart; i<m_rgPlot.Count; i++)
             {
-                col.Add(m_rgPlot[i].Clone());
+                col.Add(m_rgPlot[i].Clone(), bCalculateMinMax);
             }
 
             return col;
@@ -603,6 +642,14 @@ namespace SimpleGraphing
             }
 
             return p;
+        }
+
+        public void Add(PlotCollection col, bool bCalculateMinMax = true)
+        {
+            for (int i = 0; i < col.Count; i++)
+            {
+                Add(col[i], bCalculateMinMax);
+            }
         }
 
         private Plot getLast()
