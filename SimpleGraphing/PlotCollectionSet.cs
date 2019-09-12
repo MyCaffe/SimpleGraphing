@@ -278,6 +278,24 @@ namespace SimpleGraphing
             m_rgSet.RemoveAt(nIdx);
         }
 
+        public void RemoveLastDataItems(DateTime dt)
+        {
+            foreach (PlotCollection col in m_rgSet)
+            {
+                int nIdx = col.Count - 1;
+                while (nIdx >= 0 && col.Count > 0)
+                {
+                    DateTime dt1 = (DateTime)col[nIdx].Tag;
+                    if (dt1 >= dt)
+                        col.RemoveAt(nIdx);
+                    else
+                        break;
+
+                    nIdx--;
+                }
+            }
+        }
+
         public void Clear()
         {
             m_rgSet.Clear();
