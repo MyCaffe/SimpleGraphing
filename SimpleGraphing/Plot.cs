@@ -21,6 +21,7 @@ namespace SimpleGraphing
         int m_nIdxPrimaryY = 0;
         object m_tag = null;
         Dictionary<string, double> m_rgParams = null;
+        bool m_bScaled = false;
 
         public Plot(double dfX, double dfY, string strName = null, bool bActive = true, int nIdx = 0, bool bAction1Active = false, bool bAction2Active = false)
         {
@@ -89,6 +90,12 @@ namespace SimpleGraphing
             }
 
             return true;
+        }
+
+        public bool Scaled
+        {
+            get { return m_bScaled; }
+            set { m_bScaled = value; }
         }
 
         public object Tag

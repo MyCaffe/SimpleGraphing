@@ -45,7 +45,7 @@ namespace SimpleGraphing
             m_strName = strName;
         }
 
-        public void ScaleParametersToCount(bool bCalculateMinMax, double? dfParamMin, double? dfParamMax, params string[] rgstrParams)
+        public void ScaleParametersToCount(bool bCalculateMinMax, bool bOnlyUnscaled, double? dfParamMin, double? dfParamMax, params string[] rgstrParams)
         {
             double dfMin = m_dfMinVal;
             double dfMax = m_dfMaxVal;
@@ -68,7 +68,7 @@ namespace SimpleGraphing
 
             foreach (Plot plot in m_rgPlot)
             {
-                if (plot.Active)
+                if (plot.Active && !bOnlyUnscaled || !plot.Scaled)
                 {
                     for (int i = 0; i < rgstrParams.Length; i++)
                     {
@@ -78,6 +78,7 @@ namespace SimpleGraphing
                             double dfVal = plot.Parameters[strKey];
                             dfVal = (dfRange == 0) ? 0 : (((dfVal - dfParamMin.Value) / dfParamRange) * dfRange) + dfMin;
                             plot.Parameters[strKey] = dfVal;
+                            plot.Scaled = true;
                         }
                     }
                 }
@@ -622,9 +623,27 @@ namespace SimpleGraphing
             return p;
         }
 
-        public Plot Add(Plot p, bool bCalculateMinMax = true)
+        public Plot Add(Plot p, bool bCalculateMinMax = true, bool bReplaceIfExists = false)
         {
-            m_rgPlot.Add(p);
+            bool bAdd = true;
+
+            if (bReplaceIfExists)
+            {
+                int nIdx = m_rgPlot.Count - 1;
+                while (nIdx >= 0 && m_rgPlot[nIdx].X > p.X)
+                {
+                    nIdx--;
+                }
+
+                if (nIdx >= 0 && m_rgPlot[nIdx].X == p.X)
+                {
+                    bAdd = false;
+                    m_rgPlot[nIdx] = p;
+                }
+            }
+
+            if (bAdd)
+                m_rgPlot.Add(p);
 
             if (bCalculateMinMax)
             {
@@ -644,12 +663,16 @@ namespace SimpleGraphing
             return p;
         }
 
-        public void Add(PlotCollection col, bool bCalculateMinMax = true)
+        public void Add(PlotCollection col, bool bCalculateMinMax = true, bool bActiveOnly = false, bool bReplaceIfExists = true)
         {
             for (int i = 0; i < col.Count; i++)
             {
-                Add(col[i], bCalculateMinMax);
+                if (!bActiveOnly || col[i].Active)
+                    Add(col[i], false,  bReplaceIfExists);
             }
+
+            if (bCalculateMinMax)
+                SetMinMax();
         }
 
         private Plot getLast()
