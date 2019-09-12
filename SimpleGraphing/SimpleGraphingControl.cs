@@ -24,9 +24,11 @@ namespace SimpleGraphing
         bool m_bScrolling = false;
         Size m_szOriginal;
         Crosshairs m_crosshairs = new Crosshairs();
+        double m_dfScrollPct = 0;
 
         public event EventHandler<PaintEventArgs> OnUserPaint;
         public event EventHandler<MouseEventArgs> OnUserMouseMove;
+        public event EventHandler<ScrollEventArgs> OnUserScroll;
 
         public SimpleGraphingControl()
         {
@@ -62,6 +64,12 @@ namespace SimpleGraphing
             {
                 frame.PlotArea.Lookahead = nLookahead;
             }
+        }
+
+        public bool UserUpdateCrosshairs
+        {
+            get { return m_crosshairs.UserUpdate; }
+            set { m_crosshairs.UserUpdate = value; }
         }
 
         public bool EnableCrossHairs
@@ -312,16 +320,31 @@ namespace SimpleGraphing
             {
                 m_bScrolling = true;
 
-                double dfScrollPct = e.NewValue / (double)(hScrollBar1.Maximum - (hScrollBar1.LargeChange - 1));
+                m_dfScrollPct = e.NewValue / (double)(hScrollBar1.Maximum - (hScrollBar1.LargeChange - 1));
 
-                m_surface.Scroll(dfScrollPct);
+                m_surface.Scroll(m_dfScrollPct);
                 m_surface.Resize(pbImage.Width, pbImage.Height);
 
                 pbImage.Image = m_surface.Render();
+
+                if (OnUserScroll != null)
+                    OnUserScroll(sender, e);
             }
             finally
             {
                 m_bScrolling = false;
+            }
+        }
+
+        public double ScrollPercent
+        {
+            get { return m_dfScrollPct; }
+            set
+            {
+                m_dfScrollPct = value;
+                m_surface.Scroll(m_dfScrollPct);
+                m_surface.Resize(pbImage.Width, pbImage.Height);
+                pbImage.Image = m_surface.Render();
             }
         }
 
@@ -365,6 +388,17 @@ namespace SimpleGraphing
             if (OnUserMouseMove != null)
                 OnUserMouseMove(sender, e);
         }
+
+        public void SetCrossHairsLocation(Point pt)
+        {
+            if (m_crosshairs != null)
+                m_crosshairs.SetLocation(pt, pbImage);
+        }
+
+        public void UpdateCrosshairs()
+        {
+            pbImage.Invalidate();
+        }
     }
 
     public class Crosshairs
@@ -374,6 +408,7 @@ namespace SimpleGraphing
         Bitmap m_bmpVert = null;
         Point m_ptMouse;
         Point m_ptMouseOld;
+        bool m_bUserUpdateCrosshairs = false;
 
         public Crosshairs()
         {
@@ -385,12 +420,26 @@ namespace SimpleGraphing
             set { m_bEnableCrosshairs = value; }
         }
 
+        public bool UserUpdate
+        {
+            get { return m_bUserUpdateCrosshairs; }
+            set { m_bUserUpdateCrosshairs = value; }
+        }
+
         public void HandleMouseMove(MouseEventArgs e, Control ctrl)
         {
             if (!m_bEnableCrosshairs)
                 return;
 
             m_ptMouse = e.Location;
+
+            if (!m_bUserUpdateCrosshairs)
+                ctrl.Invalidate();
+        }
+
+        public void SetLocation(Point pt, Control ctrl)
+        {
+            m_ptMouse = pt;
             ctrl.Invalidate();
         }
 
