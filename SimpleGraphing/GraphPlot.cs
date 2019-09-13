@@ -167,6 +167,10 @@ namespace SimpleGraphing
                     m_irender = new GraphRenderVolume(m_config, m_gx, m_gy, style);
                     break;
 
+                case ConfigurationPlot.PLOTTYPE.LINE_FILL:
+                    m_irender = new GraphRenderLineFill(m_config, m_gx, m_gy, style);
+                    break;
+
                 case ConfigurationPlot.PLOTTYPE.RSI:
                     m_idata = new GraphDataRSI(m_config);
                     break;

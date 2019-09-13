@@ -37,6 +37,7 @@ namespace SimpleGraphing
         bool m_bLookaheadActive = true;
         double m_dfMarginPercent = 0;
         double m_dfTransparency = 0;
+        double m_dfMidPoint = 0;
 
         [NonSerialized]
         Guid? m_guid = null;
@@ -53,7 +54,8 @@ namespace SimpleGraphing
             RSI,
             HIGHLOW,
             CUSTOM,
-            VOLUME
+            VOLUME,
+            LINE_FILL
         }
 
         public ConfigurationPlot()
@@ -70,6 +72,12 @@ namespace SimpleGraphing
         {
             get { return m_dfMarginPercent; }
             set { m_dfMarginPercent = value; }
+        }
+
+        public double MidPoint
+        {
+            get { return m_dfMidPoint; }
+            set { m_dfMidPoint = value; }
         }
 
         public Guid? ID
