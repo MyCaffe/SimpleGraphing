@@ -80,8 +80,32 @@ namespace SimpleGraphing
             PlotCollectionSet data1 = new PlotCollectionSet();
 
             data.SetMinMax();
-            data.GetAbsMinMax(0, out m_dfAbsMinY, out m_dfAbsMaxY);
+            data.GetAbsMinMax(0, 0, out m_dfAbsMinY, out m_dfAbsMaxY);
 
+            setMinMaxLines(config);
+
+            m_rgPlots = new SimpleGraphing.GraphPlotCollection();
+            m_rgData = new PlotCollectionSet();
+            m_rgData.Add(data);
+
+            for (int i = 0; i < plots.Count; i++)
+            {
+                if (plots[i].Visible)
+                {
+                    GraphPlot graphPlot = new SimpleGraphing.GraphPlot(m_cache, m_gx, m_gy);
+                    data1.Add(graphPlot.BuildGraph(plots[i], m_rgData, plots[i].DataIndex, config.PlotArea.Lookahead, m_rgPlots, bAddToParams));
+                    m_rgPlots.Add(graphPlot);
+                    m_rgData.Add(graphPlot.Plots, true);
+                }
+            }
+
+            m_style = createStyle(config);
+
+            return data1;
+        }
+
+        private void setMinMaxLines(ConfigurationFrame config)
+        {
             foreach (ConfigurationTargetLine line in config.TargetLines)
             {
                 if (line.LineType == ConfigurationTargetLine.LINE_TYPE.MIN)
@@ -120,25 +144,6 @@ namespace SimpleGraphing
                     }
                 }
             }
-
-            m_rgPlots = new SimpleGraphing.GraphPlotCollection();
-            m_rgData = new PlotCollectionSet();
-            m_rgData.Add(data);
-
-            for (int i = 0; i < plots.Count; i++)
-            {
-                if (plots[i].Visible)
-                {
-                    GraphPlot graphPlot = new SimpleGraphing.GraphPlot(m_cache, m_gx, m_gy);
-                    data1.Add(graphPlot.BuildGraph(plots[i], m_rgData, plots[i].DataIndex, config.PlotArea.Lookahead, m_rgPlots, bAddToParams));
-                    m_rgPlots.Add(graphPlot);
-                    m_rgData.Add(graphPlot.Plots, true);
-                }
-            }
-
-            m_style = createStyle(config);
-
-            return data1;
         }
 
         private PlotAreaStyle createStyle(ConfigurationFrame c)
@@ -151,6 +156,12 @@ namespace SimpleGraphing
 
             m_config = c;
             return new SimpleGraphing.PlotAreaStyle(m_config);
+        }
+
+        public void PreResize(PlotCollectionSet data)
+        {
+            data.GetAbsMinMax(0, 0, out m_dfAbsMinY, out m_dfAbsMaxY);
+            setMinMaxLines(m_config);
         }
 
         public void Resize(int nX, int nY, int nWidth, int nHeight)

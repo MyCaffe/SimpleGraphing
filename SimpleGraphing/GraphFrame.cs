@@ -76,6 +76,13 @@ namespace SimpleGraphing
             m_gy.SetGraphPlots(m_plotArea.Plots);
             m_gy.SetTargetLines(config.TargetLines);
 
+            setMinMax(config, data);
+
+            return data;
+        }
+
+        private void setMinMax(ConfigurationFrame config, PlotCollectionSet data)
+        {
             double dfMin = m_gx.MinimumY;
             double dfMax = m_gx.MaximumY;
 
@@ -106,7 +113,7 @@ namespace SimpleGraphing
             {
                 double dfAbsMin;
                 double dfAbsMax;
-                data.GetAbsMinMax(0, out dfAbsMin, out dfAbsMax);
+                data.GetAbsMinMax(0, 0, out dfAbsMin, out dfAbsMax);
 
                 if (bMin)
                 {
@@ -123,8 +130,6 @@ namespace SimpleGraphing
 
             m_gx.SetMinMax(dfMin, dfMax);
             m_gy.SetMinMax(dfMin, dfMax);
-
-            return data;
         }
 
         public void Resize(int nX, int nY, int nWidth, int nHeight, bool bResetStartPos = false)
@@ -134,10 +139,18 @@ namespace SimpleGraphing
             if (bResetStartPos)
                 m_gx.StartPosition = 0;
 
+            if (m_config.ScaleToVisibleWhenRelative)
+            {
+                m_data.SetMinMax(m_gx.StartPosition);
+                m_plotArea.PreResize(m_data);
+                setMinMax(m_config, m_data);
+            }
+
             m_gx.Resize(nX, m_rcBounds.Bottom - m_gx.Height, nWidth - m_gy.Width, m_gx.Height);
             int nGxHeight = (m_gx.Configuration.Visible) ? m_gx.Bounds.Height : 0;
 
-            m_gy.SetMinMax(m_gx.AbsoluteMinimumY, m_gx.AbsoluteMaximumY);
+            if (!m_config.ScaleToVisibleWhenRelative)
+                m_gy.SetMinMax(m_gx.AbsoluteMinimumY, m_gx.AbsoluteMaximumY);
 
             m_gy.Resize(nX + nWidth - m_gy.Width, nY, m_gy.Width, nHeight - nGxHeight);
             m_plotArea.Resize(nX, nY, nWidth - m_gy.Bounds.Width, nHeight - nGxHeight);

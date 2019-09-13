@@ -27,6 +27,7 @@ namespace SimpleGraphing
         bool m_bVisible = true;
         double m_dfMarginPercent = 0.0;
         PlotCollection.MINMAX_TARGET m_minmaxTarget = PlotCollection.MINMAX_TARGET.VALUES;
+        bool m_bScaleToVisibleWhenRelative = false;
 
         public ConfigurationFrame()
         {
@@ -82,6 +83,9 @@ namespace SimpleGraphing
             if (m_minmaxTarget != c.m_minmaxTarget)
                 return false;
 
+            if (m_bScaleToVisibleWhenRelative != c.m_bScaleToVisibleWhenRelative)
+                return false;
+
             return true;
         }
 
@@ -95,6 +99,12 @@ namespace SimpleGraphing
         {
             get { return m_bVisible; }
             set { m_bVisible = value; }
+        }
+
+        public bool ScaleToVisibleWhenRelative
+        {
+            get { return m_bScaleToVisibleWhenRelative; }
+            set { m_bScaleToVisibleWhenRelative = value; }
         }
 
         public PlotCollection.MINMAX_TARGET MinMaxTarget
@@ -185,9 +195,11 @@ namespace SimpleGraphing
             get { return m_dfMarginPercent; }
         }
 
-        public void EnableRelativeScaling(bool bEnable, double dfPctMargin = 0.05)
+        public void EnableRelativeScaling(bool bEnable, bool bScaleToVisible, double dfPctMargin = 0.005)
         {
             List<int> rgRemoveIdx = new List<int>();
+
+            m_bScaleToVisibleWhenRelative = bScaleToVisible;
 
             for (int i=0; i<TargetLines.Count; i++)
             {
@@ -245,10 +257,18 @@ namespace SimpleGraphing
             m_fontTitle = (Font)info.GetValue("fontTitle", typeof(Font));
             m_strName = info.GetString("name");
             m_bVisible = info.GetBoolean("visible");
-
+            
             try
             {
                 m_minmaxTarget = (PlotCollection.MINMAX_TARGET)info.GetInt32("minmax_target");
+            }
+            catch (Exception)
+            {
+            }
+
+            try
+            {
+                m_bScaleToVisibleWhenRelative = info.GetBoolean("scale_to_visible");
             }
             catch (Exception)
             {
@@ -281,6 +301,7 @@ namespace SimpleGraphing
             info.AddValue("name", m_strName);
             info.AddValue("visible", m_bVisible);
             info.AddValue("minmax_target", (int)m_minmaxTarget);
+            info.AddValue("scale_to_visible", m_bScaleToVisibleWhenRelative);
         }
 
         public void Serialize(SerializeToXml ser)
@@ -293,6 +314,7 @@ namespace SimpleGraphing
             ser.Add("Name", m_strName);
             ser.Add("Visible", m_bVisible);
             ser.Add("MinMaxTarget", (int)m_minmaxTarget);
+            ser.Add("ScaleToVisible", m_bScaleToVisibleWhenRelative);
 
             foreach (ConfigurationPlot plot in m_rgPlots)
             {

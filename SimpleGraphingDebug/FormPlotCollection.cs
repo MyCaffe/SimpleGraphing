@@ -53,7 +53,7 @@ namespace SimpleGraphingDebug
                 simpleGraphingControl1.Configuration.Frames[0].XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.NUMBER;
             }
 
-            simpleGraphingControl1.Configuration.Frames[0].EnableRelativeScaling(true);
+            simpleGraphingControl1.Configuration.Frames[0].EnableRelativeScaling(true, true);
 
             PlotCollectionSet set = new PlotCollectionSet();
             set.Add(m_col);

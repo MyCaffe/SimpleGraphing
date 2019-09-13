@@ -187,7 +187,7 @@ namespace SimpleGraphingApp
             toolStrip1.Visible = true;
 
             simpleGraphingControl1.Configuration.Surface.EnableSmoothing = false;
-            simpleGraphingControl1.Configuration.Frames[0].EnableRelativeScaling(true);
+            simpleGraphingControl1.Configuration.Frames[0].EnableRelativeScaling(true, btnScaleToVisible.Checked);
             int nIdx1 = 30;
             int nIdx2 = 60;
 
@@ -277,7 +277,7 @@ namespace SimpleGraphingApp
         private void configureLineCharts()
         {
             simpleGraphingControl1.Configuration.Surface.EnableSmoothing = true;
-            simpleGraphingControl1.Configuration.Frames[0].EnableRelativeScaling(false);
+            simpleGraphingControl1.Configuration.Frames[0].EnableRelativeScaling(false, false);
 
             foreach (ConfigurationFrame frame in simpleGraphingControl1.Configuration.Frames)
             {
