@@ -79,11 +79,6 @@ namespace SimpleGraphing.GraphRender
 
                 if (rgstr.Length > 1 && rgstr[1] == "r")
                     plots.GetMinMaxOverWindow(0, plots.Count, out dfMinX, out dfMinY, out dfMaxX, out dfMaxY);
-
-//                double dfRange = dfParamMax - dfParamMin;
-//                double dfOffset = dfRange * 0.05;
-//                dfParamMax += dfOffset;
-//                dfParamMin -= dfOffset;
             }
 
             for (int i = 0; i < rgX.Count; i++)
@@ -125,7 +120,11 @@ namespace SimpleGraphing.GraphRender
                 {
                     Plot plot = plots[nStartIdx + i];
                     float fX = rgX[i];
-                    float fY = m_gy.ScaleValue(plot.Y, true);
+                    float? fY1 = getYValue(plot, dfMinY, dfMaxY, dfParamMin, dfParamMax, strDataParam, bNative);
+                    if (!fY1.HasValue)
+                        continue;
+
+                    float fY = fY1.Value;
 
                     RectangleF rcPlot = new RectangleF(fX - 2.0f, fY - 2.0f, 4.0f, 4.0f);
 
