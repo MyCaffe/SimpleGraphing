@@ -72,11 +72,11 @@ namespace SimpleGraphing
             return col;
         }
 
-        public void SetMinMax()
+        public void SetMinMax(int nStartIdx = 0)
         {
             foreach (PlotCollection pc in m_rgSet)
             {
-                pc.SetMinMax();
+                pc.SetMinMax(nStartIdx);
             }
         }
 
@@ -177,12 +177,12 @@ namespace SimpleGraphing
             return new PlotCollectionSet(rgPlots);
         }
 
-        public void GetAbsMinMax(int nLastIdx, out double dfAbsMinY, out double dfAbsMaxY)
+        public void GetAbsMinMax(int nLastIdx, int nDataStartIdx, out double dfAbsMinY, out double dfAbsMaxY)
         {
             dfAbsMinY = double.MaxValue;
             dfAbsMaxY = -double.MaxValue;
 
-            for (int i = 0; i < m_rgSet.Count && i<=nLastIdx; i++)
+            for (int i = 0; i < m_rgSet.Count && i <= nLastIdx; i++)
             {
                 if (!m_rgSet[i].ExcludeFromMinMax)
                 {
@@ -193,8 +193,19 @@ namespace SimpleGraphing
                     }
                     else
                     {
-                        dfAbsMinY = Math.Min(dfAbsMinY, m_rgSet[i].AbsoluteMinYVal);
-                        dfAbsMaxY = Math.Max(dfAbsMaxY, m_rgSet[i].AbsoluteMaxYVal);
+                        if (nDataStartIdx == 0)
+                        {
+                            dfAbsMinY = Math.Min(dfAbsMinY, m_rgSet[i].AbsoluteMinYVal);
+                            dfAbsMaxY = Math.Max(dfAbsMaxY, m_rgSet[i].AbsoluteMaxYVal);
+                        }
+                        else
+                        {
+                            for (int j = nDataStartIdx; j < m_rgSet[i].Count; j++)
+                            {
+                                dfAbsMinY = Math.Min(dfAbsMinY, m_rgSet[i][j].Y_values.Min());
+                                dfAbsMaxY = Math.Max(dfAbsMaxY, m_rgSet[i][j].Y_values.Max());
+                            }
+                        }
                     }
                 }
             }
