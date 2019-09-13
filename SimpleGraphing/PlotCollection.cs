@@ -45,6 +45,17 @@ namespace SimpleGraphing
             m_strName = strName;
         }
 
+        public Plot GetFirstActive()
+        {
+            for (int i = 0; i < m_rgPlot.Count; i++)
+            {
+                if (m_rgPlot[i].Active)
+                    return m_rgPlot[i];
+            }
+
+            return null;
+        }
+
         public void ScaleParametersToCount(bool bCalculateMinMax, bool bOnlyUnscaled, double? dfParamMin, double? dfParamMax, params string[] rgstrParams)
         {
             double dfMin = m_dfMinVal;
