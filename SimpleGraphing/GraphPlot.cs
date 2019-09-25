@@ -125,8 +125,11 @@ namespace SimpleGraphing
                 }
 
                 dataOut = m_idata.GetData(data, nDataIdx, nLookahead, config.ID, bAddToParams);
-                dataOut.ExcludeFromMinMax(config.ExcludeFromMinMax);
-                dataOut.SetMarginPercent(config.MarginPercent);
+                if (dataOut != null)
+                {
+                    dataOut.ExcludeFromMinMax(config.ExcludeFromMinMax);
+                    dataOut.SetMarginPercent(config.MarginPercent);
+                }
             }
 
             m_rgPlots = dataOut;
