@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -58,6 +59,114 @@ namespace SimpleGraphing
             m_nIndex = nIdx;
             m_bAction1Active = bAction1Active;
             m_bAction2Active = bAction2Active;
+        }
+
+        public void Save(BinaryWriter bw)
+        {
+            bw.Write(m_nIndex);
+            bw.Write(m_bActive);
+            bw.Write(m_bAction1Active);
+            bw.Write(m_bAction2Active);
+            bw.Write(m_bLookaheadActive);
+
+            bw.Write((m_strName != null) ? true : false);
+            if (m_strName != null)
+                bw.Write(m_strName);
+
+            bw.Write(m_rgdfY.Count);
+            for (int i = 0; i < m_rgdfY.Count; i++)
+            {
+                bw.Write(m_rgdfY[i]);
+            }
+
+            bw.Write((m_lCount.HasValue) ? true : false);
+            if (m_lCount.HasValue)
+                bw.Write(m_lCount.Value);
+
+            bw.Write(m_dfX);
+            bw.Write(m_nIdxPrimaryY);
+
+            bw.Write((m_tag != null) ? true : false);
+            if (m_tag != null)
+                bw.Write(m_tag.ToString());
+
+            if (m_rgParams == null)
+            {
+                bw.Write(0);
+            }
+            else
+            {
+                bw.Write(m_rgParams.Count);
+                foreach (KeyValuePair<string, double> kv in m_rgParams)
+                {
+                    bw.Write(kv.Key);
+                    bw.Write(kv.Value);
+                }
+            }
+
+            bw.Write(m_bScaled);
+        }
+
+        public static Plot Load(BinaryReader br)
+        {
+            int nIdx = br.ReadInt32();
+            bool bActive = br.ReadBoolean();
+            bool bAction1Active = br.ReadBoolean();
+            bool bAction2Active = br.ReadBoolean();
+            bool bLookaheadActive = br.ReadBoolean();
+            List<double> rgYval = new List<double>();
+            string strName = null;
+
+            if (br.ReadBoolean())
+                strName = br.ReadString();
+
+            int nCount = br.ReadInt32();
+            for (int i = 0; i < nCount; i++)
+            {
+                rgYval.Add(br.ReadDouble());
+            }
+
+            long? lCount = null;
+            if (br.ReadBoolean())
+                lCount = br.ReadInt64();
+
+            double dfX = br.ReadDouble();
+            int nIdxPrimaryY = br.ReadInt32();
+
+            object tag = null;
+            if (br.ReadBoolean())
+            {
+                string strTag = br.ReadString();
+                DateTime dt;
+
+                if (DateTime.TryParse(strTag, out dt))
+                    tag = dt;
+                else
+                    tag = strTag;
+            }
+
+            Dictionary<string, double> rgParam = null;
+            nCount = br.ReadInt32();
+            if (nCount > 0)
+            {
+                rgParam = new Dictionary<string, double>();
+
+                for (int i = 0; i < nCount; i++)
+                {
+                    rgParam.Add(br.ReadString(), br.ReadDouble());
+                }
+            }
+
+            bool bScaled = br.ReadBoolean();
+
+            Plot p = new Plot(dfX, rgYval, strName, bActive, nIdx, bAction1Active, bAction2Active);
+            p.LookaheadActive = bLookaheadActive;
+            p.Count = lCount;
+            p.Tag = tag;
+            p.Parameters = rgParam;
+            p.Scaled = bScaled;
+
+            return p;
         }
 
         public bool Compare(Plot p)
