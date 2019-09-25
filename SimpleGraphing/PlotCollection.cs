@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,6 +44,84 @@ namespace SimpleGraphing
             m_nMax = nMax;
             m_dfXIncrement = dfXInc;
             m_strName = strName;
+        }
+
+        public byte[] Save()
+        {
+            using (MemoryStream ms = new MemoryStream())
+            using (BinaryWriter bw = new BinaryWriter(ms))
+            {
+                bw.Write(m_strName);
+                bw.Write(m_strSrcName);
+                bw.Write(m_dfXIncrement);
+                bw.Write(m_dfXPosition);
+                bw.Write(m_nMax);
+                bw.Write(m_dfMinVal);
+                bw.Write(m_dfMaxVal);
+
+                bw.Write((m_tag != null) ? true : false);
+                if (m_tag != null)
+                    bw.Write(m_tag.ToString());
+
+                bw.Write((m_dfCalculatedEndY.HasValue) ? true : false);
+                if (m_dfCalculatedEndY.HasValue)
+                    bw.Write(m_dfCalculatedEndY.Value);
+
+                bw.Write(m_bExcludeFromMinMax);
+                bw.Write((int)m_minmaxTarget);
+
+                bw.Write(m_rgPlot.Count);
+
+                for (int i = 0; i < m_rgPlot.Count; i++)
+                {
+                    m_rgPlot[i].Save(bw);
+                }
+
+                bw.Flush();
+                return ms.ToArray();
+            }
+        }
+
+        public static PlotCollection Load(byte[] rg)
+        {
+            using (MemoryStream ms = new MemoryStream(rg))
+            using (BinaryReader br = new BinaryReader(ms))
+            {
+                string strName = br.ReadString();
+                string strSrc = br.ReadString();
+                double dfXInc = br.ReadDouble();
+                double dfXPos = br.ReadDouble();
+                int nMax = br.ReadInt32();
+                double dfMin = br.ReadDouble();
+                double dfMax = br.ReadDouble();
+
+                object tag = null;
+                if (br.ReadBoolean())
+                    tag = br.ReadString();
+
+                double? dfCalculatedEndY = null;
+                if (br.ReadBoolean())
+                    dfCalculatedEndY = br.ReadDouble();
+
+                bool bExcludeMinMax = br.ReadBoolean();
+                MINMAX_TARGET minmaxTarget = (MINMAX_TARGET)br.ReadInt32();
+
+                PlotCollection col = new PlotCollection(strName, nMax, dfXInc);
+                col.SourceName = strSrc;
+                col.m_dfXPosition = dfXPos;
+                col.m_dfMinVal = dfMin;
+                col.m_dfMaxVal = dfMax;
+                col.Tag = tag;
+                col.CalculatedEndY = dfCalculatedEndY;
+
+                int nCount = br.ReadInt32();
+                for (int i = 0; i < nCount; i++)
+                {
+                    col.Add(Plot.Load(br), false, false);
+                }
+
+                return col;
+            }
         }
 
         public Plot GetFirstActive()
@@ -682,12 +761,22 @@ namespace SimpleGraphing
             return p;
         }
 
-        public void Add(PlotCollection col, bool bCalculateMinMax = true, bool bActiveOnly = false, bool bReplaceIfExists = true)
+        public void Add(PlotCollection col, bool bCalculateMinMax = true, bool bActiveOnly = false, bool bReplaceIfExists = true, bool bMaintainCount = false)
         {
+            int nCount = m_rgPlot.Count;
+
             for (int i = 0; i < col.Count; i++)
             {
                 if (!bActiveOnly || col[i].Active)
                     Add(col[i], false,  bReplaceIfExists);
+            }
+
+            if (bMaintainCount)
+            {
+                while (m_rgPlot.Count > nCount)
+                {
+                    m_rgPlot.RemoveAt(0);
+                }
             }
 
             if (bCalculateMinMax)
