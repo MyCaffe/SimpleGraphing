@@ -203,6 +203,14 @@ namespace SimpleGraphing
             return Clone(nIdx);
         }
 
+        public void ClipEndInactive()
+        {
+            while (m_rgPlot.Count > 0 && !m_rgPlot[m_rgPlot.Count - 1].Active)
+            {
+                m_rgPlot.RemoveAt(m_rgPlot.Count - 1);
+            }
+        }
+
         public PlotCollection FillInactive(int nConsecutiveInactiveMax)
         {
             int nLastActiveIdx = -1;
