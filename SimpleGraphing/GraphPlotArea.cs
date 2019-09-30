@@ -98,8 +98,11 @@ namespace SimpleGraphing
                     if (set != null)
                         data1.Add(set);
 
-                    m_rgPlots.Add(graphPlot);
-                    m_rgData.Add(graphPlot.Plots, true);
+                    if (graphPlot.Plots != null)
+                    {
+                        m_rgPlots.Add(graphPlot);
+                        m_rgData.Add(graphPlot.Plots, true);
+                    }
                 }
             }
 
