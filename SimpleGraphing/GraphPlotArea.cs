@@ -93,7 +93,11 @@ namespace SimpleGraphing
                 if (plots[i].Visible)
                 {
                     GraphPlot graphPlot = new SimpleGraphing.GraphPlot(m_cache, m_gx, m_gy);
-                    data1.Add(graphPlot.BuildGraph(plots[i], m_rgData, plots[i].DataIndex, config.PlotArea.Lookahead, m_rgPlots, bAddToParams));
+                    PlotCollectionSet set = graphPlot.BuildGraph(plots[i], m_rgData, plots[i].DataIndex, config.PlotArea.Lookahead, m_rgPlots, bAddToParams);
+
+                    if (set != null)
+                        data1.Add(set);
+
                     m_rgPlots.Add(graphPlot);
                     m_rgData.Add(graphPlot.Plots, true);
                 }
