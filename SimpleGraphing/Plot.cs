@@ -169,24 +169,24 @@ namespace SimpleGraphing
             return p;
         }
 
-        public bool Compare(Plot p)
+        public bool Compare(Plot p, bool bValuesOnly = false)
         {
-            if (m_nIndex != p.Index)
+            if (!bValuesOnly && m_nIndex != p.Index)
                 return false;
 
             if (m_bActive != p.Active)
                 return false;
 
-            if (m_bAction1Active != p.Action1Active)
+            if (!bValuesOnly && m_bAction1Active != p.Action1Active)
                 return false;
 
-            if (m_bAction2Active != p.Action2Active)
+            if (!bValuesOnly && m_bAction2Active != p.Action2Active)
                 return false;
 
             if (m_lCount != p.m_lCount)
                 return false;
 
-            if (m_dfX != p.X)
+            if (!bValuesOnly && m_dfX != p.X)
                 return false;
 
             if (m_rgdfY.Count != p.m_rgdfY.Count)
