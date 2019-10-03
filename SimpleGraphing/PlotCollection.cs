@@ -916,12 +916,12 @@ namespace SimpleGraphing
             m_plotNew = pNew;
         }
 
-        public Plot Oiringal
+        public Plot OriginalPlot
         {
             get { return m_plotOriginal; }
         }
 
-        public Plot New
+        public Plot NewPlot
         {
             get { return m_plotNew; }
         }
