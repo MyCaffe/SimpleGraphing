@@ -25,6 +25,8 @@ namespace SimpleGraphing
         bool m_bExcludeFromMinMax = false;
         MINMAX_TARGET m_minmaxTarget = MINMAX_TARGET.VALUES;
 
+        public event EventHandler<PlotUpdateArgs> OnUpdatePlot;
+
         public enum MINMAX_TARGET
         {
             VALUES,
@@ -744,7 +746,11 @@ namespace SimpleGraphing
                 if (nIdx >= 0 && m_rgPlot[nIdx].X == p.X)
                 {
                     bAdd = false;
-                    m_rgPlot[nIdx] = p;
+
+                    if (OnUpdatePlot != null)
+                        OnUpdatePlot(this, new PlotUpdateArgs(m_rgPlot[nIdx], p));
+                    else
+                        m_rgPlot[nIdx] = p;
                 }
             }
 
@@ -896,6 +902,28 @@ namespace SimpleGraphing
         public double CalculateLinearRegressionY(double dfX, double dfA, double dfB)
         {
             return dfA + dfB * dfX;
+        }
+    }
+
+    public class PlotUpdateArgs : EventArgs
+    {
+        Plot m_plotOriginal;
+        Plot m_plotNew;
+
+        public PlotUpdateArgs(Plot pOriginal, Plot pNew)
+        {
+            m_plotOriginal = pOriginal;
+            m_plotNew = pNew;
+        }
+
+        public Plot Oiringal
+        {
+            get { return m_plotOriginal; }
+        }
+
+        public Plot New
+        {
+            get { return m_plotNew; }
         }
     }
 }
