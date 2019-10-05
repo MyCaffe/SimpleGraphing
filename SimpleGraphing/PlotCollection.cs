@@ -851,7 +851,30 @@ namespace SimpleGraphing
 
         public override string ToString()
         {
-            return m_strName;
+            string strOut = m_strName;
+
+            if (m_rgPlot.Count == 0)
+            {
+                strOut += " ~ empty";
+            }
+            else
+            {
+                strOut += " ~ [" + m_rgPlot.Count.ToString() + "] ";
+
+                string strDates = "";
+
+                if (m_rgPlot[0].Tag is DateTime)
+                    strDates += ((DateTime)m_rgPlot[0].Tag).ToString();
+
+                if (m_rgPlot[m_rgPlot.Count - 1].Tag is DateTime)
+                {
+                    if (strDates.Length > 0)
+                        strDates += " - ";
+                    strDates += ((DateTime)m_rgPlot[m_rgPlot.Count - 1].Tag).ToString();
+                }
+            }
+
+            return strOut;
         }
 
         /// <summary>
