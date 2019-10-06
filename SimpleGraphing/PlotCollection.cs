@@ -177,15 +177,39 @@ namespace SimpleGraphing
             }
         }
 
+        public int ClipUpToDate(DateTime dt)
+        {
+            int nClipCount = 0;
+
+            while (m_rgPlot.Count > 0)
+            {
+                if (!(m_rgPlot[0].Tag is DateTime))
+                    return 0;
+
+                if ((DateTime)m_rgPlot[0].Tag < dt)
+                {
+                    nClipCount++;
+                    m_rgPlot.RemoveAt(0);
+                }
+                else
+                    break;
+            }
+
+            return nClipCount;
+        }
+
         public PlotCollection ClipToFirstActive(int nMinConsecutiveCount)
         {            
             int nIdx = 0;
             int nConsecutiveCount = 0;
 
-            while (nIdx < Count)
+            for (int i = 0; i < m_rgPlot.Count; i++)
             {
-                if (m_rgPlot[nIdx].Active)
+                if (m_rgPlot[i].Active)
                 {
+                    if (nConsecutiveCount == 0)
+                        nIdx = i;
+
                     nConsecutiveCount++;
 
                     if (nConsecutiveCount == nMinConsecutiveCount)
@@ -195,8 +219,6 @@ namespace SimpleGraphing
                 {
                     nConsecutiveCount = 0;
                 }
-
-                nIdx++;
             }
 
             if (nIdx == 0)
@@ -872,6 +894,8 @@ namespace SimpleGraphing
                         strDates += " - ";
                     strDates += ((DateTime)m_rgPlot[m_rgPlot.Count - 1].Tag).ToString();
                 }
+
+                strOut += strDates;
             }
 
             return strOut;
