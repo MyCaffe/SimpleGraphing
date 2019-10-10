@@ -79,5 +79,13 @@ namespace SimpleGraphing
                 frame.PlotArea.Lookahead = nLookahead;
             }
         }
+
+        public void SetCalculationLookahead(int nLookahead)
+        {
+            foreach (ConfigurationFrame frame in m_rgFrameConfig)
+            {
+                frame.PlotArea.CalculationLookahead = nLookahead;
+            }
+        }
     }
 }

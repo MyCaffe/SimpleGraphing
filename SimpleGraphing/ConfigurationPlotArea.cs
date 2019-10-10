@@ -18,6 +18,7 @@ namespace SimpleGraphing
         Color m_clrZeroLine = Color.Gray;
         Font m_fontLabels = new Font("Century Gothic", 8.0f, FontStyle.Regular);
         int m_nLookahead = 0;
+        int m_nCalculationLookahead = 0;
 
         public ConfigurationPlotArea()
         {
@@ -59,6 +60,12 @@ namespace SimpleGraphing
         {
             get { return m_nLookahead; }
             set { m_nLookahead = value; }
+        }
+
+        public int CalculationLookahead
+        {
+            get { return m_nCalculationLookahead; }
+            set { m_nCalculationLookahead = value; }
         }
 
         public Color GridColor
