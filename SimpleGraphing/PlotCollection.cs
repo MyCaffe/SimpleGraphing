@@ -20,7 +20,8 @@ namespace SimpleGraphing
         int m_nMax;
         double m_dfMinVal = double.MaxValue;
         double m_dfMaxVal = -double.MaxValue;
-        object m_tag = null;
+        object m_tag1 = null;
+        object m_tag2 = null;
         double? m_dfCalculatedEndY = null;
         bool m_bExcludeFromMinMax = false;
         MINMAX_TARGET m_minmaxTarget = MINMAX_TARGET.VALUES;
@@ -61,9 +62,9 @@ namespace SimpleGraphing
                 bw.Write(m_dfMinVal);
                 bw.Write(m_dfMaxVal);
 
-                bw.Write((m_tag != null) ? true : false);
-                if (m_tag != null)
-                    bw.Write(m_tag.ToString());
+                bw.Write((m_tag1 != null) ? true : false);
+                if (m_tag1 != null)
+                    bw.Write(m_tag1.ToString());       
 
                 bw.Write((m_dfCalculatedEndY.HasValue) ? true : false);
                 if (m_dfCalculatedEndY.HasValue)
@@ -279,7 +280,8 @@ namespace SimpleGraphing
             col.m_dfXPosition = m_dfXPosition;
             col.m_dfMinVal = m_dfMinVal;
             col.m_dfMaxVal = m_dfMaxVal;
-            col.m_tag = m_tag;
+            col.m_tag1 = m_tag1;
+            col.m_tag2 = m_tag2;
             col.m_dfCalculatedEndY = m_dfCalculatedEndY;
             col.m_bExcludeFromMinMax = m_bExcludeFromMinMax;
             col.m_minmaxTarget = m_minmaxTarget;
@@ -533,8 +535,14 @@ namespace SimpleGraphing
 
         public object Tag
         {
-            get { return m_tag; }
-            set { m_tag = value; }
+            get { return m_tag1; }
+            set { m_tag1 = value; }
+        }
+
+        public object Tag2
+        {
+            get { return m_tag2; }
+            set { m_tag2 = value; }
         }
 
         public string SourceName
