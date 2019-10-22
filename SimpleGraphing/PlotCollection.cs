@@ -805,8 +805,9 @@ namespace SimpleGraphing
             return p;
         }
 
-        public void Add(PlotCollection col, bool bCalculateMinMax = true, bool bActiveOnly = false, bool bReplaceIfExists = true, bool bMaintainCount = false)
+        public PlotCollection Add(PlotCollection col, bool bCalculateMinMax = true, bool bActiveOnly = false, bool bReplaceIfExists = true, bool bMaintainCount = false)
         {
+            PlotCollection colRemoved = new PlotCollection(col.Name);
             int nCount = m_rgPlot.Count;
 
             for (int i = 0; i < col.Count; i++)
@@ -819,12 +820,18 @@ namespace SimpleGraphing
             {
                 while (m_rgPlot.Count > nCount)
                 {
+                    colRemoved.Add(m_rgPlot[0], false);
                     m_rgPlot.RemoveAt(0);
                 }
+
+                if (bCalculateMinMax)
+                    colRemoved.SetMinMax();
             }
 
             if (bCalculateMinMax)
                 SetMinMax();
+
+            return colRemoved;
         }
 
         private Plot getLast()
