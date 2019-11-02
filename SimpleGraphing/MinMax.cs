@@ -45,14 +45,40 @@ namespace SimpleGraphing
             get { return m_dfSum; }
         }
 
-        public double Scale(double dfVal)
+        public double Scale(double dfVal, bool bSymmetric, double dfInvalidVal)
         {
-            double dfRange = m_dfMax - m_dfMin;
+            if (!bSymmetric)
+            {
+                double dfRange = m_dfMax - m_dfMin;
+                if (dfRange == 0)
+                    return dfInvalidVal;
 
-            if (dfRange == 0)
-                return dfVal;
+                return (dfVal - m_dfMin) / dfRange;
+            }
 
-            return (dfVal - m_dfMin) / dfRange;
+            if (m_dfMin == 0 && m_dfMax == 0)
+                return dfInvalidVal;
+
+            if (dfVal < 0)
+            {
+                double dfRange = Math.Abs(m_dfMin);
+                if (dfRange == 0)
+                    return dfInvalidVal;
+
+                double dfScaled = 1.0 - Math.Abs(dfVal) / dfRange;
+                return 0.5 * dfScaled;
+            }
+            else if (dfVal > 0)
+            {
+                double dfRange = Math.Abs(m_dfMax);
+                if (dfRange == 0)
+                    return dfInvalidVal;
+
+                double dfScaled = Math.Abs(dfVal) / dfRange;
+                return 0.5 + 0.5 * dfScaled;
+            }
+
+            return 0.5;
         }
     }
 }
