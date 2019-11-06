@@ -147,7 +147,7 @@ namespace SimpleGraphing
 
         private void drawFlag(Graphics g, GraphPlot plot, GraphAxisStyle style)
         {
-            if (plot.Plots.Count == 0 || plot.Plots[0].Count == 0)
+            if (plot.Plots.Count == 0 || plot.Plots[0] == null || plot.Plots[0].Count == 0)
                 return;
 
             Plot plotLast = plot.LastVisiblePlot;
