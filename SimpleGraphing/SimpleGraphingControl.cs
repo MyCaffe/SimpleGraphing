@@ -426,7 +426,7 @@ namespace SimpleGraphing
                 simpleGraphingControl1.Configuration.Frames[0].XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.NUMBER;
             }
 
-            simpleGraphingControl1.Configuration.Frames[0].EnableRelativeScaling(true, true);
+            simpleGraphingControl1.Configuration.Frames[0].EnableRelativeScaling(true, true, 0);
 
             PlotCollectionSet set = new PlotCollectionSet();
             set.Add(col);
