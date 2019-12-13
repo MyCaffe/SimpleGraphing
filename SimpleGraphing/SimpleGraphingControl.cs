@@ -400,7 +400,7 @@ namespace SimpleGraphing
             pbImage.Invalidate();
         }
 
-        public static Image QuickRender(PlotCollection col)
+        public static Image QuickRender(PlotCollection col, int nWidth = -1, int nHeight = -1)
         {
             SimpleGraphingControl simpleGraphingControl1 = new SimpleGraphingControl();
             simpleGraphingControl1.Name = "SimpleGraphing";
@@ -432,7 +432,14 @@ namespace SimpleGraphing
             set.Add(col);
             List<PlotCollectionSet> rgSet = new List<PlotCollectionSet>() { set };
             simpleGraphingControl1.BuildGraph(rgSet);
-            return simpleGraphingControl1.Render(600, 300);
+
+            if (nWidth <= 0)
+                nWidth = 600;
+
+            if (nHeight <= 0)
+                nHeight = 300;
+
+            return simpleGraphingControl1.Render(nWidth, nHeight);
         }
     }
 
