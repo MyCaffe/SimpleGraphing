@@ -261,10 +261,7 @@ namespace SimpleGraphing
         public List<PlotCollectionSet> BuildGraph(List<PlotCollectionSet> data = null, bool bResize = true, bool bAddToParams = false)
         {
             if (data != null)
-            {
-                ClearGraph();
                 m_data = data;
-            }
 
             m_output = m_surface.BuildGraph(m_config, m_data, bAddToParams);
 
