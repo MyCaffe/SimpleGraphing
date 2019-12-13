@@ -124,6 +124,9 @@ namespace SimpleGraphing
                     return dt.ToShortDateString();
                 else
                 {
+                    if (config.TimeOffsetInHours > 0)
+                        dt += TimeSpan.FromHours(config.TimeOffsetInHours);
+
                     if (dt.Day != m_nDayLast)
                     {
                         m_nDayLast = dt.Day;

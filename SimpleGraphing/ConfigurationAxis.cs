@@ -26,6 +26,7 @@ namespace SimpleGraphing
         bool m_bShowAllNumbers = false;
         VALUE_TYPE m_valueType = VALUE_TYPE.NUMBER;
         VALUE_RESOLUTION m_valueRes = VALUE_RESOLUTION.MINUTE;
+        double m_dfTimeOffsetInHours = 0;
 
         public enum VALUE_TYPE
         {
@@ -80,6 +81,9 @@ namespace SimpleGraphing
                 return false;
 
             if (m_valueRes != c.m_valueRes)
+                return false;
+
+            if (m_dfTimeOffsetInHours != c.m_dfTimeOffsetInHours)
                 return false;
 
             return true;
@@ -177,6 +181,12 @@ namespace SimpleGraphing
             set { m_clrZeroLine = value; }
         }
 
+        public double TimeOffsetInHours
+        {
+            get { return m_dfTimeOffsetInHours; }
+            set { m_dfTimeOffsetInHours = value; }
+        }
+
         public void Serialize(SerializeToXml ser)
         {
             ser.Open("Axis");
@@ -193,6 +203,7 @@ namespace SimpleGraphing
             ser.Add("ShowAllNumbers", m_bShowAllNumbers);
             ser.Add("ValueType", m_valueType.ToString());
             ser.Add("ValueRes", m_valueRes.ToString());
+            ser.Add("TimeOffsetInHours", m_dfTimeOffsetInHours.ToString());
             ser.Close();            
         }
     }
