@@ -403,8 +403,26 @@ namespace SimpleGraphing
             pbImage.Invalidate();
         }
 
-        public static Image QuickRender(PlotCollection col, int nWidth = -1, int nHeight = -1)
+        public static Image QuickRender(PlotCollection col, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false)
         {
+            double dfTimeOffsetInHours = 0;
+
+            if (bConvertToEastern)
+            {
+                TimeZone zone = TimeZone.CurrentTimeZone;
+                TimeZoneInfo eastern;
+                DateTime dtNow = DateTime.Now;
+                if (zone.IsDaylightSavingTime(dtNow))
+                    eastern = TimeZoneInfo.FindSystemTimeZoneById("Eastern Daylight Time");
+                else
+                    eastern = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+
+                TimeSpan localOffset = zone.GetUtcOffset(dtNow);
+                TimeSpan easternOffset = eastern.GetUtcOffset(dtNow);
+                TimeSpan diff = easternOffset - localOffset;
+                dfTimeOffsetInHours = diff.TotalHours;
+            }
+
             SimpleGraphingControl simpleGraphingControl1 = new SimpleGraphingControl();
             simpleGraphingControl1.Name = "SimpleGraphing";
 
@@ -414,6 +432,7 @@ namespace SimpleGraphing
             simpleGraphingControl1.Configuration.Frames[0].XAxis.LabelFont = new Font("Century Gothic", 7.0f);
             simpleGraphingControl1.Configuration.Frames[0].XAxis.Visible = true;
             simpleGraphingControl1.Configuration.Frames[0].XAxis.Margin = 100;
+            simpleGraphingControl1.Configuration.Frames[0].XAxis.TimeOffsetInHours = dfTimeOffsetInHours;
             simpleGraphingControl1.Configuration.Frames[0].YAxis.LabelFont = new Font("Century Gothic", 7.0f);
             simpleGraphingControl1.Configuration.Frames[0].YAxis.Decimals = 3;
             simpleGraphingControl1.Configuration.Frames[0].Plots.Add(new ConfigurationPlot());
