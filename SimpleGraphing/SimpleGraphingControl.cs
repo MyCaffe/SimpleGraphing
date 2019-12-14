@@ -403,25 +403,28 @@ namespace SimpleGraphing
             pbImage.Invalidate();
         }
 
+        public static double GetTimeZoneOffset()
+        {
+            TimeZone zone = TimeZone.CurrentTimeZone;
+            TimeZoneInfo eastern;
+            DateTime dtNow = DateTime.Now;
+            if (zone.IsDaylightSavingTime(dtNow))
+                eastern = TimeZoneInfo.FindSystemTimeZoneById("Eastern Daylight Time");
+            else
+                eastern = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+
+            TimeSpan localOffset = zone.GetUtcOffset(dtNow);
+            TimeSpan easternOffset = eastern.GetUtcOffset(dtNow);
+            TimeSpan diff = easternOffset - localOffset;
+            return diff.TotalHours;
+        }
+
         public static Image QuickRender(PlotCollection col, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false)
         {
             double dfTimeOffsetInHours = 0;
 
             if (bConvertToEastern)
-            {
-                TimeZone zone = TimeZone.CurrentTimeZone;
-                TimeZoneInfo eastern;
-                DateTime dtNow = DateTime.Now;
-                if (zone.IsDaylightSavingTime(dtNow))
-                    eastern = TimeZoneInfo.FindSystemTimeZoneById("Eastern Daylight Time");
-                else
-                    eastern = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
-
-                TimeSpan localOffset = zone.GetUtcOffset(dtNow);
-                TimeSpan easternOffset = eastern.GetUtcOffset(dtNow);
-                TimeSpan diff = easternOffset - localOffset;
-                dfTimeOffsetInHours = diff.TotalHours;
-            }
+                dfTimeOffsetInHours = GetTimeZoneOffset();
 
             SimpleGraphingControl simpleGraphingControl1 = new SimpleGraphingControl();
             simpleGraphingControl1.Name = "SimpleGraphing";
