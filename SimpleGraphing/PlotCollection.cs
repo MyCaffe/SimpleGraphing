@@ -589,6 +589,9 @@ namespace SimpleGraphing
             m_dfMinVal = double.MaxValue;
             m_dfMaxVal = -double.MaxValue;
 
+            if (rgdfY == null)
+                return;
+
             double dfMin = (rgdfY.Count == 1) ? rgdfY[0] : rgdfY.Min(p => p);
             double dfMax = (rgdfY.Count == 1) ? rgdfY[0] : rgdfY.Max(p => p);
 
