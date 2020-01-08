@@ -351,14 +351,19 @@ namespace SimpleGraphing
             }
         }
 
-        public void ScrollToEnd(bool bRender)
+        public Image ScrollToEnd(bool bRender)
         {
             hScrollBar1.Value = hScrollBar1.Maximum;
             m_surface.Scroll(1.0);
             m_surface.Resize(pbImage.Width, pbImage.Height);
 
             if (bRender)
+            {
                 pbImage.Image = m_surface.Render();
+                return pbImage.Image;
+            }
+
+            return null;
         }
 
         public Image Render(int nWidth, int nHeight)
