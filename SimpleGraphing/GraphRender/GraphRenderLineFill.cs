@@ -81,10 +81,19 @@ namespace SimpleGraphing.GraphRender
             double dfParamMax = 0;
             string strDataParam = null;
             bool bNative = false;
-            SolidBrush brUp = new SolidBrush(Color.FromArgb(32, m_config.LineColor));
-            SolidBrush brDn = new SolidBrush(Color.FromArgb(32, m_config.PlotLineColor));
-            Pen penUp = new Pen(m_config.LineColor, m_config.LineWidth);
-            Pen penDn = new Pen(m_config.PlotLineColor, m_config.LineWidth);
+
+            int nAlpha = Math.Max(0, Math.Min(255, (int)(255 * m_config.Transparency)));
+            bool bTransparentFill = (m_config.GetExtraSetting("TransparentFill", 0) != 0) ? true : false;
+            Color clrFillUp = (bTransparentFill) ? Color.Transparent : Color.FromArgb(nAlpha, m_config.LineColor);
+            Color clrFillDn = (bTransparentFill) ? Color.Transparent : Color.FromArgb(nAlpha, m_config.PlotLineColor);
+            SolidBrush brUp = new SolidBrush(clrFillUp);
+            SolidBrush brDn = new SolidBrush(clrFillDn);
+
+            bool bTransparentLine = (m_config.GetExtraSetting("TransparentLine", 0) != 0) ? true : false;
+            Color clrLineUp = (bTransparentLine) ? Color.Transparent : m_config.LineColor;
+            Color clrLineDn = (bTransparentLine) ? Color.Transparent : m_config.PlotLineColor;
+            Pen penUp = new Pen(clrLineUp, m_config.LineWidth);
+            Pen penDn = new Pen(clrLineDn, m_config.LineWidth);
 
             if (!string.IsNullOrEmpty(m_config.DataParam))
             {

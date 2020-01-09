@@ -38,6 +38,7 @@ namespace SimpleGraphing
         double m_dfMarginPercent = 0;
         double m_dfTransparency = 0;
         double m_dfMidPoint = 0;
+        Dictionary<string, double> m_rgExtraSettings = new Dictionary<string, double>();
 
         [NonSerialized]
         Guid? m_guid = null;
@@ -149,6 +150,18 @@ namespace SimpleGraphing
 
             if (m_dfTransparency != c.m_dfTransparency)
                 return false;
+
+            if (m_rgExtraSettings == null && c.m_rgExtraSettings != null)
+                return false;
+
+            if (m_rgExtraSettings != null && c.m_rgExtraSettings == null)
+                return false;
+
+            if (m_rgExtraSettings != null && c.m_rgExtraSettings != null)
+            {
+                if (m_rgExtraSettings.Count != c.m_rgExtraSettings.Count)
+                    return false;
+            }
 
             return true;
         }
@@ -303,6 +316,23 @@ namespace SimpleGraphing
             set { m_nActionActiveAlpha = value; }
         }
 
+        public Dictionary<string, double> ExtraSettings
+        {
+            get { return m_rgExtraSettings; }
+            set { m_rgExtraSettings = value; }
+        }
+
+        public double GetExtraSetting(string strName, double dfDefault)
+        {
+            if (m_rgExtraSettings == null)
+                return dfDefault;
+
+            if (!m_rgExtraSettings.ContainsKey(strName))
+                return dfDefault;
+
+            return m_rgExtraSettings[strName];
+        }
+
         public virtual void Serialize(SerializeToXml ser)
         {
             ser.Open("Plot");
@@ -326,6 +356,20 @@ namespace SimpleGraphing
             ser.Add("LookaheadActive", m_bLookaheadActive);
             ser.Add("DataParam", m_strDataParam);
             ser.Add("Transparency", m_dfTransparency);
+
+            ser.Add("ExtraCount", (m_rgExtraSettings == null) ? 0 : m_rgExtraSettings.Count);
+
+            if (m_rgExtraSettings != null)
+            {
+                int nIdx = 0;
+                foreach (KeyValuePair<string, double> kv in m_rgExtraSettings)
+                {
+                    ser.Add("ExtraName" + nIdx.ToString(), kv.Key);
+                    ser.Add("ExtraValue" + nIdx.ToString(), kv.Value);
+                    nIdx++;
+                }
+            }
+
             ser.Close();
         }
 
