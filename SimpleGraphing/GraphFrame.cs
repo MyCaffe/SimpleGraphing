@@ -67,7 +67,8 @@ namespace SimpleGraphing
                     data[i][j].Index = j;
                 }
 
-                data[i].MinMaxTarget = config.MinMaxTarget;
+                if (data[i].MinMaxTarget != config.MinMaxTarget)
+                    data[i].MinMaxTarget = config.MinMaxTarget;
             }
 
             data = m_plotArea.BuildGraph(config, config.Plots, data, bAddToParams);
