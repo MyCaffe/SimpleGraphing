@@ -169,6 +169,17 @@ namespace SimpleGraphing
             set { m_nDataIndex = value; }
         }
 
+        public void IncludeInMinMax(params ConfigurationPlot.PLOTTYPE[] rgTypes)
+        {
+            foreach (ConfigurationPlot plot in m_rgPlots)
+            {
+                if (rgTypes.Contains(plot.PlotType))
+                    plot.ExcludeFromMinMax = false;
+                else
+                    plot.ExcludeFromMinMax = true;
+            }
+        }
+
         public void ExcludeFromMinMax(params ConfigurationPlot.PLOTTYPE[] rgTypes)
         {
             foreach (ConfigurationPlot plot in m_rgPlots)
@@ -195,7 +206,7 @@ namespace SimpleGraphing
             get { return m_dfMarginPercent; }
         }
 
-        public void EnableRelativeScaling(bool bEnable, bool bScaleToVisible, double dfPctMargin = 0.005)
+        public void EnableRelativeScaling(bool bEnable, bool bScaleToVisible, double dfPctMargin = 0.0)
         {
             List<int> rgRemoveIdx = new List<int>();
 
@@ -219,14 +230,12 @@ namespace SimpleGraphing
                 TargetLines.Add(new ConfigurationTargetLine(1, Color.Transparent, ConfigurationTargetLine.LINE_TYPE.MAX));
                 YAxis.InitialMaximum = -double.MaxValue;
                 YAxis.InitialMinimum = double.MaxValue;
-                ExcludeFromMinMax(ConfigurationPlot.PLOTTYPE.SMA, ConfigurationPlot.PLOTTYPE.EMA);
                 SetMarginPercent(dfPctMargin);
             }
             else
             {
                 YAxis.InitialMaximum = -double.MaxValue;
                 YAxis.InitialMinimum = double.MaxValue;
-                ExcludeFromMinMax();
             }
         }
 
