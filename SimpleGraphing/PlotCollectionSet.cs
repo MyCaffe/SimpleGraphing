@@ -72,11 +72,19 @@ namespace SimpleGraphing
             return col;
         }
 
-        public void SetMinMax(int nStartIdx = 0)
+        public void SetMinMaxTarget(PlotCollection.MINMAX_TARGET minmaxTarget)
         {
             foreach (PlotCollection pc in m_rgSet)
             {
-                pc.SetMinMax(nStartIdx);
+                pc.MinMaxTarget = minmaxTarget;
+            }
+        }
+
+        public void SetMinMax(int nStartIdx = 0, bool? bLock = null)
+        {
+            foreach (PlotCollection pc in m_rgSet)
+            {
+                pc.SetMinMax(nStartIdx, bLock);
             }
         }
 

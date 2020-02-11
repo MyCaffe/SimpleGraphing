@@ -25,6 +25,7 @@ namespace SimpleGraphing
         double? m_dfCalculatedEndY = null;
         bool m_bExcludeFromMinMax = false;
         MINMAX_TARGET m_minmaxTarget = MINMAX_TARGET.VALUES;
+        bool m_bLockMinMax = false;
 
         public event EventHandler<PlotUpdateArgs> OnUpdatePlot;
 
@@ -138,7 +139,7 @@ namespace SimpleGraphing
             return null;
         }
 
-        public void ScaleParametersToCount(bool bCalculateMinMax, bool bOnlyUnscaled, double? dfParamMin, double? dfParamMax, params string[] rgstrParams)
+        public void ScaleParametersToCount(bool bCalculateMinMax, bool bOnlyUnscaled, double? dfParamMin, double? dfParamMax, double dfSqueezePct, string strScaledKeyPostfix, params string[] rgstrParams)
         {
             double dfMin = m_dfMinVal;
             double dfMax = m_dfMaxVal;
@@ -157,7 +158,10 @@ namespace SimpleGraphing
             if (dfParamMax == null)
                 dfParamMax = m_rgPlot.Max(p => p.Parameters.Max(p1 => p1.Value));
 
-            double dfParamRange = dfParamMax.Value - dfParamMin.Value;
+            double dfParamRange = (dfParamMax.Value - dfParamMin.Value);
+
+            if (dfSqueezePct > 0)
+                dfParamRange *= (1.0 + dfSqueezePct);
 
             foreach (Plot plot in m_rgPlot)
             {
@@ -169,8 +173,18 @@ namespace SimpleGraphing
                         if (plot.Parameters.ContainsKey(strKey))
                         {
                             double dfVal = plot.Parameters[strKey];
-                            dfVal = (dfRange == 0) ? 0 : (((dfVal - dfParamMin.Value) / dfParamRange) * dfRange) + dfMin;
-                            plot.Parameters[strKey] = dfVal;
+                            if (dfRange == 0 || dfParamRange == 0)
+                                dfVal = 0;
+                            else
+                                dfVal = (((dfVal - dfParamMin.Value) / dfParamRange) * dfRange) + dfMin;
+
+                            strKey += strScaledKeyPostfix;
+
+                            if (!plot.Parameters.ContainsKey(strKey))
+                                plot.Parameters.Add(strKey, dfVal);
+                            else
+                                plot.Parameters[strKey] = dfVal;
+
                             plot.Scaled = true;
                         }
                     }
@@ -285,6 +299,7 @@ namespace SimpleGraphing
             col.m_dfCalculatedEndY = m_dfCalculatedEndY;
             col.m_bExcludeFromMinMax = m_bExcludeFromMinMax;
             col.m_minmaxTarget = m_minmaxTarget;
+            col.m_bLockMinMax = m_bLockMinMax;
 
             for (int i=nIdxStart; i<m_rgPlot.Count; i++)
             {
@@ -359,8 +374,11 @@ namespace SimpleGraphing
             set { m_minmaxTarget = value; }
         }
 
-        public void SetMinMax(int nStartIdx = 0)
+        public void SetMinMax(int nStartIdx = 0, bool? bLock = null)
         {
+            if (!bLock.HasValue && m_bLockMinMax)
+                return;
+
             if (m_rgPlot.Count <= 1)
                 return;
 
@@ -391,10 +409,16 @@ namespace SimpleGraphing
                     }
                 }
             }
+
+            if (bLock.HasValue)
+                m_bLockMinMax = bLock.Value;
         }
 
         public void SetMinMax(MinMax minmax)
         {
+            if (m_bLockMinMax)
+                return;
+
             m_dfMinVal = minmax.Min;
             m_dfMaxVal = minmax.Max;
         }
@@ -586,6 +610,9 @@ namespace SimpleGraphing
 
         private void setMinMax(Plot last, List<double> rgdfY)
         {
+            if (m_bLockMinMax)
+                return;
+
             m_dfMinVal = double.MaxValue;
             m_dfMaxVal = -double.MaxValue;
 
