@@ -94,10 +94,13 @@ namespace SimpleGraphing.GraphRender
             Color clrLineDn = (bTransparentLine) ? Color.Transparent : m_config.PlotLineColor;
             Pen penUp = new Pen(clrLineUp, m_config.LineWidth);
             Pen penDn = new Pen(clrLineDn, m_config.LineWidth);
+            double dfMidPoint = m_config.MidPoint;
+            bool bMidPointReady = false;
 
             if (!string.IsNullOrEmpty(m_config.DataParam))
             {
-                string[] rgstr = m_config.DataParam.Split(':');
+                string[] rgstrParam = m_config.DataParam.Split(';');               
+                string[] rgstr = rgstrParam[0].Split(':');
                 strDataParam = rgstr[0];
 
                 if (rgstr.Length > 1 && rgstr[1] == "native")
@@ -107,9 +110,28 @@ namespace SimpleGraphing.GraphRender
 
                 if (rgstr.Length > 1 && rgstr[1] == "r")
                     plots.GetMinMaxOverWindow(0, plots.Count, out dfMinX, out dfMinY, out dfMaxX, out dfMaxY);
+
+                if (rgstrParam.Length > 1 && rgstrParam[1].Contains("midpoint"))
+                {
+                    rgstr = rgstrParam[1].Split(':');
+                    if (rgstr.Length > 1 && rgstr[0] == "midpoint")
+                    {
+                        double dfMidMin;
+                        double dfMidMax;
+                        plots.GetParamMinMax(rgstr[1], out dfMidMin, out dfMidMax);
+
+                        if (dfMidMin == double.MaxValue)
+                            dfMidMin = 0;
+
+                        dfMidPoint = dfMidMin;
+                        bMidPointReady = true;
+                    }
+                }
             }
 
-            float fYMid = getYValue(dfMinY, dfMaxY, dfParamMin, dfParamMax, m_config.MidPoint, bNative);
+            float fYMid = (bMidPointReady) ? (float)m_gy.ScaleValue(dfMidPoint, true) : getYValue(dfMinY, dfMaxY, dfParamMin, dfParamMax, dfMidPoint, bNative);
+            if (float.IsNaN(fYMid) || float.IsInfinity(fYMid))
+                fYMid = 0;
 
             for (int i = 0; i < rgX.Count; i++)
             {
