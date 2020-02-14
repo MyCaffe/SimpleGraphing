@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace SimpleGraphing
 {
@@ -48,6 +49,17 @@ namespace SimpleGraphing
             ser.Add("BackColor", m_clrBack);
             ser.Add("EnableSmoothing", m_bEnableSmoothing.ToString());
             ser.Close();
+        }
+
+        public static ConfigurationSurface Deserialize(IEnumerable<XElement> elms)
+        {
+            ConfigurationSurface surface = new ConfigurationSurface();
+
+            XElement elm = SerializeToXml.GetElement(elms, "Surface");
+            surface.m_clrBack = SerializeToXml.LoadColor(elm, "BackColor").Value;
+            surface.m_bEnableSmoothing = SerializeToXml.LoadBool(elm, "EnableSmoothing").Value;
+
+            return surface;
         }
     }
 }

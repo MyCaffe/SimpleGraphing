@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace SimpleGraphing
 {
@@ -140,6 +141,48 @@ namespace SimpleGraphing
             ser.Add("Enabled", m_bEnabled);
             ser.Add("LineType", m_lineType.ToString());
             ser.Close();
+        }
+
+        public static List<ConfigurationTargetLine> Deserialize(IEnumerable<XElement> elms)
+        {
+            List<ConfigurationTargetLine> rgLines = new List<ConfigurationTargetLine>();
+            List<XElement> rgElm = SerializeToXml.GetElements(elms, "TargetLine");
+
+            foreach (XElement elm in rgElm)
+            {
+                ConfigurationTargetLine line = ConfigurationTargetLine.Deserialize(elm);
+                rgLines.Add(line);
+            }
+
+            return rgLines;
+        }
+
+        public static ConfigurationTargetLine Deserialize(XElement elm)
+        {
+            ConfigurationTargetLine plot = new ConfigurationTargetLine();
+
+            plot.LineColor = SerializeToXml.LoadColor(elm, "LineColor").Value;
+            plot.EnableFlag = SerializeToXml.LoadBool(elm, "EnableFlag").Value;
+            plot.FlagColor = SerializeToXml.LoadColor(elm, "FlagColor").Value;
+            plot.FlagBorderColor = SerializeToXml.LoadColor(elm, "FlagBorderColor").Value;
+            plot.FlagTextColor = SerializeToXml.LoadColor(elm, "FlagTextColor").Value;
+            plot.YValue = SerializeToXml.LoadDouble(elm, "YValue").Value;
+            plot.YValueRange = SerializeToXml.LoadDouble(elm, "YRange").Value;
+            plot.Enabled = SerializeToXml.LoadBool(elm, "Enabled").Value;
+            plot.LineType = lineTypeFromString(SerializeToXml.LoadText(elm, "LineType"));
+
+            return plot;
+        }
+
+        private static LINE_TYPE lineTypeFromString(string str)
+        {
+            if (str == LINE_TYPE.MAX.ToString())
+                return LINE_TYPE.MAX;
+
+            else if (str == LINE_TYPE.MIN.ToString())
+                return LINE_TYPE.MIN;
+
+            return LINE_TYPE.VALUE;
         }
     }
 }

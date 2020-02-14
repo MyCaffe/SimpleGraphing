@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace SimpleGraphing
 {
@@ -115,6 +116,20 @@ namespace SimpleGraphing
             }
 
             ser.Close();
+        }
+
+        public static ConfigurationPlotArea Deserialize(XElement elm)
+        {
+            ConfigurationPlotArea plot = new ConfigurationPlotArea();
+
+            XElement child = SerializeToXml.GetElement(elm.Descendants(), "PlotArea");
+
+            plot.GridColor = SerializeToXml.LoadColor(child, "GridColor").Value;
+            plot.BackColor = SerializeToXml.LoadColor(child, "BackColor").Value;
+            plot.ZeroLine = SerializeToXml.LoadColor(child, "ZeroLineColor").Value;
+            plot.LabelFont = SerializeToXml.LoadFont(child, "LabelFont");
+
+            return plot;
         }
     }
 }

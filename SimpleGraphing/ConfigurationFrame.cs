@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace SimpleGraphing
 {
@@ -336,10 +337,45 @@ namespace SimpleGraphing
             }
 
             m_configPlotArea.Serialize(ser);
-            m_configXAxis.Serialize(ser);
-            m_configYAxis.Serialize(ser);
+            m_configXAxis.Serialize(ser, "X");
+            m_configYAxis.Serialize(ser, "Y");
 
             ser.Close();
+        }
+
+        public static List<ConfigurationFrame> Deserialize(IEnumerable<XElement> elms)
+        {
+            List<ConfigurationFrame> rgFrames = new List<ConfigurationFrame>();
+            List<XElement> rgElm = SerializeToXml.GetElements(elms, "Frame");
+
+            foreach (XElement elm in rgElm)
+            {
+                ConfigurationFrame frame = ConfigurationFrame.Deserialize(elm);
+                rgFrames.Add(frame);
+            }
+
+            return rgFrames;
+        }
+
+        public static ConfigurationFrame Deserialize(XElement elm)
+        {
+            ConfigurationFrame frame = new ConfigurationFrame();
+
+            frame.m_nDataIndex = SerializeToXml.LoadInt(elm, "DataIndex").Value;
+            frame.m_nFrameHeight = SerializeToXml.LoadInt(elm, "FrameHeight").Value;
+            frame.m_clrTitle = SerializeToXml.LoadColor(elm, "TitleColor").Value;
+            frame.m_fontTitle = SerializeToXml.LoadFont(elm, "TitleFont");
+            frame.Name = SerializeToXml.LoadText(elm, "Name");
+            frame.Visible = SerializeToXml.LoadBool(elm, "Visible").Value;
+            frame.MinMaxTarget = (PlotCollection.MINMAX_TARGET)SerializeToXml.LoadInt(elm, "MinMaxTarget");
+            frame.ScaleToVisibleWhenRelative = SerializeToXml.LoadBool(elm, "ScaleToVisible").Value;
+            frame.m_rgPlots = ConfigurationPlot.Deserialize(elm.Descendants());
+            frame.m_rgLines = ConfigurationTargetLine.Deserialize(elm.Descendants());
+            frame.m_configPlotArea = ConfigurationPlotArea.Deserialize(elm);
+            frame.m_configXAxis = ConfigurationAxis.Deserialize(elm, "X");
+            frame.m_configYAxis = ConfigurationAxis.Deserialize(elm, "Y");
+
+            return frame;
         }
     }
 }

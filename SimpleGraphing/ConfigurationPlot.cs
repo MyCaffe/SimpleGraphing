@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace SimpleGraphing
 {
@@ -339,23 +340,28 @@ namespace SimpleGraphing
             ser.Add("LineColor", m_clrLine);
             ser.Add("PlotFillColor", m_clrPlotFill);
             ser.Add("PlotLineColor", m_clrPlotLine);
+            ser.Add("ActionActive1Color", m_clrAction1Active);
+            ser.Add("ActionActive2Color", m_clrAction2Active);
+            ser.Add("ActionActiveColorAlpha", m_nActionActiveAlpha);
             ser.Add("LineWidth", m_fLineWidth);
             ser.Add("EnableFlag", m_bEnableFlag);
             ser.Add("FlagColor", m_clrFlag);
             ser.Add("FlagBorderColor", m_clrFlagBorder);
             ser.Add("FlagTextColor", m_clrFlagText);
+            ser.Add("DataParam", m_strDataParam);
             ser.Add("DataIndex", m_nDataIdx);
+            ser.Add("DataIndexOnRender", m_nDataIdxOnRender);
+            ser.Add("DataName", m_strDataName);
             ser.Add("Name", m_strName);
             ser.Add("Visible", m_bVisible);
             ser.Add("Interval", m_nInterval);
             ser.Add("PlotType", m_plotType.ToString());
+            ser.Add("CustomName", m_strCustomName);
             ser.Add("ExcludeFromMinMax", m_bExcludeFromMinMax);
-            ser.Add("ActionActive1Color", m_clrAction1Active);
-            ser.Add("ActionActive2Color", m_clrAction2Active);
-            ser.Add("ActionActiveColorAlpha", m_nActionActiveAlpha);
             ser.Add("LookaheadActive", m_bLookaheadActive);
-            ser.Add("DataParam", m_strDataParam);
+            ser.Add("MarginPercent", m_dfMarginPercent);
             ser.Add("Transparency", m_dfTransparency);
+            ser.Add("MidPoint", m_dfMidPoint);
 
             ser.Add("ExtraCount", (m_rgExtraSettings == null) ? 0 : m_rgExtraSettings.Count);
 
@@ -364,13 +370,104 @@ namespace SimpleGraphing
                 int nIdx = 0;
                 foreach (KeyValuePair<string, double> kv in m_rgExtraSettings)
                 {
+                    ser.Open("Extra");
                     ser.Add("ExtraName" + nIdx.ToString(), kv.Key);
                     ser.Add("ExtraValue" + nIdx.ToString(), kv.Value);
+                    ser.Close();
                     nIdx++;
                 }
             }
 
             ser.Close();
+        }
+
+        public static List<ConfigurationPlot> Deserialize(IEnumerable<XElement> elms)
+        {
+            List<ConfigurationPlot> rgPlot = new List<ConfigurationPlot>();
+            List<XElement> rgElm = SerializeToXml.GetElements(elms, "Plot");
+
+            foreach (XElement elm in rgElm)
+            {
+                ConfigurationPlot plot = ConfigurationPlot.Deserialize(elm);
+                rgPlot.Add(plot);
+            }
+
+            return rgPlot;
+        }
+
+        public static ConfigurationPlot Deserialize(XElement elm)
+        {
+            ConfigurationPlot plot = new ConfigurationPlot();
+
+            plot.LineColor = SerializeToXml.LoadColor(elm, "LineColor").Value;
+            plot.PlotFillColor = SerializeToXml.LoadColor(elm, "PlotFillColor").Value;
+            plot.PlotLineColor = SerializeToXml.LoadColor(elm, "PlotLineColor").Value;
+            plot.ActionActive1Color = SerializeToXml.LoadColor(elm, "ActionActive1Color").Value;
+            plot.ActionActive2Color = SerializeToXml.LoadColor(elm, "ActionActive2Color").Value;
+            plot.ActionActiveColorAlpha = SerializeToXml.LoadInt(elm, "ActionActiveColorAlpha").Value;
+            plot.LineWidth = (float)SerializeToXml.LoadDouble(elm, "LineWidth").Value;
+            plot.EnableFlag = SerializeToXml.LoadBool(elm, "EnableFlag").Value;
+            plot.FlagColor = SerializeToXml.LoadColor(elm, "FlagColor").Value;
+            plot.FlagBorderColor = SerializeToXml.LoadColor(elm, "FlagBorderColor").Value;
+            plot.FlagTextColor = SerializeToXml.LoadColor(elm, "FlagTextColor").Value;
+            plot.DataParam = SerializeToXml.LoadText(elm, "DataParam");
+            plot.DataIndex = SerializeToXml.LoadInt(elm, "DataIndex").Value;
+            plot.DataIndexOnRender = SerializeToXml.LoadInt(elm, "DataIndexOnRender").Value;
+            plot.DataName = SerializeToXml.LoadText(elm, "DataName");
+            plot.Name = SerializeToXml.LoadText(elm, "Name");
+            plot.Visible = SerializeToXml.LoadBool(elm, "Visible").Value;
+            plot.Interval = (uint)SerializeToXml.LoadInt(elm, "Interval").Value;
+            plot.PlotType = plotTypeFromString(SerializeToXml.LoadText(elm, "PlotType"));
+            plot.CustomName = SerializeToXml.LoadText(elm, "CustomName");
+            plot.ExcludeFromMinMax = SerializeToXml.LoadBool(elm, "ExcludeFromMinMax").Value;
+            plot.LookaheadActive = SerializeToXml.LoadBool(elm, "LookaheadActive").Value;
+            plot.MarginPercent = SerializeToXml.LoadDouble(elm, "MarginPercent").Value;
+            plot.Transparency = SerializeToXml.LoadDouble(elm, "Transparency").Value;
+            plot.MidPoint = SerializeToXml.LoadDouble(elm, "MidPoint").Value;
+            plot.ExtraSettings = new Dictionary<string, double>();
+
+            List<XElement> rgExtra = SerializeToXml.GetElements(elm.Descendants(), "Extra");
+            foreach (XElement elm1 in rgExtra)
+            {
+                string strName = SerializeToXml.LoadText(elm1, "ExtraName");
+                string strVal = SerializeToXml.LoadText(elm1, "ExtraValue");
+                double dfVal = double.Parse(strVal);
+                plot.ExtraSettings.Add(strName, dfVal);
+            }
+
+            return plot;
+        }
+
+        private static PLOTTYPE plotTypeFromString(string str)
+        {
+            if (str == PLOTTYPE.CANDLE.ToString())
+                return PLOTTYPE.CANDLE;
+
+            else if (str == PLOTTYPE.CUSTOM.ToString())
+                return PLOTTYPE.CUSTOM;
+
+            else if (str == PLOTTYPE.EMA.ToString())
+                return PLOTTYPE.EMA;
+
+            else if (str == PLOTTYPE.HIGHLOW.ToString())
+                return PLOTTYPE.HIGHLOW;
+
+            else if (str == PLOTTYPE.LINE.ToString())
+                return PLOTTYPE.LINE;
+
+            else if (str == PLOTTYPE.LINE_FILL.ToString())
+                return PLOTTYPE.LINE_FILL;
+
+            else if (str == PLOTTYPE.RSI.ToString())
+                return PLOTTYPE.RSI;
+
+            else if (str == PLOTTYPE.SMA.ToString())
+                return PLOTTYPE.SMA;
+
+            else if (str == PLOTTYPE.VOLUME.ToString())
+                return PLOTTYPE.VOLUME;
+
+            throw new Exception("Unknown plot type '" + str + "'!");
         }
 
         public override string ToString()

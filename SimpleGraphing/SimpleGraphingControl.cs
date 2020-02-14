@@ -40,21 +40,39 @@ namespace SimpleGraphing
 
         public void SaveConfiguration(string strFile)
         {
-            IFormatter formatter = new BinaryFormatter();
+            string strExt = Path.GetExtension(strFile).ToLower();
 
-            using (Stream strm = new FileStream(strFile, FileMode.Create, FileAccess.Write))
+            if (strExt == ".xml")
             {
-                formatter.Serialize(strm, Configuration);
+                Configuration.SaveToFile(strFile);
+            }
+            else
+            {
+                IFormatter formatter = new BinaryFormatter();
+
+                using (Stream strm = new FileStream(strFile, FileMode.Create, FileAccess.Write))
+                {
+                    formatter.Serialize(strm, Configuration);
+                }
             }
         }
 
         public void LoadConfiguration(string strFile)
         {
-            IFormatter formatter = new BinaryFormatter();
+            string strExt = Path.GetExtension(strFile).ToLower();
 
-            using (Stream strm = new FileStream(strFile, FileMode.Open, FileAccess.Read))
+            if (strExt == ".xml")
             {
-                Configuration = formatter.Deserialize(strm) as Configuration;
+                Configuration = Configuration.LoadFromFile(strFile);
+            }
+            else
+            {
+                IFormatter formatter = new BinaryFormatter();
+
+                using (Stream strm = new FileStream(strFile, FileMode.Open, FileAccess.Read))
+                {
+                    Configuration = formatter.Deserialize(strm) as Configuration;
+                }
             }
         }
 

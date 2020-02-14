@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace SimpleGraphing
 {
@@ -70,6 +71,17 @@ namespace SimpleGraphing
             }
 
             ser.Save(strFile);
+        }
+
+        public static Configuration LoadFromFile(string strFile)
+        {
+            Configuration config = new Configuration();
+            XDocument doc = XDocument.Load(strFile);
+
+            config.Surface = ConfigurationSurface.Deserialize(doc.Descendants());
+            config.Frames = ConfigurationFrame.Deserialize(doc.Descendants());
+
+            return config;
         }
 
         public void SetLookahead(int nLookahead)

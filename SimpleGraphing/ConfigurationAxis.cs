@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace SimpleGraphing
 {
@@ -187,9 +188,9 @@ namespace SimpleGraphing
             set { m_dfTimeOffsetInHours = value; }
         }
 
-        public void Serialize(SerializeToXml ser)
+        public void Serialize(SerializeToXml ser, string strType)
         {
-            ser.Open("Axis");
+            ser.Open("Axis" + strType);
             ser.Add("ZeroLineColor", m_clrZeroLine);
             ser.Add("TickColor", m_clrTick);
             ser.Add("LabelColor", m_clrLabel);
@@ -205,6 +206,49 @@ namespace SimpleGraphing
             ser.Add("ValueRes", m_valueRes.ToString());
             ser.Add("TimeOffsetInHours", m_dfTimeOffsetInHours.ToString());
             ser.Close();            
+        }
+
+        public static ConfigurationAxis Deserialize(XElement elm, string strType)
+        {
+            ConfigurationAxis axis = new ConfigurationAxis();
+
+            XElement child = SerializeToXml.GetElement(elm.Descendants(), "Axis" + strType);
+
+            axis.ZeroLineColor = SerializeToXml.LoadColor(child, "ZeroLineColor").Value;
+            axis.TickColor = SerializeToXml.LoadColor(child, "TickColor").Value;
+            axis.LabelColor = SerializeToXml.LoadColor(child, "LabelColor").Value;
+            axis.LabelFont = SerializeToXml.LoadFont(child, "LabelFont");
+            axis.Visible = SerializeToXml.LoadBool(child, "Visible").Value;
+            axis.InitialMinimum = SerializeToXml.LoadDouble(child, "InitialMin").Value;
+            axis.InitialMaximum = SerializeToXml.LoadDouble(child, "InitialMax").Value;
+            axis.Margin = (uint)SerializeToXml.LoadInt(child, "Margin").Value;
+            axis.PlotSpacing = SerializeToXml.LoadInt(child, "PlotSpacing").Value;
+            axis.Decimals = SerializeToXml.LoadInt(child, "Decimals").Value;
+            axis.ShowAllNumbers = SerializeToXml.LoadBool(child, "ShowAllNumbers").Value;
+            axis.ValueType = valueTypeFromString(SerializeToXml.LoadText(child, "ValueType"));
+            axis.ValueResolution = valueResFromString(SerializeToXml.LoadText(child, "ValueRes"));
+            axis.TimeOffsetInHours = SerializeToXml.LoadDouble(child, "TimeOffsetInHours").Value;
+
+            return axis;
+        }
+
+        private static VALUE_TYPE valueTypeFromString(string str)
+        {
+            if (str == VALUE_TYPE.NUMBER.ToString())
+                return VALUE_TYPE.NUMBER;
+
+            return VALUE_TYPE.TIME;
+        }
+
+        private static VALUE_RESOLUTION valueResFromString(string str)
+        {
+            if (str == VALUE_RESOLUTION.DAY.ToString())
+                return VALUE_RESOLUTION.DAY;
+
+            else if (str == VALUE_RESOLUTION.MINUTE.ToString())
+                return VALUE_RESOLUTION.MINUTE;
+
+            return VALUE_RESOLUTION.SECOND;
         }
     }
 }
