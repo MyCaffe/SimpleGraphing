@@ -28,6 +28,7 @@ namespace SimpleGraphing
         VALUE_TYPE m_valueType = VALUE_TYPE.NUMBER;
         VALUE_RESOLUTION m_valueRes = VALUE_RESOLUTION.MINUTE;
         double m_dfTimeOffsetInHours = 0;
+        bool m_bShowSeconds = true;
 
         public enum VALUE_TYPE
         {
@@ -87,6 +88,9 @@ namespace SimpleGraphing
             if (m_dfTimeOffsetInHours != c.m_dfTimeOffsetInHours)
                 return false;
 
+            if (m_bShowSeconds != c.m_bShowSeconds)
+                return false;
+
             return true;
         }
 
@@ -110,6 +114,12 @@ namespace SimpleGraphing
         {
             get { return m_bShowAllNumbers; }
             set { m_bShowAllNumbers = value; }
+        }
+
+        public bool ShowSeconds
+        {
+            get { return m_bShowSeconds; }
+            set { m_bShowSeconds = value; }
         }
 
         public VALUE_TYPE ValueType
@@ -202,6 +212,7 @@ namespace SimpleGraphing
             ser.Add("PlotSpacing", m_nPlotSpacing);
             ser.Add("Decimals", m_nDecimals);
             ser.Add("ShowAllNumbers", m_bShowAllNumbers);
+            ser.Add("ShowSeconds", m_bShowSeconds);
             ser.Add("ValueType", m_valueType.ToString());
             ser.Add("ValueRes", m_valueRes.ToString());
             ser.Add("TimeOffsetInHours", m_dfTimeOffsetInHours.ToString());
@@ -228,6 +239,10 @@ namespace SimpleGraphing
             axis.ValueType = valueTypeFromString(SerializeToXml.LoadText(child, "ValueType"));
             axis.ValueResolution = valueResFromString(SerializeToXml.LoadText(child, "ValueRes"));
             axis.TimeOffsetInHours = SerializeToXml.LoadDouble(child, "TimeOffsetInHours").Value;
+
+            bool? bShowSeconds = SerializeToXml.LoadBool(child, "ShowSeconds");
+            if (bShowSeconds.HasValue)
+                axis.ShowSeconds = bShowSeconds.Value;
 
             return axis;
         }

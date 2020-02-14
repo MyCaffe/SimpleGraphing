@@ -138,7 +138,12 @@ namespace SimpleGraphing
                     if (m_nDayCount <= 2)
                     {
                         m_nDayLast = dt.Day;
-                        return dt.Day.ToString("00") + " " + dt.Hour.ToString("00") + ":" + dt.Minute.ToString("00") + ":" + dt.Second.ToString("00");
+                        string strVal = dt.Day.ToString("00") + " " + dt.Hour.ToString("00") + ":" + dt.Minute.ToString("00");
+
+                        if (config.ShowSeconds)
+                            strVal += ":" + dt.Second.ToString("00");
+
+                        return strVal;
                     }
                     else
                     {
