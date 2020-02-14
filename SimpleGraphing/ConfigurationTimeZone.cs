@@ -84,7 +84,7 @@ namespace SimpleGraphing
         public static List<ConfigurationTimeZone> Deserialize(IEnumerable<XElement> elms)
         {
             List<ConfigurationTimeZone> rgTz = new List<ConfigurationTimeZone>();
-            List<XElement> rgElm = SerializeToXml.GetElements(elms, "TargetLine");
+            List<XElement> rgElm = SerializeToXml.GetElements(elms, "TimeZone");
 
             foreach (XElement elm in rgElm)
             {
