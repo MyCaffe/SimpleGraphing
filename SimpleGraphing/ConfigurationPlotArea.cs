@@ -110,9 +110,12 @@ namespace SimpleGraphing
             ser.Add("ZeroLineColor", m_clrZeroLine);
             ser.Add("LabelFont", m_fontLabels);
 
-            foreach (ConfigurationTimeZone tz in m_rgTimeZones)
+            if (m_rgTimeZones != null)
             {
-                tz.Serialize(ser);
+                foreach (ConfigurationTimeZone tz in m_rgTimeZones)
+                {
+                    tz.Serialize(ser);
+                }
             }
 
             ser.Close();
@@ -128,6 +131,8 @@ namespace SimpleGraphing
             plot.BackColor = SerializeToXml.LoadColor(child, "BackColor").Value;
             plot.ZeroLine = SerializeToXml.LoadColor(child, "ZeroLineColor").Value;
             plot.LabelFont = SerializeToXml.LoadFont(child, "LabelFont");
+
+            plot.m_rgTimeZones = ConfigurationTimeZone.Deserialize(elm.Descendants());
 
             return plot;
         }

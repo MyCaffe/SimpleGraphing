@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace SimpleGraphing
 {
@@ -79,5 +80,32 @@ namespace SimpleGraphing
             ser.Add("Relative", m_bRelative);
             ser.Close();
         }
+
+        public static List<ConfigurationTimeZone> Deserialize(IEnumerable<XElement> elms)
+        {
+            List<ConfigurationTimeZone> rgTz = new List<ConfigurationTimeZone>();
+            List<XElement> rgElm = SerializeToXml.GetElements(elms, "TargetLine");
+
+            foreach (XElement elm in rgElm)
+            {
+                ConfigurationTimeZone tz = ConfigurationTimeZone.Deserialize(elm);
+                rgTz.Add(tz);
+            }
+
+            return rgTz;
+        }
+
+        public static ConfigurationTimeZone Deserialize(XElement elm)
+        {
+            ConfigurationTimeZone tz = new ConfigurationTimeZone();
+
+            tz.StartTime = SerializeToXml.LoadDateTime(elm, "Start").Value;
+            tz.EndTime = SerializeToXml.LoadDateTime(elm, "End").Value;
+            tz.BackColor = SerializeToXml.LoadColor(elm, "BackColor").Value;
+            tz.Relative = SerializeToXml.LoadBool(elm, "Relative").Value;
+
+            return tz;
+        }
+
     }
 }

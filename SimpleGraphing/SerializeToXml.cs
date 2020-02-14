@@ -102,6 +102,15 @@ namespace SimpleGraphing
             return child.Value;
         }
 
+        public static DateTime? LoadDateTime(XElement elm, string strName)
+        {
+            string str = LoadText(elm, strName);
+            if (str == null)
+                return null;
+
+            return DateTime.Parse(str);
+        }
+
         public static Color? LoadColor(XElement elm, string strName)
         {
             string str = LoadText(elm, strName);
