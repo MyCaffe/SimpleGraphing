@@ -147,7 +147,12 @@ namespace SimpleGraphing
                     }
                     else
                     {
-                        return dt.Hour.ToString("00") + ":" + dt.Minute.ToString("00") + ":" + dt.Second.ToString("00");
+                        string strVal = dt.Hour.ToString("00") + ":" + dt.Minute.ToString("00");
+
+                        if (config.ShowSeconds)
+                            strVal += ":" + dt.Second.ToString("00");
+
+                        return strVal;
                     }
                 }
             }
