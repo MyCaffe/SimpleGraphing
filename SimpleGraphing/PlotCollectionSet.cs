@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -105,7 +106,6 @@ namespace SimpleGraphing
 
             return 0;
         }
-
 
         public PlotCollectionSet(PlotCollectionSet set, params string[] rgstrContains)
         {
@@ -328,6 +328,91 @@ namespace SimpleGraphing
         IEnumerator IEnumerable.GetEnumerator()
         {
             return m_rgSet.GetEnumerator();
+        }
+
+        public byte[] Save()
+        {
+            using (MemoryStream ms = new MemoryStream())
+            using (BinaryWriter bw = new BinaryWriter(ms))
+            {
+                bw.Write(m_rgSet.Count);
+
+                for (int i = 0; i < m_rgSet.Count; i++)
+                {
+                    byte[] rgData = m_rgSet[i].Save();
+
+                    bw.Write(rgData.Length);
+                    bw.Write(rgData);
+                }
+
+                ms.Flush();
+                return ms.ToArray();
+            }
+        }
+
+        public static PlotCollectionSet Load(byte[] rgData)
+        {
+            PlotCollectionSet set = new PlotCollectionSet();
+
+            using (MemoryStream ms = new MemoryStream(rgData))
+            using (BinaryReader br = new BinaryReader(ms))
+            {
+                int nCount = br.ReadInt32();
+
+                for (int i = 0; i < nCount; i++)
+                {
+                    int nLen = br.ReadInt32();
+                    byte[] rgData1 = br.ReadBytes(nLen);
+
+                    set.Add(PlotCollection.Load(rgData1));
+                }
+            }
+
+            return set;
+        }
+
+        public static byte[] SaveList(List<PlotCollectionSet> rgSet)
+        {
+            if (rgSet == null)
+                return null;
+
+            using (MemoryStream ms = new MemoryStream())
+            using (BinaryWriter bw = new BinaryWriter(ms))
+            {
+                bw.Write(rgSet.Count);
+
+                for (int i = 0; i < rgSet.Count; i++)
+                {
+                    byte[] rgData = rgSet[i].Save();
+
+                    bw.Write(rgData.Length);
+                    bw.Write(rgData);
+                }
+
+                ms.Flush();
+                return ms.ToArray();
+            }
+        }
+
+        public static List<PlotCollectionSet> LoadList(byte[] rgData)
+        {
+            List<PlotCollectionSet> rgSet = new List<PlotCollectionSet>();
+
+            using (MemoryStream ms = new MemoryStream(rgData))
+            using (BinaryReader br = new BinaryReader(ms))
+            {
+                int nCount = br.ReadInt32();
+
+                for (int i = 0; i < nCount; i++)
+                {
+                    int nLen = br.ReadInt32();
+                    byte[] rgData1 = br.ReadBytes(nLen);
+
+                    rgSet.Add(PlotCollectionSet.Load(rgData1));
+                }
+            }
+
+            return rgSet;
         }
     }
 }
