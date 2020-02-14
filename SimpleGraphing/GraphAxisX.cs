@@ -17,6 +17,8 @@ namespace SimpleGraphing
         double m_dfAbsMinY = double.MaxValue;
         double m_dfAbsMaxY = -double.MaxValue;
 
+        public event EventHandler<TickValueArg> OnNewHour;
+
         public GraphAxisX()
         {
             m_dfInc = 1.0;
@@ -141,7 +143,7 @@ namespace SimpleGraphing
                     m_rgTickPositions.Insert(0, x);
             }
 
-            m_rgTickValues = new List<string>();
+            m_rgTickValues = new List<TickValue>();
 
             if (m_data.Count == 0)
                 return;
@@ -153,10 +155,8 @@ namespace SimpleGraphing
 
             for (int i = StartPosition; i < primaryPlot.Count; i++)
             {
-                double dfX = primaryPlot[i].X;
-                string strVal = getValueString(dfX, m_config);
-                m_rgTickValues.Add(strVal);
-
+                double dfLast = (i == 0) ? 0 : primaryPlot[i - 1].X;
+                m_rgTickValues.Add(new TickValue(primaryPlot[i], TickValue.TYPE.X, m_config, dfLast, ref m_nDayCount, ref m_nDayLast));                
                 if (m_rgTickValues.Count == m_rgTickPositions.Count)
                     break;
             }
@@ -194,9 +194,24 @@ namespace SimpleGraphing
                 {
                     if (i < m_rgTickValues.Count)
                     {
-                        string strVal = m_rgTickValues[i];
-                        SizeF sz = g.MeasureString(strVal, m_config.LabelFont);
-                        DrawRotatedTextAt(g, 270.0f, strVal, nX - m_config.PlotSpacing, nY + 2, m_config.LabelFont, m_style.LabelBrush);
+                        string strVal = m_rgTickValues[i].ValueString;
+                        Font font = (m_rgTickValues[i].Style == FontStyle.Bold) ? m_config.LabelFontBold : m_config.LabelFont;
+                        SizeF sz = g.MeasureString(strVal, font);
+
+                        bool bNewHour = m_rgTickValues[i].NewHour;
+                        if (!bNewHour && i > 0 && m_rgTickValues[i - 1].NewHour)
+                            bNewHour = true;
+
+                        if (bNewHour)
+                        {
+                            RectangleF rc = new RectangleF(nX - m_config.PlotSpacing, nY + 2, sz.Height, sz.Width);
+                            g.FillRectangle(m_style.HourLabel, rc);
+                        }
+
+                        DrawRotatedTextAt(g, 270.0f, strVal, nX - m_config.PlotSpacing, nY + 2, font, m_style.LabelBrush);
+
+                        if (m_config.ShowHourSeparators && bNewHour && OnNewHour != null)
+                            OnNewHour(this, new TickValueArg(m_rgTickValues[i], nX));
                     }
                 }
             }
@@ -249,6 +264,28 @@ namespace SimpleGraphing
             }
 
             m_nScrollOffset = (int)Math.Round(nInvisibleCount * (1.0 - dfPct));
+        }
+    }
+
+    public class TickValueArg : EventArgs
+    {
+        TickValue m_tickValue;
+        int m_nX;
+
+        public TickValueArg(TickValue val, int nX)
+        {
+            m_tickValue = val;
+            m_nX = nX;
+        }
+
+        public int X
+        {
+            get { return m_nX; }
+        }
+
+        public TickValue Value
+        {
+            get { return m_tickValue; }
         }
     }
 }

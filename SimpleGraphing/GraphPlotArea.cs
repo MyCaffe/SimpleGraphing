@@ -261,6 +261,14 @@ namespace SimpleGraphing
             drawTitle(g, m_config, m_style);
         }
 
+        public void RenderVerticalBar(Graphics g, int nX)
+        {
+            Color clr = Color.FromArgb(128, Color.Lavender);
+            Pen pen = new Pen(clr, 2.0f);
+            g.DrawLine(pen, nX, m_rcBounds.Bottom, nX, m_rcBounds.Top);
+            pen.Dispose();
+        }
+
         private void drawTitle(Graphics g, ConfigurationFrame config, PlotAreaStyle style)
         {
             if (config.Name.Length == 0)

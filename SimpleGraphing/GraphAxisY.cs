@@ -66,7 +66,7 @@ namespace SimpleGraphing
                 m_rgTickPositions.Add(y);
             }
 
-            m_rgTickValues = new List<string>();
+            m_rgTickValues = new List<TickValue>();
 
             if (m_dfMin == double.MaxValue)
                 return;
@@ -76,7 +76,7 @@ namespace SimpleGraphing
 
             for (int i = 0; i < m_rgTickPositions.Count; i++)
             {
-                m_rgTickValues.Add(getValueString(dfVal, m_config));
+                m_rgTickValues.Add(new TickValue(dfVal, m_config));
                 dfVal += dfInc;
             }
 
@@ -111,7 +111,7 @@ namespace SimpleGraphing
 
                 if (bDrawValue && i < m_rgTickValues.Count)
                 {
-                    string strVal = m_rgTickValues[i];
+                    string strVal = m_rgTickValues[i].ValueString;
                     SizeF sz = g.MeasureString(strVal, m_config.LabelFont);
 
                     float fX = nX + 4;

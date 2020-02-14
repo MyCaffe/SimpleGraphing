@@ -18,6 +18,7 @@ namespace SimpleGraphing
         Color m_clrTick = Color.Black;
         Color m_clrLabel = Color.Black;
         Font m_fontLabel = new Font("Century Gothic", 8.0f, FontStyle.Regular);
+        Font m_fontLabelBold = new Font("Century Gothic", 8.0f, FontStyle.Bold);
         bool m_bVisible = true;
         double m_dfInitialMin = 0.0;
         double m_dfInitialMax = 1.0;
@@ -29,6 +30,7 @@ namespace SimpleGraphing
         VALUE_RESOLUTION m_valueRes = VALUE_RESOLUTION.MINUTE;
         double m_dfTimeOffsetInHours = 0;
         bool m_bShowSeconds = true;
+        bool m_bShowHourSeparators = false;
 
         public enum VALUE_TYPE
         {
@@ -122,6 +124,12 @@ namespace SimpleGraphing
             set { m_bShowSeconds = value; }
         }
 
+        public bool ShowHourSeparators
+        {
+            get { return m_bShowHourSeparators; }
+            set { m_bShowHourSeparators = value; }
+        }
+
         public VALUE_TYPE ValueType
         {
             get { return m_valueType; }
@@ -183,7 +191,24 @@ namespace SimpleGraphing
         public Font LabelFont
         {
             get { return m_fontLabel; }
-            set { m_fontLabel = value; }
+            set
+            {
+                m_fontLabel = value;
+                m_fontLabelBold = new Font(m_fontLabel, FontStyle.Bold);
+            }
+        }
+
+        [ReadOnly(true)]
+        [Browsable(false)]
+        public Font LabelFontBold
+        {
+            get
+            {
+                if (m_fontLabelBold == null)
+                    m_fontLabelBold = new Font(m_fontLabel, FontStyle.Bold);
+
+                return m_fontLabelBold;
+            }
         }
 
         public Color ZeroLineColor
@@ -213,6 +238,7 @@ namespace SimpleGraphing
             ser.Add("Decimals", m_nDecimals);
             ser.Add("ShowAllNumbers", m_bShowAllNumbers);
             ser.Add("ShowSeconds", m_bShowSeconds);
+            ser.Add("ShowHourSeparators", m_bShowHourSeparators);
             ser.Add("ValueType", m_valueType.ToString());
             ser.Add("ValueRes", m_valueRes.ToString());
             ser.Add("TimeOffsetInHours", m_dfTimeOffsetInHours.ToString());
@@ -243,6 +269,10 @@ namespace SimpleGraphing
             bool? bShowSeconds = SerializeToXml.LoadBool(child, "ShowSeconds");
             if (bShowSeconds.HasValue)
                 axis.ShowSeconds = bShowSeconds.Value;
+
+            bool? bShowHourSeparators = SerializeToXml.LoadBool(child, "ShowHourSeparators");
+            if (bShowHourSeparators.HasValue)
+                axis.ShowHourSeparators = bShowHourSeparators.Value;
 
             return axis;
         }

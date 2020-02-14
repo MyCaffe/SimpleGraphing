@@ -16,11 +16,13 @@ namespace SimpleGraphing
         GraphAxisY m_gy = new GraphAxisY();
         GraphPlotArea m_plotArea;
         PlotCollectionSet m_data;
+        Graphics m_graphics = null;
 
         public GraphFrame(ModuleCache cache)
         {
             m_cache = cache;
             m_plotArea = new GraphPlotArea(m_cache, m_gx, m_gy);
+            m_gx.OnNewHour += m_gx_OnNewHour;
         }
 
         public void Dispose()
@@ -162,6 +164,13 @@ namespace SimpleGraphing
             m_plotArea.Render(g);
             m_gx.Render(g);
             m_gy.Render(g);
+            m_graphics = g;
+        }
+
+        private void m_gx_OnNewHour(object sender, TickValueArg e)
+        {
+            if (m_graphics != null)
+                m_plotArea.RenderVerticalBar(m_graphics, e.X);
         }
 
         public void Scroll(double dfPct)
