@@ -76,8 +76,18 @@ namespace SimpleGraphing
         public static Configuration LoadFromFile(string strFile)
         {
             Configuration config = new Configuration();
-            XDocument doc = XDocument.Load(strFile);
+            string strXml;
 
+            using (StreamReader sr = new StreamReader(strFile))
+            {
+                strXml = sr.ReadToEnd();
+            }
+
+            if ((int)strXml[0] == 65533 && (int)strXml[1] == 65533)
+                strXml = strXml.Substring(3);
+
+            XDocument doc = XDocument.Parse(strXml);
+            
             config.Surface = ConfigurationSurface.Deserialize(doc.Descendants());
             config.Frames = ConfigurationFrame.Deserialize(doc.Descendants());
 
