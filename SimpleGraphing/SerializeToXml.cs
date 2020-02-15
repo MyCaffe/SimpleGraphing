@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml;
+using System.IO;
 
 namespace SimpleGraphing
 {
@@ -47,7 +48,12 @@ namespace SimpleGraphing
 
         public void Save(string strFile)
         {
-            m_doc.Save(strFile);
+            string strXml = m_doc.InnerXml;
+
+            using (StreamWriter sw = new StreamWriter(strFile, false, new UTF8Encoding(false)))
+            {
+                sw.Write(strXml);
+            }
         }
 
         public void Open(string strName)
