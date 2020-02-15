@@ -60,19 +60,32 @@ namespace SimpleGraphing
         public void LoadConfiguration(string strFile)
         {
             string strExt = Path.GetExtension(strFile).ToLower();
+            bool bLoaded = false;
 
-            if (strExt == ".xml")
+            if (strExt == ".cfg")
             {
-                Configuration = Configuration.LoadFromFile(strFile);
-            }
-            else
-            {
-                IFormatter formatter = new BinaryFormatter();
-
-                using (Stream strm = new FileStream(strFile, FileMode.Open, FileAccess.Read))
+                try
                 {
-                    Configuration = formatter.Deserialize(strm) as Configuration;
+                    IFormatter formatter = new BinaryFormatter();
+
+                    using (Stream strm = new FileStream(strFile, FileMode.Open, FileAccess.Read))
+                    {
+                        Configuration = formatter.Deserialize(strm) as Configuration;
+                    }
+
+                    bLoaded = true;
                 }
+                catch
+                {
+                }
+            }
+
+            if (!bLoaded)
+            {
+                if (strExt != ".xml")
+                    strFile = Path.GetDirectoryName(strFile) + "\\" + Path.GetFileNameWithoutExtension(strFile) + ".xml";
+
+                Configuration = Configuration.LoadFromFile(strFile);
             }
         }
 
