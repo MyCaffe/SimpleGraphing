@@ -320,6 +320,34 @@ namespace SimpleGraphing
             m_rgSet.Clear();
         }
 
+        public int GetIndex(string strName, bool bContains = false)
+        {
+            for (int i = 0; i < m_rgSet.Count; i++)
+            {
+                if ((!bContains && m_rgSet[i].Name == strName) ||
+                    (bContains && m_rgSet[i].Name.Contains(strName)))
+                    return i;
+            }
+
+            throw new Exception("Could not find a set item with a name containing '" + strName + "'!");
+        }
+
+        public Plot GetLastActive(string strNameActive, string strNameData)
+        {
+            int nActiveIdx = GetIndex(strNameActive);
+            int nPlotIdx = GetIndex(strNameData);
+            PlotCollection colActive = m_rgSet[nActiveIdx];
+            PlotCollection colPlot = m_rgSet[nPlotIdx];
+
+            for (int i = colActive.Count - 1; i >= 0; i--)
+            {
+                if (colActive[i].Active)
+                    return colPlot[i];
+            }
+
+            return null;
+        }
+
         public IEnumerator<PlotCollection> GetEnumerator()
         {
             return m_rgSet.GetEnumerator();
