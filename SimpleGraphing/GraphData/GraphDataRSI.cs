@@ -67,8 +67,8 @@ namespace SimpleGraphing.GraphData
 
             for (int i = 1; i < data.Count; i++)
             {
-                double dfC0 = data[i - 1].Y_values[3];
-                double dfC1 = data[i].Y_values[3];
+                double dfC0 = (data[i - 1].Y_values.Count == 1) ? data[i - 1].Y : data[i - 1].Y_values[3];
+                double dfC1 = (data[i].Y_values.Count == 1) ? data[i].Y : data[i].Y_values[3];
                 double dfChange = dfC1 - dfC0;
                 bool bActive = false;
 
