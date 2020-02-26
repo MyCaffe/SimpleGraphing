@@ -840,10 +840,19 @@ namespace SimpleGraphing
             PlotCollection colRemoved = new PlotCollection(col.Name);
             int nCount = m_rgPlot.Count;
 
-            for (int i = 0; i < col.Count; i++)
+            List<Plot> rgPlotsToAdd = new List<Plot>();
+            for (int i = col.Count - 1; i >= 0; i--)
+            {
+                if (col[i].X >= m_rgPlot[m_rgPlot.Count - 1].X)
+                {
+                    rgPlotsToAdd.Insert(0, col[i]);
+                }
+            }
+
+            for (int i=0; i<rgPlotsToAdd.Count; i++)
             {
                 if (!bActiveOnly || col[i].Active)
-                    Add(col[i], false,  bReplaceIfExists);
+                    Add(rgPlotsToAdd[i], false,  bReplaceIfExists);
             }
 
             if (bMaintainCount)
