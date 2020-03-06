@@ -183,6 +183,10 @@ namespace SimpleGraphing
                     m_irender = new GraphRenderHighLow(m_config, m_gx, m_gy, style);
                     break;
 
+                case ConfigurationPlot.PLOTTYPE.ZONE:
+                    m_irender = new GraphRenderZones(m_config, m_gx, m_gy, style);
+                    break;
+
                 case ConfigurationPlot.PLOTTYPE.CUSTOM:
                     IGraphPlotDataEx idata = m_cache.Find(m_config.CustomName, true);
                     idata.Initialize(m_config);

@@ -57,7 +57,8 @@ namespace SimpleGraphing
             HIGHLOW,
             CUSTOM,
             VOLUME,
-            LINE_FILL
+            LINE_FILL,
+            ZONE
         }
 
         public ConfigurationPlot()

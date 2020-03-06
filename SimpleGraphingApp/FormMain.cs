@@ -219,6 +219,7 @@ namespace SimpleGraphingApp
                     }
 
                     frame.Plots[4].Visible = bEnableOverlay;
+                    frame.Plots[5].Visible = true;
                 }
                 else if (i == 1)
                 {
@@ -279,8 +280,10 @@ namespace SimpleGraphingApp
             simpleGraphingControl1.Configuration.Surface.EnableSmoothing = true;
             simpleGraphingControl1.Configuration.Frames[0].EnableRelativeScaling(false, false);
 
-            foreach (ConfigurationFrame frame in simpleGraphingControl1.Configuration.Frames)
+            for (int i=0; i<simpleGraphingControl1.Configuration.Frames.Count; i++)
             {
+                ConfigurationFrame frame = simpleGraphingControl1.Configuration.Frames[i];
+
                 frame.Visible = true;
                 frame.Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.LINE;
                 frame.Plots[0].Interval = 20;
@@ -288,6 +291,9 @@ namespace SimpleGraphingApp
                 frame.Plots[0].LineWidth = 1.0f;
                 frame.Plots[0].PlotFillColor = Color.Cyan;
                 frame.Plots[0].PlotLineColor = Color.Black;
+
+                if (i == 0)
+                    frame.Plots[5].Visible = false;
 
                 if (frame.Plots.Count > 1)
                 {
