@@ -13,7 +13,7 @@ namespace SimpleGraphing.GraphRender
         ColorMapper m_clrMap = new ColorMapper(0, 1, Color.Black, Color.Fuchsia);
         bool m_bEnableVolumeScale = true;
         int m_nResolution = 200;
-        int m_nWidth = 200;
+        int m_nWidth = 100;
 
         public GraphRenderZones(ConfigurationPlot config, GraphAxis gx, GraphAxis gy, GraphPlotStyle style)
             : base(config, gx, gy, style)

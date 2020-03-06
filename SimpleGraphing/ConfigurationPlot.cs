@@ -468,6 +468,9 @@ namespace SimpleGraphing
             else if (str == PLOTTYPE.VOLUME.ToString())
                 return PLOTTYPE.VOLUME;
 
+            else if (str == PLOTTYPE.ZONE.ToString())
+                return PLOTTYPE.ZONE;
+
             throw new Exception("Unknown plot type '" + str + "'!");
         }
 
