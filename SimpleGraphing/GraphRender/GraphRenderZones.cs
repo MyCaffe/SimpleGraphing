@@ -57,6 +57,7 @@ namespace SimpleGraphing.GraphRender
 
             rgHistogram.NormalizeCounts();
 
+            // Fill the background
             RectangleF rcBack = new RectangleF(0, fTop, m_nWidth, fBottom - fTop);
             Color clr = Color.FromArgb(128, Color.LightCyan);
             Brush br = new SolidBrush(clr);
@@ -64,6 +65,39 @@ namespace SimpleGraphing.GraphRender
             br.Dispose();
 
             float fHt = (fBottom - fTop) / m_nResolution;
+
+            // Find closest peaks to current price open and close.
+            Plot last = rgPrice.Last();
+            double dfOpen = (last.Y_values.Count == 1) ? last.Y : last.Y_values[0];
+            double dfClose = last.Y;
+            double dfMid = (Math.Abs(dfClose - dfOpen)) / 2 + Math.Min(dfClose, dfOpen);
+            int nMidIdx = rgHistogram.Find(dfMid);
+            int nTopIdx = rgHistogram.FindTopMax(nMidIdx);
+            int nBtmIdx = rgHistogram.FindBottomMax(nMidIdx);
+
+            if (nTopIdx > nMidIdx)
+            {
+                float fX1 = 2;
+                float fX2 = m_gx.TickPositions.Last();
+                float fY1 = fBottom - (nTopIdx * fHt);
+                Pen p1 = new Pen(Color.FromArgb(128, Color.Maroon), 1.0f);
+                p1.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                g.DrawLine(p1, fX1, fY1, fX2, fY1);
+                p1.Dispose();
+            }
+
+            if (nBtmIdx < nMidIdx)
+            {
+                float fX1 = 2;
+                float fX2 = m_gx.TickPositions.Last();
+                float fY1 = fBottom - (nBtmIdx * fHt);
+                Pen p1 = new Pen(Color.FromArgb(128, Color.DarkGreen), 1.0f);
+                p1.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                g.DrawLine(p1, fX1, fY1, fX2, fY1);
+                p1.Dispose();
+            }
+
+            // Draw the price zones
             float fY = fTop;
             for (int i = rgHistogram.Count-1; i>=0; i--)
             {
@@ -116,6 +150,14 @@ namespace SimpleGraphing.GraphRender
             return true;
         }
 
+        public bool Contains(double dfVal)
+        {
+            if (dfVal < m_dfMax && dfVal >= m_dfMin)
+                return true;
+
+            return false;
+        }
+
         public double Minimum
         {
             get { return m_dfMin; }
@@ -135,6 +177,11 @@ namespace SimpleGraphing.GraphRender
         {
             get { return m_dfNormalizedCount; }
             set { m_dfNormalizedCount = value; }
+        }
+
+        public override string ToString()
+        {
+            return "[" + m_dfMin.ToString("N3") + ", " + m_dfMax.ToString("N3") + "]";
         }
     }
 
@@ -167,6 +214,51 @@ namespace SimpleGraphing.GraphRender
         public HistogramItem this[int nIdx]
         {
             get { return m_rgItems[nIdx]; }
+        }
+
+        public int Find(double dfVal)
+        {
+            for (int i = 0; i < m_rgItems.Count; i++)
+            {
+                if (m_rgItems[i].Contains(dfVal))
+                    return i;
+            }
+
+            return m_rgItems.Count - 1;
+        }
+
+        public int FindTopMax(int nIdxStart)
+        {
+            double dfMax = -double.MaxValue;
+            int nMaxIdx = nIdxStart;
+
+            for (int i = nIdxStart; i < m_rgItems.Count; i++)
+            {
+                if (m_rgItems[i].NormalizedCount > dfMax)
+                {
+                    dfMax = m_rgItems[i].NormalizedCount;
+                    nMaxIdx = i;
+                }
+            }
+
+            return nMaxIdx;
+        }
+
+        public int FindBottomMax(int nIdxStart)
+        {
+            double dfMax = -double.MaxValue;
+            int nMaxIdx = nIdxStart;
+
+            for (int i = nIdxStart; i>=0; i--)
+            {
+                if (m_rgItems[i].NormalizedCount > dfMax)
+                {
+                    dfMax = m_rgItems[i].NormalizedCount;
+                    nMaxIdx = i;
+                }
+            }
+
+            return nMaxIdx;
         }
 
         public void Add(Plot price, Plot volume)
