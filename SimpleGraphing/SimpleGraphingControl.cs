@@ -476,6 +476,19 @@ namespace SimpleGraphing
             simpleGraphingControl1.Configuration.Frames[0].YAxis.Decimals = 3;
             simpleGraphingControl1.Configuration.Frames[0].Plots.Add(new ConfigurationPlot());
 
+            string strName = col.Name;
+            string strTag = (string)col.Tag;
+
+            if (strTag != null)
+                strName += " " + strTag;
+
+            if (!string.IsNullOrEmpty(strName))
+            {
+                simpleGraphingControl1.Configuration.Frames[0].Name = strName;
+                simpleGraphingControl1.Configuration.Frames[0].TitleColor = Color.Black;
+                simpleGraphingControl1.Configuration.Frames[0].TitleFont = new Font("Century Gothic", 12.0f, FontStyle.Bold);
+            }
+
             if (col.Count > 0 && col[0].Y_values.Count == 4)
             {
                 simpleGraphingControl1.Configuration.Frames[0].Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.CANDLE;
