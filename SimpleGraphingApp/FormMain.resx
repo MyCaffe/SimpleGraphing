@@ -122,7 +122,7 @@
   </metadata>
   <data name="simpleGraphingControl1.Configuration" mimetype="application/x-microsoft.net.object.binary.base64">
     <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAFRTaW1wbGVHcmFwaGluZywgVmVyc2lvbj0wLjEwLjIuMTgyLCBD
+        AAEAAAD/////AQAAAAAAAAAMAgAAAFRTaW1wbGVHcmFwaGluZywgVmVyc2lvbj0wLjEwLjIuMTg0LCBD
         dWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPTI3MjBlZTVhNmJlY2U4ZmYFAQAAABxTaW1wbGVH
         cmFwaGluZy5Db25maWd1cmF0aW9uBgAAAA1jb25maWdTdXJmYWNlCmZyYW1lQ291bnQHZnJhbWVfMAdm
         cmFtZV8xB2ZyYW1lXzIHZnJhbWVfMwQABAQEBCNTaW1wbGVHcmFwaGluZy5Db25maWd1cmF0aW9uU3Vy
@@ -216,8 +216,8 @@
         AAAjAAEAAZr////3////CgAAAAAAAAAAMAABAAGZ////9////woAAAAAAAAAACMAAQABmP////f///8K
         AAAAAAAAAAAbAAEAAZf////3////CgAAAAAAAAAAGwABACAAAAAAAIA/AQGW////9////woAAAAAAAAA
         ADAAAQABlf////f///8KAAAAAAAAAAAjAAEAAZT////3////CgAAAAAAAAAAIwABAAoAAAAAAAAAAAoG
-        bQAAAApQcmljZVpvbmVzABQAAAABkv///8n///8JAAAACTYAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAA
-        AAAAAAlwAAAADHEAAACjAVNpbXBsZUdyYXBoaW5nLCBWZXJzaW9uPTAuMTAuMi4xODIsIEN1bHR1cmU9
+        bQAAAApQcmljZVpvbmVzABQAAAABkv///8n///8JAAAACTYAAAABAQAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAlwAAAADHEAAACjAVNpbXBsZUdyYXBoaW5nLCBWZXJzaW9uPTAuMTAuMi4xODQsIEN1bHR1cmU9
         bmV1dHJhbCwgUHVibGljS2V5VG9rZW49MjcyMGVlNWE2YmVjZThmZl1dLCBtc2NvcmxpYiwgVmVyc2lv
         bj00LjAuMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkF
         EAAAACRTaW1wbGVHcmFwaGluZy5Db25maWd1cmF0aW9uUGxvdEFyZWEHAAAADW1fcmdUaW1lWm9uZXMJ
@@ -373,6 +373,9 @@
   </metadata>
   <metadata name="timerData.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>329, 17</value>
+  </metadata>
+  <metadata name="openFileDialogBin.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>435, 17</value>
   </metadata>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>42</value>

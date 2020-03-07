@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -168,7 +169,31 @@ namespace SimpleGraphingApp
                     plotsLast = null;
             }
 
-            configureCandleCharts(bEnableOverlay, rgSet);
+            configureCandleCharts(bEnableOverlay, rgSet, false);
+
+            updateGraph(rgSet);
+        }
+
+        private void candleFromExternalDataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (openFileDialogBin.ShowDialog() != DialogResult.OK)
+                return;
+
+            List<PlotCollectionSet> rgSet;
+
+            using (FileStream fs = File.OpenRead(openFileDialogBin.FileName))
+            using (BinaryReader br = new BinaryReader(fs))
+            {
+                byte[] rgBytes = br.ReadBytes((int)fs.Length);
+                rgSet = PlotCollectionSet.LoadList(rgBytes);
+            }
+
+            while (rgSet.Count < 4)
+            {
+                rgSet.Add(rgSet[0].Clone());
+            }
+
+            configureCandleCharts(false, rgSet, true);
 
             updateGraph(rgSet);
         }
@@ -181,27 +206,31 @@ namespace SimpleGraphingApp
             simpleGraphingControl1.ScrollToEnd(true);
         }
 
-        private void configureCandleCharts(bool bEnableOverlay, List<PlotCollectionSet> rgSet)
+        private void configureCandleCharts(bool bEnableOverlay, List<PlotCollectionSet> rgSet, bool bLoadedFromFile)
         {
             timerData.Enabled = false;
             toolStrip1.Visible = true;
 
             simpleGraphingControl1.Configuration.Surface.EnableSmoothing = false;
             simpleGraphingControl1.Configuration.Frames[0].EnableRelativeScaling(true, btnScaleToVisible.Checked);
-            int nIdx1 = 30;
-            int nIdx2 = 60;
 
-            if (nIdx1 > rgSet[0][0].Count)
-                nIdx1 = rgSet[0][0].Count - 1;
+            if (!bLoadedFromFile)
+            {
+                int nIdx1 = 30;
+                int nIdx2 = 60;
 
-            if (nIdx2 > rgSet[0][0].Count)
-                nIdx2 = rgSet[0][0].Count - 1;
+                if (nIdx1 > rgSet[0][0].Count)
+                    nIdx1 = rgSet[0][0].Count - 1;
 
-            DateTime dt0 = DateTime.FromFileTime((long)rgSet[0][0][nIdx1].X);
-            DateTime dt1 = DateTime.FromFileTime((long)rgSet[0][0][nIdx2].X);
+                if (nIdx2 > rgSet[0][0].Count)
+                    nIdx2 = rgSet[0][0].Count - 1;
 
-            simpleGraphingControl1.Configuration.Frames[0].PlotArea.TimeZones = new List<ConfigurationTimeZone>();
-            simpleGraphingControl1.Configuration.Frames[0].PlotArea.TimeZones.Add(new ConfigurationTimeZone(dt0, dt1, Color.LightGray, true));
+                DateTime dt0 = DateTime.FromFileTime((long)rgSet[0][0][nIdx1].X);
+                DateTime dt1 = DateTime.FromFileTime((long)rgSet[0][0][nIdx2].X);
+
+                simpleGraphingControl1.Configuration.Frames[0].PlotArea.TimeZones = new List<ConfigurationTimeZone>();
+                simpleGraphingControl1.Configuration.Frames[0].PlotArea.TimeZones.Add(new ConfigurationTimeZone(dt0, dt1, Color.LightGray, true));
+            }
 
             for (int i = 0; i < simpleGraphingControl1.Configuration.Frames.Count; i++)
             {
@@ -356,6 +385,9 @@ namespace SimpleGraphingApp
             m_szMinBounds = MinimumSize;
             m_szMaxBounds = MaximumSize;
             m_nDataCount = simpleGraphingControl1.VisiblePlotCount;
+
+            if (Properties.Settings.Default.Width > 0 && Properties.Settings.Default.Height > 0)
+                SetBounds(0, 0, (int)Properties.Settings.Default.Width, (int)Properties.Settings.Default.Height);
         }
 
         private void timerUI_Tick(object sender, EventArgs e)
@@ -505,6 +537,13 @@ namespace SimpleGraphingApp
             }
 
             PlotCollectionVisualizer.TestShowVisualizer(m_rgSet[0][0]);
+        }
+
+        private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Properties.Settings.Default.Width = (uint)Width;
+            Properties.Settings.Default.Height = (uint)Height;
+            Properties.Settings.Default.Save();
         }
     }
 }

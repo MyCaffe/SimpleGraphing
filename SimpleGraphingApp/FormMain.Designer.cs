@@ -38,6 +38,7 @@
             this.lineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.candleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.candleWithOverlayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.candleFromExternalDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.enableActionStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -57,6 +58,7 @@
             this.btnScaleToVisible = new System.Windows.Forms.ToolStripButton();
             this.timerUI = new System.Windows.Forms.Timer(this.components);
             this.timerData = new System.Windows.Forms.Timer(this.components);
+            this.openFileDialogBin = new System.Windows.Forms.OpenFileDialog();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -110,7 +112,8 @@
             this.showDataToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.lineToolStripMenuItem,
             this.candleToolStripMenuItem,
-            this.candleWithOverlayToolStripMenuItem});
+            this.candleWithOverlayToolStripMenuItem,
+            this.candleFromExternalDataToolStripMenuItem});
             this.showDataToolStripMenuItem.Name = "showDataToolStripMenuItem";
             this.showDataToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
             this.showDataToolStripMenuItem.Text = "&Show Data";
@@ -118,23 +121,30 @@
             // lineToolStripMenuItem
             // 
             this.lineToolStripMenuItem.Name = "lineToolStripMenuItem";
-            this.lineToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.lineToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             this.lineToolStripMenuItem.Text = "Line";
             this.lineToolStripMenuItem.Click += new System.EventHandler(this.lineToolStripMenuItem_Click);
             // 
             // candleToolStripMenuItem
             // 
             this.candleToolStripMenuItem.Name = "candleToolStripMenuItem";
-            this.candleToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.candleToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             this.candleToolStripMenuItem.Text = "Candle";
             this.candleToolStripMenuItem.Click += new System.EventHandler(this.candleToolStripMenuItem_Click);
             // 
             // candleWithOverlayToolStripMenuItem
             // 
             this.candleWithOverlayToolStripMenuItem.Name = "candleWithOverlayToolStripMenuItem";
-            this.candleWithOverlayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.candleWithOverlayToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             this.candleWithOverlayToolStripMenuItem.Text = "Candle with Overlay";
             this.candleWithOverlayToolStripMenuItem.Click += new System.EventHandler(this.candleToolStripMenuItem_Click);
+            // 
+            // candleFromExternalDataToolStripMenuItem
+            // 
+            this.candleFromExternalDataToolStripMenuItem.Name = "candleFromExternalDataToolStripMenuItem";
+            this.candleFromExternalDataToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+            this.candleFromExternalDataToolStripMenuItem.Text = "Candle from external data";
+            this.candleFromExternalDataToolStripMenuItem.Click += new System.EventHandler(this.candleFromExternalDataToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
@@ -185,7 +195,7 @@
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.simpleGraphingControl1);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(762, 932);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(762, 907);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 24);
             this.toolStripContainer1.Name = "toolStripContainer1";
@@ -206,7 +216,7 @@
             this.simpleGraphingControl1.Name = "simpleGraphingControl1";
             this.simpleGraphingControl1.ScrollPercent = 0D;
             this.simpleGraphingControl1.ShowScrollBar = true;
-            this.simpleGraphingControl1.Size = new System.Drawing.Size(762, 932);
+            this.simpleGraphingControl1.Size = new System.Drawing.Size(762, 907);
             this.simpleGraphingControl1.TabIndex = 0;
             this.simpleGraphingControl1.UserUpdateCrosshairs = false;
             this.simpleGraphingControl1.Load += new System.EventHandler(this.simpleGraphingControl1_Load);
@@ -224,7 +234,7 @@
             this.btnScaleToVisible});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(173, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(204, 25);
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Visible = false;
             // 
@@ -305,6 +315,7 @@
             this.btnScaleToVisible.Name = "btnScaleToVisible";
             this.btnScaleToVisible.Size = new System.Drawing.Size(23, 22);
             this.btnScaleToVisible.Text = "Scale to Visible";
+            this.btnScaleToVisible.ToolTipText = "Scale to Visible - only applies when first creating the data.";
             // 
             // timerUI
             // 
@@ -317,6 +328,12 @@
             this.timerData.Interval = 1000;
             this.timerData.Tick += new System.EventHandler(this.timerData_Tick);
             // 
+            // openFileDialogBin
+            // 
+            this.openFileDialogBin.DefaultExt = "bin";
+            this.openFileDialogBin.Filter = "Binary Files (*.bin)|*.bin||";
+            this.openFileDialogBin.Title = "Select the binary file containing the list of PlotCollectionSets.";
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -327,6 +344,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "FormMain";
             this.Text = "SimpleGraph Testing Application";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Load += new System.EventHandler(this.FormMain_Load);
             this.Resize += new System.EventHandler(this.FormMain_Resize);
             this.menuStrip1.ResumeLayout(false);
@@ -371,5 +389,7 @@
         private System.Windows.Forms.ToolStripMenuItem showPlotCollectionVisualizerToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripButton btnScaleToVisible;
+        private System.Windows.Forms.ToolStripMenuItem candleFromExternalDataToolStripMenuItem;
+        private System.Windows.Forms.OpenFileDialog openFileDialogBin;
     }
 }
