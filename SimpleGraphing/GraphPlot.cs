@@ -198,6 +198,17 @@ namespace SimpleGraphing
             return style;
         }
 
+        public void PreRender(Graphics g, int nLookahead)
+        {
+            if (!m_config.Visible)
+                return;
+
+            if (m_rgPlots == null)
+                return;
+
+            m_irender.PreRender(g, m_rgPlots, nLookahead);
+        }
+
         public void Render(Graphics g, int nLookahead)
         {
             if (!m_config.Visible)

@@ -220,6 +220,12 @@ namespace SimpleGraphing
 
             g.SetClip(Bounds);
 
+            // Draw the pre-render
+            foreach (GraphPlot graphPlot in m_rgPlots)
+            {
+                graphPlot.PreRender(g, m_config.PlotArea.Lookahead);
+            }
+
             // Draw the action actives (if any)
             foreach (GraphPlot graphPlot in m_rgPlots)
             {

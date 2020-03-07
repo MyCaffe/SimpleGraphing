@@ -31,6 +31,7 @@ namespace SimpleGraphing
     public interface IGraphPlotRender
     {
         string Name { get; }
+        void PreRender(Graphics g, PlotCollectionSet plots, int nLookahead);
         void Render(Graphics g, PlotCollectionSet plots, int nLookahead);
         void RenderActions(Graphics g, PlotCollectionSet plots, int nLookahead);
     }

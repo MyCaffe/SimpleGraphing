@@ -49,6 +49,10 @@ namespace SimpleGraphing.GraphRender
             return m_gy.ScaleValue(fY, true);
         }
 
+        public void PreRender(Graphics g, PlotCollectionSet dataset, int nLookahead)
+        {
+        }
+
         public void Render(Graphics g, PlotCollectionSet dataset, int nLookahead)
         {
             PlotCollection plots = dataset[m_config.DataIndexOnRender];

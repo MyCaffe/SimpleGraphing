@@ -24,6 +24,10 @@ namespace SimpleGraphing.GraphRender
             renderActions(g, dataset, nLookahead);
         }
 
+        public void PreRender(Graphics g, PlotCollectionSet dataset, int nLookahead)
+        {
+        }
+
         public void Render(Graphics g, PlotCollectionSet dataset, int nLookahead)
         {
             List<int> rgX = m_gx.TickPositions;
