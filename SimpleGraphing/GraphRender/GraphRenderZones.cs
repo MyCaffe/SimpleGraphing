@@ -15,7 +15,7 @@ namespace SimpleGraphing.GraphRender
         int m_nResolution = 200;
         int m_nWidth = 100;
         double m_dfPeakThreshold = 0.9;
-        int m_nMaxPeakCount = 5;
+        int m_nMaxPeakCount = 8;
         int m_nPeakRenderAlpha = 32;
         bool m_bConsolidatePeaks = false;
         Histogram m_rgHistogram = null;
