@@ -14,6 +14,11 @@ namespace SimpleGraphing.GraphRender
         bool m_bEnableVolumeScale = true;
         int m_nResolution = 200;
         int m_nWidth = 100;
+        double m_dfPeakThreshold = 0.9;
+        int m_nMaxPeakCount = 5;
+        int m_nPeakRenderAlpha = 32;
+        bool m_bConsolidatePeaks = false;
+        Histogram m_rgHistogram = null;
 
         public GraphRenderZones(ConfigurationPlot config, GraphAxis gx, GraphAxis gy, GraphPlotStyle style)
             : base(config, gx, gy, style)
@@ -37,6 +42,148 @@ namespace SimpleGraphing.GraphRender
         {
         }
 
+        public void PreRender(Graphics g, PlotCollectionSet dataset, int nLookahead)
+        {
+            PlotCollection rgPrice = dataset[m_config.DataIndexOnRender];
+            PlotCollection rgVolume = (m_bEnableVolumeScale) ? rgPrice : null;
+
+            // Load the histogram of data.
+            double dfMin = rgPrice.AbsoluteMinYVal;
+            double dfMax = rgPrice.AbsoluteMaxYVal;
+            float fTop = m_gy.ScaleValue(dfMax, true);
+            float fBottom = m_gy.ScaleValue(dfMin, true);
+            m_rgHistogram = new Histogram(rgPrice.AbsoluteMinYVal, rgPrice.AbsoluteMaxYVal, fTop, fBottom, m_nResolution);
+
+            for (int i = 0; i < rgPrice.Count; i++)
+            {
+                Plot price = rgPrice[i];
+                Plot volume = (rgVolume == null) ? null : rgVolume[i];
+                m_rgHistogram.Add(price, volume);
+            }
+
+            m_rgHistogram.NormalizeCounts();
+
+            // Find the top 4 peak areas.
+            List<int> rgLevelIdx = new List<int>();
+            for (int i = 1; i < m_rgHistogram.Count - 1; i++)
+            {
+                if (m_rgHistogram[i - 1].NormalizedCount < m_rgHistogram[i].NormalizedCount &&
+                    m_rgHistogram[i + 1].NormalizedCount < m_rgHistogram[i].NormalizedCount)
+                    rgLevelIdx.Add(i);
+            }
+
+            while (rgLevelIdx.Count > 8)
+            {
+                List<int> rgLevel1Idx = new List<int>();
+
+                for (int i = 1; i < rgLevelIdx.Count - 1; i++)
+                {
+                    int nIdx0 = rgLevelIdx[i - 1];
+                    int nIdx1 = rgLevelIdx[i];
+                    int nIdx2 = rgLevelIdx[i + 1];
+
+                    if (m_rgHistogram[nIdx0].NormalizedCount < m_rgHistogram[nIdx1].NormalizedCount &&
+                        m_rgHistogram[nIdx2].NormalizedCount < m_rgHistogram[nIdx1].NormalizedCount)
+                        rgLevel1Idx.Add(nIdx1);
+                }
+
+                if (rgLevel1Idx.Count >= 8)
+                    rgLevelIdx = rgLevel1Idx.ToList();
+                else
+                    break;
+            }
+
+            List<Tuple<int, double>> rgPeaks = new List<Tuple<int, double>>();
+            for (int i = 0; i < rgLevelIdx.Count; i++)
+            {
+                rgPeaks.Add(new Tuple<int, double>(rgLevelIdx[i], m_rgHistogram[rgLevelIdx[i]].NormalizedCount));
+            }
+
+            rgPeaks = rgPeaks.OrderByDescending(p => p.Item2).ToList();
+            List<Tuple<int, int, int>> rgTopPeaks = new List<Tuple<int, int, int>>();
+
+            for (int i = 0; i < rgPeaks.Count; i++)
+            {
+                int nIdx = rgPeaks[i].Item1;
+                int nBtmIdx = nIdx;
+                int nTopIdx = nIdx;
+                double dfCount = rgPeaks[i].Item2;
+                double dfThreshold = dfCount * m_dfPeakThreshold;
+
+                while (nTopIdx < m_rgHistogram.Count && m_rgHistogram[nTopIdx].NormalizedCount >= dfThreshold)
+                {
+                    nTopIdx++;
+                }
+
+                while (nBtmIdx >= 0 && m_rgHistogram[nBtmIdx].NormalizedCount >= dfThreshold)
+                {
+                    nBtmIdx--;
+                }
+
+                rgTopPeaks.Add(new Tuple<int, int, int>(nBtmIdx, nIdx, nTopIdx));
+            }
+
+            float fHt = (fBottom - fTop) / m_nResolution;
+            List<Tuple<float, float, int>> rgTopRanges1 = new List<Tuple<float, float, int>>();
+            for (int i = 0; i < rgTopPeaks.Count; i++)
+            {
+                float fBtm1 = rgTopPeaks[i].Item1 * fHt;
+                float fTop1 = rgTopPeaks[i].Item3 * fHt;
+                rgTopRanges1.Add(new Tuple<float, float, int>(fBtm1, fTop1, rgTopPeaks[i].Item2));
+            }
+
+            // Consolidate the ranges if they overlap.
+            List<Tuple<float, float, int>> rgTopRanges = new List<Tuple<float, float, int>>();
+            List<int> rgUsed = new List<int>();
+            for (int i = 0; i < rgTopRanges1.Count && i < m_nMaxPeakCount; i++)
+            {
+                if (!rgUsed.Contains(i))
+                {
+                    float fTop1 = rgTopRanges1[i].Item2;
+                    float fBtm1 = rgTopRanges1[i].Item1;
+                    int nIdx = rgTopRanges1[i].Item3;
+
+                    rgUsed.Add(i);
+
+                    if (m_bConsolidatePeaks)
+                    {
+                        for (int j = 0; j < rgTopRanges1.Count; j++)
+                        {
+                            if (!rgUsed.Contains(j))
+                            {
+                                float fTop2 = rgTopRanges1[j].Item2;
+                                float fBtm2 = rgTopRanges1[j].Item1;
+
+                                if (!(fBtm2 > fTop1 || fTop2 < fBtm1))
+                                {
+                                    fBtm1 = Math.Min(fBtm1, fBtm2);
+                                    fTop1 = Math.Max(fTop1, fTop2);
+                                    rgUsed.Add(j);
+                                }
+                            }
+                        }
+                    }
+
+                    rgTopRanges.Add(new Tuple<float, float, int>(fBtm1, fTop1, nIdx));
+                }
+            }
+
+
+            // Draw the background zones
+            for (int i = 0; i < rgTopRanges.Count && i < m_nMaxPeakCount; i++)
+            {
+                float fBtm1 = rgTopRanges[i].Item1;
+                float fTop1 = rgTopRanges[i].Item2;
+                int nIdx = rgTopRanges[i].Item3;
+
+                RectangleF rc = new RectangleF(2.0f, fBottom - fTop1, m_gx.TickPositions.Last(), fTop1 - fBtm1);
+                Color clr = Color.FromArgb(m_nPeakRenderAlpha, m_clrMap.GetColor(m_rgHistogram[nIdx].NormalizedCount));
+                Brush br = new SolidBrush(clr);
+                g.FillRectangle(br, rc);
+                br.Dispose();
+            }
+        }
+
         public void Render(Graphics g, PlotCollectionSet dataset, int nLookahead)
         {
             PlotCollection rgPrice = dataset[m_config.DataIndexOnRender];
@@ -46,16 +193,6 @@ namespace SimpleGraphing.GraphRender
             double dfMax = rgPrice.AbsoluteMaxYVal;
             float fTop = m_gy.ScaleValue(dfMax, true);
             float fBottom = m_gy.ScaleValue(dfMin, true);
-            Histogram rgHistogram = new Histogram(rgPrice.AbsoluteMinYVal, rgPrice.AbsoluteMaxYVal, fTop, fBottom, m_nResolution);
-
-            for (int i = 0; i < rgPrice.Count; i++)
-            {
-                Plot price = rgPrice[i];
-                Plot volume = (rgVolume == null) ? null : rgVolume[i];
-                rgHistogram.Add(price, volume);
-            }
-
-            rgHistogram.NormalizeCounts();
 
             // Fill the background
             RectangleF rcBack = new RectangleF(0, fTop, m_nWidth, fBottom - fTop);
@@ -64,47 +201,15 @@ namespace SimpleGraphing.GraphRender
             g.FillRectangle(br, rcBack);
             br.Dispose();
 
-            float fHt = (fBottom - fTop) / m_nResolution;
-
-            // Find closest peaks to current price open and close.
-            Plot last = rgPrice.Last();
-            double dfOpen = (last.Y_values.Count == 1) ? last.Y : last.Y_values[0];
-            double dfClose = last.Y;
-            double dfMid = (Math.Abs(dfClose - dfOpen)) / 2 + Math.Min(dfClose, dfOpen);
-            int nMidIdx = rgHistogram.Find(dfMid);
-            int nTopIdx = rgHistogram.FindTopMax(nMidIdx);
-            int nBtmIdx = rgHistogram.FindBottomMax(nMidIdx);
-
-            if (nTopIdx > nMidIdx)
-            {
-                float fX1 = 2;
-                float fX2 = m_gx.TickPositions.Last();
-                float fY1 = fBottom - (nTopIdx * fHt);
-                Pen p1 = new Pen(Color.FromArgb(128, Color.Maroon), 1.0f);
-                p1.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
-                g.DrawLine(p1, fX1, fY1, fX2, fY1);
-                p1.Dispose();
-            }
-
-            if (nBtmIdx < nMidIdx)
-            {
-                float fX1 = 2;
-                float fX2 = m_gx.TickPositions.Last();
-                float fY1 = fBottom - (nBtmIdx * fHt);
-                Pen p1 = new Pen(Color.FromArgb(128, Color.DarkGreen), 1.0f);
-                p1.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
-                g.DrawLine(p1, fX1, fY1, fX2, fY1);
-                p1.Dispose();
-            }
-
             // Draw the price zones
             float fY = fTop;
-            for (int i = rgHistogram.Count-1; i>=0; i--)
+            float fHt = (fBottom - fTop) / m_nResolution;
+            for (int i = m_rgHistogram.Count-1; i>=0; i--)
             {
-                float fWid = (float)(rgHistogram[i].NormalizedCount * (m_nWidth - 5));
+                float fWid = (float)(m_rgHistogram[i].NormalizedCount * (m_nWidth - 5));
                 RectangleF rc = new RectangleF(2, fY, fWid, fHt);
 
-                clr = m_clrMap.GetColor(rgHistogram[i].NormalizedCount);
+                clr = m_clrMap.GetColor(m_rgHistogram[i].NormalizedCount);
                 br = new SolidBrush(clr);
                 g.FillRectangle(br, rc);
                 br.Dispose();
@@ -181,7 +286,7 @@ namespace SimpleGraphing.GraphRender
 
         public override string ToString()
         {
-            return "[" + m_dfMin.ToString("N3") + ", " + m_dfMax.ToString("N3") + "]";
+            return "[" + m_dfMin.ToString("N3") + ", " + m_dfMax.ToString("N3") + "] => " + m_dfNormalizedCount.ToString();
         }
     }
 
@@ -227,7 +332,7 @@ namespace SimpleGraphing.GraphRender
             return m_rgItems.Count - 1;
         }
 
-        public int FindTopMax(int nIdxStart)
+        public int FindMaxFromBottom(int nIdxStart)
         {
             double dfMax = -double.MaxValue;
             int nMaxIdx = nIdxStart;
@@ -244,7 +349,7 @@ namespace SimpleGraphing.GraphRender
             return nMaxIdx;
         }
 
-        public int FindBottomMax(int nIdxStart)
+        public int FindMaxFromTop(int nIdxStart)
         {
             double dfMax = -double.MaxValue;
             int nMaxIdx = nIdxStart;
