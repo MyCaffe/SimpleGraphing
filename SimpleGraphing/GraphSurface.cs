@@ -15,7 +15,8 @@ namespace SimpleGraphing
         GraphFrameCollection m_frames = new GraphFrameCollection();
         Rectangle m_rcBounds = new Rectangle();
         Bitmap m_bmp = null;
-        Graphics m_graphics = null;
+        GraphicsEx m_graphics = new GraphicsEx();
+        bool m_bLock = false;
 
         public GraphSurface(ModuleCache cache)
         {
@@ -168,34 +169,26 @@ namespace SimpleGraphing
         {
             m_style = createStyle(m_config);
 
-            if (m_bmp == null || m_bmp.Height != m_rcBounds.Height || m_bmp.Width != m_rcBounds.Width)
-            {
-                if (m_bmp != null)
-                    m_bmp.Dispose();
+            Bitmap bmp = m_bmp;
+            if (bmp == null || bmp.Height != m_rcBounds.Height || bmp.Width != m_rcBounds.Width)
+                bmp = new Bitmap(m_rcBounds.Width, m_rcBounds.Height);
 
-                m_bmp = new Bitmap(m_rcBounds.Width, m_rcBounds.Height);
-
-                if (m_graphics != null)
-                {
-                    m_graphics.Dispose();
-                    m_graphics = null;
-                }
-            }
-
-            if (m_graphics == null)
-                m_graphics = Graphics.FromImage(m_bmp);
+            Graphics g = m_graphics.Get(bmp);
 
             if (m_config.EnableSmoothing)
-                m_graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
             else
-                m_graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
 
-            m_graphics.FillRectangle(m_style.BackBrush, m_rcBounds);
+            g.FillRectangle(m_style.BackBrush, m_rcBounds);
 
             foreach (GraphFrame frame in m_frames)
             {
-                frame.Render(m_graphics);
+                frame.Render(g);
             }
+
+            m_graphics.Release(g);
+            m_bmp = bmp;
 
             return m_bmp;
         }
@@ -237,6 +230,64 @@ namespace SimpleGraphing
             {
                 m_brBack.Dispose();
                 m_brBack = null;
+            }
+        }
+    }
+
+    class GraphicsEx : IDisposable
+    {
+        Dictionary<Graphics, int> m_rgGraphicsRef = new Dictionary<Graphics, int>();
+        Dictionary<Bitmap, Graphics> m_rgGraphicsBmp = new Dictionary<Bitmap, Graphics>();
+
+        public GraphicsEx()
+        {
+        }
+
+        public Graphics Get(Bitmap bmp)
+        {
+            if (m_rgGraphicsBmp.ContainsKey(bmp))
+            {
+                Graphics g = m_rgGraphicsBmp[bmp];
+                m_rgGraphicsRef[g]++;
+                return g;
+            }
+
+            Graphics g1 = Graphics.FromImage(bmp);
+            m_rgGraphicsBmp.Add(bmp, g1);
+            m_rgGraphicsRef.Add(g1, 1);
+
+            return g1;
+        }
+
+        public void Dispose()
+        {
+            foreach (KeyValuePair<Graphics, int> kv in m_rgGraphicsRef)
+            {
+                kv.Key.Dispose();
+            }
+        }
+
+        public void Release(Graphics g)
+        {
+            Bitmap bmp = null;
+
+            foreach (KeyValuePair<Bitmap, Graphics> kv in m_rgGraphicsBmp)
+            {
+                if (kv.Value == g)
+                {
+                    bmp = kv.Key;
+                    break;
+                }
+            }
+
+            if (bmp != null)
+                m_rgGraphicsBmp.Remove(bmp);
+
+            if (m_rgGraphicsRef.ContainsKey(g))
+            {
+                m_rgGraphicsRef[g]--;
+                if (m_rgGraphicsRef[g] == 0)
+                    m_rgGraphicsRef.Remove(g);
             }
         }
     }
