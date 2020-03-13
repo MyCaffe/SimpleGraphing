@@ -444,10 +444,7 @@ namespace SimpleGraphing
             TimeZone zone = TimeZone.CurrentTimeZone;
             TimeZoneInfo eastern;
             DateTime dtNow = DateTime.Now;
-            if (zone.IsDaylightSavingTime(dtNow))
-                eastern = TimeZoneInfo.FindSystemTimeZoneById("Eastern Daylight Time");
-            else
-                eastern = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+            eastern = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
 
             TimeSpan localOffset = zone.GetUtcOffset(dtNow);
             TimeSpan easternOffset = eastern.GetUtcOffset(dtNow);
