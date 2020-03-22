@@ -157,10 +157,15 @@ namespace SimpleGraphing
                 rgFrameRatios.Add((double)frame.Configuration.FrameHeight / dfTotalRatio);
             }
 
+            int nWidth1 = nWidth - (nMargin * 2);
+            int nHeight1 = 0;
+
             for (int i=0; i<m_frames.Count; i++)
             {
                 GraphFrame frame = m_frames[i];
-                frame.Resize(nX, nY, nWidth - (nMargin * 2), (int)(nTotalFrameHeight * rgFrameRatios[i]), bResetStartPos);
+
+                nHeight1 = (int)(nTotalFrameHeight * rgFrameRatios[i]);
+                frame.Resize(nX, nY, nWidth1, nHeight1, bResetStartPos);
                 nY = frame.Bounds.Bottom + nMargin;
             }
         }
