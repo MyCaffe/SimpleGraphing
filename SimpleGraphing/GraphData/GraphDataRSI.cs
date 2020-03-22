@@ -54,10 +54,11 @@ namespace SimpleGraphing.GraphData
             }
 
             PlotCollection data1 = new PlotCollection(data.Name + " RSI");
-            List<double> rgGain = new List<double>();
-            List<double> rgLoss = new List<double>();
+            List<double> rgChange = new List<double>();
             double dfRSI = 0;
             double dfRSILast = 0;
+            double dfSumLoss = 0;
+            double dfSumGain = 0;
 
             MinMax minmax = new MinMax();
             minmax.Add(0);
@@ -72,21 +73,25 @@ namespace SimpleGraphing.GraphData
                 double dfChange = dfC1 - dfC0;
                 bool bActive = false;
 
+                rgChange.Add(dfChange);
+
                 if (dfChange < 0)
-                {
-                    rgLoss.Add(dfChange);
-                    rgGain.Add(0);
-                }
+                    dfSumLoss += dfChange;
                 else
-                {
-                    rgLoss.Add(0);
-                    rgGain.Add(dfChange);
-                }
+                    dfSumGain += dfChange;
 
                 if (i > m_config.Interval)
                 {
-                    double dfAveGain = rgGain.Average(p => p);
-                    double dfAveLoss = Math.Abs(rgLoss.Average(p => p));
+                    dfChange = rgChange[0];
+                    rgChange.RemoveAt(0);
+
+                    if (dfChange < 0)
+                        dfSumLoss -= dfChange;
+                    else
+                        dfSumGain -= dfChange;
+
+                    double dfAveGain = dfSumGain / m_config.Interval;
+                    double dfAveLoss = Math.Abs(dfSumLoss / m_config.Interval);
                     double dfRS = (dfAveLoss == 0) ? 0 : dfAveGain / dfAveLoss;
 
                     // make sure to only calculate a new RSI if we are before the lookahead 
@@ -96,9 +101,6 @@ namespace SimpleGraphing.GraphData
                         dfRSI = 100.0 - (100 / (1 + dfRS));
                         bActive = true;
                     }
-
-                    rgGain.RemoveAt(0);
-                    rgLoss.RemoveAt(0);
 
                     if (dfRSI == 0)
                         dfRSI = dfRSILast;
