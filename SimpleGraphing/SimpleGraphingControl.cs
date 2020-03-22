@@ -397,8 +397,14 @@ namespace SimpleGraphing
             return null;
         }
 
-        public Image Render(int nWidth, int nHeight)
+        public Image Render(int nWidth = 0, int nHeight = 0)
         {
+            if (nWidth == 0)
+                nWidth = pbImage.Width;
+
+            if (nHeight == 0)
+                nHeight = pbImage.Height;
+
             m_surface.Scroll(1.0);
             m_surface.Resize(nWidth, nHeight, true);
             return m_surface.Render();
