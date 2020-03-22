@@ -9,9 +9,22 @@ namespace SimpleGraphing.GraphRender
 {
     public class GraphRenderHighLow : GraphRenderBase, IGraphPlotRender
     {
+        bool m_bDrawLines = false;
+
+        enum TYPE
+        {
+            HIGH,
+            LOW
+        }
+
         public GraphRenderHighLow(ConfigurationPlot config, GraphAxis gx, GraphAxis gy, GraphPlotStyle style)
             : base(config, gx, gy, style)
         {
+            if (config.ExtraSettings != null && config.ExtraSettings.ContainsKey("DrawLines"))
+            {
+                if (config.ExtraSettings["DrawLines"] != 0)
+                    m_bDrawLines = true;
+            }
         }
 
         public string Name
@@ -62,7 +75,7 @@ namespace SimpleGraphing.GraphRender
                         {
                             float fX = rgX[j];
                             float fY = m_gy.ScaleValue(plotHigh.Y, true);
-                            drawPlot(i, g, fX, fY, pHigh, brHigh);
+                            drawPlot(TYPE.HIGH, i, g, fX, fY, pHigh, brHigh);
                         }
 
                         Plot plotLow = plotsLow[nIdx1];
@@ -70,17 +83,17 @@ namespace SimpleGraphing.GraphRender
                         {
                             float fX = rgX[j];
                             float fY = m_gy.ScaleValue(plotLow.Y, true);
-                            drawPlot(i, g, fX, fY, pLow, brLow);
+                            drawPlot(TYPE.LOW, i, g, fX, fY, pLow, brLow);
                         }
                     }
                 }
             }
         }
 
-        public void drawPlot(int i, Graphics g, float fX, float fY, Pen pen, Brush br)
+        private void drawPlot(TYPE type, int i, Graphics g, float fX, float fY, Pen pen, Brush br)
         {
             float fHspace = m_gx.Configuration.PlotSpacing / 2;
-            RectangleF rc = new RectangleF(fX - fHspace, fY, m_gx.Configuration.PlotSpacing, m_gx.Configuration.PlotSpacing);
+            RectangleF rc = new RectangleF(fX - fHspace, fY - fHspace, m_gx.Configuration.PlotSpacing, m_gx.Configuration.PlotSpacing);
 
             if (i == 0)
             {
@@ -91,17 +104,29 @@ namespace SimpleGraphing.GraphRender
             {
                 List<PointF> rgpts = new List<PointF>();
 
-                rgpts.Add(new PointF(fX, fY - fHspace));
-                rgpts.Add(new PointF(fX + fHspace, fY));
-                rgpts.Add(new PointF(fX, fY + fHspace));
-                rgpts.Add(new PointF(fX - fHspace, fY));
-                rgpts.Add(new PointF(fX, fY - fHspace));
+                rgpts.Add(new PointF(fX, fY - (fHspace + 1)));
+                rgpts.Add(new PointF(fX + (fHspace + 1), fY));
+                rgpts.Add(new PointF(fX, fY + (fHspace + 1)));
+                rgpts.Add(new PointF(fX - (fHspace + 1), fY));
+                rgpts.Add(new PointF(fX, fY - (fHspace + 1)));
 
                 g.FillPolygon(br, rgpts.ToArray());
                 g.DrawPolygon(pen, rgpts.ToArray());
             }
             else
             {
+                if (m_bDrawLines)
+                {
+                    float fX1 = rc.X + 1;
+                    float fX2 = m_gx.TickPositions[m_gx.TickPositions.Count - 1];
+
+                    Color clr1 = Color.FromArgb(92, ((SolidBrush)br).Color);
+                    Pen p = new Pen(clr1, 1.0f);
+                   
+                    p.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                    g.DrawLine(p, fX1, fY, fX2, fY);
+                }
+
                 g.FillRectangle(br, rc.X, rc.Y, rc.Width, rc.Height);
                 g.DrawRectangle(pen, rc.X, rc.Y, rc.Width, rc.Height);
             }

@@ -245,6 +245,13 @@ namespace SimpleGraphingApp
                     {
                         if (frame.Plots[j].PlotType == ConfigurationPlot.PLOTTYPE.CUSTOM)
                             frame.Plots[j].Visible = true;
+                        else if (frame.Plots[j].PlotType == ConfigurationPlot.PLOTTYPE.HIGHLOW)
+                        {
+                            if (frame.Plots[j].ExtraSettings == null)
+                                frame.Plots[j].ExtraSettings = new Dictionary<string, double>();
+                            if (!frame.Plots[j].ExtraSettings.ContainsKey("DrawLines"))
+                                frame.Plots[j].ExtraSettings.Add("DrawLines", 1.0);
+                        }
                     }
 
                     frame.Plots[4].Visible = bEnableOverlay;
