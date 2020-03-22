@@ -835,7 +835,7 @@ namespace SimpleGraphing
             return p;
         }
 
-        public PlotCollection Add(PlotCollection col, bool bCalculateMinMax = true, bool bActiveOnly = false, bool bReplaceIfExists = true, bool bMaintainCount = false)
+        public PlotCollection Add(PlotCollection col, bool bCalculateMinMax = true, bool bActiveOnly = false, bool bReplaceIfExists = true, bool bMaintainCount = false, DateTime? dtSync = null)
         {
             PlotCollection colRemoved = new PlotCollection(col.Name);
             int nCount = m_rgPlot.Count;
@@ -857,7 +857,7 @@ namespace SimpleGraphing
 
             if (bMaintainCount)
             {
-                while (m_rgPlot.Count > nCount)
+                while (m_rgPlot.Count > nCount && (!dtSync.HasValue || (m_rgPlot[0].Tag is DateTime && (DateTime)m_rgPlot[0].Tag < dtSync.Value)))
                 {
                     colRemoved.Add(m_rgPlot[0], false);
                     m_rgPlot.RemoveAt(0);
