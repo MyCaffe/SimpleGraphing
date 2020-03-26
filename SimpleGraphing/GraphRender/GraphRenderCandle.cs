@@ -48,10 +48,10 @@ namespace SimpleGraphing.GraphRender
 
                     if (plot.Active)
                     {
-                        float fOpen = (float)((plot.Y_values.Count == 1) ? plot.Y : plot.Y_values[0]);
-                        float fHigh = (float)((plot.Y_values.Count == 1) ? plot.Y : plot.Y_values[1]);
-                        float fLow = (float)((plot.Y_values.Count == 1) ? plot.Y : plot.Y_values[2]);
-                        float fClose = (float)((plot.Y_values.Count == 1) ? plot.Y : plot.Y_values[3]);
+                        float fOpen = (float)((plot.Y_values.Length == 1) ? plot.Y : plot.Y_values[0]);
+                        float fHigh = (float)((plot.Y_values.Length == 1) ? plot.Y : plot.Y_values[1]);
+                        float fLow = (float)((plot.Y_values.Length == 1) ? plot.Y : plot.Y_values[2]);
+                        float fClose = (float)((plot.Y_values.Length == 1) ? plot.Y : plot.Y_values[3]);
 
                         bool bPositive = (fClose > fOpen) ? true : false;
                         Color clrFill = (bPositive) ? Color.White : Color.Black;

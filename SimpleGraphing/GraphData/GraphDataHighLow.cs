@@ -108,7 +108,7 @@ namespace SimpleGraphing.GraphData
             int nLow = data[0].PrimaryIndexY;
             int nClose = data[0].PrimaryIndexY;
 
-            if (data[0].Y_values.Count == 4)
+            if (data[0].Y_values.Length == 4)
             {
                 nHigh = 1;
                 nLow = 2;
@@ -141,16 +141,16 @@ namespace SimpleGraphing.GraphData
                     int nIdxFuture = rgActive[nIdx + 1].Item1;
                     Plot plotFuture = data[nIdxFuture];
 
-                    double dfOpen = (plotCurrent.Y_values.Count == 1) ? plotCurrent.Y : plotCurrent.Y_values[nOpen];
-                    double dfClose = (plotCurrent.Y_values.Count == 1) ? plotCurrent.Y : plotCurrent.Y_values[nClose];
-                    double dfHigh1 = (plotCurrent.Y_values.Count == 1) ? plotCurrent.Y : plotCurrent.Y_values[nHigh];
-                    double dfLow1 = (plotCurrent.Y_values.Count == 1) ? plotCurrent.Y : plotCurrent.Y_values[nLow];
+                    double dfOpen = (plotCurrent.Y_values.Length == 1) ? plotCurrent.Y : plotCurrent.Y_values[nOpen];
+                    double dfClose = (plotCurrent.Y_values.Length == 1) ? plotCurrent.Y : plotCurrent.Y_values[nClose];
+                    double dfHigh1 = (plotCurrent.Y_values.Length == 1) ? plotCurrent.Y : plotCurrent.Y_values[nHigh];
+                    double dfLow1 = (plotCurrent.Y_values.Length == 1) ? plotCurrent.Y : plotCurrent.Y_values[nLow];
 
-                    double dfHigh0 = (plotPast.Y_values.Count == 1) ? plotPast.Y : plotPast.Y_values[nHigh];
-                    double dfLow0 = (plotPast.Y_values.Count == 1) ? plotPast.Y : plotPast.Y_values[nLow];
+                    double dfHigh0 = (plotPast.Y_values.Length == 1) ? plotPast.Y : plotPast.Y_values[nHigh];
+                    double dfLow0 = (plotPast.Y_values.Length == 1) ? plotPast.Y : plotPast.Y_values[nLow];
 
-                    double dfHigh2 = (plotFuture.Y_values.Count == 1) ? plotFuture.Y : plotFuture.Y_values[nHigh];
-                    double dfLow2 = (plotFuture.Y_values.Count == 1) ? plotFuture.Y : plotFuture.Y_values[nLow];
+                    double dfHigh2 = (plotFuture.Y_values.Length == 1) ? plotFuture.Y : plotFuture.Y_values[nHigh];
+                    double dfLow2 = (plotFuture.Y_values.Length == 1) ? plotFuture.Y : plotFuture.Y_values[nLow];
 
                     bool bHigh = false;
 
@@ -164,7 +164,7 @@ namespace SimpleGraphing.GraphData
                 }
                 else
                 {
-                    double dfHigh = (data[i].Y_values.Count == 1) ? data[i].Y : data[i].Y_values[nHigh];
+                    double dfHigh = (data[i].Y_values.Length == 1) ? data[i].Y : data[i].Y_values[nHigh];
 
                     dataHigh.Add(new Plot(data[i].X, dfHigh, null, false, data[i].Index));
                 }
@@ -187,7 +187,7 @@ namespace SimpleGraphing.GraphData
             int nLow = data[0].PrimaryIndexY;
             int nClose = data[0].PrimaryIndexY;
 
-            if (data[0].Y_values.Count == 4)
+            if (data[0].Y_values.Length == 4)
             {
                 nHigh = 1;
                 nLow = 2;
@@ -220,16 +220,16 @@ namespace SimpleGraphing.GraphData
                     int nIdxFuture = rgActive[nIdx + 1].Item1;
                     Plot plotFuture = data[nIdxFuture];
 
-                    double dfOpen = (plotCurrent.Y_values.Count == 1) ? plotCurrent.Y : plotCurrent.Y_values[nOpen];
-                    double dfClose = (plotCurrent.Y_values.Count == 1) ? plotCurrent.Y : plotCurrent.Y_values[nClose];
-                    double dfHigh1 = (plotCurrent.Y_values.Count == 1) ? plotCurrent.Y : plotCurrent.Y_values[nHigh];
-                    double dfLow1 = (plotCurrent.Y_values.Count == 1) ? plotCurrent.Y : plotCurrent.Y_values[nLow];
+                    double dfOpen = (plotCurrent.Y_values.Length == 1) ? plotCurrent.Y : plotCurrent.Y_values[nOpen];
+                    double dfClose = (plotCurrent.Y_values.Length == 1) ? plotCurrent.Y : plotCurrent.Y_values[nClose];
+                    double dfHigh1 = (plotCurrent.Y_values.Length == 1) ? plotCurrent.Y : plotCurrent.Y_values[nHigh];
+                    double dfLow1 = (plotCurrent.Y_values.Length == 1) ? plotCurrent.Y : plotCurrent.Y_values[nLow];
 
-                    double dfHigh0 = (plotPast.Y_values.Count == 1) ? plotPast.Y : plotPast.Y_values[nHigh];
-                    double dfLow0 = (plotPast.Y_values.Count == 1) ? plotPast.Y : plotPast.Y_values[nLow];
+                    double dfHigh0 = (plotPast.Y_values.Length == 1) ? plotPast.Y : plotPast.Y_values[nHigh];
+                    double dfLow0 = (plotPast.Y_values.Length == 1) ? plotPast.Y : plotPast.Y_values[nLow];
 
-                    double dfHigh2 = (plotFuture.Y_values.Count == 1) ? plotFuture.Y : plotFuture.Y_values[nHigh];
-                    double dfLow2 = (plotFuture.Y_values.Count == 1) ? plotFuture.Y : plotFuture.Y_values[nLow];
+                    double dfHigh2 = (plotFuture.Y_values.Length == 1) ? plotFuture.Y : plotFuture.Y_values[nHigh];
+                    double dfLow2 = (plotFuture.Y_values.Length == 1) ? plotFuture.Y : plotFuture.Y_values[nLow];
 
                     bool bLow = false;
 
@@ -243,7 +243,7 @@ namespace SimpleGraphing.GraphData
                 }
                 else
                 {
-                    double dfLow = (data[i].Y_values.Count == 1) ? data[i].Y : data[i].Y_values[nLow];
+                    double dfLow = (data[i].Y_values.Length == 1) ? data[i].Y : data[i].Y_values[nLow];
 
                     dataLow.Add(new Plot(data[i].X, dfLow, null, false, data[i].Index));
                 }

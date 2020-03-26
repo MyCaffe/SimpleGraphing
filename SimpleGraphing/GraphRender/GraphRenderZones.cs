@@ -372,8 +372,8 @@ namespace SimpleGraphing.GraphRender
             if (volume != null && volume.Count.HasValue)
                 dfWeight = volume.Count.Value;
 
-            double dfMax = (price.Y_values.Count == 1) ? price.Y : price.Y_values[1];
-            double dfMin = (price.Y_values.Count == 1) ? price.Y : price.Y_values[2];
+            double dfMax = (price.Y_values.Length == 1) ? price.Y : price.Y_values[1];
+            double dfMin = (price.Y_values.Length == 1) ? price.Y : price.Y_values[2];
 
             Add(dfMin, dfMax, dfWeight);
         }

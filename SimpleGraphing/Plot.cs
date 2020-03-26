@@ -16,19 +16,19 @@ namespace SimpleGraphing
         bool m_bAction2Active = false;
         bool m_bLookaheadActive = true;
         string m_strName;
-        List<double> m_rgdfY = new List<double>();
+        float[] m_rgfY;
         long? m_lCount = null;
         double m_dfX;
-        int m_nIdxPrimaryY = 0;
+        short m_nIdxPrimaryY = 0;
         object m_tag = null;
-        Dictionary<string, double> m_rgParams = null;
+        Dictionary<string, float> m_rgParams = null;
         bool m_bScaled = false;
 
         public Plot(double dfX, double dfY, string strName = null, bool bActive = true, int nIdx = 0, bool bAction1Active = false, bool bAction2Active = false)
         {
             m_strName = strName;
             m_dfX = dfX;
-            m_rgdfY.Add(dfY);
+            m_rgfY = new float[1] { (float)dfY };
             m_bActive = bActive;
             m_nIdxPrimaryY = 0;
             m_nIndex = nIdx;
@@ -40,9 +40,15 @@ namespace SimpleGraphing
         {
             m_strName = strName;
             m_dfX = dfX;
-            m_rgdfY = new List<double>(rgdfY);
+
+            m_rgfY = new float[rgdfY.Count];
+            for (int i = 0; i < rgdfY.Count; i++)
+            {
+                m_rgfY[i] = (float)rgdfY[i];
+            }
+
             m_bActive = bActive;
-            m_nIdxPrimaryY = rgdfY.Count - 1;
+            m_nIdxPrimaryY = (short)(rgdfY.Count - 1);
             m_nIndex = nIdx;
             m_bAction1Active = bAction1Active;
             m_bAction2Active = bAction2Active;
@@ -53,9 +59,40 @@ namespace SimpleGraphing
             m_strName = strName;
             m_lCount = lCount;
             m_dfX = dfX;
-            m_rgdfY = new List<double>(rgdfY);
+
+            m_rgfY = new float[rgdfY.Count];
+            for (int i = 0; i < rgdfY.Count; i++)
+            {
+                m_rgfY[i] = (float)rgdfY[i];
+            }
+
             m_bActive = bActive;
-            m_nIdxPrimaryY = rgdfY.Count - 1;
+            m_nIdxPrimaryY = (short)(rgdfY.Count - 1);
+            m_nIndex = nIdx;
+            m_bAction1Active = bAction1Active;
+            m_bAction2Active = bAction2Active;
+        }
+
+        public Plot(double dfX, float[] rgfY, string strName = null, bool bActive = true, int nIdx = 0, bool bAction1Active = false, bool bAction2Active = false)
+        {
+            m_strName = strName;
+            m_dfX = dfX;
+            m_rgfY = rgfY;
+            m_bActive = bActive;
+            m_nIdxPrimaryY = (short)(rgfY.Length - 1);
+            m_nIndex = nIdx;
+            m_bAction1Active = bAction1Active;
+            m_bAction2Active = bAction2Active;
+        }
+
+        public Plot(double dfX, float[] rgfY, long lCount, string strName = null, bool bActive = true, int nIdx = 0, bool bAction1Active = false, bool bAction2Active = false)
+        {
+            m_strName = strName;
+            m_lCount = lCount;
+            m_dfX = dfX;
+            m_rgfY = rgfY;
+            m_bActive = bActive;
+            m_nIdxPrimaryY = (short)(rgfY.Length - 1);
             m_nIndex = nIdx;
             m_bAction1Active = bAction1Active;
             m_bAction2Active = bAction2Active;
@@ -73,10 +110,10 @@ namespace SimpleGraphing
             if (m_strName != null)
                 bw.Write(m_strName);
 
-            bw.Write(m_rgdfY.Count);
-            for (int i = 0; i < m_rgdfY.Count; i++)
+            bw.Write(m_rgfY.Length);
+            for (int i = 0; i < m_rgfY.Length; i++)
             {
-                bw.Write(m_rgdfY[i]);
+                bw.Write((double)m_rgfY[i]);
             }
 
             bw.Write((m_lCount.HasValue) ? true : false);
@@ -97,10 +134,10 @@ namespace SimpleGraphing
             else
             {
                 bw.Write(m_rgParams.Count);
-                foreach (KeyValuePair<string, double> kv in m_rgParams)
+                foreach (KeyValuePair<string, float> kv in m_rgParams)
                 {
                     bw.Write(kv.Key);
-                    bw.Write(kv.Value);
+                    bw.Write((double)kv.Value);
                 }
             }
 
@@ -114,16 +151,16 @@ namespace SimpleGraphing
             bool bAction1Active = br.ReadBoolean();
             bool bAction2Active = br.ReadBoolean();
             bool bLookaheadActive = br.ReadBoolean();
-            List<double> rgYval = new List<double>();
             string strName = null;
 
             if (br.ReadBoolean())
                 strName = br.ReadString();
 
             int nCount = br.ReadInt32();
+            float[] rgfY = new float[nCount];            
             for (int i = 0; i < nCount; i++)
             {
-                rgYval.Add(br.ReadDouble());
+                rgfY[i] = (float)br.ReadDouble();
             }
 
             long? lCount = null;
@@ -145,21 +182,21 @@ namespace SimpleGraphing
                     tag = strTag;
             }
 
-            Dictionary<string, double> rgParam = null;
+            Dictionary<string, float> rgParam = null;
             nCount = br.ReadInt32();
             if (nCount > 0)
             {
-                rgParam = new Dictionary<string, double>();
+                rgParam = new Dictionary<string, float>();
 
                 for (int i = 0; i < nCount; i++)
                 {
-                    rgParam.Add(br.ReadString(), br.ReadDouble());
+                    rgParam.Add(br.ReadString(), (float)br.ReadDouble());
                 }
             }
 
             bool bScaled = br.ReadBoolean();
 
-            Plot p = new Plot(dfX, rgYval, strName, bActive, nIdx, bAction1Active, bAction2Active);
+            Plot p = new Plot(dfX, rgfY, strName, bActive, nIdx, bAction1Active, bAction2Active);
             p.LookaheadActive = bLookaheadActive;
             p.Count = lCount;
             p.Tag = tag;
@@ -189,12 +226,12 @@ namespace SimpleGraphing
             if (!bValuesOnly && m_dfX != p.X)
                 return false;
 
-            if (m_rgdfY.Count != p.m_rgdfY.Count)
+            if (m_rgfY.Length != p.m_rgfY.Length)
                 return false;
 
-            for (int i = 0; i < m_rgdfY.Count; i++)
+            for (int i = 0; i < m_rgfY.Length; i++)
             {
-                if (m_rgdfY[i] != p.m_rgdfY[i])
+                if (m_rgfY[i] != p.m_rgfY[i])
                     return false;
             }
 
@@ -213,10 +250,10 @@ namespace SimpleGraphing
             set { m_tag = value; }
         }
 
-        public void SetParameter(string strParam, double df)
+        public void SetParameter(string strParam, float df)
         {
             if (m_rgParams == null)
-                m_rgParams = new Dictionary<string, double>();
+                m_rgParams = new Dictionary<string, float>();
 
             if (!m_rgParams.ContainsKey(strParam))
                 m_rgParams.Add(strParam, df);
@@ -224,10 +261,10 @@ namespace SimpleGraphing
                 m_rgParams[strParam] = df;
         }
 
-        public double? GetParameter(string strParam)
+        public float? GetParameter(string strParam)
         {
             if (m_rgParams == null)
-                m_rgParams = new Dictionary<string, double>();
+                m_rgParams = new Dictionary<string, float>();
 
             if (!m_rgParams.ContainsKey(strParam))
                 return null;
@@ -243,7 +280,7 @@ namespace SimpleGraphing
             m_rgParams.Remove(strParam);
         }
 
-        public Dictionary<string, double> Parameters
+        public Dictionary<string, float> Parameters
         {
             get { return m_rgParams; }
             set { m_rgParams = value; }
@@ -254,7 +291,7 @@ namespace SimpleGraphing
             if (m_rgParams == null || m_rgParams.Count == 0)
                 return null;
 
-            foreach (KeyValuePair<string, double> kv in m_rgParams)
+            foreach (KeyValuePair<string, float> kv in m_rgParams)
             {
                 string strKey = kv.Key.ToLower();
                 if (strKey.Contains(str.ToLower()))
@@ -266,13 +303,24 @@ namespace SimpleGraphing
 
         public Plot Clone()
         {
-            return Clone(m_rgdfY, m_bActive, m_nIdxPrimaryY);
+            return Clone(m_rgfY, m_bActive, m_nIdxPrimaryY);
         }
 
         public Plot Clone(List<double> rgY, bool bActive, int nPrimaryIdx)
         {
+            float[] rgfY = new float[rgY.Count];
+            for (int i = 0; i < rgY.Count; i++)
+            {
+                rgfY[i] = (float)rgY[i];
+            }
+
+            return Clone(rgfY, bActive, nPrimaryIdx);
+        }
+
+        public Plot Clone(float[] rgY, bool bActive, int nPrimaryIdx)
+        {
             Plot p = new Plot(m_dfX, rgY, m_strName, bActive, m_nIndex);
-            p.m_nIdxPrimaryY = nPrimaryIdx;
+            p.m_nIdxPrimaryY = (short)nPrimaryIdx;
             p.Action1Active = Action1Active;
             p.Action2Active = Action2Active;
             p.LookaheadActive = LookaheadActive;
@@ -281,7 +329,7 @@ namespace SimpleGraphing
 
             if (m_rgParams != null)
             {
-                foreach (KeyValuePair<string, double> kv in m_rgParams)
+                foreach (KeyValuePair<string, float> kv in m_rgParams)
                 {
                     p.SetParameter(kv.Key, kv.Value);
                 }
@@ -314,21 +362,21 @@ namespace SimpleGraphing
             set { m_dfX = value; }
         }
 
-        public double Y
+        public float Y
         {
-            get { return m_rgdfY[m_nIdxPrimaryY]; }
-            set { m_rgdfY[m_nIdxPrimaryY] = value; }
+            get { return m_rgfY[m_nIdxPrimaryY]; }
+            set { m_rgfY[m_nIdxPrimaryY] = value; }
         }
 
-        public List<double> Y_values
+        public float[] Y_values
         {
-            get { return m_rgdfY; }
+            get { return m_rgfY; }
         }
 
         public int PrimaryIndexY
         {
             get { return m_nIdxPrimaryY; }
-            set { m_nIdxPrimaryY = value; }
+            set { m_nIdxPrimaryY = (short)value; }
         }
 
         public bool Active

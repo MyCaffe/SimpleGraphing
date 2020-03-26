@@ -492,7 +492,7 @@ namespace SimpleGraphing
                 simpleGraphingControl1.Configuration.Frames[0].TitleFont = new Font("Century Gothic", 12.0f, FontStyle.Bold);
             }
 
-            if (col.Count > 0 && col[0].Y_values.Count == 4)
+            if (col.Count > 0 && col[0].Y_values.Length == 4)
             {
                 simpleGraphingControl1.Configuration.Frames[0].Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.CANDLE;
                 simpleGraphingControl1.Configuration.Frames[0].XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.TIME;

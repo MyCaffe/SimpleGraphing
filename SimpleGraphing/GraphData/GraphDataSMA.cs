@@ -59,7 +59,7 @@ namespace SimpleGraphing.GraphData
                         data1.Add(data[i].X, dfSma, true, data[i].Index);
 
                         if (bAddToParams)
-                            data[i].SetParameter(data1.Name, dfSma);
+                            data[i].SetParameter(data1.Name, (float)dfSma);
                     }
 
                     minmax.Add(dfSma);

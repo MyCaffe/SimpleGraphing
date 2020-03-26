@@ -77,7 +77,7 @@ namespace SimpleGraphing.GraphData
                 data1.Add(dfEma, bActive, data[i].Index);
 
                 if (bAddToParams && bActive)
-                    data[i].SetParameter(data1.Name, dfEma);
+                    data[i].SetParameter(data1.Name, (float)dfEma);
 
                 i++;
 

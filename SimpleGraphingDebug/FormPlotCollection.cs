@@ -42,7 +42,7 @@ namespace SimpleGraphingDebug
             simpleGraphingControl1.Configuration.Frames[0].YAxis.Decimals = 3;
             simpleGraphingControl1.Configuration.Frames[0].Plots.Add(new ConfigurationPlot());
 
-            if (m_col.Count > 0 && m_col[0].Y_values.Count == 4)
+            if (m_col.Count > 0 && m_col[0].Y_values.Length == 4)
             {
                 simpleGraphingControl1.Configuration.Frames[0].Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.CANDLE;
                 simpleGraphingControl1.Configuration.Frames[0].XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.TIME;

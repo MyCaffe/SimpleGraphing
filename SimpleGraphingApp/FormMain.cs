@@ -150,7 +150,7 @@ namespace SimpleGraphingApp
                         Plot p = new Plot(dfTime, rgdfVal, lVol);
 
                         if (bEnableOverlay)
-                            p.SetParameter("cos", Math.Cos(j));
+                            p.SetParameter("cos", (float)Math.Cos(j));
 
                         plots.Add(p);
 
