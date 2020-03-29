@@ -257,6 +257,11 @@ namespace SimpleGraphing
             set { m_tag = value; }
         }
 
+        public void SetParameter(string strParam, double df)
+        {
+            SetParameter(strParam, (float)df);
+        }
+
         public void SetParameter(string strParam, float df)
         {
             if (m_rgParams == null)
