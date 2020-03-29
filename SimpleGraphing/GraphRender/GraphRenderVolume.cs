@@ -76,6 +76,13 @@ namespace SimpleGraphing.GraphRender
 
                         g.FillRectangle(brFill, rc);
                         g.DrawRectangle(pLine, rc.X, rc.Y, rc.Width, rc.Height);
+
+                        if (plot.Clipped)
+                        {
+                            g.DrawLine(Pens.Red, rc.X, rc.Y, rc.X + rc.Width, rc.Y);
+                            g.DrawLine(Pens.Red, rc.X, rc.Y + 1, rc.X + rc.Width, rc.Y + 1);
+                            g.DrawLine(Pens.Red, rc.X, rc.Y + 2, rc.X + rc.Width, rc.Y + 2);
+                        }
                     }
                 }
             }

@@ -23,6 +23,7 @@ namespace SimpleGraphing
         object m_tag = null;
         Dictionary<string, float> m_rgParams = null;
         bool m_bScaled = false;
+        bool m_bClipped = false;
 
         public Plot(double dfX, double dfY, string strName = null, bool bActive = true, int nIdx = 0, bool bAction1Active = false, bool bAction2Active = false)
         {
@@ -249,6 +250,12 @@ namespace SimpleGraphing
         {
             get { return m_bScaled; }
             set { m_bScaled = value; }
+        }
+
+        public bool Clipped
+        {
+            get { return m_bClipped; }
+            set { m_bClipped = value; }
         }
 
         public object Tag
