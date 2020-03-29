@@ -110,10 +110,12 @@ namespace SimpleGraphing
             if (m_strName != null)
                 bw.Write(m_strName);
 
-            bw.Write(m_rgfY.Length);
+            int nLen = m_rgfY.Length;
+            bw.Write(nLen);
             for (int i = 0; i < m_rgfY.Length; i++)
             {
-                bw.Write((double)m_rgfY[i]);
+                double df = m_rgfY[i];
+                bw.Write(df);
             }
 
             bw.Write((m_lCount.HasValue) ? true : false);
@@ -121,7 +123,8 @@ namespace SimpleGraphing
                 bw.Write(m_lCount.Value);
 
             bw.Write(m_dfX);
-            bw.Write(m_nIdxPrimaryY);
+            int nIdxPrimaryY = m_nIdxPrimaryY;
+            bw.Write(nIdxPrimaryY);
 
             bw.Write((m_tag != null) ? true : false);
             if (m_tag != null)
@@ -137,7 +140,8 @@ namespace SimpleGraphing
                 foreach (KeyValuePair<string, float> kv in m_rgParams)
                 {
                     bw.Write(kv.Key);
-                    bw.Write((double)kv.Value);
+                    double df = kv.Value;
+                    bw.Write(df);
                 }
             }
 
@@ -160,7 +164,8 @@ namespace SimpleGraphing
             float[] rgfY = new float[nCount];            
             for (int i = 0; i < nCount; i++)
             {
-                rgfY[i] = (float)br.ReadDouble();
+                double df = br.ReadDouble();
+                rgfY[i] = (float)df;
             }
 
             long? lCount = null;
@@ -190,7 +195,9 @@ namespace SimpleGraphing
 
                 for (int i = 0; i < nCount; i++)
                 {
-                    rgParam.Add(br.ReadString(), (float)br.ReadDouble());
+                    string str = br.ReadString();
+                    double df = br.ReadDouble();
+                    rgParam.Add(str, (float)df);
                 }
             }
 
