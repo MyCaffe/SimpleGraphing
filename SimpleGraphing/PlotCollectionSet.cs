@@ -117,6 +117,17 @@ namespace SimpleGraphing
             }
         }
 
+        public PlotCollection Find(string str)
+        {
+            foreach (PlotCollection col in m_rgSet)
+            {
+                if (col.Name == str)
+                    return col;
+            }
+
+            return null;
+        }
+
         public Tuple<PlotCollectionSet, PlotCollectionSet> Split(int nCount)
         {
             PlotCollectionSet p1 = new PlotCollectionSet();
