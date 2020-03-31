@@ -184,6 +184,9 @@ namespace SimpleGraphing
                     break;
 
                 case ConfigurationPlot.PLOTTYPE.ZONE:
+                    GraphDataZones gdz = new GraphDataZones(m_config);
+                    gdz.OnScale += Gdz_OnScale;
+                    m_idata = gdz;
                     m_irender = new GraphRenderZones(m_config, m_gx, m_gy, style);
                     break;
 
@@ -196,6 +199,11 @@ namespace SimpleGraphing
             }
 
             return style;
+        }
+
+        private void Gdz_OnScale(object sender, ScaleArgs e)
+        {
+            e.ScaledValue = m_gy.ScaleValue(e.Value, e.Invert);
         }
 
         public void PreRender(Graphics g, int nLookahead)
