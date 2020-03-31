@@ -297,7 +297,10 @@ namespace SimpleGraphing
             m_output = m_surface.BuildGraph(m_config, m_data, bAddToParams);
 
             if (bResize)
+            {
                 SimpleGraphingControl_Resize(this, new EventArgs());
+                m_surface.BuildGraphPost(m_config, m_data);
+            }
 
             return m_output;
         }

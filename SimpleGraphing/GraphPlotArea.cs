@@ -75,22 +75,29 @@ namespace SimpleGraphing
             get { return m_rgPlots; }
         }
 
-        public PlotCollectionSet BuildGraph(ConfigurationFrame config, List<ConfigurationPlot> plots, PlotCollectionSet data, bool bAddToParams = false)
+        public PlotCollectionSet BuildGraph(ConfigurationFrame config, List<ConfigurationPlot> plots, PlotCollectionSet data, bool bAddToParams = false, GETDATAORDER order = GETDATAORDER.PRE)
         {
             PlotCollectionSet data1 = new PlotCollectionSet();
 
-            data.SetMinMax();
-            data.GetAbsMinMax(0, 0, out m_dfAbsMinY, out m_dfAbsMaxY);
+            if (order == GETDATAORDER.PRE)
+            {
+                data.SetMinMax();
+                data.GetAbsMinMax(0, 0, out m_dfAbsMinY, out m_dfAbsMaxY);
 
-            setMinMaxLines(config);
+                setMinMaxLines(config);
 
-            m_rgPlots = new SimpleGraphing.GraphPlotCollection();
-            m_rgData = new PlotCollectionSet();
-            m_rgData.Add(data);
+                m_rgPlots = new SimpleGraphing.GraphPlotCollection();
+                m_rgData = new PlotCollectionSet();
+                m_rgData.Add(data);
+            }
+            else
+            {
+                data1 = data;
+            }
 
             for (int i = 0; i < plots.Count; i++)
             {
-                if (plots[i].Visible)
+                if (plots[i].Visible && plots[i].BuildOrder == order)
                 {
                     GraphPlot graphPlot = new SimpleGraphing.GraphPlot(m_cache, m_gx, m_gy);
                     int nLookahead = Math.Max(config.PlotArea.Lookahead, config.PlotArea.CalculationLookahead);
@@ -108,7 +115,8 @@ namespace SimpleGraphing
                 }
             }
 
-            m_style = createStyle(config);
+            if (order == GETDATAORDER.PRE)
+                m_style = createStyle(config);
 
             return data1;
         }
@@ -181,6 +189,8 @@ namespace SimpleGraphing
             {
                 graphPlot.Bounds = m_rcBounds;
             }
+
+
         }
 
         public void Render(Graphics g)

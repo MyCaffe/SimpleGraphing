@@ -16,7 +16,6 @@ namespace SimpleGraphing
         Rectangle m_rcBounds = new Rectangle();
         Bitmap m_bmp = null;
         GraphicsEx m_graphics = new GraphicsEx();
-        bool m_bLock = false;
 
         public GraphSurface(ModuleCache cache)
         {
@@ -53,6 +52,16 @@ namespace SimpleGraphing
         public Rectangle Bounds
         {
             get { return m_rcBounds; }
+        }
+
+        public List<PlotCollectionSet> BuildGraphPost(Configuration config, List<PlotCollectionSet> rgData)
+        {
+            for (int i=0; i<m_frames.Count; i++)
+            {
+                m_frames[i].BuildGraphPost(rgData[i]);
+            }
+
+            return rgData;
         }
 
         public List<PlotCollectionSet> BuildGraph(Configuration config, List<PlotCollectionSet> rgData, bool bAddToParams = false)

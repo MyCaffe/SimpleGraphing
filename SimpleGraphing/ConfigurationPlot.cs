@@ -181,6 +181,17 @@ namespace SimpleGraphing
             set { m_bLookaheadActive = value; }
         }
 
+        public GETDATAORDER BuildOrder
+        {
+            get
+            {
+                if (m_plotType == PLOTTYPE.ZONE)
+                    return GETDATAORDER.POST;
+                else
+                    return GETDATAORDER.PRE;
+            }
+        }
+
         public PLOTTYPE PlotType
         {
             get { return m_plotType; }

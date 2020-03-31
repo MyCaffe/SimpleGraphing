@@ -195,7 +195,7 @@
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.simpleGraphingControl1);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(762, 907);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(762, 932);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 24);
             this.toolStripContainer1.Name = "toolStripContainer1";
@@ -216,7 +216,7 @@
             this.simpleGraphingControl1.Name = "simpleGraphingControl1";
             this.simpleGraphingControl1.ScrollPercent = 0D;
             this.simpleGraphingControl1.ShowScrollBar = true;
-            this.simpleGraphingControl1.Size = new System.Drawing.Size(762, 907);
+            this.simpleGraphingControl1.Size = new System.Drawing.Size(762, 932);
             this.simpleGraphingControl1.TabIndex = 0;
             this.simpleGraphingControl1.UserUpdateCrosshairs = false;
             this.simpleGraphingControl1.Load += new System.EventHandler(this.simpleGraphingControl1_Load);
@@ -234,7 +234,7 @@
             this.btnScaleToVisible});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(204, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(173, 25);
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Visible = false;
             // 

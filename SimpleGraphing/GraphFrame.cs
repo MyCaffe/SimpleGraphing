@@ -73,14 +73,19 @@ namespace SimpleGraphing
                     data[i].MinMaxTarget = config.MinMaxTarget;
             }
 
-            data = m_plotArea.BuildGraph(config, config.Plots, data, bAddToParams);
+            data = m_plotArea.BuildGraph(config, config.Plots, data, bAddToParams, GETDATAORDER.PRE);
             m_gx.BuildGraph(config.XAxis, data);
             m_gy.BuildGraph(config.YAxis, data);
             m_gy.SetGraphPlots(m_plotArea.Plots);
             m_gy.SetTargetLines(config.TargetLines);
-
             setMinMax(config, data);
 
+            return data;
+        }
+
+        public PlotCollectionSet BuildGraphPost(PlotCollectionSet data)
+        {
+            m_plotArea.BuildGraph(m_config, m_config.Plots, data, false, GETDATAORDER.POST);
             return data;
         }
 
@@ -135,7 +140,7 @@ namespace SimpleGraphing
             m_gy.SetMinMax(dfMin, dfMax);
         }
 
-        public void Resize(int nX, int nY, int nWidth, int nHeight, bool bResetStartPos = false)
+        public PlotCollectionSet Resize(int nX, int nY, int nWidth, int nHeight, bool bResetStartPos = false)
         {
             m_rcBounds = new Rectangle(nX, nY, nWidth, nHeight);
 
@@ -157,6 +162,8 @@ namespace SimpleGraphing
 
             m_gy.Resize(nX + nWidth - m_gy.Width, nY, m_gy.Width, nHeight - nGxHeight);
             m_plotArea.Resize(nX, nY, nWidth - m_gy.Bounds.Width, nHeight - nGxHeight);
+
+            return null;
         }
 
         public void Render(Graphics g)

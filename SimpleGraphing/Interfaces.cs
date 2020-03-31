@@ -14,6 +14,12 @@ namespace SimpleGraphing
         bool Edit(Control parent, SimpleGraphingControl ctrl);
     }
 
+    public enum GETDATAORDER
+    {
+        PRE,
+        POST
+    }
+
     public interface IGraphPlotData
     {
         string Name { get; }

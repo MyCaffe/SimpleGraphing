@@ -170,7 +170,7 @@ namespace SimpleGraphing
                     for (int i = 0; i < rgstrParams.Length; i++)
                     {
                         string strKey = rgstrParams[i];
-                        if (plot.Parameters.ContainsKey(strKey))
+                        if (plot.Parameters != null && plot.Parameters.ContainsKey(strKey))
                         {
                             double dfVal = plot.Parameters[strKey];
                             if (dfRange == 0 || dfParamRange == 0)

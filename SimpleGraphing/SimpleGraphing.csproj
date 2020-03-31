@@ -78,6 +78,7 @@
     <Compile Include="GraphData\GraphDataHighLow.cs" />
     <Compile Include="GraphData\GraphDataRSI.cs" />
     <Compile Include="GraphData\GraphDataEMA.cs" />
+    <Compile Include="GraphData\GraphDataZones.cs" />
     <Compile Include="GraphData\GraphDataSMA.cs" />
     <Compile Include="GraphRender\GraphRenderBase.cs" />
     <Compile Include="GraphRender\GraphRenderZones.cs" />
