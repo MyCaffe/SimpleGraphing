@@ -299,7 +299,31 @@ namespace SimpleGraphing
             if (bResize)
             {
                 SimpleGraphingControl_Resize(this, new EventArgs());
-                m_surface.BuildGraphPost(m_config, m_data);
+                List<PlotCollectionSet> output = m_surface.BuildGraphPost(m_config, data);
+
+                for (int i = 0; i < m_output.Count; i++)
+                {
+                    if (m_output[i] != null)
+                    {
+                        for (int j = 0; j < output[i].Count; j++)
+                        {
+                            string strName = output[i][j].Name;
+                            bool bFound = false;
+
+                            for (int k = 0; k < m_output[i].Count; k++)
+                            {
+                                if (m_output[i][j].Name == strName)
+                                {
+                                    bFound = true;
+                                    break;
+                                }
+                            }
+
+                            if (!bFound)
+                                m_output[i].Add(output[i][j]);
+                        }
+                    }
+                }
             }
 
             return m_output;
