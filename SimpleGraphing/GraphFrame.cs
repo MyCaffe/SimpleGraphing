@@ -85,8 +85,7 @@ namespace SimpleGraphing
 
         public PlotCollectionSet BuildGraphPost(PlotCollectionSet data)
         {
-            m_plotArea.BuildGraph(m_config, m_config.Plots, data, false, GETDATAORDER.POST);
-            return data;
+            return m_plotArea.BuildGraph(m_config, m_config.Plots, data, false, GETDATAORDER.POST);
         }
 
         private void setMinMax(ConfigurationFrame config, PlotCollectionSet data)

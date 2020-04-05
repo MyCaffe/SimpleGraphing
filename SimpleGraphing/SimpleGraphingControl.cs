@@ -312,14 +312,17 @@ namespace SimpleGraphing
 
                             for (int k = 0; k < m_output[i].Count; k++)
                             {
-                                if (m_output[i][j].Name == strName)
+                                if (m_output[i][k] != null)
                                 {
-                                    bFound = true;
-                                    break;
+                                    if (m_output[i][k].Name == strName)
+                                    {
+                                        bFound = true;
+                                        break;
+                                    }
                                 }
                             }
 
-                            if (!bFound)
+                            if (!bFound && output[i][j] != null)
                                 m_output[i].Add(output[i][j]);
                         }
                     }

@@ -56,12 +56,16 @@ namespace SimpleGraphing
 
         public List<PlotCollectionSet> BuildGraphPost(Configuration config, List<PlotCollectionSet> rgData)
         {
+            List<PlotCollectionSet> rgOutput = new List<PlotCollectionSet>();
+
             for (int i=0; i<m_frames.Count; i++)
             {
-                m_frames[i].BuildGraphPost(rgData[i]);
+                PlotCollectionSet set = m_frames[i].BuildGraphPost(rgData[i]);
+                if (set != null)
+                    rgOutput.Add(set);
             }
 
-            return rgData;
+            return rgOutput;
         }
 
         public List<PlotCollectionSet> BuildGraph(Configuration config, List<PlotCollectionSet> rgData, bool bAddToParams = false)

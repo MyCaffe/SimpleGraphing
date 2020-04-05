@@ -90,10 +90,6 @@ namespace SimpleGraphing
                 m_rgData = new PlotCollectionSet();
                 m_rgData.Add(data);
             }
-            else
-            {
-                data1 = data;
-            }
 
             for (int i = 0; i < plots.Count; i++)
             {
