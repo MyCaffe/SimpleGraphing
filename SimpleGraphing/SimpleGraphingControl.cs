@@ -300,14 +300,15 @@ namespace SimpleGraphing
             {
                 SimpleGraphingControl_Resize(this, new EventArgs());
                 List<PlotCollectionSet> output = m_surface.BuildGraphPost(m_config, data);
+                int nIdx = 0;
 
                 for (int i = 0; i < m_output.Count; i++)
                 {
-                    if (m_output[i] != null)
+                    if (m_output[i] != null && nIdx < output.Count)
                     {
-                        for (int j = 0; j < output[i].Count; j++)
+                        for (int j = 0; j < output[nIdx].Count; j++)
                         {
-                            string strName = output[i][j].Name;
+                            string strName = output[nIdx][j].Name;
                             bool bFound = false;
 
                             for (int k = 0; k < m_output[i].Count; k++)
@@ -322,9 +323,11 @@ namespace SimpleGraphing
                                 }
                             }
 
-                            if (!bFound && output[i][j] != null)
-                                m_output[i].Add(output[i][j]);
+                            if (!bFound && output[nIdx][j] != null)
+                                m_output[i].Add(output[nIdx][j]);
                         }
+
+                        nIdx++;
                     }
                 }
             }
