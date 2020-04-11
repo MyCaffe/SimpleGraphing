@@ -16,6 +16,7 @@ namespace SimpleGraphing
 
     public enum GETDATAORDER
     {
+        NONE,
         PRE,
         POST
     }
@@ -32,6 +33,7 @@ namespace SimpleGraphing
         void Initialize(ConfigurationPlot config);
         IGraphPlotRender CreateRender(ConfigurationPlot c, GraphAxis gx, GraphAxis gy, GraphPlotStyle style);
         IGraphPlotUserEdit CreateUserEdit();
+        GETDATAORDER BuildOrder { get; }
     }
 
     public interface IGraphPlotRender

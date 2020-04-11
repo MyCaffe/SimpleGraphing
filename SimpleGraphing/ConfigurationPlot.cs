@@ -42,6 +42,9 @@ namespace SimpleGraphing
         Dictionary<string, double> m_rgExtraSettings = new Dictionary<string, double>();
 
         [NonSerialized]
+        GETDATAORDER m_custiomBuildOrder = GETDATAORDER.NONE;
+
+        [NonSerialized]
         Guid? m_guid = null;
 
         [NonSerialized]
@@ -185,11 +188,19 @@ namespace SimpleGraphing
         {
             get
             {
+                if (m_plotType == PLOTTYPE.CUSTOM && m_custiomBuildOrder != GETDATAORDER.NONE)
+                    return m_custiomBuildOrder;
+
                 if (m_plotType == PLOTTYPE.ZONE)
                     return GETDATAORDER.POST;
                 else
                     return GETDATAORDER.PRE;
             }
+        }
+
+        public void SetCustomBuildOrder(GETDATAORDER order)
+        {
+            m_custiomBuildOrder = order;
         }
 
         public PLOTTYPE PlotType
