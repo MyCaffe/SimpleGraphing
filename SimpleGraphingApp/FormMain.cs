@@ -35,19 +35,25 @@ namespace SimpleGraphingApp
                 if (idata != null)
                 {
                     IGraphPlotUserEdit iedit = idata.CreateUserEdit();
-                    ToolStripItem item = testToolStripMenuItem.DropDownItems.Add(iedit.Name + "...");
-                    item.Tag = iedit;
-                    item.Click += Item_Click;
+                    if (iedit != null)
+                    {
+                        ToolStripItem item = testToolStripMenuItem.DropDownItems.Add(iedit.Name + "...");
+                        item.Tag = iedit;
+                        item.Click += Item_Click;
+                    }
 
                     ConfigurationPlot plotConfig = new ConfigurationPlot(Guid.NewGuid());
                     plotConfig.PlotType = ConfigurationPlot.PLOTTYPE.CUSTOM;
                     plotConfig.CustomName = idata.Name;
+                    plotConfig.SetCustomBuildOrder(idata.BuildOrder);
+
                     simpleGraphingControl1.Configuration.Frames[0].Plots.Add(plotConfig);
 
                     plotConfig = new ConfigurationPlot(Guid.NewGuid());
                     plotConfig.PlotType = ConfigurationPlot.PLOTTYPE.CUSTOM;
                     plotConfig.CustomName = idata.Name;
                     plotConfig.DataIndex = 1;
+
                     simpleGraphingControl1.Configuration.Frames[1].Plots.Add(plotConfig);
                 }
             }
@@ -154,7 +160,7 @@ namespace SimpleGraphingApp
 
                         plots.Add(p);
 
-                        dtStart += TimeSpan.FromDays(1);
+                        dtStart += TimeSpan.FromMinutes(1);
                         dfTime = dtStart.ToFileTime();
                         dfVal += -1 + (2 * m_random.NextDouble());
                     }
@@ -179,13 +185,47 @@ namespace SimpleGraphingApp
             if (openFileDialogBin.ShowDialog() != DialogResult.OK)
                 return;
 
-            List<PlotCollectionSet> rgSet;
+            List<PlotCollectionSet> rgSet = new List<PlotCollectionSet>();
 
-            using (FileStream fs = File.OpenRead(openFileDialogBin.FileName))
-            using (BinaryReader br = new BinaryReader(fs))
+            if (Path.GetExtension(openFileDialogBin.FileName).ToLower() == ".bin")
             {
-                byte[] rgBytes = br.ReadBytes((int)fs.Length);
-                rgSet = PlotCollectionSet.LoadList(rgBytes);
+                using (FileStream fs = File.OpenRead(openFileDialogBin.FileName))
+                using (BinaryReader br = new BinaryReader(fs))
+                {
+                    byte[] rgBytes = br.ReadBytes((int)fs.Length);
+                    rgSet = PlotCollectionSet.LoadList(rgBytes);
+                }
+            }
+            else
+            {
+                PlotCollection colPlots = new PlotCollection("Prices");
+
+                using (StreamReader sr = new StreamReader(openFileDialogBin.FileName))
+                {
+                    string strLine = sr.ReadLine();
+                    strLine = sr.ReadLine();
+
+                    while (strLine != null)
+                    {
+                        string[] rgstr = strLine.Split(',');
+                        DateTime dt = DateTime.Parse(rgstr[1]);
+                        float fOpen = float.Parse(rgstr[2]);
+                        float fHigh = float.Parse(rgstr[3]);
+                        float fLow = float.Parse(rgstr[4]);
+                        float fClose = float.Parse(rgstr[5]);
+                        long lVol = long.Parse(rgstr[6]);
+
+                        colPlots.Add(dt.ToFileTime(), new float[] { fOpen, fHigh, fLow, fClose });
+                        colPlots[colPlots.Count - 1].Tag = dt;
+                        colPlots[colPlots.Count - 1].Count = lVol;
+
+                        strLine = sr.ReadLine();
+                    }
+                }
+
+                PlotCollectionSet set = new PlotCollectionSet();
+                set.Add(colPlots);
+                rgSet.Add(set);
             }
 
             while (rgSet.Count < 4)

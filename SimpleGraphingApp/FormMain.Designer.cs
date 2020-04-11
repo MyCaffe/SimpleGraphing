@@ -331,8 +331,9 @@
             // openFileDialogBin
             // 
             this.openFileDialogBin.DefaultExt = "bin";
-            this.openFileDialogBin.Filter = "Binary Files (*.bin)|*.bin||";
-            this.openFileDialogBin.Title = "Select the binary file containing the list of PlotCollectionSets.";
+            this.openFileDialogBin.Filter = "Binary Files (*.bin)|*.bin|CSV Files (*.csv)|*.csv||";
+            this.openFileDialogBin.Title = "Select the binary file containing the list of PlotCollectionSets or a CSV file wi" +
+    "th OHLC data.";
             // 
             // FormMain
             // 
