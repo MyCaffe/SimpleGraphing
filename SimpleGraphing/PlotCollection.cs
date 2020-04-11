@@ -286,7 +286,7 @@ namespace SimpleGraphing
             return this;
         }
 
-        public PlotCollection Clone(int nIdxStart = 0, bool bCalculateMinMax = true)
+        public PlotCollection Clone(int nIdxStart = 0, bool bCalculateMinMax = true, int? nPrimaryIndexY = null)
         {
             PlotCollection col = new PlotCollection(m_strName, m_nMax, m_dfXIncrement);
 
@@ -303,7 +303,11 @@ namespace SimpleGraphing
 
             for (int i=nIdxStart; i<m_rgPlot.Count; i++)
             {
-                col.Add(m_rgPlot[i].Clone(), bCalculateMinMax);
+                Plot p = m_rgPlot[i].Clone();
+                if (nPrimaryIndexY.HasValue)
+                    p.PrimaryIndexY = nPrimaryIndexY.Value;
+
+                col.Add(p, bCalculateMinMax);
             }
 
             return col;
