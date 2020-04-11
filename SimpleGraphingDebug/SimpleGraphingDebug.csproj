@@ -59,6 +59,7 @@
     <Compile Include="FormPlotCollection.Designer.cs">
       <DependentUpon>FormPlotCollection.cs</DependentUpon>
     </Compile>
+    <Compile Include="PlotCollectionSetVisualizer.cs" />
     <Compile Include="PlotCollectionVisualizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

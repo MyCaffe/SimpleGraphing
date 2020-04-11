@@ -14,11 +14,17 @@ namespace SimpleGraphingDebug
     public partial class FormPlotCollection : Form
     {
         SimpleGraphingControl simpleGraphingControl1;
-        PlotCollection m_col;
+        PlotCollectionSet m_set = new PlotCollectionSet();
 
         public FormPlotCollection(PlotCollection col)
         {
-            m_col = col;
+            m_set.Add(col);
+            InitializeComponent();
+        }
+
+        public FormPlotCollection(PlotCollectionSet set)
+        {
+            m_set = set;
             InitializeComponent();
         }
 
@@ -40,24 +46,29 @@ namespace SimpleGraphingDebug
             simpleGraphingControl1.Configuration.Frames[0].XAxis.Margin = 100;
             simpleGraphingControl1.Configuration.Frames[0].YAxis.LabelFont = new Font("Century Gothic", 7.0f);
             simpleGraphingControl1.Configuration.Frames[0].YAxis.Decimals = 3;
-            simpleGraphingControl1.Configuration.Frames[0].Plots.Add(new ConfigurationPlot());
 
-            if (m_col.Count > 0 && m_col[0].Y_values.Length == 4)
+            for (int i = 0; i < m_set.Count; i++)
             {
-                simpleGraphingControl1.Configuration.Frames[0].Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.CANDLE;
-                simpleGraphingControl1.Configuration.Frames[0].XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.TIME;
-            }
-            else
-            {
-                simpleGraphingControl1.Configuration.Frames[0].Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.LINE;
-                simpleGraphingControl1.Configuration.Frames[0].XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.NUMBER;
+                ConfigurationPlot plotConfig = new ConfigurationPlot();
+                plotConfig.DataIndexOnRender = i;
+
+                simpleGraphingControl1.Configuration.Frames[0].Plots.Add(plotConfig);
+
+                if (m_set[0].Count > 0 && m_set[0][0].Y_values.Length == 4)
+                {
+                    simpleGraphingControl1.Configuration.Frames[0].Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.CANDLE;
+                    simpleGraphingControl1.Configuration.Frames[0].XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.TIME;
+                }
+                else
+                {
+                    simpleGraphingControl1.Configuration.Frames[0].Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.LINE;
+                    simpleGraphingControl1.Configuration.Frames[0].XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.NUMBER;
+                }
             }
 
             simpleGraphingControl1.Configuration.Frames[0].EnableRelativeScaling(true, true);
 
-            PlotCollectionSet set = new PlotCollectionSet();
-            set.Add(m_col);
-            List<PlotCollectionSet> rgSet = new List<PlotCollectionSet>() { set };
+            List<PlotCollectionSet> rgSet = new List<PlotCollectionSet>() { m_set };
             simpleGraphingControl1.BuildGraph(rgSet);
             simpleGraphingControl1.Invalidate();
             simpleGraphingControl1.ScrollToEnd(true);
