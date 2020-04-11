@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace SimpleGraphing
 {
+    [Serializable]
     public class PlotCollectionSet : IEnumerable<PlotCollection>
     {
         public List<PlotCollection> m_rgSet = new List<PlotCollection>();
