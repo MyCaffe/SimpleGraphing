@@ -284,7 +284,9 @@ namespace SimpleGraphingApp
                     for (int j = 2; j < frame.Plots.Count; j++)
                     {
                         if (frame.Plots[j].PlotType == ConfigurationPlot.PLOTTYPE.CUSTOM)
+                        {
                             frame.Plots[j].Visible = true;
+                        }
                         else if (frame.Plots[j].PlotType == ConfigurationPlot.PLOTTYPE.HIGHLOW)
                         {
                             if (frame.Plots[j].ExtraSettings == null)
