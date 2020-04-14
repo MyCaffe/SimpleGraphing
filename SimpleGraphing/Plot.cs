@@ -320,9 +320,20 @@ namespace SimpleGraphing
             return null;
         }
 
-        public Plot Clone()
+        public Plot Clone(bool bCopyData = false)
         {
-            return Clone(m_rgfY, m_bActive, m_nIdxPrimaryY);
+            float[] rgf = m_rgfY;
+
+            if (bCopyData)
+            {
+                rgf = new float[m_rgfY.Length];
+                for (int i = 0; i < m_rgfY.Length; i++)
+                {
+                    rgf[i] = m_rgfY[i];
+                }
+            }
+
+            return Clone(rgf, m_bActive, m_nIdxPrimaryY);
         }
 
         public Plot Clone(List<double> rgY, bool bActive, int nPrimaryIdx)
