@@ -357,6 +357,17 @@ namespace SimpleGraphing
             return m_rgExtraSettings[strName];
         }
 
+        public void SetExtraSetting(string strName, double dfValue)
+        {
+            if (m_rgExtraSettings == null)
+                m_rgExtraSettings = new Dictionary<string, double>();
+
+            if (!m_rgExtraSettings.ContainsKey(strName))
+                m_rgExtraSettings.Add(strName, dfValue);
+            else
+                m_rgExtraSettings[strName] = dfValue;
+        }
+
         public virtual void Serialize(SerializeToXml ser)
         {
             ser.Open("Plot");
