@@ -175,6 +175,11 @@ namespace SimpleGraphingApp
                     plotsLast = null;
             }
 
+            double dfSlope;
+            double dfConfWid;
+            PlotCollection colReg = rgSet[0][0].CalculateLinearRegressionLines(out dfSlope, out dfConfWid);
+            rgSet[0].Add(colReg);
+
             configureCandleCharts(bEnableOverlay, rgSet, false);
 
             updateGraph(rgSet);
@@ -293,6 +298,13 @@ namespace SimpleGraphingApp
                                 frame.Plots[j].ExtraSettings = new Dictionary<string, double>();
                             if (!frame.Plots[j].ExtraSettings.ContainsKey("DrawLines"))
                                 frame.Plots[j].ExtraSettings.Add("DrawLines", 1.0);
+                        }
+                        else if (frame.Plots[j].PlotType == ConfigurationPlot.PLOTTYPE.LINE)
+                        {
+                            if (frame.Plots[j].Name == "Regression" ||
+                                frame.Plots[j].Name == "Conf+" ||
+                                frame.Plots[j].Name == "Conf-")
+                                frame.Plots[j].Visible = true;
                         }
                     }
 
