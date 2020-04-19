@@ -1007,14 +1007,15 @@ namespace SimpleGraphing
 
             for (int i = 0; i < m_rgPlot.Count; i++)
             {
+                int nIdx = i + 1;
                 Plot p = m_rgPlot[i];
 
                 if (p.Active)
                 {
-                    dfSumX += p.Index;
+                    dfSumX += nIdx;
                     dfSumY += p.Y;
-                    dfSumX2 += p.Index * p.Index;
-                    dfSumXY += p.Index * p.Y;
+                    dfSumX2 += nIdx * nIdx;
+                    dfSumXY += nIdx * p.Y;
                     nN++;
                 }
             }
@@ -1038,6 +1039,51 @@ namespace SimpleGraphing
         public double CalculateLinearRegressionY(double dfX, double dfA, double dfB)
         {
             return dfA + dfB * dfX;
+        }
+
+        /// <summary>
+        /// Calculate the linear regression line with confidence width lines set as 'Confidence+' and 'Confidence-' parameters.
+        /// </summary>
+        /// <param name="dfSlope">Returns the regression line slope.</param>
+        /// <param name="dfConfidenceWidth">Returns the regression line confidence width.</param>
+        /// <returns>The regression line is returned.</returns>
+        public PlotCollection CalculateLinearRegressionLines(out double dfSlope, out double dfConfidenceWidth)
+        {
+            Tuple<double, double> ab = CalculateLinearRegressionAB();
+
+            PlotCollection col = new PlotCollection(Name + " Regresssion Line");
+            List<float> rgRegY = new List<float>();
+            List<float> rgError = new List<float>();
+
+            for (int i = 0; i < m_rgPlot.Count; i++)
+            {
+                Plot p0 = m_rgPlot[i];
+
+                float fY = (float)CalculateLinearRegressionY(i, ab.Item1, ab.Item2);
+
+                rgRegY.Add(fY);
+                float fErr = p0.Y - fY;
+                rgError.Add(fErr * fErr);
+
+                Plot p = new Plot(p0.X, fY, null, true, i);
+                p.Tag = p0.Tag;
+
+                col.Add(p);
+            }
+
+            double dfVar = Math.Sqrt(rgError.Sum() / rgError.Count);
+            double df95 = dfVar * 1.96;
+
+            for (int i = 0; i < col.Count; i++)
+            {
+                col[i].SetParameter("Confidence+", col[i].Y + df95);
+                col[i].SetParameter("Confidence-", col[i].Y - df95);
+            }
+
+            dfSlope = (col[col.Count - 1].Y - col[0].Y) / col.Count;
+            dfConfidenceWidth = df95 * 2;
+
+            return col;
         }
     }
 
