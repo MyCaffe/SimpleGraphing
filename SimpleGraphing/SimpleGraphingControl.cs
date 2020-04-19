@@ -59,6 +59,12 @@ namespace SimpleGraphing
 
         public void LoadConfiguration(string strFile)
         {
+            if (string.IsNullOrEmpty(strFile))
+                throw new Exception("No configuration file specified!");
+
+            if (!File.Exists(strFile))
+                throw new Exception("Could not find the configuration file '" + strFile + "'!");
+
             string strExt = Path.GetExtension(strFile).ToLower();
             bool bLoaded = false;
 
