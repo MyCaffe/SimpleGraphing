@@ -517,11 +517,13 @@ namespace SimpleGraphing
     {
         string m_strName;
         double m_dfVal;
+        string m_strValue;
 
-        public PropertyValue(string strName = "", double dfVal = 0)
+        public PropertyValue(string strName = "", double dfVal = 0, string strValue = null)
         {
             m_strName = strName;
             m_dfVal = dfVal;
+            m_strValue = strValue;
         }
 
         public string Name
@@ -534,6 +536,12 @@ namespace SimpleGraphing
         {
             get { return m_dfVal; }
             set { m_dfVal = value; }
+        }
+
+        public string TextValue
+        {
+            get { return m_strValue; }
+            set { m_strValue = value; }
         }
     }
 
