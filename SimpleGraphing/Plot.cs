@@ -246,6 +246,11 @@ namespace SimpleGraphing
             return true;
         }
 
+        public void SetYValues(float[] rg)
+        {
+            m_rgfY = rg;
+        }
+
         public bool Scaled
         {
             get { return m_bScaled; }
