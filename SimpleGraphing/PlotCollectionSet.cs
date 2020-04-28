@@ -390,7 +390,7 @@ namespace SimpleGraphing
             }
         }
 
-        public static PlotCollectionSet Load(byte[] rgData)
+        public static PlotCollectionSet Load(byte[] rgData, int nMax = int.MaxValue)
         {
             PlotCollectionSet set = new PlotCollectionSet();
 
@@ -398,6 +398,8 @@ namespace SimpleGraphing
             using (BinaryReader br = new BinaryReader(ms))
             {
                 int nCount = br.ReadInt32();
+                if (nCount > nMax)
+                    nCount = nMax;
 
                 for (int i = 0; i < nCount; i++)
                 {
@@ -434,7 +436,7 @@ namespace SimpleGraphing
             }
         }
 
-        public static List<PlotCollectionSet> LoadList(byte[] rgData)
+        public static List<PlotCollectionSet> LoadList(byte[] rgData, int nMaxList = int.MaxValue, int nMaxSet = int.MaxValue)
         {
             List<PlotCollectionSet> rgSet = new List<PlotCollectionSet>();
 
@@ -442,13 +444,15 @@ namespace SimpleGraphing
             using (BinaryReader br = new BinaryReader(ms))
             {
                 int nCount = br.ReadInt32();
+                if (nCount > nMaxList)
+                    nCount = nMaxList;
 
                 for (int i = 0; i < nCount; i++)
                 {
                     int nLen = br.ReadInt32();
                     byte[] rgData1 = br.ReadBytes(nLen);
 
-                    rgSet.Add(PlotCollectionSet.Load(rgData1));
+                    rgSet.Add(PlotCollectionSet.Load(rgData1, nMaxSet));
                 }
             }
 
