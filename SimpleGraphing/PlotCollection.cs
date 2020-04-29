@@ -950,6 +950,19 @@ namespace SimpleGraphing
             m_rgPlot.Clear();
         }
 
+        public int Find(DateTime dt, int nStartIdx = 0)
+        {
+            for (int i = nStartIdx; i < m_rgPlot.Count; i++)
+            {
+                DateTime dt1 = (DateTime)m_rgPlot[i].Tag;
+
+                if (dt1 >= dt)
+                    return i;
+            }
+
+            return -1;
+        }
+
         public IEnumerator<Plot> GetEnumerator()
         {
             return m_rgPlot.GetEnumerator();
