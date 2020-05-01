@@ -596,6 +596,11 @@ namespace SimpleGraphing
             get { return m_rgPlot.Count; }
         }
 
+        public int ActiveCount
+        {
+            get { return m_rgPlot.Where(p => p.Active == true).Count(); }
+        }
+
         public Plot this[int nIdx]
         {
             get { return m_rgPlot[nIdx]; }
