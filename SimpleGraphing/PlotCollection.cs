@@ -286,7 +286,7 @@ namespace SimpleGraphing
             return this;
         }
 
-        public PlotCollection Clone(int nIdxStart = 0, bool bCalculateMinMax = true, int? nPrimaryIndexY = null)
+        public PlotCollection Clone(int nIdxStart = 0, bool bCalculateMinMax = true, int? nPrimaryIndexY = null, bool? bActive = null)
         {
             PlotCollection col = new PlotCollection(m_strName, m_nMax, m_dfXIncrement);
 
@@ -306,6 +306,9 @@ namespace SimpleGraphing
                 Plot p = m_rgPlot[i].Clone();
                 if (nPrimaryIndexY.HasValue)
                     p.PrimaryIndexY = nPrimaryIndexY.Value;
+
+                if (bActive.HasValue)
+                    p.Active = bActive.Value;
 
                 col.Add(p, bCalculateMinMax);
             }
@@ -968,6 +971,87 @@ namespace SimpleGraphing
             return -1;
         }
 
+        public void SetAllActive(bool bActivate)
+        {
+            foreach (Plot p in m_rgPlot)
+            {
+                p.Active = bActivate;
+            }
+        }
+
+        public void SetAllActive(bool bActive, string strParam, bool bExact = true)
+        {
+            foreach (Plot p in m_rgPlot)
+            {
+                bool bFoundParam = false;
+
+                if (p.Parameters != null)
+                {
+                    foreach (KeyValuePair<string, float> kv in p.Parameters)
+                    {
+                        if (bExact)
+                        {
+                            if (kv.Key == strParam)
+                            {
+                                bFoundParam = true;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            if (kv.Key.Contains(strParam))
+                            {
+                                bFoundParam = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                p.Active = bFoundParam;
+            }
+        }
+
+        public PlotCollection Overlay(PlotCollection col2, int? nPrimaryYIdx, out int nFoundCount, params string[] rgstrParamsToCopy)
+        {
+            PlotCollection col = Clone(0, false, nPrimaryYIdx, false);
+            int nIdx = 0;
+            nFoundCount = 0;
+
+            for (int i = 0; i < col.Count; i++)
+            {
+                DateTime dt = (DateTime)col[i].Tag;
+                DateTime dt0 = (DateTime)col2[nIdx].Tag;
+
+                if (dt == dt0)
+                {
+                    col[i].SetYValues(col2[nIdx].Y_values);
+                    col[i].PrimaryIndexY = col2[nIdx].PrimaryIndexY;
+                    col[i].Active = col2[nIdx].Active;
+
+                    if (rgstrParamsToCopy != null)
+                    {
+                        for (int j = 0; j < rgstrParamsToCopy.Length; j++)
+                        {
+                            string strParam = rgstrParamsToCopy[j];
+                            float? fVal = col2[nIdx].GetParameter(strParam);
+
+                            if (fVal.HasValue)
+                                col[i].SetParameter(strParam, fVal.Value);
+                        }
+                    }
+
+                    nFoundCount++;
+                    nIdx++;
+
+                    if (nIdx == col2.Count)
+                        break;
+                }
+            }
+
+            return col;
+        }
+
         public IEnumerator<Plot> GetEnumerator()
         {
             return m_rgPlot.GetEnumerator();
@@ -1011,11 +1095,12 @@ namespace SimpleGraphing
         /// <summary>
         /// Calculate the A and B regression values.
         /// </summary>
+        /// <param name="nDataIdx">Optionally, specifies the data index into Y_values to use (default = -1, which uses Y).</param>
         /// <remarks>
         /// @see [Linear Regresssion: Simple Steps](https://www.statisticshowto.datasciencecentral.com/probability-and-statistics/regression-analysis/find-a-linear-regression-equation/)
         /// </remarks>
         /// <returns>A tuple containing the A and B values is returned.</returns>
-        public Tuple<double, double> CalculateLinearRegressionAB()
+        public Tuple<double, double> CalculateLinearRegressionAB(int nDataIdx = -1)
         {
             double dfSumX = 0;
             double dfSumY = 0;
@@ -1031,9 +1116,12 @@ namespace SimpleGraphing
                 if (p.Active)
                 {
                     dfSumX += nIdx;
-                    dfSumY += p.Y;
+
+                    double dfY = (nDataIdx >= 0 && nDataIdx < p.Y_values.Length) ? p.Y_values[nDataIdx] : p.Y;
+
+                    dfSumY += dfY;
                     dfSumX2 += nIdx * nIdx;
-                    dfSumXY += nIdx * p.Y;
+                    dfSumXY += nIdx * dfY;
                     nN++;
                 }
             }
@@ -1064,10 +1152,11 @@ namespace SimpleGraphing
         /// </summary>
         /// <param name="dfSlope">Returns the regression line slope.</param>
         /// <param name="dfConfidenceWidth">Returns the regression line confidence width.</param>
+        /// <param name="nDataIdx">Optionally, specifies the data index into Y_values to use (default = -1, which uses Y).</param>
         /// <returns>The regression line is returned.</returns>
-        public PlotCollection CalculateLinearRegressionLines(out double dfSlope, out double dfConfidenceWidth)
+        public PlotCollection CalculateLinearRegressionLines(out double dfSlope, out double dfConfidenceWidth, int nDataIdx = -1)
         {
-            Tuple<double, double> ab = CalculateLinearRegressionAB();
+            Tuple<double, double> ab = CalculateLinearRegressionAB(nDataIdx);
 
             PlotCollection col = new PlotCollection(Name + " Regresssion Line");
             List<float> rgRegY = new List<float>();
@@ -1076,12 +1165,16 @@ namespace SimpleGraphing
             for (int i = 0; i < m_rgPlot.Count; i++)
             {
                 Plot p0 = m_rgPlot[i];
-
+                
                 float fY = (float)CalculateLinearRegressionY(i, ab.Item1, ab.Item2);
 
                 rgRegY.Add(fY);
-                float fErr = p0.Y - fY;
-                rgError.Add(fErr * fErr);
+
+                if (p0.Active)
+                {
+                    float fErr = p0.Y - fY;
+                    rgError.Add(fErr * fErr);
+                }
 
                 Plot p = new Plot(p0.X, fY, null, true, i);
                 p.Tag = p0.Tag;
