@@ -23,16 +23,24 @@ namespace SimpleGraphing
         BrushCollection m_colLineBrushes = new BrushCollection();
         PenCollection m_colLinePens = new PenCollection();
         PlotCollectionSet m_rgData = new PlotCollectionSet();
+        Font m_fontNote = null;
 
         public GraphPlotArea(ModuleCache cache, GraphAxis gx, GraphAxis gy)
         {
             m_cache = cache;
             m_gx = gx;
             m_gy = gy;
+            m_fontNote = new Font("Century Gothic", 8.0f);
         }
 
         public void Dispose()
         {
+            if (m_fontNote != null)
+            {
+                m_fontNote.Dispose();
+                m_fontNote = null;
+            }
+
             if (m_rgPlots != null)
             {
                 m_rgPlots.Dispose();
@@ -205,22 +213,36 @@ namespace SimpleGraphing
                     float fY1 = m_gy.ScaleValue(line.YValue, true);
                     RectangleF rc;
 
-                    if (line.YValueRange > 0)
-                    {
-                        float fYTop = m_gy.ScaleValue(line.YValue - (line.YValueRange / 2.0f), true);
-                        float fYBtm = m_gy.ScaleValue(line.YValue + (line.YValueRange / 2.0f), true);
-
-                        rc = new RectangleF(m_rcBounds.Left, fYBtm, m_rcBounds.Width, fYTop - fYBtm);
-                    }
-                    else
-                    {
-                        rc = new RectangleF(m_rcBounds.Left, fY1 - 2, m_rcBounds.Width, 5);
-                    }
-
-                    g.FillRectangle(br, rc);
-
                     if (!float.IsNaN(fY1) && !float.IsInfinity(fY1))
-                        g.DrawLine(p, m_rcBounds.Left, fY1, m_rcBounds.Right, fY1);
+                    {
+                        if (fY1 > Bounds.Top && fY1 < Bounds.Bottom)
+                        {
+                            if (line.YValueRange > 0)
+                            {
+                                float fYTop = m_gy.ScaleValue(line.YValue - (line.YValueRange / 2.0f), true);
+                                float fYBtm = m_gy.ScaleValue(line.YValue + (line.YValueRange / 2.0f), true);
+
+                                rc = new RectangleF(m_rcBounds.Left, fYBtm, m_rcBounds.Width, fYTop - fYBtm);
+                            }
+                            else
+                            {
+                                rc = new RectangleF(m_rcBounds.Left, fY1 - 2, m_rcBounds.Width, 5);
+                            }
+
+                            g.FillRectangle(br, rc);
+                            g.DrawLine(p, m_rcBounds.Left, fY1, m_rcBounds.Right, fY1);
+
+                            if (!string.IsNullOrEmpty(line.Note))
+                            {
+                                SizeF sz = g.MeasureString(line.Note, m_fontNote);
+
+                                if (!m_colLineBrushes.Contains(line.NoteColor))
+                                    m_colLineBrushes.Add(line.NoteColor);
+
+                                g.DrawString(line.Note, m_fontNote, m_colLineBrushes[line.NoteColor], new PointF(100, fY1 - sz.Height));
+                            }
+                        }
+                    }
                 }
             }
 
