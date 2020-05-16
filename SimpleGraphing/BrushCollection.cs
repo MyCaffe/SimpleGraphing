@@ -35,5 +35,10 @@ namespace SimpleGraphing
         {
             get { return m_rgBrushes[clr]; }
         }
+
+        public bool Contains(Color clr)
+        {
+            return m_rgBrushes.ContainsKey(clr);
+        }
     }
 }
