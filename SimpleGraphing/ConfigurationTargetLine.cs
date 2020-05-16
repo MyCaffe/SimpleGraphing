@@ -13,15 +13,17 @@ namespace SimpleGraphing
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public class ConfigurationTargetLine
     {
+        Color m_clrNote = Color.Black;
         Color m_clrLine = Color.Green;
         bool m_bEnableFlag = true;
         Color m_clrFlag = Color.Green;
         Color m_clrFlagBorder = Color.Black;
-        Color m_clrFlagText = Color.Lime;
+        Color m_clrFlagText = Color.White;
         double m_dfYValue = 0.0;
         double m_dfYRange = 0;
         bool m_bEnabled = true;
         LINE_TYPE m_lineType = LINE_TYPE.VALUE;
+        string m_strNote = null;
 
         public enum LINE_TYPE
         {
@@ -34,10 +36,19 @@ namespace SimpleGraphing
         {
         }
 
-        public ConfigurationTargetLine(double dfY, Color clrLine, LINE_TYPE type = LINE_TYPE.VALUE, bool bEnableFlag = false)
+        public ConfigurationTargetLine(double dfY, Color clrLine, LINE_TYPE type = LINE_TYPE.VALUE, bool bEnableFlag = false, Color? clrFlagText = null, string strNote = null, Color? clrNote = null)
         {
+            m_strNote = strNote;
             m_dfYValue = dfY;
             m_clrLine = clrLine;
+            m_clrFlag = clrLine;
+
+            if (clrNote.HasValue)
+                m_clrNote = clrNote.Value;
+
+            if (clrFlagText.HasValue)
+                m_clrFlagText = clrFlagText.Value;
+
             m_bEnableFlag = bEnableFlag;
             m_lineType = type;
         }
@@ -71,7 +82,19 @@ namespace SimpleGraphing
             if (m_dfYRange != c.m_dfYRange)
                 return false;
 
+            if (m_strNote != c.m_strNote)
+                return false;
+
+            if (m_clrNote != c.m_clrNote)
+                return false;
+
             return true;
+        }
+
+        public string Note
+        {
+            get { return m_strNote; }
+            set { m_strNote = value; }
         }
 
         public LINE_TYPE LineType
@@ -128,6 +151,12 @@ namespace SimpleGraphing
             set { m_clrFlagText = value; }
         }
 
+        public Color NoteColor
+        {
+            get { return m_clrNote; }
+            set { m_clrNote = value; }
+        }
+
         public void Serialize(SerializeToXml ser)
         {
             ser.Open("TargetLine");
@@ -140,6 +169,9 @@ namespace SimpleGraphing
             ser.Add("YRange", m_dfYRange);
             ser.Add("Enabled", m_bEnabled);
             ser.Add("LineType", m_lineType.ToString());
+            ser.Add("FlagTextColor", m_clrFlagText);
+            ser.Add("Note", m_strNote);
+            ser.Add("NoteColor", m_clrNote);
             ser.Close();
         }
 
@@ -159,19 +191,25 @@ namespace SimpleGraphing
 
         public static ConfigurationTargetLine Deserialize(XElement elm)
         {
-            ConfigurationTargetLine plot = new ConfigurationTargetLine();
+            ConfigurationTargetLine line = new ConfigurationTargetLine();
 
-            plot.LineColor = SerializeToXml.LoadColor(elm, "LineColor").Value;
-            plot.EnableFlag = SerializeToXml.LoadBool(elm, "EnableFlag").Value;
-            plot.FlagColor = SerializeToXml.LoadColor(elm, "FlagColor").Value;
-            plot.FlagBorderColor = SerializeToXml.LoadColor(elm, "FlagBorderColor").Value;
-            plot.FlagTextColor = SerializeToXml.LoadColor(elm, "FlagTextColor").Value;
-            plot.YValue = SerializeToXml.LoadDouble(elm, "YValue").Value;
-            plot.YValueRange = SerializeToXml.LoadDouble(elm, "YRange").Value;
-            plot.Enabled = SerializeToXml.LoadBool(elm, "Enabled").Value;
-            plot.LineType = lineTypeFromString(SerializeToXml.LoadText(elm, "LineType"));
+            line.LineColor = SerializeToXml.LoadColor(elm, "LineColor").Value;
+            line.EnableFlag = SerializeToXml.LoadBool(elm, "EnableFlag").Value;
+            line.FlagColor = SerializeToXml.LoadColor(elm, "FlagColor").Value;
+            line.FlagBorderColor = SerializeToXml.LoadColor(elm, "FlagBorderColor").Value;
+            line.FlagTextColor = SerializeToXml.LoadColor(elm, "FlagTextColor").Value;
+            line.YValue = SerializeToXml.LoadDouble(elm, "YValue").Value;
+            line.YValueRange = SerializeToXml.LoadDouble(elm, "YRange").Value;
+            line.Enabled = SerializeToXml.LoadBool(elm, "Enabled").Value;
+            line.LineType = lineTypeFromString(SerializeToXml.LoadText(elm, "LineType"));
+            line.FlagTextColor = SerializeToXml.LoadColor(elm, "FlagTextColor").Value;
+            line.Note = SerializeToXml.LoadText(elm, "Note");
 
-            return plot;
+            Color? clr = SerializeToXml.LoadColor(elm, "NoteColor");
+            if (clr.HasValue)
+                line.NoteColor = clr.Value;
+
+            return line;
         }
 
         private static LINE_TYPE lineTypeFromString(string str)
