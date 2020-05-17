@@ -41,6 +41,8 @@ namespace SimpleGraphing
         double m_dfMidPoint = 0;
         Dictionary<string, double> m_rgExtraSettings = new Dictionary<string, double>();
 
+        public event EventHandler<CustomBuildArgs> OnCustomBuild;
+
         [NonSerialized]
         GETDATAORDER m_custiomBuildOrder = GETDATAORDER.NONE;
 
@@ -72,6 +74,17 @@ namespace SimpleGraphing
         public ConfigurationPlot(Guid guid)
         {
             m_guid = guid;
+        }
+
+        public bool TryCustomBuild(PlotCollectionSet dataOut)
+        {
+            if (OnCustomBuild == null)
+                return false;
+
+            CustomBuildArgs args = new CustomBuildArgs(dataOut);
+            OnCustomBuild(this, args);
+
+            return true;
         }
 
         public double MarginPercent
@@ -624,6 +637,21 @@ namespace SimpleGraphing
         IEnumerator IEnumerable.GetEnumerator()
         {
             return m_rgProperties.GetEnumerator();
+        }
+    }
+
+    public class CustomBuildArgs : EventArgs
+    {
+        PlotCollectionSet m_data;
+
+        public CustomBuildArgs(PlotCollectionSet data)
+        {
+            m_data = data;
+        }
+
+        public PlotCollectionSet Data
+        {
+            get { return m_data; }
         }
     }
 }

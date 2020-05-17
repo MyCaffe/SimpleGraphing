@@ -102,33 +102,36 @@ namespace SimpleGraphing
 
             PlotCollectionSet dataOut = data;
 
-            if (m_idata != null)
+            if (!config.TryCustomBuild(data))
             {
-                string strRequiredDataName = m_idata.RequiredDataName;
-
-                if (strRequiredDataName != null)
+                if (m_idata != null)
                 {
-                    foreach (GraphPlot plot in plots)
+                    string strRequiredDataName = m_idata.RequiredDataName;
+
+                    if (strRequiredDataName != null)
                     {
-                        if (plot.DataName == strRequiredDataName)
+                        foreach (GraphPlot plot in plots)
                         {
-                            PlotCollectionSet data1 = new PlotCollectionSet();
+                            if (plot.DataName == strRequiredDataName)
+                            {
+                                PlotCollectionSet data1 = new PlotCollectionSet();
 
-                            if (data.Count > 1 || plot.Plots[0] != data[0])
-                                data1.Add(data);
+                                if (data.Count > 1 || plot.Plots[0] != data[0])
+                                    data1.Add(data);
 
-                            data1.Add(plot.Plots, true);
-                            dataOut = data1;
-                            break;
+                                data1.Add(plot.Plots, true);
+                                dataOut = data1;
+                                break;
+                            }
                         }
                     }
-                }
 
-                dataOut = m_idata.GetData(data, nDataIdx, nLookahead, config.ID, bAddToParams);
-                if (dataOut != null)
-                {
-                    dataOut.ExcludeFromMinMax(config.ExcludeFromMinMax);
-                    dataOut.SetMarginPercent(config.MarginPercent);
+                    dataOut = m_idata.GetData(data, nDataIdx, nLookahead, config.ID, bAddToParams);
+                    if (dataOut != null)
+                    {
+                        dataOut.ExcludeFromMinMax(config.ExcludeFromMinMax);
+                        dataOut.SetMarginPercent(config.MarginPercent);
+                    }
                 }
             }
 
