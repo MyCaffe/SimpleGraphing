@@ -184,7 +184,7 @@ namespace SimpleGraphing
             SizeF szVal = g.MeasureString(strVal, m_config.LabelFont);
             float fHalf = szVal.Height / 2;
 
-            if (fY - fHalf <= Bounds.Top || fY + fHalf >= Bounds.Bottom)
+            if (fY <= Bounds.Top || fY >= Bounds.Bottom)
                 return;
 
             List<PointF> rgpt = new List<PointF>();
