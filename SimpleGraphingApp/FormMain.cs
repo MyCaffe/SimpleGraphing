@@ -213,12 +213,25 @@ namespace SimpleGraphingApp
                     while (strLine != null)
                     {
                         string[] rgstr = strLine.Split(',');
-                        DateTime dt = DateTime.Parse(rgstr[1]);
-                        float fOpen = float.Parse(rgstr[2]);
-                        float fHigh = float.Parse(rgstr[3]);
-                        float fLow = float.Parse(rgstr[4]);
-                        float fClose = float.Parse(rgstr[5]);
-                        long lVol = long.Parse(rgstr[6]);
+
+                        int nIdx = 0;
+                        DateTime dt;
+                        if (!DateTime.TryParse(rgstr[nIdx], out dt))
+                        {
+                            nIdx++;
+                            dt = DateTime.Parse(rgstr[nIdx]);
+                        }
+
+                        nIdx++;
+                        float fOpen = float.Parse(rgstr[nIdx]);
+                        nIdx++;
+                        float fHigh = float.Parse(rgstr[nIdx]);
+                        nIdx++;
+                        float fLow = float.Parse(rgstr[nIdx]);
+                        nIdx++;
+                        float fClose = float.Parse(rgstr[nIdx]);
+                        nIdx++;
+                        long lVol = long.Parse(rgstr[nIdx]);
 
                         colPlots.Add(dt.ToFileTime(), new float[] { fOpen, fHigh, fLow, fClose });
                         colPlots[colPlots.Count - 1].Tag = dt;
