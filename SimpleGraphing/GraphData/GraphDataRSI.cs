@@ -47,72 +47,72 @@ namespace SimpleGraphing.GraphData
         {
             PlotCollection data = dataset[nDataIdx];
 
-            if (data.Count < m_config.Interval * 5)
+            if (data.Count < m_config.Interval * 1)
             {
                 Trace.WriteLine("There is not enough data for an RSI calculation!");
                 return null;
             }
 
             PlotCollection data1 = new PlotCollection(data.Name + " RSI");
-            List<double> rgChange = new List<double>();
-            double dfRSI = 0;
-            double dfRSILast = 0;
-            double dfSumLoss = 0;
-            double dfSumGain = 0;
+            float fAveGain = 0;
+            float fAveLoss = 0;
+            float fRs = 0;
+            float fRsi = 0;
+
+            for (int i = 0; i < data.Count; i++)
+            {
+                bool bActive = false;
+                data1.Add(new Plot(data[i].X, 0, null, false, data[i].Index, data[i].Action1Active, data[i].Action2Active));
+
+                if (i > 0)
+                {
+                    float fChange = data[i].Y - data[i - 1].Y;
+
+                    if (i <= m_config.Interval + 1)
+                    {
+                        if (fChange < 0)
+                            fAveLoss += (fChange * -1);
+                        else
+                            fAveGain += fChange;
+
+                        if (i == m_config.Interval + 1)
+                        {
+                            fAveLoss /= m_config.Interval;
+                            fAveGain /= m_config.Interval;
+                            fRs = (fAveLoss == 0) ? 0 : fAveGain / fAveLoss;
+                            fRsi = 100 - (100 / (1 + fRs));
+                            bActive = true;
+                        }
+                    }
+                    else if (i > m_config.Interval + 1)
+                    {
+                        if (fChange < 0)
+                        {
+                            fAveLoss = ((fAveLoss * (m_config.Interval - 1)) + (-1 * fChange)) / m_config.Interval;
+                            fAveGain = ((fAveGain * (m_config.Interval - 1)) + (0)) / m_config.Interval;
+                        }
+                        else
+                        {
+                            fAveLoss = ((fAveLoss * (m_config.Interval - 1)) + (0)) / m_config.Interval;
+                            fAveGain = ((fAveGain * (m_config.Interval - 1)) + (fChange)) / m_config.Interval;
+                        }
+
+                        fRs = (fAveLoss == 0) ? 0 : fAveGain / fAveLoss;
+                        fRsi = 100 - (100 / (1 + fRs));
+                        bActive = true;
+                    }
+                }
+
+                data1[i].Y = fRsi;
+                data1[i].Active = bActive;
+
+                if (bAddToParams)
+                    data[i].SetParameter(data1.Name, fRsi);
+            }
 
             MinMax minmax = new MinMax();
             minmax.Add(0);
             minmax.Add(100);
-
-            data1.Add(new Plot(data[0].X, 0, null, false, data[0].Index, data[0].Action1Active));
-
-            for (int i = 1; i < data.Count; i++)
-            {
-                double dfC0 = (data[i - 1].Y_values.Length == 1) ? data[i - 1].Y : data[i - 1].Y_values[3];
-                double dfC1 = (data[i].Y_values.Length == 1) ? data[i].Y : data[i].Y_values[3];
-                double dfChange = dfC1 - dfC0;
-                bool bActive = false;
-
-                rgChange.Add(dfChange);
-
-                if (dfChange < 0)
-                    dfSumLoss += dfChange;
-                else
-                    dfSumGain += dfChange;
-
-                if (i > m_config.Interval)
-                {
-                    dfChange = rgChange[0];
-                    rgChange.RemoveAt(0);
-
-                    if (dfChange < 0)
-                        dfSumLoss -= dfChange;
-                    else
-                        dfSumGain -= dfChange;
-
-                    double dfAveGain = dfSumGain / m_config.Interval;
-                    double dfAveLoss = Math.Abs(dfSumLoss / m_config.Interval);
-                    double dfRS = (dfAveLoss == 0) ? 0 : dfAveGain / dfAveLoss;
-
-                    // make sure to only calculate a new RSI if we are before the lookahead 
-                    // so as to avoid impacting the last RSI with future data.
-                    if (i < data.Count - nLookahead)
-                    {
-                        dfRSI = 100.0 - (100 / (1 + dfRS));
-                        bActive = true;
-                    }
-
-                    if (dfRSI == 0)
-                        dfRSI = dfRSILast;
-
-                    dfRSILast = dfRSI;
-                }
-
-                data1.Add(new Plot(data[i].X, dfRSI, null, bActive, data[i].Index, data[i].Action1Active, data[i].Action2Active));
-
-                if (bAddToParams && bActive)
-                    data[i].SetParameter(data1.Name, (float)dfRSI);
-            }
 
             data1.SetMinMax(minmax);
 
