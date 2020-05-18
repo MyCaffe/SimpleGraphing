@@ -179,6 +179,7 @@ namespace SimpleGraphing
 
                 case ConfigurationPlot.PLOTTYPE.RSI:
                     m_idata = new GraphDataRSI(m_config);
+                    m_irender = new GraphRenderRSI(m_config, m_gx, m_gy, style);
                     break;
 
                 case ConfigurationPlot.PLOTTYPE.HIGHLOW:
@@ -253,6 +254,7 @@ namespace SimpleGraphing
         Brush m_brPlotFill;
         Pen m_penPlotLine;
         Pen m_penLine;
+        Dictionary<Color, Brush> m_rgBrushes = new Dictionary<Color, Brush>();
 
         public GraphPlotStyle(ConfigurationPlot c)
         {
@@ -282,6 +284,11 @@ namespace SimpleGraphing
                 m_penPlotLine = new Pen(c.PlotLineColor, c.LineWidth);
                 m_penLine = new Pen(c.LineColor, c.LineWidth);
             }
+        }
+
+        public Dictionary<Color, Brush> Brushes
+        {
+            get { return m_rgBrushes; }
         }
 
         public Brush PlotFillBrush
@@ -317,6 +324,11 @@ namespace SimpleGraphing
             {
                 m_penLine.Dispose();
                 m_penLine = null;
+            }
+
+            foreach (KeyValuePair<Color, Brush> kv in m_rgBrushes)
+            {
+                kv.Value.Dispose();
             }
         }
     }
