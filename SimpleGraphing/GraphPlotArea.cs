@@ -321,19 +321,22 @@ namespace SimpleGraphing
             if (!plot.Configuration.Visible)
                 return 0;
 
+            if (!plot.Configuration.EnableLabel)
+                return 0;
+
             if (plot.Configuration.Name.Length == 0)
                 return 0;
 
-            Color clr = plot.Configuration.PlotFillColor;
-
-            if (clr == Color.Transparent)
-                clr = plot.Configuration.FlagColor;
-
-            if (clr == Color.Transparent)
-                clr = plot.Configuration.PlotLineColor;
+            Color clr = plot.Configuration.FlagColor;
 
             if (clr == Color.Transparent)
                 clr = plot.Configuration.LineColor;
+
+            if (clr == Color.Transparent)
+                clr = plot.Configuration.PlotFillColor;
+
+            if (clr == Color.Transparent)
+                clr = plot.Configuration.PlotLineColor;
 
             if (clr == Color.Transparent)
                 return 0;

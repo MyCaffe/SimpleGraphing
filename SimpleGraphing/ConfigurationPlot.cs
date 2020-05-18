@@ -22,6 +22,7 @@ namespace SimpleGraphing
         int m_nActionActiveAlpha = 32;
         float m_fLineWidth = 1.0f;
         bool m_bEnableFlag = true;
+        bool m_bEnableLabel = true;
         Color m_clrFlag = Color.Cyan;
         Color m_clrFlagBorder = Color.Black;
         Color m_clrFlagText = Color.Black;
@@ -119,6 +120,9 @@ namespace SimpleGraphing
                 return false;
 
             if (m_bEnableFlag != c.m_bEnableFlag)
+                return false;
+
+            if (m_bEnableLabel != c.m_bEnableLabel)
                 return false;
 
             if (m_clrFlag != c.m_clrFlag)
@@ -287,6 +291,12 @@ namespace SimpleGraphing
             set { m_bEnableFlag = value; }
         }
 
+        public bool EnableLabel
+        {
+            get { return m_bEnableLabel; }
+            set { m_bEnableLabel = value; }
+        }
+
         public Color FlagColor
         {
             get { return m_clrFlag; }
@@ -425,6 +435,8 @@ namespace SimpleGraphing
                 }
             }
 
+            ser.Add("EnableLabel", m_bEnableLabel);
+
             ser.Close();
         }
 
@@ -481,6 +493,10 @@ namespace SimpleGraphing
                 double dfVal = double.Parse(strVal);
                 plot.ExtraSettings.Add(strName, dfVal);
             }
+
+            bool? bVal = SerializeToXml.LoadBool(elm, "EnableLabel");
+            if (bVal.HasValue)
+                plot.EnableLabel = bVal.Value;
 
             return plot;
         }
