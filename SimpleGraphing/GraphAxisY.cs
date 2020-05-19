@@ -47,7 +47,7 @@ namespace SimpleGraphing
 
         protected override float plot_min
         {
-            get { return m_rcBounds.Top; }
+            get { return m_rcBounds.Top + 2; }
         }
 
         protected override float plot_max
@@ -184,7 +184,7 @@ namespace SimpleGraphing
             SizeF szVal = g.MeasureString(strVal, m_config.LabelFont);
             float fHalf = szVal.Height / 2;
 
-            if (fY <= Bounds.Top || fY >= Bounds.Bottom)
+            if (fY < Bounds.Top || fY > Bounds.Bottom)
                 return;
 
             List<PointF> rgpt = new List<PointF>();
