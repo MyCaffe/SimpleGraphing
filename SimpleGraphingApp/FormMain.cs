@@ -289,6 +289,10 @@ namespace SimpleGraphingApp
                 simpleGraphingControl1.Configuration.Frames[0].PlotArea.TimeZones = new List<ConfigurationTimeZone>();
                 simpleGraphingControl1.Configuration.Frames[0].PlotArea.TimeZones.Add(new ConfigurationTimeZone(dt0, dt1, Color.LightGray, true));
             }
+            else
+            {
+                simpleGraphingControl1.Configuration.Frames[0].MinimumYRange = 5;
+            }
 
             for (int i = 0; i < simpleGraphingControl1.Configuration.Frames.Count; i++)
             {
