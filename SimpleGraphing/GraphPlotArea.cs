@@ -101,7 +101,7 @@ namespace SimpleGraphing
 
             for (int i = 0; i < plots.Count; i++)
             {
-                if (plots[i].Visible && plots[i].BuildOrder == order)
+                if ((plots[i].HasCustomBuild || plots[i].Visible) && plots[i].BuildOrder == order)
                 {
                     GraphPlot graphPlot = new SimpleGraphing.GraphPlot(m_cache, m_gx, m_gy);
                     int nLookahead = Math.Max(config.PlotArea.Lookahead, config.PlotArea.CalculationLookahead);
