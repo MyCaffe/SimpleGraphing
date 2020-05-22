@@ -40,6 +40,20 @@ namespace SimpleGraphing
             m_rgLines = rgLines;
         }
 
+        public override void SetMinMax(double dfMin, double dfMax)
+        {
+            base.SetMinMax(dfMin, dfMax);
+
+            if (m_rgLines != null)
+            {
+                foreach (ConfigurationTargetLine line in m_rgLines)
+                {
+                    m_dfMin = Math.Min(m_dfMin, line.YValue);
+                    m_dfMax = Math.Max(m_dfMax, line.YValue);
+                }
+            }
+        }
+
         public override int Width
         {
             get { return (int)m_config.Margin; }

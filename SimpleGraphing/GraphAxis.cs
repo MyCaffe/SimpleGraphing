@@ -48,7 +48,7 @@ namespace SimpleGraphing
             get { return m_config; }
         }
 
-        public void SetMinMax(double dfMin, double dfMax)
+        public virtual void SetMinMax(double dfMin, double dfMax)
         {
             if (double.IsNaN(dfMin))
                 throw new Exception("The minimum is an invalid NAN!");
