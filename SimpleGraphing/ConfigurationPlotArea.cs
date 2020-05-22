@@ -123,18 +123,18 @@ namespace SimpleGraphing
 
         public static ConfigurationPlotArea Deserialize(XElement elm)
         {
-            ConfigurationPlotArea plot = new ConfigurationPlotArea();
+            ConfigurationPlotArea plotArea = new ConfigurationPlotArea();
 
             XElement child = SerializeToXml.GetElement(elm.Descendants(), "PlotArea");
 
-            plot.GridColor = SerializeToXml.LoadColor(child, "GridColor").Value;
-            plot.BackColor = SerializeToXml.LoadColor(child, "BackColor").Value;
-            plot.ZeroLine = SerializeToXml.LoadColor(child, "ZeroLineColor").Value;
-            plot.LabelFont = SerializeToXml.LoadFont(child, "LabelFont");
+            plotArea.GridColor = SerializeToXml.LoadColor(child, "GridColor").Value;
+            plotArea.BackColor = SerializeToXml.LoadColor(child, "BackColor").Value;
+            plotArea.ZeroLine = SerializeToXml.LoadColor(child, "ZeroLineColor").Value;
+            plotArea.LabelFont = SerializeToXml.LoadFont(child, "LabelFont");
 
-            plot.m_rgTimeZones = ConfigurationTimeZone.Deserialize(elm.Descendants());
+            plotArea.m_rgTimeZones = ConfigurationTimeZone.Deserialize(elm.Descendants());
 
-            return plot;
+            return plotArea;
         }
     }
 }
