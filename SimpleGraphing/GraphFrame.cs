@@ -57,6 +57,72 @@ namespace SimpleGraphing
             set { m_rcBounds = value; }
         }
 
+        private void setBounds(ConfigurationFrame config, PlotCollectionSet data)
+        {
+            if (config.MinimumYRange != 0)
+            {
+                double dfAbsMinY;
+                double dfAbsMaxY;
+                data.SetMinMax();
+                data.GetAbsMinMax(0, 0, out dfAbsMinY, out dfAbsMaxY);
+
+                double dfRange = dfAbsMaxY - dfAbsMinY;
+
+                if (dfRange < config.MinimumYRange)
+                {
+                    double dfMid = dfAbsMinY + dfRange / 2;
+                    dfAbsMinY = dfMid - (config.MinimumYRange / 2);
+                    dfAbsMaxY = dfMid + (config.MinimumYRange / 2);
+
+                    ConfigurationTargetLine minLine = null;
+                    ConfigurationTargetLine maxLine = null;
+                    List<ConfigurationTargetLine> rgRemove = new List<ConfigurationTargetLine>();
+
+                    foreach (ConfigurationTargetLine line in config.TargetLines)
+                    {
+                        if (line.Name == "bounds_min")
+                            minLine = line;
+
+                        if (line.Name == "bounds_max")
+                            maxLine = line;
+
+                        if (line.LineType == ConfigurationTargetLine.LINE_TYPE.MIN || line.LineType == ConfigurationTargetLine.LINE_TYPE.MAX)
+                            rgRemove.Add(line);
+
+                        if (minLine != null && maxLine != null)
+                            break;
+                    }
+
+                    foreach (ConfigurationTargetLine line in rgRemove)
+                    {
+                        config.TargetLines.Remove(line);
+                    }
+
+                    if (minLine == null)
+                    {
+                        minLine = new ConfigurationTargetLine(dfAbsMinY, Color.FromArgb(2, Color.White), ConfigurationTargetLine.LINE_TYPE.VALUE);
+                        minLine.Name = "bounds_min";
+                        config.TargetLines.Add(minLine);
+                    }
+                    else
+                    {
+                        minLine.YValue = dfAbsMinY;
+                    }
+
+                    if (maxLine == null)
+                    {
+                        maxLine = new ConfigurationTargetLine(dfAbsMaxY, Color.FromArgb(2, Color.White), ConfigurationTargetLine.LINE_TYPE.VALUE);
+                        maxLine.Name = "bounds_max";
+                        config.TargetLines.Add(maxLine);
+                    }
+                    else
+                    {
+                        maxLine.YValue = dfAbsMaxY;
+                    }
+                }
+            }
+        }
+
         public PlotCollectionSet BuildGraph(ConfigurationFrame config, PlotCollectionSet data, bool bAddToParams = false)
         {
             m_config = config;
@@ -73,6 +139,7 @@ namespace SimpleGraphing
                     data[i].MinMaxTarget = config.MinMaxTarget;
             }
 
+            setBounds(config, data);
             data = m_plotArea.BuildGraph(config, config.Plots, data, bAddToParams, GETDATAORDER.PRE);
             m_gx.BuildGraph(config.XAxis, data);
             m_gy.BuildGraph(config.YAxis, data);

@@ -29,6 +29,7 @@ namespace SimpleGraphing
         double m_dfMarginPercent = 0.0;
         PlotCollection.MINMAX_TARGET m_minmaxTarget = PlotCollection.MINMAX_TARGET.VALUES;
         bool m_bScaleToVisibleWhenRelative = false;
+        double m_dfMinYRange = 0;
 
         public ConfigurationFrame()
         {
@@ -53,6 +54,9 @@ namespace SimpleGraphing
                 if (!m_rgLines[i].Compare(c.m_rgLines[i]))
                     return false;
             }
+
+            if (m_dfMinYRange != c.m_dfMinYRange)
+                return false;
 
             if (!m_configPlotArea.Compare(c.m_configPlotArea))
                 return false;
@@ -106,6 +110,12 @@ namespace SimpleGraphing
         {
             get { return m_bScaleToVisibleWhenRelative; }
             set { m_bScaleToVisibleWhenRelative = value; }
+        }
+
+        public double MinimumYRange
+        {
+            get { return m_dfMinYRange; }
+            set { m_dfMinYRange = value; }
         }
 
         public PlotCollection.MINMAX_TARGET MinMaxTarget
@@ -283,6 +293,14 @@ namespace SimpleGraphing
             catch (Exception)
             {
             }
+
+            try
+            {
+                m_dfMinYRange = info.GetDouble("min_y_range");
+            }
+            catch (Exception)
+            {
+            }
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -312,6 +330,7 @@ namespace SimpleGraphing
             info.AddValue("visible", m_bVisible);
             info.AddValue("minmax_target", (int)m_minmaxTarget);
             info.AddValue("scale_to_visible", m_bScaleToVisibleWhenRelative);
+            info.AddValue("min_y_range", m_dfMinYRange);
         }
 
         public void Serialize(SerializeToXml ser)
@@ -325,6 +344,7 @@ namespace SimpleGraphing
             ser.Add("Visible", m_bVisible);
             ser.Add("MinMaxTarget", (int)m_minmaxTarget);
             ser.Add("ScaleToVisible", m_bScaleToVisibleWhenRelative);
+            ser.Add("MinYRange", m_dfMinYRange);
 
             foreach (ConfigurationPlot plot in m_rgPlots)
             {
@@ -374,6 +394,10 @@ namespace SimpleGraphing
             frame.m_configPlotArea = ConfigurationPlotArea.Deserialize(elm);
             frame.m_configXAxis = ConfigurationAxis.Deserialize(elm, "X");
             frame.m_configYAxis = ConfigurationAxis.Deserialize(elm, "Y");
+
+            double? dfVal = SerializeToXml.LoadDouble(elm, "MinYRange");
+            if (dfVal.HasValue)
+                frame.MinimumYRange = dfVal.Value;
 
             return frame;
         }
