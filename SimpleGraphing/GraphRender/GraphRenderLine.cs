@@ -142,7 +142,7 @@ namespace SimpleGraphing.GraphRender
 
                         if (m_config.PlotLineColor != Color.Transparent)
                         {
-                            Pen pLine = (plot.Active) ? m_style.PlotLinePen : Pens.Transparent;
+                            Pen pLine = (plot.Active) ? (plot.UseOverrideColors) ? m_style.PlotLinePenOverride : m_style.PlotLinePen : Pens.Transparent;
                             g.DrawEllipse(pLine, rcPlot);
                         }
                     }

@@ -17,6 +17,7 @@ namespace SimpleGraphing
         Color m_clrLine = Color.Black;
         Color m_clrPlotFill = Color.Cyan;
         Color m_clrPlotLine = Color.Black;
+        Color m_clrPlotLineOverride = Color.Transparent;
         Color m_clrAction1Active = Color.Transparent;
         Color m_clrAction2Active = Color.Transparent;
         int m_nActionActiveAlpha = 32;
@@ -75,6 +76,17 @@ namespace SimpleGraphing
         public ConfigurationPlot(Guid guid)
         {
             m_guid = guid;
+        }
+
+        public bool HasCustomBuild
+        {
+            get
+            {
+                if (OnCustomBuild != null)
+                    return true;
+
+                return false;
+            }
         }
 
         public bool TryCustomBuild(PlotCollectionSet dataOut)
@@ -277,6 +289,12 @@ namespace SimpleGraphing
         {
             get { return m_clrPlotLine; }
             set { m_clrPlotLine = value; }
+        }
+
+        public Color PlotLineColorOverride
+        {
+            get { return m_clrPlotLineOverride; }
+            set { m_clrPlotLineOverride = value; }
         }
 
         public float LineWidth

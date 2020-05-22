@@ -15,6 +15,7 @@ namespace SimpleGraphing
         bool m_bAction1Active = false;
         bool m_bAction2Active = false;
         bool m_bLookaheadActive = true;
+        bool m_bUseOverrideColors = false;
         string m_strName;
         float[] m_rgfY;
         long? m_lCount = null;
@@ -246,9 +247,18 @@ namespace SimpleGraphing
             return true;
         }
 
+        public bool UseOverrideColors
+        {
+            get { return m_bUseOverrideColors; }
+            set { m_bUseOverrideColors = value; }
+        }
+
         public void SetYValues(float[] rg)
         {
             m_rgfY = rg;
+
+            if (m_nIdxPrimaryY > rg.Length)
+                m_nIdxPrimaryY = 0;
         }
 
         public bool Scaled

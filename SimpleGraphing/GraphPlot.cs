@@ -253,6 +253,7 @@ namespace SimpleGraphing
     {
         Brush m_brPlotFill;
         Pen m_penPlotLine;
+        Pen m_penPlotLineOverride;
         Pen m_penLine;
         Dictionary<Color, Brush> m_rgBrushes = new Dictionary<Color, Brush>();
 
@@ -273,9 +274,11 @@ namespace SimpleGraphing
                 Color clrPlotFill = Color.FromArgb(nAlpha, c.PlotFillColor);
                 Color clrPlotLine = Color.FromArgb(nAlpha, c.PlotLineColor);
                 Color clrLine = Color.FromArgb(nAlpha, c.LineColor);
+                Color clrPlotLineOverride = Color.FromArgb(nAlpha, c.PlotLineColorOverride);
 
                 m_brPlotFill = new SolidBrush(clrPlotFill);
                 m_penPlotLine = new Pen(clrPlotLine, c.LineWidth);
+                m_penPlotLineOverride = new Pen(clrPlotLineOverride, c.LineWidth);
                 m_penLine = new Pen(clrLine, c.LineWidth);
             }
             else
@@ -301,6 +304,11 @@ namespace SimpleGraphing
             get { return m_penPlotLine; }
         }
 
+        public Pen PlotLinePenOverride
+        {
+            get { return m_penPlotLineOverride; }
+        }
+
         public Pen LinePen
         {
             get { return m_penLine; }
@@ -318,6 +326,12 @@ namespace SimpleGraphing
             {
                 m_penPlotLine.Dispose();
                 m_penPlotLine = null;
+            }
+
+            if (m_penPlotLineOverride != null)
+            {
+                m_penPlotLineOverride.Dispose();
+                m_penPlotLineOverride = null;
             }
 
             if (m_penLine != null)
