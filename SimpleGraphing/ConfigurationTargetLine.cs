@@ -24,6 +24,7 @@ namespace SimpleGraphing
         bool m_bEnabled = true;
         LINE_TYPE m_lineType = LINE_TYPE.VALUE;
         string m_strNote = null;
+        string m_strName = null;
 
         public enum LINE_TYPE
         {
@@ -89,6 +90,12 @@ namespace SimpleGraphing
                 return false;
 
             return true;
+        }
+
+        public string Name
+        {
+            get { return m_strName; }
+            set { m_strName = value; }
         }
 
         public string Note
@@ -221,6 +228,13 @@ namespace SimpleGraphing
                 return LINE_TYPE.MIN;
 
             return LINE_TYPE.VALUE;
+        }
+
+        public override string ToString()
+        {
+            string str = (!string.IsNullOrEmpty(m_strName)) ? m_strName + " " : "";
+            str += m_lineType.ToString() + " " + m_dfYValue.ToString();
+            return str;
         }
     }
 }
