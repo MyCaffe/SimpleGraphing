@@ -1117,7 +1117,7 @@ namespace SimpleGraphing
                 {
                     dfSumX += nIdx;
 
-                    double dfY = (nDataIdx >= 0 && nDataIdx < p.Y_values.Length) ? p.Y_values[nDataIdx] : p.Y;
+                    double dfY = (nDataIdx >= 0 && nDataIdx < p.Y_values.Length) ? p.Y_values[nDataIdx] : (p.Y_values.Length == 1) ? p.Y_values[0] : p.Y;
 
                     dfSumY += dfY;
                     dfSumX2 += nIdx * nIdx;
