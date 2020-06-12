@@ -1023,8 +1023,8 @@ namespace SimpleGraphing
                 if (col[i].Tag == null)
                     col[i].Tag = DateTime.FromFileTime((long)col[i].X);
 
-                if (col[nIdx].Tag == null)
-                    col[nIdx].Tag = DateTime.FromFileTime((long)col[nIdx].X);
+                if (col2[nIdx].Tag == null)
+                    col2[nIdx].Tag = DateTime.FromFileTime((long)col2[nIdx].X);
 
                 DateTime dt = (DateTime)col[i].Tag;
                 DateTime dt0 = (DateTime)col2[nIdx].Tag;
