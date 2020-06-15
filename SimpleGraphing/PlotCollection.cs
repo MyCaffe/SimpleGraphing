@@ -286,7 +286,7 @@ namespace SimpleGraphing
             return this;
         }
 
-        public PlotCollection Clone(int nIdxStart = 0, bool bCalculateMinMax = true, int? nPrimaryIndexY = null, bool? bActive = null)
+        public PlotCollection Clone(int nIdxStart = 0, bool bCalculateMinMax = true, int? nPrimaryIndexY = null, bool? bActive = null, bool bSetDateOnTag = false)
         {
             PlotCollection col = new PlotCollection(m_strName, m_nMax, m_dfXIncrement);
 
@@ -309,6 +309,9 @@ namespace SimpleGraphing
 
                 if (bActive.HasValue)
                     p.Active = bActive.Value;
+
+                if (bSetDateOnTag && p.Tag == null)
+                    p.Tag = DateTime.FromFileTime((long)p.X);
 
                 col.Add(p, bCalculateMinMax);
             }
