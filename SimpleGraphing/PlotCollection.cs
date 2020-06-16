@@ -128,6 +128,19 @@ namespace SimpleGraphing
             }
         }
 
+        public PlotCollection RemoveInactive()
+        {
+            PlotCollection col = new PlotCollection(m_strName, m_nMax, m_dfXIncrement);
+
+            foreach (Plot p in m_rgPlot)
+            {
+                if (p.Active)
+                    col.Add(p);
+            }
+
+            return col;
+        }
+
         public Plot GetFirstActive()
         {
             for (int i = 0; i < m_rgPlot.Count; i++)
@@ -380,7 +393,7 @@ namespace SimpleGraphing
                 if (bSetDateOnTag && p.Tag == null)
                     p.Tag = DateTime.FromFileTimeUtc((long)p.X);
 
-                p1.Add(p);
+                p2.Add(p);
             }
 
             return new Tuple<PlotCollection, PlotCollection>(p1, p2);
