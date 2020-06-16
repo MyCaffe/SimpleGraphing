@@ -357,7 +357,7 @@ namespace SimpleGraphing
             }
         }
 
-        public Tuple<PlotCollection, PlotCollection> Split(int nCount)
+        public Tuple<PlotCollection, PlotCollection> Split(int nCount, bool bSetDateOnTag = false)
         {
             PlotCollection p1 = new PlotCollection(m_strName + " 1", m_nMax, m_dfXIncrement);
             PlotCollection p2 = new PlotCollection(m_strName + " 2", m_nMax, m_dfXIncrement);
@@ -367,12 +367,20 @@ namespace SimpleGraphing
 
             for (int i = 0; i < nCount && i < m_rgPlot.Count; i++)
             {
-                p1.Add(m_rgPlot[i]);
+                Plot p = m_rgPlot[i];
+                if (bSetDateOnTag && p.Tag == null)
+                    p.Tag = DateTime.FromFileTimeUtc((long)p.X);
+
+                p1.Add(p);
             }
 
             for (int i = nCount; i < m_rgPlot.Count; i++)
             {
-                p2.Add(m_rgPlot[i]);
+                Plot p = m_rgPlot[i];
+                if (bSetDateOnTag && p.Tag == null)
+                    p.Tag = DateTime.FromFileTimeUtc((long)p.X);
+
+                p1.Add(p);
             }
 
             return new Tuple<PlotCollection, PlotCollection>(p1, p2);
