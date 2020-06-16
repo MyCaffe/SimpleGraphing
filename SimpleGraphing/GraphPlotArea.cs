@@ -109,7 +109,7 @@ namespace SimpleGraphing
                     PlotCollectionSet set = graphPlot.BuildGraph(plots[i], m_rgData, plots[i].DataIndex, nLookahead, m_rgPlots, bAddToParams);
 
                     if (set != null)
-                        data1.Add(set);
+                        data1.Add(set, true);
 
                     if (graphPlot.Plots != null)
                     {
