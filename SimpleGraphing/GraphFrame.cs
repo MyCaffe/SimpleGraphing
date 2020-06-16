@@ -123,16 +123,19 @@ namespace SimpleGraphing
             }
         }
 
-        public PlotCollectionSet BuildGraph(ConfigurationFrame config, PlotCollectionSet data, bool bAddToParams = false)
+        public PlotCollectionSet BuildGraph(ConfigurationFrame config, PlotCollectionSet data, bool bAddToParams = false, bool bIndexData = false)
         {
             m_config = config;
             m_data = data;
 
             for (int i = 0; i < data.Count; i++)
             {
-                for (int j = 0; j < data[i].Count; j++)
+                if (bIndexData)
                 {
-                    data[i][j].Index = j;
+                    for (int j = 0; j < data[i].Count; j++)
+                    {
+                        data[i][j].Index = j;
+                    }
                 }
 
                 if (data[i].MinMaxTarget != config.MinMaxTarget)
