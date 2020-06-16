@@ -311,7 +311,7 @@ namespace SimpleGraphing
                     p.Active = bActive.Value;
 
                 if (bSetDateOnTag && p.Tag == null)
-                    p.Tag = DateTime.FromFileTime((long)p.X);
+                    p.Tag = DateTime.FromFileTimeUtc((long)p.X);
 
                 col.Add(p, bCalculateMinMax);
             }
