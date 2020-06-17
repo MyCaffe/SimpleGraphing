@@ -11,7 +11,7 @@ namespace SimpleGraphing
     [Serializable]
     public class PlotCollectionSet : IEnumerable<PlotCollection>
     {
-        Dictionary<string, double> m_rgUserProperties = new Dictionary<string, double>();
+        Dictionary<string, string> m_rgUserProperties = new Dictionary<string, string>();
         List<PlotCollection> m_rgSet = new List<PlotCollection>();
         double m_dfMarginPct = 0;
 
@@ -29,7 +29,7 @@ namespace SimpleGraphing
             }
         }
 
-        public Dictionary<string, double> UserProperties
+        public Dictionary<string, string> UserProperties
         {
             get { return m_rgUserProperties; }
         }
