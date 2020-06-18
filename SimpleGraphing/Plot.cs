@@ -468,5 +468,25 @@ namespace SimpleGraphing
 
             return str;
         }
+
+        public byte[] ToBytes()
+        {
+            using (MemoryStream ms = new MemoryStream())
+            using (BinaryWriter bw = new BinaryWriter(ms))
+            {
+                Save(bw);
+                ms.Flush();
+                return ms.ToArray();
+            }
+        }
+
+        public static Plot FromBytes(byte[] rg)
+        {
+            using (MemoryStream ms = new MemoryStream(rg))
+            using (BinaryReader br = new BinaryReader(ms))
+            {
+                return Load(br);
+            }
+        }
     }
 }
