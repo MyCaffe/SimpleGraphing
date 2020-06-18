@@ -290,7 +290,7 @@ namespace SimpleGraphing
             m_rgSet.Add(rg);
         }
 
-        public void Add(PlotCollectionSet set, bool bUniqueOnly = false)
+        public void Add(PlotCollectionSet set, bool bUniqueOnly = false, bool bCopyUserProperties = true)
         {
             if (!bUniqueOnly)
             {
@@ -302,6 +302,19 @@ namespace SimpleGraphing
             {
                 if (!m_rgSet.Contains(plots))
                     m_rgSet.Add(plots);
+            }
+
+            if (bCopyUserProperties)
+            {
+                List<KeyValuePair<string, string>> rg = set.UserProperties.ToList();
+
+                foreach (KeyValuePair<string, string> kv in rg)
+                {
+                    if (!UserProperties.ContainsKey(kv.Key))
+                        UserProperties.Add(kv.Key, kv.Value);
+                    else
+                        UserProperties[kv.Key] = kv.Value;
+                }
             }
         }
 
