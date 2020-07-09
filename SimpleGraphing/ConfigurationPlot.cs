@@ -42,6 +42,7 @@ namespace SimpleGraphing
         double m_dfTransparency = 0;
         double m_dfMidPoint = 0;
         Dictionary<string, double> m_rgExtraSettings = new Dictionary<string, double>();
+        PLOTSHAPE m_plotShape = PLOTSHAPE.ELLIPSE;
 
         public event EventHandler<CustomBuildArgs> OnCustomBuild;
 
@@ -66,6 +67,14 @@ namespace SimpleGraphing
             VOLUME,
             LINE_FILL,
             ZONE
+        }
+
+        public enum PLOTSHAPE
+        {
+            ELLIPSE = 0x0001,
+            SQUARE = 0x0002,
+            ARROW_DOWN = 0x0004,
+            ARROW_UP = 0x0008
         }
 
         public ConfigurationPlot()
@@ -98,6 +107,12 @@ namespace SimpleGraphing
             OnCustomBuild(this, args);
 
             return true;
+        }
+
+        public PLOTSHAPE PlotShape
+        {
+            get { return m_plotShape; }
+            set { m_plotShape = value; }
         }
 
         public double MarginPercent

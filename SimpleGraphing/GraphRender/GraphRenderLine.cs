@@ -70,6 +70,7 @@ namespace SimpleGraphing.GraphRender
             double dfParamMax = 0;
             string strDataParam = null;
             bool bNative = false;
+            Pen pLineThin = null;
 
             if (!string.IsNullOrEmpty(m_config.DataParam))
             {
@@ -137,17 +138,56 @@ namespace SimpleGraphing.GraphRender
                         if (m_config.PlotFillColor != Color.Transparent)
                         {
                             Brush brFill = (plot.Active) ? m_style.PlotFillBrush : Brushes.Transparent;
-                            g.FillEllipse(brFill, rcPlot);
+
+                            if ((m_config.PlotShape & ConfigurationPlot.PLOTSHAPE.SQUARE) == ConfigurationPlot.PLOTSHAPE.SQUARE)
+                            {
+                                g.FillRectangle(brFill, rcPlot);
+                            }
+                            else
+                            {
+                                g.FillEllipse(brFill, rcPlot);
+                            }
                         }
 
                         if (m_config.PlotLineColor != Color.Transparent)
                         {
-                            Pen pLine = (plot.Active) ? (plot.UseOverrideColors) ? m_style.PlotLinePenOverride : m_style.PlotLinePen : Pens.Transparent;
-                            g.DrawEllipse(pLine, rcPlot);
+                            if (plot.Active)
+                            {
+                                Pen pLine = (plot.UseOverrideColors) ? m_style.PlotLinePenOverride : m_style.PlotLinePen;
+
+                                if ((m_config.PlotShape & ConfigurationPlot.PLOTSHAPE.SQUARE) == ConfigurationPlot.PLOTSHAPE.SQUARE)
+                                {
+                                    g.DrawRectangle(pLine, rcPlot.X, rcPlot.Y, rcPlot.Width, rcPlot.Height);
+
+                                    if ((m_config.PlotShape & ConfigurationPlot.PLOTSHAPE.ARROW_DOWN) == ConfigurationPlot.PLOTSHAPE.ARROW_DOWN)
+                                    {
+                                        if (pLineThin == null)
+                                            pLineThin = new Pen(pLine.Color, 1.0f);
+
+                                        g.DrawLine(pLineThin, rcPlot.Left, rcPlot.Bottom + 3, rcPlot.Left + (rcPlot.Width / 2), rcPlot.Bottom + 6);
+                                        g.DrawLine(pLineThin, rcPlot.Right, rcPlot.Bottom + 3, rcPlot.Left + (rcPlot.Width / 2), rcPlot.Bottom + 6);
+                                    }
+                                    else if ((m_config.PlotShape & ConfigurationPlot.PLOTSHAPE.ARROW_UP) == ConfigurationPlot.PLOTSHAPE.ARROW_UP)
+                                    {
+                                        if (pLineThin == null)
+                                            pLineThin = new Pen(pLine.Color, 1.0f);
+
+                                        g.DrawLine(pLineThin, rcPlot.Left, rcPlot.Top - 3, rcPlot.Left + (rcPlot.Width / 2), rcPlot.Top - 6);
+                                        g.DrawLine(pLineThin, rcPlot.Right, rcPlot.Top - 3, rcPlot.Left + (rcPlot.Width / 2), rcPlot.Top - 6);
+                                    }
+                                }
+                                else
+                                {
+                                    g.DrawEllipse(pLine, rcPlot);
+                                }
+                            }
                         }
                     }
                 }
             }
+
+            if (pLineThin != null)
+                pLineThin.Dispose();
         }
 
         private bool isValid(RectangleF rc)
