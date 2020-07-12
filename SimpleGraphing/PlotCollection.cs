@@ -1212,6 +1212,7 @@ namespace SimpleGraphing
                 col.Add(p);
             }
 
+            dfSlope = (col[col.Count - 1].Y - col[0].Y) / col.Count;
             double dfVar = Math.Sqrt(rgError.Sum() / rgError.Count);
             double df95 = dfVar * 1.96;
 
@@ -1219,9 +1220,9 @@ namespace SimpleGraphing
             {
                 col[i].SetParameter("Confidence+", col[i].Y + df95);
                 col[i].SetParameter("Confidence-", col[i].Y - df95);
+                col[i].SetParameter("Slope", dfSlope);
             }
 
-            dfSlope = (col[col.Count - 1].Y - col[0].Y) / col.Count;
             dfConfidenceWidth = df95 * 2;
 
             return col;
