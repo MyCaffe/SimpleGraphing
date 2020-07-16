@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SimpleGraphing.GraphRender
 {
-    public class GraphRenderBase
+    public class GraphRenderBase : IDisposable
     {
         protected ConfigurationPlot m_config;
         protected GraphAxis m_gx;
@@ -20,6 +20,15 @@ namespace SimpleGraphing.GraphRender
             m_gx = gx;
             m_gy = gy;
             m_style = style;
+        }
+
+        public void Dispose()
+        {
+            dispose();
+        }
+
+        protected virtual void dispose()
+        {
         }
 
         protected void renderActions(Graphics g, PlotCollectionSet dataset, int nLookahead)
