@@ -112,7 +112,7 @@ namespace SimpleGraphing
                     {
                         foreach (GraphPlot plot in plots)
                         {
-                            if (plot.DataName == strRequiredDataName)
+                            if (plot.DataName == strRequiredDataName || (plot.DataName == null && plot.ToString() == strRequiredDataName))
                             {
                                 PlotCollectionSet data1 = new PlotCollectionSet();
 
