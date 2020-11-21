@@ -26,6 +26,7 @@ namespace SimpleGraphing
         bool m_bExcludeFromMinMax = false;
         MINMAX_TARGET m_minmaxTarget = MINMAX_TARGET.VALUES;
         bool m_bLockMinMax = false;
+        Dictionary<string, double> m_rgParam = new Dictionary<string, double>();
 
         public event EventHandler<PlotUpdateArgs> OnUpdatePlot;
 
@@ -48,6 +49,11 @@ namespace SimpleGraphing
             m_nMax = nMax;
             m_dfXIncrement = dfXInc;
             m_strName = strName;
+        }
+
+        public Dictionary<string, double> Parameters
+        {
+            get { return m_rgParam; }
         }
 
         public byte[] Save()
@@ -79,6 +85,14 @@ namespace SimpleGraphing
                 for (int i = 0; i < m_rgPlot.Count; i++)
                 {
                     m_rgPlot[i].Save(bw);
+                }
+
+                bw.Write(m_rgParam.Count);
+
+                foreach (KeyValuePair<string, double> kv in m_rgParam)
+                {
+                    bw.Write(kv.Key);
+                    bw.Write(kv.Value);
                 }
 
                 bw.Flush();
@@ -122,6 +136,14 @@ namespace SimpleGraphing
                 for (int i = 0; i < nCount; i++)
                 {
                     col.Add(Plot.Load(br), false, false);
+                }
+
+                nCount = br.ReadInt32();
+                for (int i = 0; i < nCount; i++)
+                {
+                    string strKey = br.ReadString();
+                    double dfVal = br.ReadDouble();
+                    col.Parameters.Add(strKey, dfVal);
                 }
 
                 return col;
