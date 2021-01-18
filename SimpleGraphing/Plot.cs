@@ -208,6 +208,13 @@ namespace SimpleGraphing
             Plot p = new Plot(dfX, rgfY, strName, bActive, nIdx, bAction1Active, bAction2Active);
             p.LookaheadActive = bLookaheadActive;
             p.Count = lCount;
+
+            if (tag == null)
+            {
+                DateTime dt = DateTime.FromFileTimeUtc((long)dfX);
+                tag = dt;
+            }
+
             p.Tag = tag;
             p.Parameters = rgParam;
             p.Scaled = bScaled;
