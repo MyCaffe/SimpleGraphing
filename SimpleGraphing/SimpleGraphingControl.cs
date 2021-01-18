@@ -497,7 +497,7 @@ namespace SimpleGraphing
             return diff.TotalHours;
         }
 
-        public static Image QuickRender(PlotCollection col, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false)
+        public static Image QuickRender(PlotCollection col, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null)
         {
             double dfTimeOffsetInHours = 0;
 
@@ -517,6 +517,9 @@ namespace SimpleGraphing
             simpleGraphingControl1.Configuration.Frames[0].YAxis.LabelFont = new Font("Century Gothic", 7.0f);
             simpleGraphingControl1.Configuration.Frames[0].YAxis.Decimals = 3;
             simpleGraphingControl1.Configuration.Frames[0].Plots.Add(new ConfigurationPlot());
+
+            if (timeResolution.HasValue)
+                simpleGraphingControl1.Configuration.Frames[0].XAxis.ValueResolution = timeResolution.Value;
 
             string strName = col.Name;
             string strTag = (string)col.Tag;
