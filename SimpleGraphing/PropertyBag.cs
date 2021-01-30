@@ -65,7 +65,7 @@ namespace SimpleGraphing
 
         public override string ToString()
         {
-            return m_strName + " => " + m_dfVal.ToString() + ", " + m_strValue.ToString();
+            return m_strName + " => " + m_dfVal.ToString() + ((m_strValue == null) ? "" : ", " + m_strValue.ToString());
         }
     }
 
