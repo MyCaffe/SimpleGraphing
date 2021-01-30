@@ -62,6 +62,11 @@ namespace SimpleGraphing
 
             return new PropertyValue(strName, dfVal, strVal);
         }
+
+        public override string ToString()
+        {
+            return m_strName + " => " + m_dfVal.ToString() + ", " + m_strValue.ToString();
+        }
     }
 
     public class PropertyBag : IEnumerable<PropertyValue>
