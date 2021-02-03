@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("SignalPop LLC")]
 [assembly: AssemblyProduct("SimpleGraphingApp")]
-[assembly: AssemblyCopyright("Copyright ©  2017-2020 SignalPop LLC.  All rights reserved.")]
+[assembly: AssemblyCopyright("Copyright ©  2017-2021 SignalPop LLC.  All rights reserved.")]
 [assembly: AssemblyTrademark("SignalPop")]
 [assembly: AssemblyCulture("")]
 
