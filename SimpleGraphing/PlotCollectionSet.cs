@@ -135,14 +135,14 @@ namespace SimpleGraphing
             return null;
         }
 
-        public Tuple<PlotCollectionSet, PlotCollectionSet> Split(int nCount)
+        public Tuple<PlotCollectionSet, PlotCollectionSet> Split(int nCount, bool bSetDateOnTag = false, bool bAppendSplitCountToName = true)
         {
             PlotCollectionSet p1 = new PlotCollectionSet();
             PlotCollectionSet p2 = new PlotCollectionSet();
 
             foreach (PlotCollection plots in m_rgSet)
             {
-                Tuple<PlotCollection, PlotCollection> p = plots.Split(nCount);
+                Tuple<PlotCollection, PlotCollection> p = plots.Split(nCount, bSetDateOnTag, bAppendSplitCountToName);
                 p1.Add(p.Item1);
                 p2.Add(p.Item2);
             }
