@@ -392,7 +392,7 @@ namespace SimpleGraphing
             }
         }
 
-        public Tuple<PlotCollection, PlotCollection> Split(int nCount, bool bSetDateOnTag = false, bool bAppendSplitCountToName = true)
+        public Tuple<PlotCollection, PlotCollection> Split(int nCount, bool bSetDateOnTag = false, bool bAppendSplitCountToName = false)
         {
             string strName = m_strName + ((bAppendSplitCountToName) ? "_1" : "");
             PlotCollection p1 = new PlotCollection(strName, m_nMax, m_dfXIncrement);

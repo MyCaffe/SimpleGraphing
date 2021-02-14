@@ -135,7 +135,7 @@ namespace SimpleGraphing
             return null;
         }
 
-        public Tuple<PlotCollectionSet, PlotCollectionSet> Split(int nCount, bool bSetDateOnTag = false, bool bAppendSplitCountToName = true)
+        public Tuple<PlotCollectionSet, PlotCollectionSet> Split(int nCount, bool bSetDateOnTag = false, bool bAppendSplitCountToName = false)
         {
             PlotCollectionSet p1 = new PlotCollectionSet();
             PlotCollectionSet p2 = new PlotCollectionSet();
