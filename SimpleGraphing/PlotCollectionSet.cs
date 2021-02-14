@@ -290,19 +290,23 @@ namespace SimpleGraphing
             m_rgSet.Add(rg);
         }
 
-        public void Add(PlotCollectionSet set, bool bUniqueOnly = false, bool bCopyUserProperties = true)
+        public int Add(PlotCollectionSet set, bool bUniqueOnly = false, bool bCopyUserProperties = true)
         {
             if (!bUniqueOnly)
             {
                 m_rgSet.AddRange(set.m_rgSet);
-                return;
+                return set.m_rgSet[0].Count;
             }
+
+            int nCount = (m_rgSet.Count == 0) ? 0 : m_rgSet[0].Count;
 
             foreach (PlotCollection plots in set)
             {
                 if (!m_rgSet.Contains(plots))
                     m_rgSet.Add(plots);
             }
+
+            int nNewCount = m_rgSet[0].Count;
 
             if (bCopyUserProperties)
             {
@@ -316,6 +320,8 @@ namespace SimpleGraphing
                         UserProperties[kv.Key] = kv.Value;
                 }
             }
+
+            return nNewCount - nCount;
         }
 
         public bool Remove(PlotCollection rg)
