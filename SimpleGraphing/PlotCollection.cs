@@ -418,6 +418,11 @@ namespace SimpleGraphing
                 p2.Add(p);
             }
 
+            p1.Tag = Tag;
+            p1.Tag2 = Tag2;
+            p2.Tag = Tag;
+            p2.Tag2 = Tag2;
+
             return new Tuple<PlotCollection, PlotCollection>(p1, p2);
         }
 
