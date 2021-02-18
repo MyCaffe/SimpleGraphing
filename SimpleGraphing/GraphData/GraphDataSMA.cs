@@ -30,51 +30,116 @@ namespace SimpleGraphing.GraphData
             get { return m_config.DataName; }
         }
 
-        public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx, int nLookahead, Guid? guid = null, bool bAddToParams = false)
+        public SmaData Pre(PlotCollectionSet dataset, int nDataIdx)
         {
-            PlotCollection data = dataset[nDataIdx];
-            PlotCollection data1 = new PlotCollection(data.Name + " SMA");
-            double dfSma = 0;
-            double dfInc = 1.0 / m_config.Interval;
-            int nCount = 0;
+            PlotCollection dataSrc = dataset[nDataIdx];
+            PlotCollection dataDst = new PlotCollection(dataSrc.Name + " SMA");
+            return new SmaData(dataSrc, dataDst, m_config.Interval);
+        }
 
-            MinMax minmax = new MinMax();
+        public double Process(SmaData data, int i, MinMax minmax = null, int nLookahead = 0, bool bAddToParams = false)
+        {
+            bool bActive = data.SrcData[i].Active;
 
-            for (int i = 0; i < data.Count; i++)
+            PlotCollection dataSrc = data.SrcData;
+            PlotCollection dataDst = data.DstData;
+            double dfInc = data.Increment;
+
+            if (bActive)
             {
-                bool bActive = data[i].Active;
-
-                if (bActive)
+                if (data.Count < m_config.Interval)
                 {
-                    if (nCount < m_config.Interval)
-                    {
-                        dfSma += data[i].Y * dfInc;   
-                        data1.Add(data[i].X, data[i].Y, false, data[i].Index);
-                    }
-                    else
-                    {
-                        if (i < data.Count - nLookahead)
-                            dfSma = (dfSma * (1 - dfInc)) + data[i].Y * dfInc;
-
-                        data1.Add(data[i].X, dfSma, true, data[i].Index);
-
-                        if (bAddToParams)
-                            data[i].SetParameter(data1.Name, (float)dfSma);
-                    }
-
-                    minmax.Add(dfSma);
-
-                    nCount++;
+                    data.SMA += dataSrc[i].Y * dfInc;
+                    dataDst.Add(dataSrc[i].X, dataSrc[i].Y, false, dataSrc[i].Index);
                 }
                 else
                 {
-                    data1.Add(data[i].X, data[i].Y, false, data[i].Index);
+                    if (i < dataSrc.Count - nLookahead)
+                        data.SMA = (data.SMA * (1 - dfInc)) + dataSrc[i].Y * dfInc;
+
+                    dataDst.Add(dataSrc[i].X, data.SMA, true, dataSrc[i].Index);
+
+                    if (bAddToParams)
+                        dataSrc[i].SetParameter(dataDst.Name, (float)data.SMA);
                 }
+
+                if (minmax != null)
+                    minmax.Add(data.SMA);
+
+                data.Count++;
+            }
+            else
+            {
+                dataDst.Add(dataSrc[i].X, dataSrc[i].Y, false, dataSrc[i].Index);
             }
 
-            data1.SetMinMax(minmax);
+            return data.SMA;
+        }
 
-            return new PlotCollectionSet(new List<PlotCollection>() { data1 });
+        public SmaData GetSmaData(PlotCollectionSet dataset, int nDataIdx, int nLookahead = 0, bool bAddToParams = false)
+        {
+            SmaData data = Pre(dataset, nDataIdx);
+            MinMax minmax = new MinMax();
+
+            for (int i = 0; i < data.SrcData.Count; i++)
+            {
+                Process(data, i, minmax, nLookahead, bAddToParams);
+            }
+
+            data.DstData.SetMinMax(minmax);
+
+            return data;
+        }
+
+        public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx, int nLookahead, Guid? guid = null, bool bAddToParams = false)
+        {
+            SmaData data = GetSmaData(dataset, nDataIdx, nLookahead, bAddToParams);
+            return new PlotCollectionSet(new List<PlotCollection>() { data.DstData });
+        }
+    }
+
+    public class SmaData
+    {
+        PlotCollection m_src;
+        PlotCollection m_dst;
+        int m_nCount;
+        double m_dfSma;
+        double m_dfInc;
+
+        public SmaData(PlotCollection src, PlotCollection dst, uint nInterval)
+        {
+            m_src = src;
+            m_dst = dst;
+            m_nCount = 0;
+            m_dfSma = 0;
+            m_dfInc = 1.0 / nInterval;
+        }
+
+        public PlotCollection SrcData
+        {
+            get { return m_src; }
+        }
+
+        public PlotCollection DstData
+        {
+            get { return m_dst; }
+        }
+
+        public int Count
+        {
+            get { return m_nCount; }
+            set { m_nCount = value; }
+        }
+
+        public double SMA
+        {
+            get { return m_dfSma; }
+            set { m_dfSma = value; }
+        }
+
+        public double Increment
+        {
+            get { return m_dfInc; }
         }
     }
 }

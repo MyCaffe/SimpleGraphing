@@ -30,63 +30,130 @@ namespace SimpleGraphing.GraphData
             get { return m_config.DataName; }
         }
 
+        public EmaData Pre(PlotCollectionSet dataset, int nDataIdx)
+        {
+            PlotCollection dataSrc = dataset[nDataIdx];
+            PlotCollection dataDst = new PlotCollection(dataSrc.Name + " EMA");
+            return new EmaData(dataSrc, dataDst, m_config.Interval);
+        }
+
+        public double Process(EmaData data, int i, MinMax minmax = null, int nLookahead = 0, bool bAddToParams = false)
+        {
+            bool bActive = data.SrcData[i].Active;
+
+            PlotCollection dataSrc = data.SrcData;
+            PlotCollection dataDst = data.DstData;
+            double dfMult = data.Multiplier;
+
+            if (i < dataSrc.Count)
+            {
+                if (data.Index < m_config.Interval)
+                {
+                    if (bActive)
+                    {
+                        data.Total += dataSrc[i].Y;
+                        data.Index++;
+                        dataDst.Add(dataSrc[i].X, data.Total / (data.Index + 1), false, dataSrc[i].Index);
+                    }
+                    else
+                    {
+                        dataDst.Add(dataSrc[i].X, dataSrc[i].Y, false, dataSrc[i].Index);
+                    }
+                }
+                else
+                {
+                    if (data.EMA == 0)
+                        data.EMA = data.Total / m_config.Interval;
+
+                    if (i < dataSrc.Count - nLookahead)
+                        data.EMA = (dataSrc[i].Y - data.EMA) * data.Multiplier + data.EMA;
+                    else
+                        bActive = false;
+
+                    dataDst.Add(data.EMA, bActive, dataSrc[i].Index);
+
+                    if (bAddToParams && bActive)
+                        dataSrc[i].SetParameter(dataSrc.Name, (float)data.EMA);
+
+                    if (minmax != null)
+                        minmax.Add(data.EMA);
+                }
+            }
+
+            return data.EMA;
+        }
+
+        public EmaData GetEmaData(PlotCollectionSet dataset, int nDataIdx, int nLookahead = 0, bool bAddToParams = false)
+        {
+            EmaData data = Pre(dataset, nDataIdx);
+            MinMax minmax = new MinMax();
+
+            for (int i = 0; i < data.SrcData.Count; i++)
+            {
+                Process(data, i, minmax, nLookahead, bAddToParams);
+            }
+
+            data.DstData.SetMinMax(minmax);
+
+            return data;
+        }
+
         public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx, int nLookahead, Guid? guid = null, bool bAddToParams = false)
         {
-            PlotCollection data = dataset[nDataIdx];
-            PlotCollection data1 = new PlotCollection(data.Name + " EMA");
-            double dfTotal = 0;
-            double dfEma = 0;
-            double dfMult = 2.0 / (m_config.Interval + 1);
-            int i = 0;
+            EmaData data = GetEmaData(dataset, nDataIdx, nLookahead, bAddToParams);
+            return new PlotCollectionSet(new List<PlotCollection>() { data.DstData });
+        }
+    }
 
-            MinMax minmax = new MinMax();
-            int nIdx = 0;
+    public class EmaData
+    {
+        PlotCollection m_src;
+        PlotCollection m_dst;
+        double m_dfEma;
+        double m_dfMult;
+        double m_dfTotal;
+        int m_nIdx = 0;
 
-            while (i < data.Count && nIdx < m_config.Interval)
-            {
-                if (data[i].Active)
-                {
-                    dfTotal += data[i].Y;
-                    nIdx++;
-                    data1.Add(data[i].X, dfTotal / (nIdx + 1), false, data[i].Index);
-                }
-                else
-                {
-                    data1.Add(data[i].X, data[i].Y, false, data[i].Index);
-                }
+        public EmaData(PlotCollection src, PlotCollection dst, uint nInterval)
+        {
+            m_src = src;
+            m_dst = dst;
+            m_dfEma = 0;
+            m_dfTotal = 0;
+            m_dfMult = 2.0 / (nInterval + 1);
+        }
 
-                i++;
-            }
+        public PlotCollection SrcData
+        {
+            get { return m_src; }
+        }
 
-            dfEma = dfTotal / m_config.Interval;
+        public PlotCollection DstData
+        {
+            get { return m_dst; }
+        }
 
-            while (i < data.Count)
-            {
-                bool bActive = true;
+        public double EMA
+        {
+            get { return m_dfEma; }
+            set { m_dfEma = value; }
+        }
 
-                if (i < data.Count - nLookahead)
-                {
-                    double dfVal = data[i].Y;
-                    dfEma = (dfVal - dfEma) * dfMult + dfEma;
-                }
-                else
-                {
-                    bActive = false;
-                }
+        public double Total
+        {
+            get { return m_dfTotal; }
+            set { m_dfTotal = value; }
+        }
 
-                data1.Add(dfEma, bActive, data[i].Index);
+        public int Index
+        {
+            get { return m_nIdx; }
+            set { m_nIdx = value; }
+        }
 
-                if (bAddToParams && bActive)
-                    data[i].SetParameter(data1.Name, (float)dfEma);
-
-                i++;
-
-                minmax.Add(dfEma);
-            }
-
-            data1.SetMinMax(minmax);
-
-            return new PlotCollectionSet(new List<PlotCollection>() { data1 });
+        public double Multiplier
+        {
+            get { return m_dfMult; }
         }
     }
 }
