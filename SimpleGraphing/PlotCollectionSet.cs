@@ -15,6 +15,11 @@ namespace SimpleGraphing
         List<PlotCollection> m_rgSet = new List<PlotCollection>();
         double m_dfMarginPct = 0;
 
+        public PlotCollectionSet(PlotCollection col)
+        {
+            m_rgSet.Add(col);
+        }
+
         public PlotCollectionSet(List<PlotCollection> rgPlots = null)
         {
             if (rgPlots != null && rgPlots.Count > 0)
