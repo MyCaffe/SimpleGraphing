@@ -524,8 +524,10 @@ namespace SimpleGraphing
             {
                 string strName = SerializeToXml.LoadText(elm1, "ExtraName");
                 string strVal = SerializeToXml.LoadText(elm1, "ExtraValue");
-                double dfVal = double.Parse(strVal);
-                plot.ExtraSettings.Add(strName, dfVal);
+
+                double dfVal;
+                if (double.TryParse(strVal, out dfVal))
+                    plot.ExtraSettings.Add(strName, dfVal);
             }
 
             bool? bVal = SerializeToXml.LoadBool(elm, "EnableLabel");
