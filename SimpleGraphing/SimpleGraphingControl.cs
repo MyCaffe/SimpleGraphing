@@ -497,9 +497,12 @@ namespace SimpleGraphing
             return diff.TotalHours;
         }
 
-        public static Image QuickRender(PlotCollection col, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null)
+        public static Image QuickRender(PlotCollection col, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null)
         {
             double dfTimeOffsetInHours = 0;
+
+            if (col.AbsoluteMinYVal == double.MaxValue || col.AbsoluteMaxYVal == -double.MaxValue)
+                col.SetMinMax();
 
             if (bConvertToEastern)
                 dfTimeOffsetInHours = GetTimeZoneOffset();
@@ -547,9 +550,16 @@ namespace SimpleGraphing
 
             simpleGraphingControl1.Configuration.Frames[0].EnableRelativeScaling(true, true, 0);
 
+            if (strCfgXmlFile != null && File.Exists(strCfgXmlFile))
+            {
+                simpleGraphingControl1.LoadModuleCache();
+                simpleGraphingControl1.LoadConfiguration(strCfgXmlFile);
+            }
+
             PlotCollectionSet set = new PlotCollectionSet();
             set.Add(col);
             List<PlotCollectionSet> rgSet = new List<PlotCollectionSet>() { set };
+
             simpleGraphingControl1.BuildGraph(rgSet);
 
             if (nWidth <= 0)
