@@ -71,7 +71,11 @@ namespace SimpleGraphing
 
                 bw.Write((m_tag1 != null) ? true : false);
                 if (m_tag1 != null)
-                    bw.Write(m_tag1.ToString());       
+                    bw.Write(m_tag1.ToString());
+
+                bw.Write((m_tag2 != null) ? true : false);
+                if (m_tag2 != null)
+                    bw.Write(m_tag2.ToString());
 
                 bw.Write((m_dfCalculatedEndY.HasValue) ? true : false);
                 if (m_dfCalculatedEndY.HasValue)
@@ -113,9 +117,13 @@ namespace SimpleGraphing
                 double dfMin = br.ReadDouble();
                 double dfMax = br.ReadDouble();
 
-                object tag = null;
+                object tag1 = null;
                 if (br.ReadBoolean())
-                    tag = br.ReadString();
+                    tag1 = br.ReadString();
+
+                object tag2 = null;
+                if (br.ReadBoolean())
+                    tag2 = br.ReadString();
 
                 double? dfCalculatedEndY = null;
                 if (br.ReadBoolean())
@@ -129,7 +137,8 @@ namespace SimpleGraphing
                 col.m_dfXPosition = dfXPos;
                 col.m_dfMinVal = dfMin;
                 col.m_dfMaxVal = dfMax;
-                col.Tag = tag;
+                col.Tag = tag1;
+                col.Tag2 = tag2;
                 col.CalculatedEndY = dfCalculatedEndY;
 
                 int nCount = br.ReadInt32();
@@ -436,6 +445,9 @@ namespace SimpleGraphing
 
         public void SetMinMax(int nStartIdx = 0, bool? bLock = null)
         {
+            if (nStartIdx >= m_rgPlot.Count)
+                return;
+
             if (!bLock.HasValue && m_bLockMinMax)
                 return;
 
