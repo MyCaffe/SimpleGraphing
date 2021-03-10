@@ -104,7 +104,7 @@ namespace SimpleGraphing
             int nFrameIdx = 0;
             int nFrameCount = m_frames.Count;
 
-            for (int i = 0; i < config.Frames.Count; i++)
+            for (int i = 0; i < config.Frames.Count && i < rgData.Count; i++)
             {
                 PlotCollectionSet dataOutput = null;
 
