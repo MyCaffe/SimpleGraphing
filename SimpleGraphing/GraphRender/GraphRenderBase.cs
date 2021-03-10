@@ -39,6 +39,9 @@ namespace SimpleGraphing.GraphRender
                 dataset[0].Count < 2)
                 return;
 
+            if (m_config.DataIndexOnRender >= dataset.Count)
+                return;
+
             RectangleF rc = g.ClipBounds;
             PlotCollection plots = dataset[m_config.DataIndexOnRender];
 
