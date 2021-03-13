@@ -83,9 +83,58 @@ namespace SimpleGraphing
             m_guid = Guid.NewGuid();
         }
 
+        public ConfigurationPlot(ConfigurationPlot p)
+        {
+            m_clrLine = p.m_clrLine;
+            m_clrPlotFill = p.m_clrPlotFill;
+            m_clrPlotLine = p.m_clrPlotLine;
+            m_clrPlotLineOverride = p.m_clrPlotLineOverride;
+            m_clrAction1Active = p.m_clrAction1Active;
+            m_clrAction2Active = p.m_clrAction2Active;
+            m_nActionActiveAlpha = p.m_nActionActiveAlpha;
+            m_fLineWidth = p.m_fLineWidth;
+            m_bEnableFlag = p.m_bEnableFlag;
+            m_bEnableLabel = p.m_bEnableLabel;
+            m_clrFlag = p.m_clrFlag;
+            m_clrFlagBorder = p.m_clrFlagBorder;
+            m_clrFlagText = p.m_clrFlagText;
+            m_strDataParam = p.m_strDataParam;
+            m_strDataName = p.m_strDataName;
+            m_nDataIdx = p.m_nDataIdx;
+            m_nDataIdxOnRender = p.m_nDataIdxOnRender;
+            m_strName = p.m_strName;
+            m_bVisible = p.m_bVisible;
+            m_nInterval = p.m_nInterval;
+            m_plotType = p.m_plotType;
+            m_strCustomName = p.m_strCustomName;
+            m_bExcludeFromMinMax = p.m_bExcludeFromMinMax;
+            m_bLookaheadActive = p.m_bLookaheadActive;
+            m_dfMarginPercent = p.m_dfMarginPercent;
+            m_dfTransparency = p.m_dfTransparency;
+            m_dfMidPoint = p.m_dfMidPoint;
+            m_plotShape = p.m_plotShape;
+
+            foreach (KeyValuePair<string, double> kv in p.m_rgExtraSettings)
+            {
+                m_rgExtraSettings.Add(kv.Key, kv.Value);
+            }
+
+            m_custiomBuildOrder = p.m_custiomBuildOrder;
+
+            foreach (PropertyValue prop in p.m_properties)
+            {
+                m_properties.Add(prop);
+            }
+        }
+
         public ConfigurationPlot(Guid guid)
         {
             m_guid = guid;
+        }
+
+        public ConfigurationPlot Clone()
+        {
+            return new ConfigurationPlot(this);
         }
 
         public bool HasCustomBuild
