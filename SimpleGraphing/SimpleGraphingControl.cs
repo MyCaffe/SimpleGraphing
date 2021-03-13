@@ -497,58 +497,66 @@ namespace SimpleGraphing
             return diff.TotalHours;
         }
 
-        public static Image QuickRender(PlotCollection col, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null)
+        public void SetConfigurationToQuickRenderDefault(string strName, string strTag, int nValCount = 1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null)
         {
             double dfTimeOffsetInHours = 0;
-
-            if (col.AbsoluteMinYVal == double.MaxValue || col.AbsoluteMaxYVal == -double.MaxValue)
-                col.SetMinMax();
 
             if (bConvertToEastern)
                 dfTimeOffsetInHours = GetTimeZoneOffset();
 
-            SimpleGraphingControl simpleGraphingControl1 = new SimpleGraphingControl();
-            simpleGraphingControl1.Name = "SimpleGraphing";
-
-            simpleGraphingControl1.Configuration = new Configuration();
-            simpleGraphingControl1.Configuration.Frames.Add(new ConfigurationFrame());
-            simpleGraphingControl1.EnableCrossHairs = true;
-            simpleGraphingControl1.Configuration.Frames[0].XAxis.LabelFont = new Font("Century Gothic", 7.0f);
-            simpleGraphingControl1.Configuration.Frames[0].XAxis.Visible = true;
-            simpleGraphingControl1.Configuration.Frames[0].XAxis.Margin = 100;
-            simpleGraphingControl1.Configuration.Frames[0].XAxis.TimeOffsetInHours = dfTimeOffsetInHours;
-            simpleGraphingControl1.Configuration.Frames[0].YAxis.LabelFont = new Font("Century Gothic", 7.0f);
-            simpleGraphingControl1.Configuration.Frames[0].YAxis.Decimals = 3;
-            simpleGraphingControl1.Configuration.Frames[0].Plots.Add(new ConfigurationPlot());
+            Configuration = new Configuration();
+            Configuration.Frames.Add(new ConfigurationFrame());
+            EnableCrossHairs = true;
+            Configuration.Frames[0].XAxis.LabelFont = new Font("Century Gothic", 7.0f);
+            Configuration.Frames[0].XAxis.Visible = true;
+            Configuration.Frames[0].XAxis.Margin = 100;
+            Configuration.Frames[0].XAxis.TimeOffsetInHours = dfTimeOffsetInHours;
+            Configuration.Frames[0].YAxis.LabelFont = new Font("Century Gothic", 7.0f);
+            Configuration.Frames[0].YAxis.Decimals = 3;
+            Configuration.Frames[0].Plots.Add(new ConfigurationPlot());
 
             if (timeResolution.HasValue)
-                simpleGraphingControl1.Configuration.Frames[0].XAxis.ValueResolution = timeResolution.Value;
-
-            string strName = col.Name;
-            string strTag = (string)col.Tag;
+                Configuration.Frames[0].XAxis.ValueResolution = timeResolution.Value;
 
             if (strTag != null)
                 strName += " " + strTag;
 
             if (!string.IsNullOrEmpty(strName))
             {
-                simpleGraphingControl1.Configuration.Frames[0].Name = strName;
-                simpleGraphingControl1.Configuration.Frames[0].TitleColor = Color.Black;
-                simpleGraphingControl1.Configuration.Frames[0].TitleFont = new Font("Century Gothic", 12.0f, FontStyle.Bold);
+                Configuration.Frames[0].Name = strName;
+                Configuration.Frames[0].TitleColor = Color.Black;
+                Configuration.Frames[0].TitleFont = new Font("Century Gothic", 12.0f, FontStyle.Bold);
             }
 
-            if (col.Count > 0 && col[0].Y_values.Length == 4)
+            if (nValCount == 4)
             {
-                simpleGraphingControl1.Configuration.Frames[0].Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.CANDLE;
-                simpleGraphingControl1.Configuration.Frames[0].XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.TIME;
+                Configuration.Frames[0].Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.CANDLE;
+                Configuration.Frames[0].XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.TIME;
             }
             else
             {
-                simpleGraphingControl1.Configuration.Frames[0].Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.LINE;
-                simpleGraphingControl1.Configuration.Frames[0].XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.NUMBER;
+                Configuration.Frames[0].Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.LINE;
+                Configuration.Frames[0].XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.NUMBER;
             }
 
-            simpleGraphingControl1.Configuration.Frames[0].EnableRelativeScaling(true, true, 0);
+            Configuration.Frames[0].EnableRelativeScaling(true, true, 0);
+
+        }
+
+        public static Image QuickRender(PlotCollection col, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null)
+        {
+
+            if (col.AbsoluteMinYVal == double.MaxValue || col.AbsoluteMaxYVal == -double.MaxValue)
+                col.SetMinMax();
+
+            SimpleGraphingControl simpleGraphingControl1 = new SimpleGraphingControl();
+            simpleGraphingControl1.Name = "SimpleGraphing";
+
+            int nValCount = 1;
+            if (col.Count > 0)
+                nValCount = col[0].Y_values.Length;
+
+            simpleGraphingControl1.SetConfigurationToQuickRenderDefault(col.Name, (string)col.Tag, nValCount, bConvertToEastern, timeResolution);
 
             if (strCfgXmlFile != null && File.Exists(strCfgXmlFile))
             {
@@ -559,6 +567,12 @@ namespace SimpleGraphing
             PlotCollectionSet set = new PlotCollectionSet();
             set.Add(col);
             List<PlotCollectionSet> rgSet = new List<PlotCollectionSet>() { set };
+
+            if (!bIncludeTitle)
+                simpleGraphingControl1.Configuration.Frames[0].Name = "";
+
+            if (rgTargetLines != null && rgTargetLines.Count > 0)
+                simpleGraphingControl1.Configuration.Frames[0].TargetLines.AddRange(rgTargetLines);
 
             simpleGraphingControl1.BuildGraph(rgSet);
 
