@@ -1268,6 +1268,137 @@ namespace SimpleGraphing
 
             return col;
         }
+
+        public void Normalize(bool bSetMinMax = false, PlotCollection col = null)
+        {
+            double dfNewMin = 0;
+            double dfNewMax = 1;
+
+            SetMinMax();
+
+            if (col != null)
+            {
+                col.SetMinMax();
+                dfNewMin = col.AbsoluteMinYVal;
+                dfNewMax = col.AbsoluteMaxYVal;
+            }
+
+            double dfOldMin = AbsoluteMinYVal;
+            double dfOldMax = AbsoluteMaxYVal;
+            double dfOldRange = dfOldMax - dfOldMin;
+            double dfNewRange = dfNewMax - dfNewMin;
+            double dfRatio = (dfOldRange == 0) ? 0 : dfNewRange / dfOldRange;
+
+            for (int i = 0; i < m_rgPlot.Count; i++)
+            {
+                for (int j = 0; j < m_rgPlot[i].Y_values.Length; j++)
+                {
+                    m_rgPlot[i].Y_values[j] = (float)(((m_rgPlot[i].Y_values[j] - dfOldMin) * dfRatio) + dfNewMin);
+                }
+            }
+
+            if (bSetMinMax)
+                SetMinMax();
+        }
+
+        public void Scale(double dfScale, double dfShift, bool bSetMinMax = true)
+        {
+            for (int i = 0; i < m_rgPlot.Count; i++)
+            {
+                m_rgPlot[i].Y *= (float)dfScale;
+                m_rgPlot[i].Y += (float)dfShift;
+            }
+
+            if (bSetMinMax)
+                SetMinMax();
+        }
+
+        public void Average(int nPeriod, bool bSetMinMax = true)
+        {
+            List<float> rgVal = new List<float>();
+
+            for (int i = 0; i < m_rgPlot.Count; i++)
+            {
+                rgVal.Add(m_rgPlot[i].Y);
+                if (rgVal.Count > nPeriod)
+                    rgVal.RemoveAt(0);
+
+                m_rgPlot[i].Y = (float)rgVal.Average();
+            }
+
+            if (bSetMinMax)
+                SetMinMax();
+        }
+
+        public PlotCollection Clip(int nStartIdx, int nEndIdx, bool bSetMinMax = true)
+        {
+            PlotCollection col = new PlotCollection(Name);
+
+            foreach (KeyValuePair<string, double> kv in m_rgParam)
+            {
+                col.Parameters.Add(kv.Key, kv.Value);
+            }
+
+            col.Tag = Tag;
+            col.Tag2 = Tag2;
+
+            for (int i = nStartIdx; i <= nEndIdx; i++)
+            {
+                col.Add(m_rgPlot[i]);
+            }
+
+            if (bSetMinMax)
+                col.SetMinMax();
+
+            return col;
+        }
+
+        public int FindX(double dfX)
+        {
+            for (int i = 1; i < m_rgPlot.Count; i++)
+            {
+                if (m_rgPlot[i - 1].X <= (float)dfX && m_rgPlot[i].X > dfX)
+                    return i - 1;
+            }
+
+            return -1;
+        }
+
+        public PlotCollection ClipAround(double dfX, int nSpread, bool bSetMinMax = true)
+        {
+            int nIdx = FindX(dfX);
+
+            if (nIdx < 0)
+                return this;
+
+            PlotCollection col = new PlotCollection(Name);
+
+            foreach (KeyValuePair<string, double> kv in m_rgParam)
+            {
+                col.Parameters.Add(kv.Key, kv.Value);
+            }
+
+            col.Tag = Tag;
+            col.Tag2 = Tag2;
+
+            int nStartIdx = nIdx - nSpread;
+            if (nStartIdx < 0)
+                nStartIdx = 0;
+
+            int nEndIdx = nIdx + nSpread;
+            if (nEndIdx >= Count)
+                nEndIdx = Count - 1;
+
+            for (int i = nStartIdx; i <= nEndIdx; i++)
+            {
+                col.Add(m_rgPlot[i]);
+            }
+
+            if (bSetMinMax)
+                col.SetMinMax();
+
+            return col;
+        }
     }
 
     public class PlotUpdateArgs : EventArgs
