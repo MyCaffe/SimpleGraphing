@@ -31,92 +31,165 @@ namespace SimpleGraphing.GraphData
             get { return m_config.DataName; }
         }
 
+        public RsiData Pre(PlotCollectionSet dataset, int nDataIdx)
+        {
+            PlotCollection dataSrc = dataset[nDataIdx];
+            PlotCollection dataDst = new PlotCollection(dataSrc.Name + " RSI");
+            return new RsiData(dataSrc, dataDst, m_config.Interval);
+        }
+
         /// <summary>
         /// Calculate the RSI based on Wilder's formula.
         /// </summary>
         /// <remarks>
         /// @see [Relative Strength Index](https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:relative_strength_index_rsi)
         /// </remarks>
-        /// <param name="dataset">Specifies the original plot data.</param>
-        /// <param name="nDataIdx">Specifies the data index of the plot data to use.</param>
+        /// <param name="data">Specifies the RSI data from the previous cycle.</param>
+        /// <param name="i">Specifies the current data index.</param>
+        /// <param name="minmax">Currently, not used here.</param>
         /// <param name="nLookahead">Specifies the look ahead value if any.</param>
-        /// <param name="guid">Specifies the unique GUID for the data.</param>
         /// <param name="bAddToParams">Optionally, specifies whether or not to add the RSI to the parameters of the original data.</param>
-        /// <returns>The new plot data containing the RSI calculation is returned.</returns>
-        public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx, int nLookahead, Guid? guid = null, bool bAddToParams = false)
+        /// <returns>The new RSI value is returned.</returns>
+        public double Process(RsiData data, int i, MinMax minmax = null, int nLookahead = 0, bool bAddToParams = false)
         {
-            PlotCollection data = dataset[nDataIdx];
+            bool bActive = false;
 
-            if (data.Count < m_config.Interval * 1)
+            Plot plot = new Plot(data.SrcData[i].X, 0, null, false, data.SrcData[i].Index, data.SrcData[i].Action1Active, data.SrcData[i].Action2Active);
+            data.DstData.Add(plot, false);
+
+            if (i > 0)
             {
-                Trace.WriteLine("There is not enough data for an RSI calculation!");
-                return null;
-            }
+                double dfChange = data.SrcData[i].Y - data.SrcData[i - 1].Y;
 
-            PlotCollection data1 = new PlotCollection(data.Name + " RSI");
-            float fAveGain = 0;
-            float fAveLoss = 0;
-            float fRs = 0;
-            float fRsi = 0;
-
-            for (int i = 0; i < data.Count; i++)
-            {
-                bool bActive = false;
-                data1.Add(new Plot(data[i].X, 0, null, false, data[i].Index, data[i].Action1Active, data[i].Action2Active));
-
-                if (i > 0)
+                if (i <= m_config.Interval + 1)
                 {
-                    float fChange = data[i].Y - data[i - 1].Y;
+                    if (dfChange < 0)
+                        data.AveLoss += (dfChange * -1);
+                    else
+                        data.AveGain += dfChange;
 
-                    if (i <= m_config.Interval + 1)
+                    if (i == m_config.Interval + 1)
                     {
-                        if (fChange < 0)
-                            fAveLoss += (fChange * -1);
-                        else
-                            fAveGain += fChange;
-
-                        if (i == m_config.Interval + 1)
-                        {
-                            fAveLoss /= m_config.Interval;
-                            fAveGain /= m_config.Interval;
-                            fRs = (fAveLoss == 0) ? 0 : fAveGain / fAveLoss;
-                            fRsi = 100 - (100 / (1 + fRs));
-                            bActive = true;
-                        }
-                    }
-                    else if (i > m_config.Interval + 1)
-                    {
-                        if (fChange < 0)
-                        {
-                            fAveLoss = ((fAveLoss * (m_config.Interval - 1)) + (-1 * fChange)) / m_config.Interval;
-                            fAveGain = ((fAveGain * (m_config.Interval - 1)) + (0)) / m_config.Interval;
-                        }
-                        else
-                        {
-                            fAveLoss = ((fAveLoss * (m_config.Interval - 1)) + (0)) / m_config.Interval;
-                            fAveGain = ((fAveGain * (m_config.Interval - 1)) + (fChange)) / m_config.Interval;
-                        }
-
-                        fRs = (fAveLoss == 0) ? 0 : fAveGain / fAveLoss;
-                        fRsi = 100 - (100 / (1 + fRs));
+                        data.AveLoss /= data.Interval;
+                        data.AveGain /= data.Interval;
+                        data.Rs = (data.AveLoss == 0) ? 0 : data.AveGain / data.AveLoss;
+                        data.RSI = 100 - (100 / (1 + data.Rs));
                         bActive = true;
                     }
                 }
+                else if (i > data.Interval + 1)
+                {
+                    if (dfChange < 0)
+                    {
+                        data.AveLoss = ((data.AveLoss * (data.Interval - 1)) + (-1 * dfChange)) / data.Interval;
+                        data.AveGain = ((data.AveGain * (data.Interval - 1)) + (0)) / data.Interval;
+                    }
+                    else
+                    {
+                        data.AveLoss = ((data.AveLoss * (data.Interval - 1)) + (0)) / data.Interval;
+                        data.AveGain = ((data.AveGain * (data.Interval - 1)) + (dfChange)) / data.Interval;
+                    }
 
-                data1[i].Y = fRsi;
-                data1[i].Active = bActive;
+                    data.Rs = (data.AveLoss == 0) ? 0 : data.AveGain / data.AveLoss;
+                    data.RSI = 100 - (100 / (1 + data.Rs));
+                    bActive = true;
+                }
+            }
 
-                if (bAddToParams)
-                    data[i].SetParameter(data1.Name, fRsi);
+            data.DstData[i].Y = (float)data.RSI;
+            data.DstData[i].Active = bActive;
+
+            return data.RSI;
+        }
+
+        public RsiData GetRsiData(PlotCollectionSet dataset, int nDataIdx, int nLookahead = 0, bool bAddToParams = false)
+        {
+            RsiData data = Pre(dataset, nDataIdx);
+
+            for (int i = 0; i < data.SrcData.Count; i++)
+            {
+                Process(data, i, null, nLookahead, bAddToParams);
             }
 
             MinMax minmax = new MinMax();
             minmax.Add(0);
             minmax.Add(100);
 
-            data1.SetMinMax(minmax);
+            data.DstData.SetMinMax(minmax);
 
-            return new PlotCollectionSet(new List<PlotCollection>() { data1 });
+            return data;
+        }
+
+        public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx, int nLookahead, Guid? guid = null, bool bAddToParams = false)
+        {
+            RsiData data = GetRsiData(dataset, nDataIdx, nLookahead, bAddToParams);
+            return new PlotCollectionSet(new List<PlotCollection>() { data.DstData });
+        }
+    }
+
+    public class RsiData
+    {
+        PlotCollection m_src;
+        PlotCollection m_dst;
+        int m_nCount;
+        int m_nInterval;
+        double m_dfRsi;
+        double m_dfAveGain = 0;
+        double m_dfAveLoss = 0;
+        double m_dfRs = 0;
+
+        public RsiData(PlotCollection src, PlotCollection dst, uint nInterval)
+        {
+            m_src = src;
+            m_dst = dst;
+            m_nCount = 0;
+            m_nInterval = (int)nInterval;
+            m_dfRsi = 0;
+        }
+
+        public PlotCollection SrcData
+        {
+            get { return m_src; }
+        }
+
+        public PlotCollection DstData
+        {
+            get { return m_dst; }
+        }
+
+        public int Count
+        {
+            get { return m_nCount; }
+            set { m_nCount = value; }
+        }
+
+        public double RSI
+        {
+            get { return m_dfRsi; }
+            set { m_dfRsi = value; }
+        }
+
+        public double AveGain
+        {
+            get { return m_dfAveGain; }
+            set { m_dfAveGain = value; }
+        }
+
+        public double AveLoss
+        {
+            get { return m_dfAveLoss; }
+            set { m_dfAveLoss = value; }
+        }
+
+        public double Rs
+        {
+            get { return m_dfRs; }
+            set { m_dfRs = value; }
+        }
+
+        public int Interval
+        {
+            get { return m_nInterval; }
         }
     }
 }
