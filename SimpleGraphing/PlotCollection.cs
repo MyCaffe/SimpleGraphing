@@ -27,6 +27,7 @@ namespace SimpleGraphing
         MINMAX_TARGET m_minmaxTarget = MINMAX_TARGET.VALUES;
         bool m_bLockMinMax = false;
         Dictionary<string, double> m_rgParam = new Dictionary<string, double>();
+        Dictionary<string, object> m_rgParamEx = new Dictionary<string, object>();
 
         public event EventHandler<PlotUpdateArgs> OnUpdatePlot;
 
@@ -54,6 +55,11 @@ namespace SimpleGraphing
         public Dictionary<string, double> Parameters
         {
             get { return m_rgParam; }
+        }
+
+        public Dictionary<string, object> ParametersEx
+        {
+            get { return m_rgParamEx; }
         }
 
         public byte[] Save()
