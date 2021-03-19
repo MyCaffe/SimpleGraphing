@@ -22,6 +22,7 @@ namespace SimpleGraphing
         double m_dfX;
         short m_nIdxPrimaryY = 0;
         object m_tag = null;
+        object m_tagEx = null;
         Dictionary<string, float> m_rgParams = null;
         bool m_bScaled = false;
         bool m_bClipped = false;
@@ -286,6 +287,12 @@ namespace SimpleGraphing
             set { m_tag = value; }
         }
 
+        public object TagEx
+        {
+            get { return m_tagEx; }
+            set { m_tagEx = value; }
+        }
+
         public void SetParameter(string strParam, double df)
         {
             SetParameter(strParam, (float)df);
@@ -378,6 +385,7 @@ namespace SimpleGraphing
             p.LookaheadActive = LookaheadActive;
             p.Count = Count;
             p.m_tag = m_tag;
+            p.m_tagEx = m_tagEx;
 
             if (m_rgParams != null)
             {
