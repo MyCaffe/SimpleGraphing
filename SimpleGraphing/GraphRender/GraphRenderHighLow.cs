@@ -47,9 +47,12 @@ namespace SimpleGraphing.GraphRender
             int nStartIdx = m_gx.StartPosition;
             int nMinLevelVisible = 0;
 
-            PropertyValue prop = m_config.Properties.Find("MinLevelVisible");
-            if (prop != null)
-                nMinLevelVisible = (int)prop.Value;
+            if (m_config.Properties != null)
+            {
+                PropertyValue prop = m_config.Properties.Find("MinLevelVisible");
+                if (prop != null)
+                    nMinLevelVisible = (int)prop.Value;
+            }
 
             for (int i = nMinLevelVisible; i < 3; i++)
             {
