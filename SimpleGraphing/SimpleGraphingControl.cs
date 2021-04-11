@@ -497,7 +497,7 @@ namespace SimpleGraphing
             return diff.TotalHours;
         }
 
-        public void SetConfigurationToQuickRenderDefault(string strName, string strTag, int nValCount = 1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null)
+        public void SetConfigurationToQuickRenderDefault(string strName, string strTag, int nValCount = 1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, bool bUseTimeResolutionForValueType = false)
         {
             double dfTimeOffsetInHours = 0;
 
@@ -516,7 +516,10 @@ namespace SimpleGraphing
             Configuration.Frames[0].Plots.Add(new ConfigurationPlot());
 
             if (timeResolution.HasValue)
+            {
                 Configuration.Frames[0].XAxis.ValueResolution = timeResolution.Value;
+                Configuration.Frames[0].XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.TIME;
+            }
 
             if (strTag != null)
                 strName += " " + strTag;
@@ -536,27 +539,70 @@ namespace SimpleGraphing
             else
             {
                 Configuration.Frames[0].Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.LINE;
-                Configuration.Frames[0].XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.NUMBER;
+
+                if (!bUseTimeResolutionForValueType)
+                    Configuration.Frames[0].XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.NUMBER;
             }
 
             Configuration.Frames[0].EnableRelativeScaling(true, true, 0);
 
         }
 
-        public static Image QuickRender(PlotCollection col, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null)
+        public static Image QuickRender(PlotCollection plots, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null, bool bUseTimeResolutionForValueType = false)
         {
+            PlotCollectionSet set = new PlotCollectionSet();
+            set.Add(plots);
+            return QuickRender(set, nWidth, nHeight, bConvertToEastern, timeResolution, strCfgXmlFile, bIncludeTitle, rgTargetLines, bUseTimeResolutionForValueType);
+        }
 
-            if (col.AbsoluteMinYVal == double.MaxValue || col.AbsoluteMaxYVal == -double.MaxValue)
-                col.SetMinMax();
+        public static Image QuickRender(PlotCollectionSet set, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null, bool bUseTimeResolutionForValueType = false)
+        {
+            foreach (PlotCollection col in set)
+            {
+                if (col.AbsoluteMinYVal == double.MaxValue || col.AbsoluteMaxYVal == -double.MaxValue)
+                    col.SetMinMax();
+            }
 
             SimpleGraphingControl simpleGraphingControl1 = new SimpleGraphingControl();
             simpleGraphingControl1.Name = "SimpleGraphing";
 
             int nValCount = 1;
-            if (col.Count > 0)
-                nValCount = col[0].Y_values.Length;
+            if (set.Count > 0 && set[0].Count > 0)
+                nValCount = set[0][0].Y_values.Length;
 
-            simpleGraphingControl1.SetConfigurationToQuickRenderDefault(col.Name, (string)col.Tag, nValCount, bConvertToEastern, timeResolution);
+            simpleGraphingControl1.SetConfigurationToQuickRenderDefault(set[0].Name, (string)set[0].Tag, nValCount, bConvertToEastern, timeResolution, bUseTimeResolutionForValueType);
+
+            if (set.Count > 1)
+            {
+                List<Color> rgColor = new List<Color>() { Color.Red, Color.Blue, Color.Green, Color.Purple, Color.Orange, Color.Aquamarine, Color.Fuchsia, Color.OrangeRed, Color.Lavender, Color.Navy, Color.Cyan, Color.DarkCyan };
+                for (int i = 0; i < set.Count; i++)
+                {
+                    int nClrIdx = i % rgColor.Count;
+                    Color clr = rgColor[nClrIdx];
+
+                    ConfigurationPlot plotConfig;
+
+                    if (i > 0)
+                    {
+                        plotConfig = new ConfigurationPlot();
+                        simpleGraphingControl1.Configuration.Frames[0].Plots.Add(plotConfig);
+                    }
+
+                    plotConfig = simpleGraphingControl1.Configuration.Frames[0].Plots[i];
+                    plotConfig.LineColor = clr;
+                    plotConfig.PlotLineColor = Color.Transparent;
+                    plotConfig.PlotFillColor = Color.Transparent;
+                    plotConfig.PlotType = ConfigurationPlot.PLOTTYPE.LINE;
+                    plotConfig.Visible = true;
+                    plotConfig.EnableLabel = true;
+                    plotConfig.EnableFlag = false;
+                    plotConfig.FlagColor = clr;
+                    plotConfig.Name = set[i].Name;
+                    plotConfig.DataIndexOnRender = i;
+                }
+
+                simpleGraphingControl1.Configuration.Frames[0].EnableRelativeScaling(true, true);
+            }
 
             if (strCfgXmlFile != null && File.Exists(strCfgXmlFile))
             {
@@ -564,8 +610,6 @@ namespace SimpleGraphing
                 simpleGraphingControl1.LoadConfiguration(strCfgXmlFile);
             }
 
-            PlotCollectionSet set = new PlotCollectionSet();
-            set.Add(col);
             List<PlotCollectionSet> rgSet = new List<PlotCollectionSet>() { set };
 
             if (!bIncludeTitle)
@@ -582,6 +626,7 @@ namespace SimpleGraphing
             if (nHeight <= 0)
                 nHeight = 300;
 
+            simpleGraphingControl1.ScrollToEnd(false);
             return simpleGraphingControl1.Render(nWidth, nHeight);
         }
     }
