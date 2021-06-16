@@ -123,6 +123,7 @@
     </Compile>
     <Compile Include="GraphSurface.cs" />
     <Compile Include="ConfigurationTimeZone.cs" />
+    <Compile Include="TimeZoneEx.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SimpleGraphingControl.resx">

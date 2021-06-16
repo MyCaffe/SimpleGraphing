@@ -486,15 +486,7 @@ namespace SimpleGraphing
 
         public static double GetTimeZoneOffset()
         {
-            TimeZone zone = TimeZone.CurrentTimeZone;
-            TimeZoneInfo eastern;
-            DateTime dtNow = DateTime.Now;
-            eastern = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
-
-            TimeSpan localOffset = zone.GetUtcOffset(dtNow);
-            TimeSpan easternOffset = eastern.GetUtcOffset(dtNow);
-            TimeSpan diff = easternOffset - localOffset;
-            return diff.TotalHours;
+            return TimeZoneEx.GetTimeZoneOffset();
         }
 
         public void SetConfigurationToQuickRenderDefault(string strName, string strTag, int nValCount = 1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, bool bUseTimeResolutionForValueType = false)
