@@ -97,6 +97,15 @@ namespace SimpleGraphing
             return val.Value;
         }
 
+        public string GetProperty(string strName, string strDefault)
+        {
+            PropertyValue val = Find(strName);
+            if (val == null)
+                return strDefault;
+
+            return val.TextValue;
+        }
+
         public PropertyValue Find(string strName)
         {
             foreach (PropertyValue val in m_rgProperties)
@@ -111,6 +120,11 @@ namespace SimpleGraphing
         public void Add(string strName, double dfVal)
         {
             Add(new PropertyValue(strName, dfVal));
+        }
+
+        public void Add(string strName, string strVal)
+        {
+            Add(new PropertyValue(strName, 0, strVal));
         }
 
         public void Add(PropertyValue val)
