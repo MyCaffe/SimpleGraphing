@@ -188,7 +188,7 @@ namespace SimpleGraphing
             m_style = createStyle(m_config);
 
             Bitmap bmp = m_bmp;
-            if (bmp == null || bmp.Height != m_rcBounds.Height || bmp.Width != m_rcBounds.Width)
+            if (bmp == null || (m_rcBounds.Height > 0 && bmp.Height != m_rcBounds.Height) || (m_rcBounds.Width > 0 && bmp.Width != m_rcBounds.Width))
                 bmp = new Bitmap(m_rcBounds.Width, m_rcBounds.Height);
 
             Graphics g = m_graphics.Get(bmp);
