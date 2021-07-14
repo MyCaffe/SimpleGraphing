@@ -52,11 +52,13 @@ namespace SimpleGraphing
         {
             List<string> rgstrNames = new List<string>();
             string strPath = Modules.CustomGraphingDirectory;
+            string[] rgstrFiles = null;
 
-            if (!Directory.Exists(strPath))
-                throw new Exception("The custom graph directory '" + strPath + "' could not be found!");
+            if (Directory.Exists(strPath))
+                rgstrFiles = Directory.GetFiles(strPath);
 
-            string[] rgstrFiles = Directory.GetFiles(strPath);
+            if (rgstrFiles == null || rgstrFiles.Length == 0)
+                rgstrFiles = Directory.GetFiles(Modules.AssemblyDirectory, "CustomGraphing.*");
 
             foreach (string strFile in rgstrFiles)
             {
