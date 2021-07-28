@@ -17,6 +17,8 @@ namespace SimpleGraphing
         GraphPlotArea m_plotArea;
         PlotCollectionSet m_data;
         Graphics m_graphics = null;
+        double m_dfActiveMinY = 0;
+        double m_dfActiveMaxY = 0;
 
         public GraphFrame(ModuleCache cache)
         {
@@ -207,6 +209,9 @@ namespace SimpleGraphing
 
             m_gx.SetMinMax(dfMin, dfMax);
             m_gy.SetMinMax(dfMin, dfMax);
+
+            m_dfActiveMinY = dfMin;
+            m_dfActiveMaxY = dfMax;
         }
 
         public PlotCollectionSet Resize(int nX, int nY, int nWidth, int nHeight, bool bResetStartPos = false)
@@ -236,11 +241,13 @@ namespace SimpleGraphing
         }
 
         public void Render(Graphics g)
-        {
+        {            
             m_plotArea.Render(g);
             m_gx.Render(g);
             m_gy.Render(g);
             m_graphics = g;
+
+            m_config.SetActiveValues(new Tuple<double, double>(m_dfActiveMinY, m_dfActiveMaxY), m_plotArea.Bounds);
         }
 
         private void m_gx_OnNewHour(object sender, TickValueArg e)

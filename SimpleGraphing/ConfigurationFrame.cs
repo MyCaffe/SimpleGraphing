@@ -30,9 +30,27 @@ namespace SimpleGraphing
         PlotCollection.MINMAX_TARGET m_minmaxTarget = PlotCollection.MINMAX_TARGET.VALUES;
         bool m_bScaleToVisibleWhenRelative = false;
         double m_dfMinYRange = 0;
+        Rectangle m_rcActivePlotAreaBounds = new Rectangle();
+        Tuple<double, double> m_activeYValueRange = new Tuple<double, double>(0, 0);
 
         public ConfigurationFrame()
         {
+        }
+
+        public void SetActiveValues(Tuple<double, double> yVal, Rectangle rc)
+        {
+            m_rcActivePlotAreaBounds = rc;
+            m_activeYValueRange = yVal;
+        }
+
+        public Rectangle ActivePlotAreaBounds
+        {
+            get { return m_rcActivePlotAreaBounds; }
+        }
+
+        public Tuple<double, double> ActiveYValueRange
+        {
+            get { return m_activeYValueRange; }
         }
 
         public bool Compare(ConfigurationFrame c)
