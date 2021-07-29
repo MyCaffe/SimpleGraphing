@@ -25,6 +25,7 @@ namespace SimpleGraphing
         LINE_TYPE m_lineType = LINE_TYPE.VALUE;
         string m_strNote = null;
         string m_strName = null;
+        float m_fActiveY = 0;
 
         public enum LINE_TYPE
         {
@@ -52,6 +53,16 @@ namespace SimpleGraphing
 
             m_bEnableFlag = bEnableFlag;
             m_lineType = type;
+        }
+
+        public void SetActiveValues(float fYVal)
+        {
+            m_fActiveY = fYVal;
+        }
+
+        public float ActiveYValue
+        {
+            get { return m_fActiveY; }
         }
 
         public bool Compare(ConfigurationTargetLine c)

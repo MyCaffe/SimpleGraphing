@@ -203,6 +203,9 @@ namespace SimpleGraphing
 
             foreach (ConfigurationTargetLine line in m_config.TargetLines)
             {
+                float fY1 = m_gy.ScaleValue(line.YValue, true);
+                line.SetActiveValues(fY1);
+
                 if (line.Enabled)
                 {
                     Color clrFill = Color.FromArgb(32, line.LineColor);
@@ -210,7 +213,6 @@ namespace SimpleGraphing
                     m_colLineBrushes.Add(clrFill);
                     Pen p = m_colLinePens[line.LineColor];
                     Brush br = m_colLineBrushes[clrFill];
-                    float fY1 = m_gy.ScaleValue(line.YValue, true);
                     RectangleF rc;
 
                     if (!float.IsNaN(fY1) && !float.IsInfinity(fY1))
