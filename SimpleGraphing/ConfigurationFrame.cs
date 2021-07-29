@@ -53,6 +53,19 @@ namespace SimpleGraphing
             get { return m_activeYValueRange; }
         }
 
+        public List<Tuple<double, float>> GetTargetLinePositions(string strName)
+        {
+            List<Tuple<double, float>> rgTlp = new List<Tuple<double, float>>();
+
+            foreach (ConfigurationTargetLine tl in m_rgLines)
+            {
+                if (tl.Name == strName)
+                    rgTlp.Add(new Tuple<double, float>(tl.YValue, tl.ActiveYValue));
+            }
+
+            return rgTlp;
+        }
+
         public bool Compare(ConfigurationFrame c)
         {
             if (m_rgPlots.Count != c.m_rgPlots.Count)
