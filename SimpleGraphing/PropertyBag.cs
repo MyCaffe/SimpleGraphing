@@ -67,6 +67,23 @@ namespace SimpleGraphing
         {
             return m_strName + " => " + m_dfVal.ToString() + ((m_strValue == null) ? "" : ", " + m_strValue.ToString());
         }
+
+        public string ToParseString()
+        {
+            return m_strName + "^" + m_dfVal.ToString() + "^" + m_strName;
+        }
+
+        public static PropertyValue FromParseString(string str)
+        {
+            string[] rgstr = str.Split('^');
+            if (rgstr.Length != 3)
+                throw new Exception("String format incorrect, expected 'name~double~string'");
+
+            double dfVal = 0;
+            double.TryParse(rgstr[1], out dfVal);
+
+            return new PropertyValue(rgstr[0], dfVal, rgstr[2]);
+        }
     }
 
     public class PropertyBag : IEnumerable<PropertyValue>
@@ -104,6 +121,24 @@ namespace SimpleGraphing
                 return strDefault;
 
             return val.TextValue;
+        }
+
+        public void SetProperty(string strName, double dfVal)
+        {
+            PropertyValue val = Find(strName);
+            if (val == null)
+                Add(strName, dfVal);
+            else
+                val.Value = dfVal;
+        }
+
+        public void SetProperty(string strName, string strVal)
+        {
+            PropertyValue val = Find(strName);
+            if (val == null)
+                Add(strName, strVal);
+            else
+                val.TextValue = strVal;
         }
 
         public PropertyValue Find(string strName)
@@ -186,6 +221,37 @@ namespace SimpleGraphing
 
             return set;
         }
-    }
 
+        public string ToParseString()
+        {
+            string str = "";
+
+            foreach (PropertyValue val in m_rgProperties)
+            {
+                str += val.ToParseString() + "$";
+            }
+
+            return str.TrimEnd('$');
+        }
+
+        public static PropertyBag FromParseString(string str)
+        {
+            PropertyBag bag = new PropertyBag();
+            if (!string.IsNullOrEmpty(str))
+            {
+                string[] rgstr = str.Split('$');
+
+                foreach (string str1 in rgstr)
+                {
+                    if (!string.IsNullOrEmpty(str1))
+                    {
+                        PropertyValue val = PropertyValue.FromParseString(str1);
+                        bag.Add(val);
+                    }
+                }
+            }
+
+            return bag;
+        }
+    }
 }
