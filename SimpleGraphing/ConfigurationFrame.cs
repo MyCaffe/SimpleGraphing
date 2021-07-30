@@ -32,15 +32,17 @@ namespace SimpleGraphing
         double m_dfMinYRange = 0;
         Rectangle m_rcActivePlotAreaBounds = new Rectangle();
         Tuple<double, double> m_activeYValueRange = new Tuple<double, double>(0, 0);
+        Tuple<double, double> m_activeYDataRange = new Tuple<double, double>(0, 0);
 
         public ConfigurationFrame()
         {
         }
 
-        public void SetActiveValues(Tuple<double, double> yVal, Rectangle rc)
+        public void SetActiveValues(Tuple<double, double> yVal, Tuple<double, double> yData, Rectangle rc)
         {
             m_rcActivePlotAreaBounds = rc;
             m_activeYValueRange = yVal;
+            m_activeYDataRange = yData;
         }
 
         public Rectangle ActivePlotAreaBounds
@@ -51,6 +53,11 @@ namespace SimpleGraphing
         public Tuple<double, double> ActiveYValueRange
         {
             get { return m_activeYValueRange; }
+        }
+
+        public Tuple<double, double> ActiveYDataRange
+        {
+            get { return m_activeYDataRange; }
         }
 
         public List<Tuple<double, float>> GetTargetLinePositions(string strName)

@@ -23,6 +23,8 @@ namespace SimpleGraphing
         protected int m_nScrollOffset = 0;
         protected int m_nDayLast = -1;
         protected int m_nDayCount = 0;
+        protected double m_dfDataMin = double.MaxValue;
+        protected double m_dfDataMax = -double.MaxValue;
 
         public GraphAxis()
         {
@@ -41,6 +43,28 @@ namespace SimpleGraphing
             }
 
             dispose();
+        }
+
+        public double ActiveMin
+        {
+            get { return m_dfMin; }
+        }
+
+        public double ActiveMax
+        {
+            get { return m_dfMax; }
+        }
+
+        public double DataMin
+        {
+            get { return m_dfDataMin; }
+            set { m_dfDataMin = value; }
+        }
+
+        public double DataMax
+        {
+            get { return m_dfDataMax; }
+            set { m_dfDataMax = value; }
         }
 
         public ConfigurationAxis Configuration

@@ -19,6 +19,8 @@ namespace SimpleGraphing
         Graphics m_graphics = null;
         double m_dfActiveMinY = 0;
         double m_dfActiveMaxY = 0;
+        double m_dfDataMinY = 0;
+        double m_dfDataMaxY = 0;
 
         public GraphFrame(ModuleCache cache)
         {
@@ -188,30 +190,32 @@ namespace SimpleGraphing
                 }
             }
 
-            if (bMin || bMax)
+            double dfAbsMin;
+            double dfAbsMax;
+            data.GetAbsMinMax(0, 0, out dfAbsMin, out dfAbsMax);
+
+            if (bMin)
             {
-                double dfAbsMin;
-                double dfAbsMax;
-                data.GetAbsMinMax(0, 0, out dfAbsMin, out dfAbsMax);
+                dfMin = Math.Min(dfMin, dfAbsMin);
+                dfMin = Math.Min(dfMin, dfLineMin);
+            }
 
-                if (bMin)
-                {
-                    dfMin = Math.Min(dfMin, dfAbsMin);
-                    dfMin = Math.Min(dfMin, dfLineMin);
-                }
-
-                if (bMax)
-                {
-                    dfMax = Math.Max(dfMax, dfAbsMax);
-                    dfMax = Math.Max(dfMax, dfLineMax);
-                }
+            if (bMax)
+            {
+                dfMax = Math.Max(dfMax, dfAbsMax);
+                dfMax = Math.Max(dfMax, dfLineMax);
             }
 
             m_gx.SetMinMax(dfMin, dfMax);
             m_gy.SetMinMax(dfMin, dfMax);
 
+            dfMin = m_gy.ActiveMin;
+            dfMax = m_gy.ActiveMax;
+
             m_dfActiveMinY = dfMin;
             m_dfActiveMaxY = dfMax;
+            m_dfDataMinY = dfAbsMin;
+            m_dfDataMaxY = dfAbsMax;
         }
 
         public PlotCollectionSet Resize(int nX, int nY, int nWidth, int nHeight, bool bResetStartPos = false)
@@ -247,7 +251,7 @@ namespace SimpleGraphing
             m_gy.Render(g);
             m_graphics = g;
 
-            m_config.SetActiveValues(new Tuple<double, double>(m_dfActiveMinY, m_dfActiveMaxY), m_plotArea.Bounds);
+            m_config.SetActiveValues(new Tuple<double, double>(m_dfActiveMinY, m_dfActiveMaxY), new Tuple<double, double>(m_dfDataMinY, m_dfDataMaxY), m_plotArea.Bounds);
         }
 
         private void m_gx_OnNewHour(object sender, TickValueArg e)
