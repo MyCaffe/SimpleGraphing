@@ -366,6 +366,11 @@ namespace SimpleGraphing
                 col.Add(p, bCalculateMinMax);
             }
 
+            foreach (KeyValuePair<string, double> kv in Parameters)
+            {
+                col.Parameters.Add(kv.Key, kv.Value);
+            }
+
             return col;
         }
 
