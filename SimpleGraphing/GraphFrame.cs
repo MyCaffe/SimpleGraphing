@@ -251,7 +251,7 @@ namespace SimpleGraphing
             m_gy.Render(g);
             m_graphics = g;
 
-            m_config.SetActiveValues(new Tuple<double, double>(m_dfActiveMinY, m_dfActiveMaxY), new Tuple<double, double>(m_dfDataMinY, m_dfDataMaxY), m_plotArea.Bounds);
+            m_config.SetActiveValues(new Tuple<double, double>(m_dfActiveMinY, m_dfActiveMaxY), new Tuple<double, double>(m_gy.ActiveMin, m_gy.ActiveMax), m_plotArea.Bounds);
         }
 
         private void m_gx_OnNewHour(object sender, TickValueArg e)
