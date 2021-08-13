@@ -62,7 +62,7 @@ namespace SimpleGraphing
             if (dfVal < 0)
             {
                 double dfRange = Math.Abs(m_dfMin);
-                if (dfRange == 0 || m_dfMin == m_dfMax)
+                if (dfRange == 0)
                     return 0.5;
 
                 double dfScaled = 1.0 - Math.Abs(dfVal) / dfRange;
@@ -71,7 +71,7 @@ namespace SimpleGraphing
             else if (dfVal > 0)
             {
                 double dfRange = Math.Abs(m_dfMax);
-                if (dfRange == 0 || m_dfMin == m_dfMax)
+                if (dfRange == 0)
                     return 0.5;
 
                 double dfScaled = Math.Abs(dfVal) / dfRange;
