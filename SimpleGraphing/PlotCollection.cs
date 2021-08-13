@@ -357,6 +357,7 @@ namespace SimpleGraphing
             col.m_bExcludeFromMinMax = m_bExcludeFromMinMax;
             col.m_minmaxTarget = m_minmaxTarget;
             col.m_bLockMinMax = m_bLockMinMax;
+            col.m_dtLastUpdate = m_dtLastUpdate;
 
             for (int i=nIdxStart; i<m_rgPlot.Count; i++)
             {
