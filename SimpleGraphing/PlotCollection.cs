@@ -28,6 +28,7 @@ namespace SimpleGraphing
         bool m_bLockMinMax = false;
         Dictionary<string, double> m_rgParam = new Dictionary<string, double>();
         Dictionary<string, object> m_rgParamEx = new Dictionary<string, object>();
+        DateTime m_dtLastUpdate = DateTime.MinValue;
 
         public event EventHandler<PlotUpdateArgs> OnUpdatePlot;
 
@@ -50,6 +51,12 @@ namespace SimpleGraphing
             m_nMax = nMax;
             m_dfXIncrement = dfXInc;
             m_strName = strName;
+        }
+
+        public DateTime LastUpdateTime
+        {
+            get { return m_dtLastUpdate; }
+            set { m_dtLastUpdate = value; }
         }
 
         public Dictionary<string, double> Parameters
