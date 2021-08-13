@@ -62,8 +62,8 @@ namespace SimpleGraphing
             if (dfVal < 0)
             {
                 double dfRange = Math.Abs(m_dfMin);
-                if (dfRange == 0)
-                    return dfInvalidVal;
+                if (dfRange == 0 || m_dfMin == m_dfMax)
+                    return 0.5;
 
                 double dfScaled = 1.0 - Math.Abs(dfVal) / dfRange;
                 return 0.5 * dfScaled;
@@ -71,8 +71,8 @@ namespace SimpleGraphing
             else if (dfVal > 0)
             {
                 double dfRange = Math.Abs(m_dfMax);
-                if (dfRange == 0)
-                    return dfInvalidVal;
+                if (dfRange == 0 || m_dfMin == m_dfMax)
+                    return 0.5;
 
                 double dfScaled = Math.Abs(dfVal) / dfRange;
                 return 0.5 + 0.5 * dfScaled;
