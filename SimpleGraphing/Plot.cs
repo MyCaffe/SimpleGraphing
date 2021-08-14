@@ -309,6 +309,22 @@ namespace SimpleGraphing
                 m_rgParams[strParam] = df;
         }
 
+        public void AddToParameter(string strParam, double df)
+        {
+            AddToParameter(strParam, (float)df);
+        }
+
+        public void AddToParameter(string strParam, float df)
+        {
+            if (m_rgParams == null)
+                m_rgParams = new Dictionary<string, float>();
+
+            if (!m_rgParams.ContainsKey(strParam))
+                m_rgParams.Add(strParam, df);
+            else
+                m_rgParams[strParam] += df;
+        }
+
         public float? GetParameter(string strParam)
         {
             if (m_rgParams == null)
