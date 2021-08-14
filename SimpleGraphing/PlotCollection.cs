@@ -371,8 +371,11 @@ namespace SimpleGraphing
                 if (bSetDateOnTag && p.Tag == null)
                     p.Tag = DateTime.FromFileTimeUtc((long)p.X);
 
-                col.Add(p, bCalculateMinMax);
+                col.Add(p, false);
             }
+
+            if (bCalculateMinMax)
+                col.SetMinMax();
 
             foreach (KeyValuePair<string, double> kv in Parameters)
             {
