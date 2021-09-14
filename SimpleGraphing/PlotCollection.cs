@@ -1058,6 +1058,19 @@ namespace SimpleGraphing
             return -1;
         }
 
+        public int FindFromEnd(DateTime dt)
+        {
+            for (int i = m_rgPlot.Count-1; i>=0; i--)
+            {
+                DateTime dt1 = (DateTime)m_rgPlot[i].Tag;
+
+                if (dt1 <= dt)
+                    return i;
+            }
+
+            return -1;
+        }
+
         public void SetAllActive(bool bActivate)
         {
             foreach (Plot p in m_rgPlot)
@@ -1193,7 +1206,7 @@ namespace SimpleGraphing
         /// @see [Linear Regresssion: Simple Steps](https://www.statisticshowto.datasciencecentral.com/probability-and-statistics/regression-analysis/find-a-linear-regression-equation/)
         /// </remarks>
         /// <returns>A tuple containing the A and B values is returned.</returns>
-        public Tuple<double, double> CalculateLinearRegressionAB(int nDataIdx = -1)
+        public Tuple<double, double> CalculateLinearRegressionAB(int nDataIdx = -1, int nStartIdx = 0, int nEndIdx = -1)
         {
             double dfSumX = 0;
             double dfSumY = 0;
@@ -1201,7 +1214,10 @@ namespace SimpleGraphing
             double dfSumXY = 0;
             int nN = 0;
 
-            for (int i = 0; i < m_rgPlot.Count; i++)
+            if (nEndIdx < 0)
+                nEndIdx = m_rgPlot.Count - 1;
+
+            for (int i = nStartIdx; i <= nEndIdx; i++)
             {
                 int nIdx = i + 1;
                 Plot p = m_rgPlot[i];
@@ -1247,15 +1263,18 @@ namespace SimpleGraphing
         /// <param name="dfConfidenceWidth">Returns the regression line confidence width.</param>
         /// <param name="nDataIdx">Optionally, specifies the data index into Y_values to use (default = -1, which uses Y).</param>
         /// <returns>The regression line is returned.</returns>
-        public PlotCollection CalculateLinearRegressionLines(out double dfSlope, out double dfConfidenceWidth, int nDataIdx = -1)
+        public PlotCollection CalculateLinearRegressionLines(out double dfSlope, out double dfConfidenceWidth, int nDataIdx = -1, int nStartIdx = 0, int nEndIdx = -1)
         {
-            Tuple<double, double> ab = CalculateLinearRegressionAB(nDataIdx);
+            Tuple<double, double> ab = CalculateLinearRegressionAB(nDataIdx, nStartIdx, nEndIdx);
 
             PlotCollection col = new PlotCollection(Name + " Regresssion Line");
             List<float> rgRegY = new List<float>();
             List<float> rgError = new List<float>();
 
-            for (int i = 0; i < m_rgPlot.Count; i++)
+            if (nEndIdx < 0)
+                nEndIdx = m_rgPlot.Count - 1;
+
+            for (int i = nStartIdx; i <= nEndIdx; i++)
             {
                 Plot p0 = m_rgPlot[i];
                 
