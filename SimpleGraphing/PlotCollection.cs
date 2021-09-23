@@ -1214,7 +1214,7 @@ namespace SimpleGraphing
             double dfSumXY = 0;
             int nN = 0;
 
-            if (nEndIdx < 0)
+            if (nEndIdx < 0 || nEndIdx > m_rgPlot.Count-1)
                 nEndIdx = m_rgPlot.Count - 1;
 
             for (int i = nStartIdx; i <= nEndIdx; i++)
