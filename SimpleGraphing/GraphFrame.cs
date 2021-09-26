@@ -50,6 +50,11 @@ namespace SimpleGraphing
             }
         }
 
+        public GraphPlotArea PlotArea
+        {
+            get { return m_plotArea; }
+        }
+
         public ConfigurationFrame Configuration
         {
             get { return m_config; }
