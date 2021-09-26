@@ -38,6 +38,11 @@ namespace SimpleGraphing
             m_output = m_surface.BuildGraph(m_config, null);
         }
 
+        public GraphSurface Surface
+        {
+            get { return m_surface; }
+        }
+
         public void SaveConfiguration(string strFile)
         {
             string strExt = Path.GetExtension(strFile).ToLower();

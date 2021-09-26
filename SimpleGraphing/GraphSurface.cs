@@ -49,6 +49,11 @@ namespace SimpleGraphing
             }
         }
 
+        public GraphFrameCollection Frames
+        {
+            get { return m_frames; }
+        }
+
         public Rectangle Bounds
         {
             get { return m_rcBounds; }
