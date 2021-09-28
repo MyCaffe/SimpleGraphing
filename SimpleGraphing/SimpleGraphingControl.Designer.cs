@@ -45,7 +45,7 @@
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.pbImage);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1064, 638);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1064, 633);
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
             this.toolStripContainer1.Name = "toolStripContainer1";
             this.toolStripContainer1.Size = new System.Drawing.Size(1064, 658);
@@ -57,10 +57,12 @@
             this.pbImage.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pbImage.Location = new System.Drawing.Point(0, 0);
             this.pbImage.Name = "pbImage";
-            this.pbImage.Size = new System.Drawing.Size(1064, 638);
+            this.pbImage.Size = new System.Drawing.Size(1064, 633);
             this.pbImage.TabIndex = 0;
             this.pbImage.TabStop = false;
             this.pbImage.Paint += new System.Windows.Forms.PaintEventHandler(this.pbImage_Paint);
+            this.pbImage.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pbImage_MouseClick);
+            this.pbImage.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.pbImage_MouseDoubleClick);
             this.pbImage.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pbImage_MouseMove);
             // 
             // hScrollBar1

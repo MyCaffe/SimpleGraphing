@@ -29,6 +29,8 @@ namespace SimpleGraphing
         public event EventHandler<PaintEventArgs> OnUserPaint;
         public event EventHandler<MouseEventArgs> OnUserMouseMove;
         public event EventHandler<ScrollEventArgs> OnUserScroll;
+        public event EventHandler<MouseEventArgs> OnUserMouseClick;
+        public event EventHandler<MouseEventArgs> OnUserMouseDoubleClick;
 
         public SimpleGraphingControl()
         {
@@ -477,6 +479,25 @@ namespace SimpleGraphing
             if (OnUserMouseMove != null)
                 OnUserMouseMove(sender, e);
         }
+
+        private void pbImage_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (DesignMode)
+                return;
+
+            if (OnUserMouseClick != null)
+                OnUserMouseClick(sender, e);
+        }
+
+        private void pbImage_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (DesignMode)
+                return;
+
+            if (OnUserMouseDoubleClick != null)
+                OnUserMouseDoubleClick(sender, e);
+        }
+
 
         public void SetCrossHairsLocation(Point pt)
         {
