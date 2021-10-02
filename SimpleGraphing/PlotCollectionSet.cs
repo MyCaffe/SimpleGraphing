@@ -299,6 +299,9 @@ namespace SimpleGraphing
         {
             if (!bUniqueOnly)
             {
+                if (set.m_rgSet.Count == 0)
+                    return 0;
+
                 m_rgSet.AddRange(set.m_rgSet);
                 return set.m_rgSet[0].Count;
             }
