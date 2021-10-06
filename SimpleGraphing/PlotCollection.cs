@@ -1274,6 +1274,9 @@ namespace SimpleGraphing
             if (nEndIdx < 0)
                 nEndIdx = m_rgPlot.Count - 1;
 
+            if (nEndIdx >= m_rgPlot.Count)
+                nEndIdx = m_rgPlot.Count - 1;
+
             for (int i = nStartIdx; i <= nEndIdx; i++)
             {
                 Plot p0 = m_rgPlot[i];
