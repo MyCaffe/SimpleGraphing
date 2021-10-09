@@ -402,6 +402,7 @@ namespace SimpleGraphing
             p.Count = Count;
             p.m_tag = m_tag;
             p.m_tagEx = m_tagEx;
+            p.m_nIndex = m_nIndex;
 
             if (m_rgParams != null)
             {
