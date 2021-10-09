@@ -257,6 +257,21 @@ namespace SimpleGraphing
             nDayLast = DayLast;
         }
 
+        public DateTime TimeStamp
+        {
+            get { return m_dt; }
+        }
+
+        public double Value
+        {
+            get { return m_dfVal; }
+        }
+
+        public Plot Plot
+        {
+            get { return m_plot; }
+        }
+
         public override string ToString()
         {
             string strNewHour = (m_bNewHour) ? "NEW" : "OLD";
