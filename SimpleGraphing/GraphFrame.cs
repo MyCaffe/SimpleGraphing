@@ -50,6 +50,16 @@ namespace SimpleGraphing
             }
         }
 
+        public GraphAxisX XAxis
+        {
+            get { return m_gx; }
+        }
+
+        public GraphAxisY YAxis
+        {
+            get { return m_gy; }
+        }
+
         public GraphPlotArea PlotArea
         {
             get { return m_plotArea; }

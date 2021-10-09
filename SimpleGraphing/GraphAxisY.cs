@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SimpleGraphing
 {
-    class GraphAxisY : GraphAxis
+    public class GraphAxisY : GraphAxis
     {
         int m_nLongOffset = 0;
         double m_dfMinLast = 0;
