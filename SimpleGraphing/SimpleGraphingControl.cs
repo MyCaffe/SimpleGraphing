@@ -40,6 +40,11 @@ namespace SimpleGraphing
             m_output = m_surface.BuildGraph(m_config, null);
         }
 
+        public List<PlotCollectionSet> Data
+        {
+            get { return m_data; }
+        }
+
         public GraphSurface Surface
         {
             get { return m_surface; }
