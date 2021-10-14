@@ -52,7 +52,7 @@ namespace SimpleGraphing.GraphRender
 
         private float getYValue(double dfMin, double dfMax, double dfPMin, double dfPMax, double fY, bool bNative)
         {
-            if (!bNative)
+            if (!bNative && dfPMin != dfPMax)
             {
                 double dfRange = dfMax - dfMin;
                 double dfPRange = dfPMax - dfPMin;
