@@ -33,7 +33,7 @@ namespace SimpleGraphing.GraphData
         public EmaData Pre(PlotCollectionSet dataset, int nDataIdx)
         {
             PlotCollection dataSrc = dataset[nDataIdx];
-            PlotCollection dataDst = new PlotCollection(dataSrc.Name + " EMA");
+            PlotCollection dataDst = new PlotCollection(dataSrc.Name + " EMA" + m_config.Interval.ToString());
             return new EmaData(dataSrc, dataDst, m_config.Interval);
         }
 

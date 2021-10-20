@@ -34,7 +34,7 @@ namespace SimpleGraphing.GraphData
         public RsiData Pre(PlotCollectionSet dataset, int nDataIdx)
         {
             PlotCollection dataSrc = dataset[nDataIdx];
-            PlotCollection dataDst = new PlotCollection(dataSrc.Name + " RSI");
+            PlotCollection dataDst = new PlotCollection(dataSrc.Name + " RSI" + m_config.Interval.ToString());
             return new RsiData(dataSrc, dataDst, m_config.Interval);
         }
 

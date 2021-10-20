@@ -33,7 +33,7 @@ namespace SimpleGraphing.GraphData
         public SmaData Pre(PlotCollectionSet dataset, int nDataIdx)
         {
             PlotCollection dataSrc = dataset[nDataIdx];
-            PlotCollection dataDst = new PlotCollection(dataSrc.Name + " SMA");
+            PlotCollection dataDst = new PlotCollection(dataSrc.Name + " SMA" + m_config.Interval.ToString());
             return new SmaData(dataSrc, dataDst, m_config.Interval);
         }
 
