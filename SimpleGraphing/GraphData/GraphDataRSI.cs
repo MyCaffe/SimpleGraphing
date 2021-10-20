@@ -99,6 +99,9 @@ namespace SimpleGraphing.GraphData
             data.DstData[i].Y = (float)data.RSI;
             data.DstData[i].Active = bActive;
 
+            if (bAddToParams && bActive)
+                data.SrcData[i].SetParameter(data.DstData.Name, (float)data.RSI);
+
             return data.RSI;
         }
 
