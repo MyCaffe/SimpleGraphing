@@ -50,14 +50,17 @@ namespace SimpleGraphing.GraphData
                 if (data.Count < m_config.Interval)
                 {
                     data.SMA += dataSrc[i].Y * dfInc;
-                    dataDst.Add(dataSrc[i].X, dataSrc[i].Y, false, dataSrc[i].Index);
+
+                    if (dataDst != null)
+                        dataDst.Add(dataSrc[i].X, dataSrc[i].Y, false, dataSrc[i].Index);
                 }
                 else
                 {
                     if (i < dataSrc.Count - nLookahead)
                         data.SMA = (data.SMA * (1 - dfInc)) + dataSrc[i].Y * dfInc;
 
-                    dataDst.Add(dataSrc[i].X, data.SMA, true, dataSrc[i].Index);
+                    if (dataDst != null)
+                        dataDst.Add(dataSrc[i].X, data.SMA, true, dataSrc[i].Index);
 
                     if (bAddToParams)
                         dataSrc[i].SetParameter(dataDst.Name, (float)data.SMA);
@@ -70,7 +73,8 @@ namespace SimpleGraphing.GraphData
             }
             else
             {
-                dataDst.Add(dataSrc[i].X, dataSrc[i].Y, false, dataSrc[i].Index);
+                if (dataDst != null)
+                    dataDst.Add(dataSrc[i].X, dataSrc[i].Y, false, dataSrc[i].Index);
             }
 
             return data.SMA;

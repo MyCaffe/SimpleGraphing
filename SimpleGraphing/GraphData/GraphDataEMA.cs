@@ -53,11 +53,13 @@ namespace SimpleGraphing.GraphData
                     {
                         data.Total += dataSrc[i].Y;
                         data.Index++;
-                        dataDst.Add(dataSrc[i].X, data.Total / (data.Index + 1), false, dataSrc[i].Index);
+                        if (dataDst != null)
+                            dataDst.Add(dataSrc[i].X, data.Total / (data.Index + 1), false, dataSrc[i].Index);
                     }
                     else
                     {
-                        dataDst.Add(dataSrc[i].X, dataSrc[i].Y, false, dataSrc[i].Index);
+                        if (dataDst != null)
+                            dataDst.Add(dataSrc[i].X, dataSrc[i].Y, false, dataSrc[i].Index);
                     }
                 }
                 else
@@ -70,7 +72,8 @@ namespace SimpleGraphing.GraphData
                     else
                         bActive = false;
 
-                    dataDst.Add(data.EMA, bActive, dataSrc[i].Index);
+                    if (dataDst != null)
+                        dataDst.Add(data.EMA, bActive, dataSrc[i].Index);
 
                     if (bAddToParams && bActive)
                         dataSrc[i].SetParameter(dataDst.Name, (float)data.EMA);
