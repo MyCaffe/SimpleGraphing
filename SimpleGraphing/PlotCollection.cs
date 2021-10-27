@@ -1313,10 +1313,10 @@ namespace SimpleGraphing
             return col;
         }
 
-        public List<Tuple<DateTime?, double, double>> CalculateRangeStatistics(int nStartIdx = 0, int nCount = 20)
+        public RangeStatisticsCollection CalculateRangeStatistics(int nStartIdx = 0, int nCount = 20)
         {
             CalculationArray ca = new CalculationArray(nCount);
-            List<Tuple<DateTime?, double, double>> rgAveStdDev = new List<Tuple<DateTime?, double, double>>();
+            RangeStatisticsCollection rgCol = new RangeStatisticsCollection();
 
             for (int i = nStartIdx; i < m_rgPlot.Count; i++)
             {
@@ -1333,11 +1333,11 @@ namespace SimpleGraphing
                         dt = (DateTime)p.Tag;
 
                     if (ca.Add(dfRange, dt))
-                        rgAveStdDev.Add(new Tuple<DateTime?, double, double>(ca.TimeStamp, ca.Average, ca.StdDev));
+                        rgCol.Add(new RangeStatistics(ca.Average, ca.StdDev, ca.GetLast(0), ca.GetLast(-1), ca.GetLast(-2), ca.TimeStamp));
                 }
             }
 
-            return rgAveStdDev;
+            return rgCol;
         }
 
         public void Normalize(bool bSetMinMax = false, PlotCollection col = null)
@@ -1494,6 +1494,108 @@ namespace SimpleGraphing
         }
     }
 
+    public class RangeStatisticsCollection : IEnumerable<RangeStatistics>
+    {
+        List<RangeStatistics> m_rgItems = new List<RangeStatistics>();
+
+        public RangeStatisticsCollection()
+        {
+        }
+
+        public int Count
+        {
+            get { return m_rgItems.Count; }
+        }
+
+        public RangeStatistics this[int nIdx]
+        {
+            get { return m_rgItems[nIdx]; }
+        }
+
+        public void Add(RangeStatistics r)
+        {
+            m_rgItems.Add(r);
+        }
+
+        public IEnumerator<RangeStatistics> GetEnumerator()
+        {
+            return m_rgItems.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return m_rgItems.GetEnumerator();
+        }
+    }
+
+    public class RangeStatistics
+    {
+        DateTime? m_dt;
+        double m_dfRangeAve;
+        double m_dfRangeStdDev;
+        double m_dfRangeLast0;
+        double m_dfRangeLast1;
+        double m_dfRangeLast2;
+        double m_dfRangeLastMax;
+
+        public RangeStatistics(double dfRangeAve, double dfRangeStdDev, double dfRangeLast0, double dfRangeLast1, double dfRangeLast2, DateTime? dt)
+        {
+            m_dt = dt;
+            m_dfRangeAve = dfRangeAve;
+            m_dfRangeStdDev = dfRangeStdDev;
+            m_dfRangeLast0 = dfRangeLast0;
+            m_dfRangeLast1 = dfRangeLast1;
+            m_dfRangeLast2 = dfRangeLast2;
+            m_dfRangeLastMax = Math.Max(dfRangeLast0, Math.Max(dfRangeLast1, dfRangeLast2));
+        }
+
+        public bool IsValid
+        {
+            get
+            {
+                if (m_dfRangeAve == 0 || m_dfRangeStdDev == 0)
+                    return false;
+
+                return true;
+            }
+        }
+
+        public DateTime? TimeStamp
+        {
+            get { return m_dt; }
+        }
+
+        public double RangeAverage
+        {
+            get { return m_dfRangeAve; }
+        }
+
+        public double RangeStdDev
+        {
+            get { return m_dfRangeStdDev; }
+        }
+
+        public double RangeLast0
+        {
+            get { return m_dfRangeLast0; }
+        }
+
+        public double RangeLast1
+        {
+            get { return m_dfRangeLast1; }
+        }
+
+        public double RangeLast2
+        {
+            get { return m_dfRangeLast2; }
+        }
+
+        public double RangeLastMax
+        {
+            get { return m_dfRangeLastMax; }
+        }
+    }
+
     class CalculationArray
     {
         int m_nMax = 0;
@@ -1527,6 +1629,18 @@ namespace SimpleGraphing
         public DateTime? TimeStamp
         {
             get { return m_dt; }
+        }
+
+        public double GetLast(int nOffset)
+        {
+            if (nOffset > 0)
+                throw new Exception("The offset from the back must be <= 0.");
+
+            int nIdx = m_rgdf.Count + (nOffset - 1);
+            if (nIdx < 0)
+                throw new Exception("There are not enough items in the list to reach the specified offset from the back.");
+
+            return m_rgdf[nIdx];
         }
 
         public double Average
