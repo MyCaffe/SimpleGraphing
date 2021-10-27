@@ -1536,7 +1536,6 @@ namespace SimpleGraphing
         double m_dfRangeLast0;
         double m_dfRangeLast1;
         double m_dfRangeLast2;
-        double m_dfRangeLastMax;
 
         public RangeStatistics(double dfRangeAve, double dfRangeStdDev, double dfRangeLast0, double dfRangeLast1, double dfRangeLast2, DateTime? dt)
         {
@@ -1546,7 +1545,6 @@ namespace SimpleGraphing
             m_dfRangeLast0 = dfRangeLast0;
             m_dfRangeLast1 = dfRangeLast1;
             m_dfRangeLast2 = dfRangeLast2;
-            m_dfRangeLastMax = Math.Max(dfRangeLast0, Math.Max(dfRangeLast1, dfRangeLast2));
         }
 
         public bool IsValid
@@ -1590,9 +1588,20 @@ namespace SimpleGraphing
             get { return m_dfRangeLast2; }
         }
 
-        public double RangeLastMax
+        public double GetRangeLastMax(int nCount)
         {
-            get { return m_dfRangeLastMax; }
+            if (nCount <= 0 || nCount > 3)
+                throw new Exception("The nCount must be in the range [1,3].");
+
+            List<double> rg = new List<double>() { m_dfRangeLast0, m_dfRangeLast1, m_dfRangeLast2 };
+            double dfMax = 0;
+
+            for (int i = 0; i < nCount; i++)
+            {
+                dfMax = Math.Max(dfMax, rg[i]);
+            }
+
+            return dfMax;
         }
     }
 
