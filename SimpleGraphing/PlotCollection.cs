@@ -1313,6 +1313,33 @@ namespace SimpleGraphing
             return col;
         }
 
+        public List<Tuple<DateTime?, double, double>> CalculateRangeStatistics(int nStartIdx = 0, int nCount = 20)
+        {
+            CalculationArray ca = new CalculationArray(nCount);
+            List<Tuple<DateTime?, double, double>> rgAveStdDev = new List<Tuple<DateTime?, double, double>>();
+
+            for (int i = nStartIdx; i < m_rgPlot.Count; i++)
+            {
+                Plot p = m_rgPlot[i];
+
+                if (p.Active)
+                {
+                    double dfA = p.Y_values[0];
+                    double dfB = p.Y;
+                    double dfRange = Math.Abs(dfA - dfB);
+
+                    DateTime? dt = null;
+                    if (p.Tag != null)
+                        dt = (DateTime)p.Tag;
+
+                    if (ca.Add(dfRange, dt))
+                        rgAveStdDev.Add(new Tuple<DateTime?, double, double>(ca.TimeStamp, ca.Average, ca.StdDev));
+                }
+            }
+
+            return rgAveStdDev;
+        }
+
         public void Normalize(bool bSetMinMax = false, PlotCollection col = null)
         {
             double dfNewMin = 0;
@@ -1464,6 +1491,65 @@ namespace SimpleGraphing
         public Plot NewPlot
         {
             get { return m_plotNew; }
+        }
+    }
+
+    class CalculationArray
+    {
+        int m_nMax = 0;
+        List<double> m_rgdf = new List<double>();
+        double m_dfAve = 0;
+        DateTime? m_dt;
+        
+        public CalculationArray(int nMax)
+        {
+            m_nMax = nMax;
+        }
+
+        public bool Add(double df, DateTime? dt)
+        {
+            if (m_rgdf.Count == m_nMax)
+            {
+                m_dfAve -= (m_rgdf[0] / m_nMax);
+                m_rgdf.RemoveAt(0);
+            }
+
+            m_dt = dt;
+            m_dfAve += (df / m_nMax);
+            m_rgdf.Add(df);
+
+            if (m_rgdf.Count == m_nMax)
+                return true;
+
+            return false;
+        }
+
+        public DateTime? TimeStamp
+        {
+            get { return m_dt; }
+        }
+
+        public double Average
+        {
+            get { return m_dfAve; }
+        }
+
+        public double StdDev
+        {
+            get
+            {
+                double dfTotal = 0;
+
+                foreach (double df in m_rgdf)
+                {
+                    double dfDiff = (df - m_dfAve);
+                    dfTotal += (dfDiff * dfDiff);
+                }
+
+                double dfVar = dfTotal / m_rgdf.Count;
+
+                return Math.Sqrt(dfVar);
+            }
         }
     }
 }
