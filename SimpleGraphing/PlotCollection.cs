@@ -1326,7 +1326,7 @@ namespace SimpleGraphing
                 {
                     double dfA = p.Y_values[0];
                     double dfB = p.Y;
-                    double dfRange = Math.Abs(dfA - dfB);
+                    double dfRange = dfA - dfB;
 
                     DateTime? dt = null;
                     if (p.Tag != null)
@@ -1611,6 +1611,7 @@ namespace SimpleGraphing
         List<double> m_rgdf = new List<double>();
         double m_dfAve = 0;
         DateTime? m_dt;
+        double m_dfLast = 0;
         
         public CalculationArray(int nMax)
         {
@@ -1619,15 +1620,18 @@ namespace SimpleGraphing
 
         public bool Add(double df, DateTime? dt)
         {
+            double dfAbs = Math.Abs(df);
+
             if (m_rgdf.Count == m_nMax)
             {
                 m_dfAve -= (m_rgdf[0] / m_nMax);
                 m_rgdf.RemoveAt(0);
             }
 
+            m_dfLast = df;
             m_dt = dt;
-            m_dfAve += (df / m_nMax);
-            m_rgdf.Add(df);
+            m_dfAve += (dfAbs / m_nMax);
+            m_rgdf.Add(dfAbs);
 
             if (m_rgdf.Count == m_nMax)
                 return true;
@@ -1650,6 +1654,11 @@ namespace SimpleGraphing
                 throw new Exception("There are not enough items in the list to reach the specified offset from the back.");
 
             return m_rgdf[nIdx];
+        }
+
+        public double LastRaw
+        {
+            get { return m_dfLast; }
         }
 
         public double Average
