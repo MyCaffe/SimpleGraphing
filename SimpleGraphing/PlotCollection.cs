@@ -1333,7 +1333,7 @@ namespace SimpleGraphing
                         dt = (DateTime)p.Tag;
 
                     if (ca.Add(dfRange, dt))
-                        rgCol.Add(new RangeStatistics(ca.Average, ca.StdDev, ca.GetLast(0), ca.GetLast(-1), ca.GetLast(-2), ca.TimeStamp));
+                        rgCol.Add(new RangeStatistics(ca.Average, ca.StdDev, ca.GetLast(0), ca.GetLast(-1), ca.GetLast(-2), ca.LastRaw, ca.TimeStamp));
                 }
             }
 
@@ -1531,15 +1531,17 @@ namespace SimpleGraphing
     public class RangeStatistics
     {
         DateTime? m_dt;
+        double m_dfLastRaw;
         double m_dfRangeAve;
         double m_dfRangeStdDev;
         double m_dfRangeLast0;
         double m_dfRangeLast1;
         double m_dfRangeLast2;
 
-        public RangeStatistics(double dfRangeAve, double dfRangeStdDev, double dfRangeLast0, double dfRangeLast1, double dfRangeLast2, DateTime? dt)
+        public RangeStatistics(double dfRangeAve, double dfRangeStdDev, double dfRangeLast0, double dfRangeLast1, double dfRangeLast2, double dfLastRaw, DateTime? dt)
         {
             m_dt = dt;
+            m_dfLastRaw = dfLastRaw;
             m_dfRangeAve = dfRangeAve;
             m_dfRangeStdDev = dfRangeStdDev;
             m_dfRangeLast0 = dfRangeLast0;
@@ -1561,6 +1563,11 @@ namespace SimpleGraphing
         public DateTime? TimeStamp
         {
             get { return m_dt; }
+        }
+
+        public double LastRaw
+        {
+            get { return m_dfLastRaw; }
         }
 
         public double RangeAverage
