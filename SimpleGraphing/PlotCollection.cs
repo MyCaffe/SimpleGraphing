@@ -1340,6 +1340,49 @@ namespace SimpleGraphing
             return rgCol;
         }
 
+        public float CalculateCorrelationCoefficient(PlotCollection plots, int nDataIdx = -1, int nStartIdx = 0, int nEndIdx = -1)
+        {
+            if (plots.Count != Count)
+                throw new Exception("The two plot collections must have the same counts!");
+
+            if (nEndIdx < 0 || nEndIdx > m_rgPlot.Count - 1)
+                nEndIdx = m_rgPlot.Count - 1;
+
+            float fV0Total = 0;
+            float fV1Total = 0;
+            int nCount = 0;
+            for (int i = nStartIdx; i <= nEndIdx; i++)
+            {
+                float fV0 = (nDataIdx >= 0) ? m_rgPlot[i].Y_values[nDataIdx] : m_rgPlot[i].Y;
+                float fV1 = (nDataIdx >= 0) ? plots.m_rgPlot[i].Y_values[nDataIdx] : plots.m_rgPlot[i].Y;
+                fV0Total += fV0;
+                fV1Total += fV1;
+                nCount++;
+            }
+
+            float fV0Ave = fV0Total / nCount;
+            float fV1Ave = fV1Total / nCount;
+
+            float fSumA = 0;
+            float fSumB = 0;
+            float fSumC = 0;
+
+            for (int i = nStartIdx; i <= nEndIdx; i++)
+            {
+                float fV0 = (nDataIdx >= 0) ? m_rgPlot[i].Y_values[nDataIdx] : m_rgPlot[i].Y;
+                float fV1 = (nDataIdx >= 0) ? plots.m_rgPlot[i].Y_values[nDataIdx] : plots.m_rgPlot[i].Y;
+
+                float fV0Var = fV0 - fV0Ave;
+                float fV1Var = fV1 - fV1Ave;
+
+                fSumA += fV0Var * fV1Var;
+                fSumB += fV0Var * fV0Var;
+                fSumC += fV1Var * fV1Var;
+            }
+
+            return fSumA / (float)Math.Sqrt(fSumB * fSumC);
+        }
+
         public void Normalize(bool bSetMinMax = false, PlotCollection col = null)
         {
             double dfNewMin = 0;
@@ -1612,7 +1655,7 @@ namespace SimpleGraphing
         }
     }
 
-    class CalculationArray
+    public class CalculationArray
     {
         int m_nMax = 0;
         List<double> m_rgdf = new List<double>();
@@ -1623,6 +1666,11 @@ namespace SimpleGraphing
         public CalculationArray(int nMax)
         {
             m_nMax = nMax;
+        }
+
+        public bool IsFull
+        {
+            get { return (m_rgdf.Count == m_nMax) ? true : false; }
         }
 
         public bool Add(double df, DateTime? dt)
