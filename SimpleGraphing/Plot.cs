@@ -261,9 +261,12 @@ namespace SimpleGraphing
             set { m_bUseOverrideColors = value; }
         }
 
-        public void SetYValues(float[] rg)
+        public void SetYValues(float[] rg, bool? bActive = null)
         {
             m_rgfY = rg;
+
+            if (bActive.HasValue)
+                m_bActive = bActive.Value;
 
             if (m_nIdxPrimaryY > rg.Length)
                 m_nIdxPrimaryY = 0;
