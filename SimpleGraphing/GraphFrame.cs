@@ -50,6 +50,37 @@ namespace SimpleGraphing
             }
         }
 
+        public DateTime? GetDateAtLocation(Point pt)
+        {
+            if (!m_plotArea.Bounds.Contains(pt))
+                return null;
+
+            PlotCollection col = m_data[0];
+            int nXSpacing = m_config.XAxis.PlotSpacing;
+            int nX1 = m_plotArea.Bounds.Right;
+            int nX0 = nX1 - nXSpacing;
+
+            for (int i = col.Count - 1; i >= 0; i--)
+            {
+                if (nX1 <= m_plotArea.Bounds.Left)
+                    return null;
+
+                Plot plot = col[i];
+                if (plot.Tag == null)
+                    return null;
+
+                DateTime dt = (DateTime)plot.Tag;
+
+                if (nX0 <= pt.X && nX1 > pt.X)
+                    return dt;
+
+                nX1 = nX0;
+                nX0 -= nXSpacing;
+            }
+
+            return null;
+        }
+
         public GraphAxisX XAxis
         {
             get { return m_gx; }
