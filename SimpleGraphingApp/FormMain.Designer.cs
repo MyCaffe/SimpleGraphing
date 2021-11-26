@@ -47,7 +47,6 @@
             this.showPlotCollectionVisualizerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
-            this.simpleGraphingControl1 = new SimpleGraphing.SimpleGraphingControl();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.btnRun = new System.Windows.Forms.ToolStripButton();
             this.btnStop = new System.Windows.Forms.ToolStripButton();
@@ -59,6 +58,7 @@
             this.timerUI = new System.Windows.Forms.Timer(this.components);
             this.timerData = new System.Windows.Forms.Timer(this.components);
             this.openFileDialogBin = new System.Windows.Forms.OpenFileDialog();
+            this.simpleGraphingControl1 = new SimpleGraphing.SimpleGraphingControl();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -207,20 +207,6 @@
             // 
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStrip1);
             // 
-            // simpleGraphingControl1
-            // 
-            this.simpleGraphingControl1.Configuration = ((SimpleGraphing.Configuration)(resources.GetObject("simpleGraphingControl1.Configuration")));
-            this.simpleGraphingControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.simpleGraphingControl1.EnableCrossHairs = true;
-            this.simpleGraphingControl1.Location = new System.Drawing.Point(0, 0);
-            this.simpleGraphingControl1.Name = "simpleGraphingControl1";
-            this.simpleGraphingControl1.ScrollPercent = 0D;
-            this.simpleGraphingControl1.ShowScrollBar = true;
-            this.simpleGraphingControl1.Size = new System.Drawing.Size(762, 932);
-            this.simpleGraphingControl1.TabIndex = 0;
-            this.simpleGraphingControl1.UserUpdateCrosshairs = false;
-            this.simpleGraphingControl1.Load += new System.EventHandler(this.simpleGraphingControl1_Load);
-            // 
             // toolStrip1
             // 
             this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
@@ -334,6 +320,20 @@
             this.openFileDialogBin.Filter = "Binary Files (*.bin)|*.bin|CSV Files (*.csv)|*.csv||";
             this.openFileDialogBin.Title = "Select the binary file containing the list of PlotCollectionSets or a CSV file wi" +
     "th OHLC data.";
+            // 
+            // simpleGraphingControl1
+            // 
+            this.simpleGraphingControl1.Configuration = ((SimpleGraphing.Configuration)(resources.GetObject("simpleGraphingControl1.Configuration")));
+            this.simpleGraphingControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.simpleGraphingControl1.EnableCrossHairs = true;
+            this.simpleGraphingControl1.Location = new System.Drawing.Point(0, 0);
+            this.simpleGraphingControl1.Name = "simpleGraphingControl1";
+            this.simpleGraphingControl1.ScrollPercent = 0D;
+            this.simpleGraphingControl1.ShowScrollBar = true;
+            this.simpleGraphingControl1.Size = new System.Drawing.Size(762, 932);
+            this.simpleGraphingControl1.TabIndex = 0;
+            this.simpleGraphingControl1.UserUpdateCrosshairs = false;
+            this.simpleGraphingControl1.Load += new System.EventHandler(this.simpleGraphingControl1_Load);
             // 
             // FormMain
             // 

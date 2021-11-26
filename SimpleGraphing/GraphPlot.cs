@@ -194,6 +194,11 @@ namespace SimpleGraphing
                     m_irender = new GraphRenderZones(m_config, m_gx, m_gy, style);
                     break;
 
+                case ConfigurationPlot.PLOTTYPE.BOLLINGERBANDS:
+                    m_idata = new GraphDataBB(m_config);
+                    m_irender = new GraphRenderBB(m_config, m_gx, m_gy, style);
+                    break;
+
                 case ConfigurationPlot.PLOTTYPE.CUSTOM:
                     IGraphPlotDataEx idata = m_cache.Find(m_config.CustomName, true);
                     idata.Initialize(m_config);

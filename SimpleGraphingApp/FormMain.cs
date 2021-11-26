@@ -307,7 +307,7 @@ namespace SimpleGraphingApp
                     {
                         if (frame.Plots[j].PlotType == ConfigurationPlot.PLOTTYPE.CUSTOM)
                         {
-                            frame.Plots[j].Visible = true;
+                            frame.Plots[j].Visible = false;
                         }
                         else if (frame.Plots[j].PlotType == ConfigurationPlot.PLOTTYPE.HIGHLOW)
                         {
@@ -323,6 +323,9 @@ namespace SimpleGraphingApp
                                 frame.Plots[j].Name == "Conf-")
                                 frame.Plots[j].Visible = true;
                         }
+
+                        //if (frame.Plots[j].PlotType != ConfigurationPlot.PLOTTYPE.BOLLINGERBANDS)
+                        //    frame.Plots[j].Visible = false;
                     }
 
                     frame.Plots[4].Visible = bEnableOverlay;

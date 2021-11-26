@@ -75,12 +75,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GraphData\GraphDataBB.cs" />
     <Compile Include="GraphData\GraphDataHighLow.cs" />
     <Compile Include="GraphData\GraphDataRSI.cs" />
     <Compile Include="GraphData\GraphDataEMA.cs" />
     <Compile Include="GraphData\GraphDataZones.cs" />
     <Compile Include="GraphData\GraphDataSMA.cs" />
     <Compile Include="GraphRender\GraphRenderBase.cs" />
+    <Compile Include="GraphRender\GraphRenderBB.cs" />
     <Compile Include="GraphRender\GraphRenderRSI.cs" />
     <Compile Include="GraphRender\GraphRenderZones.cs" />
     <Compile Include="GraphRender\GraphRenderLineFill.cs" />

@@ -67,7 +67,8 @@ namespace SimpleGraphing
             CUSTOM,
             VOLUME,
             LINE_FILL,
-            ZONE
+            ZONE,
+            BOLLINGERBANDS
         }
 
         public enum PLOTSHAPE
@@ -121,9 +122,12 @@ namespace SimpleGraphing
 
             m_custiomBuildOrder = p.m_custiomBuildOrder;
 
-            foreach (PropertyValue prop in p.m_properties)
+            if (p.m_properties != null)
             {
-                m_properties.Add(prop);
+                foreach (PropertyValue prop in p.m_properties)
+                {
+                    m_properties.Add(prop);
+                }
             }
         }
 
@@ -617,6 +621,9 @@ namespace SimpleGraphing
 
             else if (str == PLOTTYPE.ZONE.ToString())
                 return PLOTTYPE.ZONE;
+
+            else if (str == PLOTTYPE.BOLLINGERBANDS.ToString())
+                return PLOTTYPE.BOLLINGERBANDS;
 
             throw new Exception("Unknown plot type '" + str + "'!");
         }
