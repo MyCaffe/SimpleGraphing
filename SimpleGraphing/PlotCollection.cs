@@ -615,7 +615,7 @@ namespace SimpleGraphing
             return true;
         }
 
-        public void GetMinMaxOverWindow(int nStartIdx, int nCount, out double dfMinX, out double dfMinY, out double dfMaxX, out double dfMaxY)
+        public void GetMinMaxOverWindow(int nStartIdx, int nCount, out double dfMinX, out double dfMinY, out double dfMaxX, out double dfMaxY, int nValIdx = -1)
         {
             dfMinX = double.MaxValue;
             dfMaxX = -double.MaxValue;
@@ -635,9 +635,16 @@ namespace SimpleGraphing
                     double dfValY = 0;
 
                     if (m_minmaxTarget == MINMAX_TARGET.VALUES)
-                        dfValY = m_rgPlot[nIdx].Y;
+                    {
+                        if (nValIdx < 0)
+                            dfValY = m_rgPlot[nIdx].Y;
+                        else
+                            dfValY = m_rgPlot[nIdx].Y_values[nValIdx];
+                    }
                     else if (m_minmaxTarget == MINMAX_TARGET.COUNT)
+                    {
                         dfValY = m_rgPlot[nIdx].Count.GetValueOrDefault();
+                    }
 
                     dfMinY = Math.Min(dfMinY, dfValY);
                     dfMaxY = Math.Max(dfMaxY, dfValY);
@@ -1673,9 +1680,9 @@ namespace SimpleGraphing
             get { return (m_rgdf.Count == m_nMax) ? true : false; }
         }
 
-        public bool Add(double df, DateTime? dt)
+        public bool Add(double df, DateTime? dt, bool bAbs = true)
         {
-            double dfAbs = Math.Abs(df);
+            double dfVal = (bAbs) ? Math.Abs(df) : df;
 
             if (m_rgdf.Count == m_nMax)
             {
@@ -1685,8 +1692,8 @@ namespace SimpleGraphing
 
             m_dfLast = df;
             m_dt = dt;
-            m_dfAve += (dfAbs / m_nMax);
-            m_rgdf.Add(dfAbs);
+            m_dfAve += (dfVal / m_nMax);
+            m_rgdf.Add(dfVal);
 
             if (m_rgdf.Count == m_nMax)
                 return true;
