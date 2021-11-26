@@ -16,23 +16,6 @@ namespace SimpleGraphing.GraphRender
         public GraphRenderBB(ConfigurationPlot config, GraphAxis gx, GraphAxis gy, GraphPlotStyle style)
             : base(config, gx, gy, style)
         {
-            //ConfigurationPlot cfg1 = config.Clone();
-            //cfg1.LineColor = Color.Maroon;
-            //cfg1.PlotFillColor = Color.Transparent;
-            //cfg1.PlotLineColor = Color.Transparent;
-            //m_lineTop = new GraphRenderLine(cfg1, gx, gy, new SimpleGraphing.GraphPlotStyle(cfg1));
-
-            //ConfigurationPlot cfg2 = config.Clone();
-            //cfg2.LineColor = Color.Cyan;
-            //cfg2.PlotFillColor = Color.Transparent;
-            //cfg2.PlotLineColor = Color.Transparent;
-            //m_lineBtm = new GraphRenderLine(cfg2, gx, gy, new SimpleGraphing.GraphPlotStyle(cfg2));
-
-            //ConfigurationPlot cfg3 = config.Clone();
-            //cfg3.LineColor = Color.Green;
-            //cfg3.PlotFillColor = Color.Transparent;
-            //cfg3.PlotLineColor = Color.Transparent;
-            //m_lineAve = new GraphRenderLine(cfg3, gx, gy, new SimpleGraphing.GraphPlotStyle(cfg3));
         }
 
         public string Name
@@ -76,22 +59,6 @@ namespace SimpleGraphing.GraphRender
 
         public void Render(Graphics g, PlotCollectionSet dataset, int nLookahead)
         {
-            //PlotCollection plotsB = dataset[m_config.DataIndexOnRender].Clone(0, true, 0);
-            //PlotCollection plotsA = dataset[m_config.DataIndexOnRender].Clone(0, true, 1);
-            //PlotCollection plotsT = dataset[m_config.DataIndexOnRender].Clone(0, true, 2);
-
-            //PlotCollectionSet setB = new PlotCollectionSet();
-            //setB.Add(plotsB);
-            //m_lineBtm.Render(g, setB, nLookahead);
-
-            //PlotCollectionSet setA = new PlotCollectionSet();
-            //setA.Add(plotsA);
-            //m_lineAve.Render(g, setA, nLookahead);
-
-            //PlotCollectionSet setT = new PlotCollectionSet();
-            //setT.Add(plotsT);
-            //m_lineTop.Render(g, setT, nLookahead);
-
             PlotCollection plots = dataset[m_config.DataIndexOnRender];
             List<int> rgX = m_gx.TickPositions;
             int nStartIdx = m_gx.StartPosition;
@@ -131,6 +98,14 @@ namespace SimpleGraphing.GraphRender
             string strDataParamBelow = (string.IsNullOrEmpty(strDataParam)) ? null : strDataParam + " Below";
             string strDataParamAve = (string.IsNullOrEmpty(strDataParam)) ? null : strDataParam + " Ave";
             string strDataParamAbove = (string.IsNullOrEmpty(strDataParam)) ? null : strDataParam + " Above";
+
+            int nTopOpacity = (int)m_config.GetExtraSetting("BollingerBandTopOpacity", 32);
+            if (nTopOpacity < 0 || nTopOpacity > 255)
+                nTopOpacity = 32;
+
+            int nBtmOpacity = (int)m_config.GetExtraSetting("BollingerBandBtmOpacity", 64);
+            if (nBtmOpacity < 0 || nBtmOpacity > 255)
+                nBtmOpacity = 64;
 
             for (int i = 0; i < rgX.Count; i++)
             {
@@ -177,7 +152,7 @@ namespace SimpleGraphing.GraphRender
                             rgpt.Add(new PointF(fX, fYa));
                             rgpt.Add(new PointF(fXLast, fYaLast));
                             rgpt.Add(rgpt[0]);
-                            clr = Color.FromArgb(32, m_config.PlotFillColor);
+                            clr = Color.FromArgb(nTopOpacity, m_config.PlotFillColor);
 
                             if (!m_style.Brushes.ContainsKey(clr))
                                 m_style.Brushes.Add(clr, new SolidBrush(clr));
@@ -190,7 +165,7 @@ namespace SimpleGraphing.GraphRender
                             rgpt.Add(new PointF(fX, fYa));
                             rgpt.Add(new PointF(fXLast, fYaLast));
                             rgpt.Add(rgpt[0]);
-                            clr = Color.FromArgb(64, m_config.PlotFillColor);
+                            clr = Color.FromArgb(nBtmOpacity, m_config.PlotFillColor);
 
                             if (!m_style.Brushes.ContainsKey(clr))
                                 m_style.Brushes.Add(clr, new SolidBrush(clr));
