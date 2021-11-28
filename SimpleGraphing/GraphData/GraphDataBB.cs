@@ -11,6 +11,15 @@ namespace SimpleGraphing.GraphData
         int m_nStdDev = 2;
         ConfigurationPlot m_config;
         CalculationArray m_caVal;
+        CalculationArray m_caValExt;
+        TARGET m_target = TARGET.DEFAULT;
+
+        enum TARGET
+        {
+            DEFAULT,
+            BAR,
+            RANGE
+        }
 
         public GraphDataBB(ConfigurationPlot config)
         {
@@ -35,8 +44,15 @@ namespace SimpleGraphing.GraphData
         public BbData Pre(PlotCollectionSet dataset, int nDataIdx)
         {
             m_caVal = new CalculationArray((int)m_config.Interval);
+            m_caValExt = new CalculationArray((int)m_config.Interval);
             PlotCollection dataSrc = dataset[nDataIdx];
             PlotCollection dataDst = new PlotCollection(dataSrc.Name + " BB" + m_config.Interval.ToString());
+
+            if (m_config.GetExtraSetting("BbTarget:BarRange", 0) == 1)
+                m_target = TARGET.BAR;
+            else if (m_config.GetExtraSetting("BbTarget:TotalRange", 0) == 1)
+                m_target = TARGET.RANGE;
+
             return new BbData(dataSrc, dataDst, m_config.Interval);
         }
 
@@ -61,10 +77,28 @@ namespace SimpleGraphing.GraphData
             
             float fTypicalValue = (data.SrcData[i].Y_values.Length == 4) ? (data.SrcData[i].Y_values[1] + data.SrcData[i].Y_values[2] + data.SrcData[i].Y_values[3]) / 3 : data.SrcData[i].Y;
 
+            if (data.SrcData[i].Y_values.Length == 4 && m_target != TARGET.DEFAULT)
+            {
+                if (m_target == TARGET.BAR)
+                {
+                    float fVal = (data.SrcData[i].Y_values[0] - data.SrcData[i].Y);
+                    m_caValExt.Add(fVal, null, true);
+                }
+                else if (m_target == TARGET.RANGE)
+                {
+                    float fVal = (data.SrcData[i].Y_values[1] - data.SrcData[i].Y_values[2]);
+                    m_caValExt.Add(fVal, null, true);
+                }
+            }
+
             if (m_caVal.Add(fTypicalValue, null, false))
             {
                 data.Ave = (float)m_caVal.Average;
                 float fStdevTp = (float)m_caVal.StdDev;
+
+                if (m_target != TARGET.DEFAULT)
+                    fStdevTp = (float)m_caValExt.StdDev;
+
                 data.BbAbove = data.Ave + (m_nStdDev * fStdevTp);
                 data.BbBelow = data.Ave - (m_nStdDev * fStdevTp);
                 plot.SetYValues(new float[] { (float)data.BbBelow, (float)data.Ave, (float)data.BbAbove }, true);
