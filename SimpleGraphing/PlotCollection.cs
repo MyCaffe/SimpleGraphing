@@ -29,6 +29,7 @@ namespace SimpleGraphing
         Dictionary<string, double> m_rgParam = new Dictionary<string, double>();
         Dictionary<string, object> m_rgParamEx = new Dictionary<string, object>();
         DateTime m_dtLastUpdate = DateTime.MinValue;
+        object m_syncObj = new object();
 
         public event EventHandler<PlotUpdateArgs> OnUpdatePlot;
 
@@ -359,28 +360,31 @@ namespace SimpleGraphing
             col.m_bLockMinMax = m_bLockMinMax;
             col.m_dtLastUpdate = m_dtLastUpdate;
 
-            for (int i=nIdxStart; i<m_rgPlot.Count; i++)
+            lock (m_syncObj)
             {
-                Plot p = m_rgPlot[i].Clone();
-                if (nPrimaryIndexY.HasValue)
-                    p.PrimaryIndexY = nPrimaryIndexY.Value;
+                for (int i = nIdxStart; i < m_rgPlot.Count; i++)
+                {
+                    Plot p = m_rgPlot[i].Clone();
+                    if (nPrimaryIndexY.HasValue)
+                        p.PrimaryIndexY = nPrimaryIndexY.Value;
 
-                if (bActive.HasValue)
-                    p.Active = bActive.Value;
+                    if (bActive.HasValue)
+                        p.Active = bActive.Value;
 
-                if (bSetDateOnTag && p.Tag == null)
-                    p.Tag = DateTime.FromFileTimeUtc((long)p.X);
+                    if (bSetDateOnTag && p.Tag == null)
+                        p.Tag = DateTime.FromFileTimeUtc((long)p.X);
 
-                col.Add(p, false);
+                    col.Add(p, false);
+                }
+
+                foreach (KeyValuePair<string, double> kv in Parameters)
+                {
+                    col.Parameters.Add(kv.Key, kv.Value);
+                }
             }
 
             if (bCalculateMinMax)
                 col.SetMinMax();
-
-            foreach (KeyValuePair<string, double> kv in Parameters)
-            {
-                col.Parameters.Add(kv.Key, kv.Value);
-            }
 
             return col;
         }
@@ -433,22 +437,25 @@ namespace SimpleGraphing
             if (nCount < 0)
                 nCount = m_rgPlot.Count + nCount;
 
-            for (int i = 0; i < nCount && i < m_rgPlot.Count; i++)
+            lock (m_syncObj)
             {
-                Plot p = m_rgPlot[i];
-                if (bSetDateOnTag && p.Tag == null)
-                    p.Tag = DateTime.FromFileTimeUtc((long)p.X);
+                for (int i = 0; i < nCount && i < m_rgPlot.Count; i++)
+                {
+                    Plot p = m_rgPlot[i];
+                    if (bSetDateOnTag && p.Tag == null)
+                        p.Tag = DateTime.FromFileTimeUtc((long)p.X);
 
-                p1.Add(p);
-            }
+                    p1.Add(p);
+                }
 
-            for (int i = nCount; i < m_rgPlot.Count; i++)
-            {
-                Plot p = m_rgPlot[i];
-                if (bSetDateOnTag && p.Tag == null)
-                    p.Tag = DateTime.FromFileTimeUtc((long)p.X);
+                for (int i = nCount; i < m_rgPlot.Count; i++)
+                {
+                    Plot p = m_rgPlot[i];
+                    if (bSetDateOnTag && p.Tag == null)
+                        p.Tag = DateTime.FromFileTimeUtc((long)p.X);
 
-                p2.Add(p);
+                    p2.Add(p);
+                }
             }
 
             p1.Tag = Tag;
@@ -825,27 +832,33 @@ namespace SimpleGraphing
 
         public Plot Add(double dfY, bool bActive = true, int nIdx = 0)
         {
-            Plot p = new SimpleGraphing.Plot(m_dfXPosition, dfY, null, bActive, nIdx);
-            m_rgPlot.Add(p);
-            m_dfXPosition += m_dfXIncrement;
-            Plot last = getLast();
+            lock (m_syncObj)
+            {
+                Plot p = new SimpleGraphing.Plot(m_dfXPosition, dfY, null, bActive, nIdx);
+                m_rgPlot.Add(p);
+                m_dfXPosition += m_dfXIncrement;
+                Plot last = getLast();
 
-            if (bActive)
-                setMinMax(last, new float[] { (float)dfY });
+                if (bActive)
+                    setMinMax(last, new float[] { (float)dfY });
 
-            return p;
+                return p;
+            }
         }
 
         public Plot Add(double dfX, double dfY, bool bActive = true, int nIdx = 0)
         {
-            Plot p = new SimpleGraphing.Plot(dfX, dfY, null, bActive, nIdx);
-            m_rgPlot.Add(p);
-            Plot last = getLast();
+            lock (m_syncObj)
+            {
+                Plot p = new SimpleGraphing.Plot(dfX, dfY, null, bActive, nIdx);
+                m_rgPlot.Add(p);
+                Plot last = getLast();
 
-            if (bActive)
-                setMinMax(last, new float[] { (float)dfY });
+                if (bActive)
+                    setMinMax(last, new float[] { (float)dfY });
 
-            return p;
+                return p;
+            }
         }
 
         public Plot Add(List<double> rgdfY, bool bActive = true)
@@ -870,144 +883,162 @@ namespace SimpleGraphing
 
         public Plot Add(float[] rgfY, bool bActive = true)
         {
-            Plot p = new SimpleGraphing.Plot(m_dfXPosition, rgfY, null, bActive);
-            m_rgPlot.Add(p);
-            m_dfXPosition += m_dfXIncrement;
-            Plot last = getLast();
+            lock (m_syncObj)
+            {
+                Plot p = new SimpleGraphing.Plot(m_dfXPosition, rgfY, null, bActive);
+                m_rgPlot.Add(p);
+                m_dfXPosition += m_dfXIncrement;
+                Plot last = getLast();
 
-            if (bActive)
-                setMinMax(last, rgfY);
+                if (bActive)
+                    setMinMax(last, rgfY);
 
-            return p;
+                return p;
+            }
         }
 
         public Plot Add(double dfX, float[] rgfY, bool bActive = true)
         {
-            Plot p = new SimpleGraphing.Plot(dfX, rgfY, null, bActive);
-            m_rgPlot.Add(p);
-            Plot last = getLast();
+            lock (m_syncObj)
+            {
+                Plot p = new SimpleGraphing.Plot(dfX, rgfY, null, bActive);
+                m_rgPlot.Add(p);
+                Plot last = getLast();
 
-            if (bActive)
-                setMinMax(last, rgfY);
+                if (bActive)
+                    setMinMax(last, rgfY);
 
-            return p;
+                return p;
+            }
         }
 
         public Plot Add(float[] rgfY, long lCount, bool bActive = true)
         {
-            Plot p = new Plot(m_dfXPosition, rgfY, lCount, null, bActive);
-            m_rgPlot.Add(p);
-            m_dfXPosition += m_dfXIncrement;
-            Plot last = getLast();
-
-            if (bActive)
+            lock (m_syncObj)
             {
-                if (m_minmaxTarget == MINMAX_TARGET.VALUES)
-                    setMinMax(last, rgfY);
-                else if (m_minmaxTarget == MINMAX_TARGET.COUNT)
-                    setMinMax(last, new float[] { lCount });
-            }
+                Plot p = new Plot(m_dfXPosition, rgfY, lCount, null, bActive);
+                m_rgPlot.Add(p);
+                m_dfXPosition += m_dfXIncrement;
+                Plot last = getLast();
 
-            return p;
+                if (bActive)
+                {
+                    if (m_minmaxTarget == MINMAX_TARGET.VALUES)
+                        setMinMax(last, rgfY);
+                    else if (m_minmaxTarget == MINMAX_TARGET.COUNT)
+                        setMinMax(last, new float[] { lCount });
+                }
+
+                return p;
+            }
         }
 
         public Plot Add(double dfX, float[] rgdfY, long lCount, bool bActive = true)
         {
-            Plot p = new Plot(dfX, rgdfY, lCount, null, bActive);
-            m_rgPlot.Add(p);
-            Plot last = getLast();
-
-            if (bActive)
+            lock (m_syncObj)
             {
-                if (m_minmaxTarget == MINMAX_TARGET.VALUES)
-                    setMinMax(last, rgdfY);
-                else if (m_minmaxTarget == MINMAX_TARGET.COUNT)
-                    setMinMax(last, new float[] { lCount });
-            }
+                Plot p = new Plot(dfX, rgdfY, lCount, null, bActive);
+                m_rgPlot.Add(p);
+                Plot last = getLast();
 
-            return p;
+                if (bActive)
+                {
+                    if (m_minmaxTarget == MINMAX_TARGET.VALUES)
+                        setMinMax(last, rgdfY);
+                    else if (m_minmaxTarget == MINMAX_TARGET.COUNT)
+                        setMinMax(last, new float[] { lCount });
+                }
+
+                return p;
+            }
         }
 
         public Plot Add(Plot p, bool bCalculateMinMax = true, bool bReplaceIfExists = false)
         {
-            bool bAdd = true;
-
-            if (bReplaceIfExists)
+            lock (m_syncObj)
             {
-                int nIdx = m_rgPlot.Count - 1;
-                while (nIdx >= 0 && m_rgPlot[nIdx].X > p.X)
+                bool bAdd = true;
+
+                if (bReplaceIfExists)
                 {
-                    nIdx--;
+                    int nIdx = m_rgPlot.Count - 1;
+                    while (nIdx >= 0 && m_rgPlot[nIdx].X > p.X)
+                    {
+                        nIdx--;
+                    }
+
+                    if (nIdx >= 0 && m_rgPlot[nIdx].X == p.X)
+                    {
+                        bAdd = false;
+
+                        if (OnUpdatePlot != null)
+                            OnUpdatePlot(this, new PlotUpdateArgs(m_rgPlot[nIdx], p));
+                        else
+                            m_rgPlot[nIdx] = p;
+                    }
                 }
 
-                if (nIdx >= 0 && m_rgPlot[nIdx].X == p.X)
-                {
-                    bAdd = false;
+                if (bAdd)
+                    m_rgPlot.Add(p);
 
-                    if (OnUpdatePlot != null)
-                        OnUpdatePlot(this, new PlotUpdateArgs(m_rgPlot[nIdx], p));
-                    else
-                        m_rgPlot[nIdx] = p;
+                if (bCalculateMinMax)
+                {
+                    Plot last = getLast();
+
+                    if (p.Active)
+                    {
+                        if (m_minmaxTarget == MINMAX_TARGET.VALUES)
+                            setMinMax(last, p.Y_values);
+                        else if (m_minmaxTarget == MINMAX_TARGET.COUNT)
+                            setMinMax(last, new float[] { p.Count.GetValueOrDefault() });
+                        else
+                            setMinMax(last, null);
+                    }
                 }
+
+                return p;
             }
-
-            if (bAdd)
-                m_rgPlot.Add(p);
-
-            if (bCalculateMinMax)
-            {
-                Plot last = getLast();
-
-                if (p.Active)
-                {
-                    if (m_minmaxTarget == MINMAX_TARGET.VALUES)
-                        setMinMax(last, p.Y_values);
-                    else if (m_minmaxTarget == MINMAX_TARGET.COUNT)
-                        setMinMax(last, new float[] { p.Count.GetValueOrDefault() });
-                    else
-                        setMinMax(last, null);
-                }
-            }
-
-            return p;
         }
 
         public PlotCollection Add(PlotCollection col, bool bCalculateMinMax = true, bool bActiveOnly = false, bool bReplaceIfExists = true, bool bMaintainCount = false, DateTime? dtSync = null)
         {
-            PlotCollection colRemoved = new PlotCollection(col.Name);
-            int nCount = m_rgPlot.Count;
-
-            List<Plot> rgPlotsToAdd = new List<Plot>();
-            for (int i = col.Count - 1; i >= 0; i--)
+            lock (m_syncObj)
             {
-                if (col[i].X >= m_rgPlot[m_rgPlot.Count - 1].X)
+                PlotCollection colRemoved = new PlotCollection(col.Name);
+                int nCount = m_rgPlot.Count;
+
+                List<Plot> rgPlotsToAdd = new List<Plot>();
+                for (int i = col.Count - 1; i >= 0; i--)
                 {
-                    rgPlotsToAdd.Insert(0, col[i]);
+                    if (col[i].X >= m_rgPlot[m_rgPlot.Count - 1].X)
+                    {
+                        rgPlotsToAdd.Insert(0, col[i]);
+                    }
                 }
-            }
 
-            for (int i=0; i<rgPlotsToAdd.Count; i++)
-            {
-                if (!bActiveOnly || col[i].Active)
-                    Add(rgPlotsToAdd[i], false,  bReplaceIfExists);
-            }
-
-            if (bMaintainCount)
-            {
-                while (m_rgPlot.Count > nCount && (!dtSync.HasValue || (m_rgPlot[0].Tag is DateTime && (DateTime)m_rgPlot[0].Tag < dtSync.Value)))
+                for (int i = 0; i < rgPlotsToAdd.Count; i++)
                 {
-                    colRemoved.Add(m_rgPlot[0], false);
-                    m_rgPlot.RemoveAt(0);
+                    if (!bActiveOnly || col[i].Active)
+                        Add(rgPlotsToAdd[i], false, bReplaceIfExists);
+                }
+
+                if (bMaintainCount)
+                {
+                    while (m_rgPlot.Count > nCount && (!dtSync.HasValue || (m_rgPlot[0].Tag is DateTime && (DateTime)m_rgPlot[0].Tag < dtSync.Value)))
+                    {
+                        colRemoved.Add(m_rgPlot[0], false);
+                        m_rgPlot.RemoveAt(0);
+                    }
+
+                    if (bCalculateMinMax)
+                        colRemoved.SetMinMax();
                 }
 
                 if (bCalculateMinMax)
-                    colRemoved.SetMinMax();
+                    SetMinMax();
+
+                return colRemoved;
             }
-
-            if (bCalculateMinMax)
-                SetMinMax();
-
-            return colRemoved;
         }
 
         private Plot getLast()
@@ -1034,22 +1065,34 @@ namespace SimpleGraphing
 
         public void AddToStart(Plot p)
         {
-            m_rgPlot.Insert(0, p);
+            lock (m_syncObj)
+            {
+                m_rgPlot.Insert(0, p);
+            }
         }
 
         public bool Remove(Plot p)
         {
-            return m_rgPlot.Remove(p);
+            lock (m_syncObj)
+            {
+                return m_rgPlot.Remove(p);
+            }
         }
 
         public void RemoveAt(int nIdx)
         {
-            m_rgPlot.RemoveAt(nIdx);
+            lock (m_syncObj)
+            {
+                m_rgPlot.RemoveAt(nIdx);
+            }
         }
 
         public void Clear()
         {
-            m_rgPlot.Clear();
+            lock (m_syncObj)
+            {
+                m_rgPlot.Clear();
+            }
         }
 
         public int Find(DateTime dt, int nStartIdx = 0)
