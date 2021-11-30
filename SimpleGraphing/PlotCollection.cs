@@ -1563,6 +1563,36 @@ namespace SimpleGraphing
 
             return col;
         }
+
+        public double? GetLikelyTimePeriodInSeconds(int nMinTest = 20)
+        {
+            Dictionary<double, int> rgTp = new Dictionary<double, int>();
+
+            if (m_rgPlot.Count < nMinTest)
+                return null;
+
+            for (int i = 1; i < nMinTest; i++)
+            {
+                if (m_rgPlot[i].Tag != null &&
+                    m_rgPlot[i - 1].Tag != null)
+                {
+                    DateTime dt1 = (DateTime)m_rgPlot[i].Tag;
+                    DateTime dt0 = (DateTime)m_rgPlot[i - 1].Tag;
+                    TimeSpan ts = dt1 - dt0;
+                    double dfS = ts.TotalSeconds;
+
+                    if (!rgTp.ContainsKey(dfS))
+                        rgTp.Add(dfS, 1);
+                    else
+                        rgTp[dfS]++;
+                }
+            }
+
+            if (rgTp.Count == 0)
+                return null;
+
+            return rgTp.OrderByDescending(p => p.Value).ToList()[0].Key;
+        }
     }
 
     public class PlotUpdateArgs : EventArgs
