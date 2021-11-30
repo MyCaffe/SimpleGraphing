@@ -26,6 +26,7 @@ namespace SimpleGraphing
         Dictionary<string, float> m_rgParams = null;
         bool m_bScaled = false;
         bool m_bClipped = false;
+        object m_syncObj = new object();
 
         public Plot(double dfX, double dfY, string strName = null, bool bActive = true, int nIdx = 0, bool bAction1Active = false, bool bAction2Active = false)
         {
@@ -303,13 +304,16 @@ namespace SimpleGraphing
 
         public void SetParameter(string strParam, float df)
         {
-            if (m_rgParams == null)
-                m_rgParams = new Dictionary<string, float>();
+            lock (m_syncObj)
+            {
+                if (m_rgParams == null)
+                    m_rgParams = new Dictionary<string, float>();
 
-            if (!m_rgParams.ContainsKey(strParam))
-                m_rgParams.Add(strParam, df);
-            else
-                m_rgParams[strParam] = df;
+                if (!m_rgParams.ContainsKey(strParam))
+                    m_rgParams.Add(strParam, df);
+                else
+                    m_rgParams[strParam] = df;
+            }
         }
 
         public void AddToParameter(string strParam, double df)
@@ -319,32 +323,41 @@ namespace SimpleGraphing
 
         public void AddToParameter(string strParam, float df)
         {
-            if (m_rgParams == null)
-                m_rgParams = new Dictionary<string, float>();
+            lock (m_syncObj)
+            {
+                if (m_rgParams == null)
+                    m_rgParams = new Dictionary<string, float>();
 
-            if (!m_rgParams.ContainsKey(strParam))
-                m_rgParams.Add(strParam, df);
-            else
-                m_rgParams[strParam] += df;
+                if (!m_rgParams.ContainsKey(strParam))
+                    m_rgParams.Add(strParam, df);
+                else
+                    m_rgParams[strParam] += df;
+            }
         }
 
         public float? GetParameter(string strParam)
         {
-            if (m_rgParams == null)
-                m_rgParams = new Dictionary<string, float>();
+            lock (m_syncObj)
+            {
+                if (m_rgParams == null)
+                    m_rgParams = new Dictionary<string, float>();
 
-            if (!m_rgParams.ContainsKey(strParam))
-                return null;
+                if (!m_rgParams.ContainsKey(strParam))
+                    return null;
 
-            return m_rgParams[strParam];
+                return m_rgParams[strParam];
+            }
         }
 
         public void DeleteParameter(string strParam)
         {
-            if (m_rgParams == null)
-                return;
+            lock (m_syncObj)
+            {
+                if (m_rgParams == null)
+                    return;
 
-            m_rgParams.Remove(strParam);
+                m_rgParams.Remove(strParam);
+            }
         }
 
         public Dictionary<string, float> Parameters
@@ -407,11 +420,14 @@ namespace SimpleGraphing
             p.m_tagEx = m_tagEx;
             p.m_nIndex = m_nIndex;
 
-            if (m_rgParams != null)
+            lock (m_syncObj)
             {
-                foreach (KeyValuePair<string, float> kv in m_rgParams)
+                if (m_rgParams != null)
                 {
-                    p.SetParameter(kv.Key, kv.Value);
+                    foreach (KeyValuePair<string, float> kv in m_rgParams)
+                    {
+                        p.SetParameter(kv.Key, kv.Value);
+                    }
                 }
             }
 
