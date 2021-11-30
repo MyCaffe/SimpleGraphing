@@ -652,6 +652,86 @@ namespace SimpleGraphing
             simpleGraphingControl1.ScrollToEnd(false);
             return simpleGraphingControl1.Render(nWidth, nHeight);
         }
+
+        public static Image QuickRenderEx(PlotCollectionSet set, Configuration cfg, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null, bool bUseTimeResolutionForValueType = false)
+        {
+            foreach (PlotCollection col in set)
+            {
+                if (col.AbsoluteMinYVal == double.MaxValue || col.AbsoluteMaxYVal == -double.MaxValue)
+                    col.SetMinMax();
+            }
+
+            SimpleGraphingControl simpleGraphingControl1 = new SimpleGraphingControl();
+            simpleGraphingControl1.Name = "SimpleGraphing";
+
+            int nValCount = 1;
+            if (set.Count > 0 && set[0].Count > 0)
+                nValCount = set[0][0].Y_values.Length;
+
+            simpleGraphingControl1.SetConfigurationToQuickRenderDefault(set[0].Name, (string)set[0].Tag, nValCount, bConvertToEastern, timeResolution, bUseTimeResolutionForValueType);
+
+            if (set.Count > 1)
+            {
+                List<Color> rgColor = new List<Color>() { Color.Red, Color.Blue, Color.Green, Color.Purple, Color.Orange, Color.Aquamarine, Color.Fuchsia, Color.OrangeRed, Color.Lavender, Color.Navy, Color.Cyan, Color.DarkCyan };
+                for (int i = 0; i < set.Count; i++)
+                {
+                    int nClrIdx = i % rgColor.Count;
+                    Color clr = rgColor[nClrIdx];
+
+                    ConfigurationPlot plotConfig;
+
+                    if (i > 0)
+                    {
+                        plotConfig = new ConfigurationPlot();
+                        simpleGraphingControl1.Configuration.Frames[0].Plots.Add(plotConfig);
+                    }
+
+                    plotConfig = simpleGraphingControl1.Configuration.Frames[0].Plots[i];
+                    plotConfig.LineColor = clr;
+                    plotConfig.PlotLineColor = Color.Transparent;
+                    plotConfig.PlotFillColor = Color.Transparent;
+                    plotConfig.PlotType = ConfigurationPlot.PLOTTYPE.LINE;
+                    plotConfig.Visible = true;
+                    plotConfig.EnableLabel = true;
+                    plotConfig.EnableFlag = false;
+                    plotConfig.FlagColor = clr;
+                    plotConfig.Name = set[i].Name;
+                    plotConfig.DataIndexOnRender = i;
+                }
+
+                simpleGraphingControl1.Configuration.Frames[0].EnableRelativeScaling(true, true);
+            }
+
+            simpleGraphingControl1.LoadModuleCache();
+            simpleGraphingControl1.Configuration = cfg;
+
+            List<PlotCollectionSet> rgSet = new List<PlotCollectionSet>() { set };
+
+            if (!bIncludeTitle)
+                simpleGraphingControl1.Configuration.Frames[0].Name = "";
+
+            if (rgTargetLines != null && rgTargetLines.Count > 0)
+                simpleGraphingControl1.Configuration.Frames[0].TargetLines.AddRange(rgTargetLines);
+
+            simpleGraphingControl1.BuildGraph(rgSet);
+
+            if (nWidth <= 0)
+                nWidth = 600;
+
+            if (nHeight <= 0)
+                nHeight = 300;
+
+            simpleGraphingControl1.ScrollToEnd(false);
+            return simpleGraphingControl1.Render(nWidth, nHeight);
+        }
+
+        public static Configuration GetQuickRenderConfiguration(string strName, int nValCount, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null, bool bUseTimeResolutionForValueType = false)
+        {
+            SimpleGraphingControl simpleGraphingControl1 = new SimpleGraphingControl();
+            simpleGraphingControl1.Name = "SimpleGraphing";
+            simpleGraphingControl1.SetConfigurationToQuickRenderDefault(strName, "", nValCount, bConvertToEastern, timeResolution, bUseTimeResolutionForValueType);
+            return simpleGraphingControl1.Configuration;
+        }
     }
 
     public class Crosshairs
