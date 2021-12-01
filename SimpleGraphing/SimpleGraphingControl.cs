@@ -713,7 +713,7 @@ namespace SimpleGraphing
             if (rgTargetLines != null && rgTargetLines.Count > 0)
                 simpleGraphingControl1.Configuration.Frames[0].TargetLines.AddRange(rgTargetLines);
 
-            simpleGraphingControl1.BuildGraph(rgSet);
+            simpleGraphingControl1.BuildGraph(rgSet, false, true);
 
             if (nWidth <= 0)
                 nWidth = 600;
