@@ -349,6 +349,23 @@ namespace SimpleGraphing
             }
         }
 
+        public float? GetParameterContaining(string strParam)
+        {
+            lock (m_syncObj)
+            {
+                if (m_rgParams == null)
+                    return null;
+
+                foreach (KeyValuePair<string, float> kv in m_rgParams)
+                {
+                    if (kv.Key.Contains(strParam))
+                        return kv.Value;
+                }
+
+                return null;
+            }
+        }
+
         public void DeleteParameter(string strParam)
         {
             lock (m_syncObj)
