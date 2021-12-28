@@ -1505,6 +1505,7 @@ namespace SimpleGraphing
 
             col.Tag = Tag;
             col.Tag2 = Tag2;
+            col.LastUpdateTime = m_dtLastUpdate;
 
             for (int i = nStartIdx; i <= nEndIdx; i++)
             {
