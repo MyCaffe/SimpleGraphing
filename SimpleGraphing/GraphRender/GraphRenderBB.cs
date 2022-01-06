@@ -9,10 +9,6 @@ namespace SimpleGraphing.GraphRender
 {
     public class GraphRenderBB : GraphRenderBase, IGraphPlotRender
     {
-        GraphRenderLine m_lineTop;
-        GraphRenderLine m_lineBtm;
-        GraphRenderLine m_lineAve;
-
         public GraphRenderBB(ConfigurationPlot config, GraphAxis gx, GraphAxis gy, GraphPlotStyle style)
             : base(config, gx, gy, style)
         {
