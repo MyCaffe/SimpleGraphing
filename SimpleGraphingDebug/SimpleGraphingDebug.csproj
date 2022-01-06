@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SimpleGraphingDebug</RootNamespace>
     <AssemblyName>SimpleGraphingDebug</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
@@ -65,9 +65,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="simplegraphingdebug.pfx" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\SimpleGraphing\SimpleGraphing.csproj">
       <Project>{a283c774-e339-4068-8d72-a04ec90655fe}</Project>
       <Name>SimpleGraphing</Name>
@@ -77,6 +74,9 @@
     <EmbeddedResource Include="FormPlotCollection.resx">
       <DependentUpon>FormPlotCollection.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="simplegraphingdebug.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
