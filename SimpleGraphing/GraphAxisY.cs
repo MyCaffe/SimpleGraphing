@@ -114,6 +114,14 @@ namespace SimpleGraphing
                 m_dfScaleMin = m_rgTickValues[0].Value;
                 m_dfScaleMax = m_rgTickValues[m_rgTickPositions.Count - 1].Value;
 
+                // Adjust for remaining space between last tick and top.
+                int nLastY = m_rgTickPositions[m_rgTickPositions.Count - 1];
+                int nFirstY = m_rgTickPositions[0];
+                int nRangeY = nFirstY - nLastY;
+                double dfRangeY = m_dfScaleMax.Value - m_dfScaleMin.Value;
+                double dfScalePerY = dfRangeY / nRangeY;
+                m_dfScaleMax += (nLastY - 5) * dfScalePerY;
+
                 if (m_dfMin < 0 && m_dfMax > 0)
                 {
                     double dfTotal = Math.Abs(m_dfMin) + m_dfMax;

@@ -50,12 +50,22 @@ namespace SimpleGraphing
 
         public double ActiveMin
         {
-            get { return m_dfMin; }
+            get 
+            {
+                if (m_dfScaleMin.HasValue)
+                    return m_dfScaleMin.Value;
+                return m_dfMin; 
+            }
         }
 
         public double ActiveMax
         {
-            get { return m_dfMax; }
+            get 
+            {
+                if (m_dfScaleMax.HasValue)
+                    return m_dfScaleMax.Value;
+                return m_dfMax; 
+            }
         }
 
         public double DataMin
