@@ -78,7 +78,8 @@ namespace SimpleGraphing
             Configuration config = new Configuration();
             string strXml;
 
-            using (StreamReader sr = new StreamReader(strFile))
+            using (FileStream fs = new FileStream(strFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (StreamReader sr = new StreamReader(fs))
             {
                 strXml = sr.ReadToEnd();
             }
