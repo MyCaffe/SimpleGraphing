@@ -31,6 +31,8 @@ namespace SimpleGraphing
         double m_dfTimeOffsetInHours = 0;
         bool m_bShowSeconds = true;
         bool m_bShowHourSeparators = false;
+        float m_fPlotValueIncrements = 0;
+        float m_fPlotValueSubIncrements = 0;
 
         public enum VALUE_TYPE
         {
@@ -93,6 +95,12 @@ namespace SimpleGraphing
             if (m_bShowSeconds != c.m_bShowSeconds)
                 return false;
 
+            if (m_fPlotValueIncrements != c.m_fPlotValueIncrements)
+                return false;
+
+            if (m_fPlotValueSubIncrements != c.m_fPlotValueSubIncrements)
+                return false;
+
             return true;
         }
 
@@ -110,6 +118,18 @@ namespace SimpleGraphing
                 if (value > 0)
                     m_nPlotSpacing = value;
             }
+        }
+
+        public float PlotValueIncrements
+        {
+            get { return m_fPlotValueIncrements; }
+            set { m_fPlotValueIncrements = value; }
+        }
+
+        public float PlotValueSubIncrements
+        {
+            get { return m_fPlotValueSubIncrements; }
+            set { m_fPlotValueSubIncrements = value; }
         }
 
         public bool ShowAllNumbers

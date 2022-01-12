@@ -73,34 +73,81 @@ namespace SimpleGraphing
         {
             m_rcBounds = new Rectangle(nX, nY, nWidth, nHeight);
 
-            m_rgTickPositions = new List<int>();
-
-            for (int y = m_rcBounds.Bottom; y > m_rcBounds.Top; y -= m_config.PlotSpacing)
-            {
-                m_rgTickPositions.Add(y);
-            }
-
-            m_rgTickValues = new List<TickValue>();
-
             if (m_dfMin == double.MaxValue)
                 return;
 
-            double dfVal = m_dfMin;
-            double dfInc = (m_dfMax - m_dfMin) / m_rgTickPositions.Count;
+            double dfMin = m_dfMin;
+            double dfMax = m_dfMax;
 
-            for (int i = 0; i < m_rgTickPositions.Count; i++)
+            if (m_config.PlotValueIncrements > 0)
             {
-                m_rgTickValues.Add(new TickValue(dfVal, m_config));
-                dfVal += dfInc;
+                float fSubInc = m_config.PlotValueSubIncrements;
+                if (fSubInc == 0)
+                    fSubInc = m_config.PlotValueIncrements;
+
+                dfMin = (int)(dfMin / m_config.PlotValueIncrements) * m_config.PlotValueIncrements;
+                dfMax = (int)(dfMax / m_config.PlotValueIncrements) * m_config.PlotValueIncrements + m_config.PlotValueIncrements;
+
+                int nHt = m_rcBounds.Height;
+                double dfRange = dfMax - dfMin;
+                int nPositions = (int)Math.Round(dfRange / fSubInc);
+                m_config.PlotSpacing = m_rcBounds.Height / nPositions;
+
+                m_rgTickPositions = new List<int>();
+
+                for (int y = m_rcBounds.Bottom; y > m_rcBounds.Top; y -= m_config.PlotSpacing)
+                {
+                    m_rgTickPositions.Add(y);
+                }
+
+                m_rgTickValues = new List<TickValue>();
+
+                double dfVal = dfMin;
+                double dfInc = fSubInc;
+
+                for (int i = 0; i < m_rgTickPositions.Count; i++)
+                {
+                    m_rgTickValues.Add(new TickValue(dfVal, m_config));
+                    dfVal += dfInc;
+                }
+
+                if (m_dfMin < 0 && m_dfMax > 0)
+                {
+                    double dfTotal = Math.Abs(m_dfMin) + m_dfMax;
+                    double dfMinPct = Math.Abs(m_dfMin) / dfTotal;
+                    int nZeroHt = (int)(m_rcBounds.Height * dfMinPct);
+
+                    m_nZeroPosition = m_rcBounds.Bottom - nZeroHt;
+                }
             }
-
-            if (m_dfMin < 0 && m_dfMax > 0)
+            else
             {
-                double dfTotal = Math.Abs(m_dfMin) + m_dfMax;
-                double dfMinPct = Math.Abs(m_dfMin) / dfTotal;
-                int nZeroHt = (int)(m_rcBounds.Height * dfMinPct);
+                m_rgTickPositions = new List<int>();
 
-                m_nZeroPosition = m_rcBounds.Bottom - nZeroHt;
+                for (int y = m_rcBounds.Bottom; y > m_rcBounds.Top; y -= m_config.PlotSpacing)
+                {
+                    m_rgTickPositions.Add(y);
+                }
+
+                m_rgTickValues = new List<TickValue>();
+
+                double dfVal = dfMin;
+                double dfInc = (dfMax - dfMin) / m_rgTickPositions.Count;
+
+                for (int i = 0; i < m_rgTickPositions.Count; i++)
+                {
+                    m_rgTickValues.Add(new TickValue(dfVal, m_config));
+                    dfVal += dfInc;
+                }
+
+                if (m_dfMin < 0 && m_dfMax > 0)
+                {
+                    double dfTotal = Math.Abs(m_dfMin) + m_dfMax;
+                    double dfMinPct = Math.Abs(m_dfMin) / dfTotal;
+                    int nZeroHt = (int)(m_rcBounds.Height * dfMinPct);
+
+                    m_nZeroPosition = m_rcBounds.Bottom - nZeroHt;
+                }
             }
         }
 
@@ -109,13 +156,16 @@ namespace SimpleGraphing
             if (!m_config.Visible)
                 return;
 
+            if (m_config.PlotValueIncrements > 0)
+                m_nLongOffset = 0;
+
             for (int i = 0; i < m_rgTickPositions.Count; i++)
             {
                 bool bDrawValue = false;
                 int nX = m_rcBounds.Left + 3;
                 int nY = m_rgTickPositions[i];
 
-                if ((i + m_nLongOffset) % 4 == 0)
+                if (i == 0 || (i + m_nLongOffset) % 4 == 0)
                 {
                     nX += 2;
                     bDrawValue = true;
