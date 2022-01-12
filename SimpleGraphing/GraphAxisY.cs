@@ -111,6 +111,9 @@ namespace SimpleGraphing
                     dfVal += dfInc;
                 }
 
+                m_dfScaleMin = m_rgTickValues[0].Value;
+                m_dfScaleMax = m_rgTickValues[m_rgTickPositions.Count - 1].Value;
+
                 if (m_dfMin < 0 && m_dfMax > 0)
                 {
                     double dfTotal = Math.Abs(m_dfMin) + m_dfMax;

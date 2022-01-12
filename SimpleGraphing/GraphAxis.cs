@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -25,6 +26,8 @@ namespace SimpleGraphing
         protected int m_nDayCount = 0;
         protected double m_dfDataMin = double.MaxValue;
         protected double m_dfDataMax = -double.MaxValue;
+        protected double? m_dfScaleMin = null;
+        protected double? m_dfScaleMax = null;
 
         public GraphAxis()
         {
@@ -150,10 +153,19 @@ namespace SimpleGraphing
 
         public virtual float ScaleValue(double dfVal, bool bInvert)
         {
+            double dfMin = m_dfMin;
+            double dfMax = m_dfMax;
+
+            if (m_dfScaleMin.HasValue && m_dfScaleMax.HasValue)
+            {
+                dfMin = m_dfScaleMin.Value;
+                dfMax = m_dfScaleMax.Value;
+            }
+
             float fPlotMin = plot_min;
             float fPlotMax = plot_max;
-            float fDataMin = (float)m_dfMin;
-            float fDataMax = (float)m_dfMax;
+            float fDataMin = (float)dfMin;
+            float fDataMax = (float)dfMax;
             float fPlotRange = fPlotMax - fPlotMin;
             float fDataRange = fDataMax - fDataMin;
 
