@@ -86,18 +86,18 @@ namespace SimpleGraphing
                     fSubInc = m_config.PlotValueIncrements;
 
                 dfMin = (int)(dfMin / m_config.PlotValueIncrements) * m_config.PlotValueIncrements;
-                dfMax = (int)(dfMax / m_config.PlotValueIncrements) * m_config.PlotValueIncrements + m_config.PlotValueIncrements;
+                dfMax = (int)(dfMax / m_config.PlotValueIncrements) * m_config.PlotValueIncrements;
 
                 int nHt = m_rcBounds.Height;
                 double dfRange = dfMax - dfMin;
                 int nPositions = (int)Math.Round(dfRange / fSubInc);
-                m_config.PlotSpacing = m_rcBounds.Height / nPositions;
+                m_config.PlotSpacingF = (float)m_rcBounds.Height / nPositions;
 
                 m_rgTickPositions = new List<int>();
 
-                for (int y = m_rcBounds.Bottom; y > m_rcBounds.Top; y -= m_config.PlotSpacing)
+                for (float y = m_rcBounds.Bottom; y > m_rcBounds.Top; y -= m_config.PlotSpacingF.Value)
                 {
-                    m_rgTickPositions.Add(y);
+                    m_rgTickPositions.Add((int)y);
                 }
 
                 m_rgTickValues = new List<TickValue>();

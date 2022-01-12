@@ -24,6 +24,7 @@ namespace SimpleGraphing
         double m_dfInitialMax = 1.0;
         uint m_nMargin = 50;
         int m_nPlotSpacing = 5;
+        float? m_fPlotSpacing = null;
         int m_nDecimals = 0;
         bool m_bShowAllNumbers = false;
         VALUE_TYPE m_valueType = VALUE_TYPE.NUMBER;
@@ -118,6 +119,12 @@ namespace SimpleGraphing
                 if (value > 0)
                     m_nPlotSpacing = value;
             }
+        }
+
+        public float? PlotSpacingF
+        {
+            get { return m_fPlotSpacing; }
+            set { m_fPlotSpacing = value; }
         }
 
         public float PlotValueIncrements
