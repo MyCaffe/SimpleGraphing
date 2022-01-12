@@ -193,8 +193,6 @@ namespace SimpleGraphing
             {
                 graphPlot.Bounds = m_rcBounds;
             }
-
-
         }
 
         public void Render(Graphics g)
