@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -279,6 +280,12 @@ namespace SimpleGraphing
             nDayLast = DayLast;
         }
 
+        public string UpdateValueString(bool bLabelVisible, DateTime? dtLastVisible)
+        {
+            m_strValue = GetValueString(bLabelVisible, dtLastVisible);
+            return m_strValue;
+        }
+
         public DateTime TimeStamp
         {
             get { return m_dt; }
@@ -301,7 +308,35 @@ namespace SimpleGraphing
             return m_strValue + " (hour: " + strNewHour + ", show hrsep: " + strShowHourBars + ")"; 
         }
 
-        public string GetValueString()
+        private string formatDayMonth(DateTime dt, bool? bLabelVisible, DateTime? dtLastVisible)
+        {
+            string str = "";
+
+            if (dt == DateTime.MinValue || dt == m_dtLast || !bLabelVisible.GetValueOrDefault(true))
+                return str;
+
+            DateTime dtLast = m_dtLast;
+            if (dtLastVisible.HasValue)
+                dtLast = dtLastVisible.Value;
+
+            if (dt.Year != dtLast.Year)
+            {
+                str += dt.Year.ToString();
+                str += " ";
+            }
+
+            if (dt.Month != dtLast.Month)
+            {
+                str += CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(dt.Month);
+                str += " ";
+            }
+
+            str += dt.Day.ToString();
+
+            return str;
+        }
+
+        public string GetValueString(bool? bLabelVisible = null, DateTime? dtLastVisible = null)
         {
             ConfigurationAxis config = m_config;
             double dfVal = m_dfVal;
@@ -321,6 +356,8 @@ namespace SimpleGraphing
 
                 if (config.ValueResolution == ConfigurationAxis.VALUE_RESOLUTION.DAY)
                     return m_dt.ToShortDateString();
+                else if (config.ValueResolution == ConfigurationAxis.VALUE_RESOLUTION.DAY_MONTH)
+                    return formatDayMonth(m_dt, bLabelVisible, dtLastVisible);
                 else
                 {
                     if (config.TimeOffsetInHours > 0)

@@ -176,6 +176,8 @@ namespace SimpleGraphing
             if (!m_config.Visible)
                 return;
 
+            DateTime? dtLastVisible = null;
+
             for (int i = 0; i < m_rgTickPositions.Count; i++)
             {
                 bool bDrawValue = false;
@@ -195,6 +197,13 @@ namespace SimpleGraphing
                     if (i < m_rgTickValues.Count)
                     {
                         string strVal = m_rgTickValues[i].ValueString;
+
+                        if (m_config.ValueResolution == ConfigurationAxis.VALUE_RESOLUTION.DAY_MONTH)
+                        {
+                            strVal = m_rgTickValues[i].UpdateValueString(true, dtLastVisible);
+                            dtLastVisible = m_rgTickValues[i].TimeStamp;
+                        }
+
                         Font font = (m_rgTickValues[i].Style == FontStyle.Bold) ? m_config.LabelFontBold : m_config.LabelFont;
                         SizeF sz = g.MeasureString(strVal, font);
 

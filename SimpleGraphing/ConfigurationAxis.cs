@@ -46,6 +46,7 @@ namespace SimpleGraphing
             SECOND,
             MINUTE,
             DAY,
+            DAY_MONTH
         }
 
         public ConfigurationAxis()
@@ -316,6 +317,9 @@ namespace SimpleGraphing
         {
             if (str == VALUE_RESOLUTION.DAY.ToString())
                 return VALUE_RESOLUTION.DAY;
+
+            else if (str == VALUE_RESOLUTION.DAY_MONTH.ToString())
+                return VALUE_RESOLUTION.DAY_MONTH;
 
             else if (str == VALUE_RESOLUTION.MINUTE.ToString())
                 return VALUE_RESOLUTION.MINUTE;
