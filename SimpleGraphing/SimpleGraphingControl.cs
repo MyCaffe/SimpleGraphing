@@ -28,6 +28,8 @@ namespace SimpleGraphing
 
         public event EventHandler<PaintEventArgs> OnUserPaint;
         public event EventHandler<MouseEventArgs> OnUserMouseMove;
+        public event EventHandler<MouseEventArgs> OnUserMouseDown;
+        public event EventHandler<MouseEventArgs> OnUserMouseUp;
         public event EventHandler<ScrollEventArgs> OnUserScroll;
         public event EventHandler<MouseEventArgs> OnUserMouseClick;
         public event EventHandler<MouseEventArgs> OnUserMouseDoubleClick;
@@ -483,6 +485,24 @@ namespace SimpleGraphing
 
             if (OnUserMouseMove != null)
                 OnUserMouseMove(sender, e);
+        }
+
+        private void pbImage_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (DesignMode)
+                return;
+
+            if (OnUserMouseDown != null)
+                OnUserMouseDown(sender, e);
+        }
+
+        private void pbImage_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (DesignMode)
+                return;
+
+            if (OnUserMouseUp != null)
+                OnUserMouseUp(sender, e);
         }
 
         private void pbImage_MouseClick(object sender, MouseEventArgs e)
