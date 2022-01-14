@@ -375,7 +375,7 @@ namespace SimpleGraphing
                     {
                         m_style = FontStyle.Bold;
                         m_nDayLast = m_dt.Day;
-                        string strVal = m_dt.Day.ToString("00") + " " + m_dt.Hour.ToString("00") + ":" + m_dt.Minute.ToString("00");
+                        string strVal = m_dt.Day.ToString("00") + "  " + m_dt.Hour.ToString("00") + ":" + m_dt.Minute.ToString("00");
 
                         if (config.ShowSeconds)
                             strVal += ":" + m_dt.Second.ToString("00");
