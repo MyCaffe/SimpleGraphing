@@ -34,6 +34,7 @@ namespace SimpleGraphing
         bool m_bShowHourSeparators = false;
         float m_fPlotValueIncrements = 0;
         float m_fPlotValueSubIncrements = 0;
+        int m_nDataIdxForAxisLabel = 0;
 
         public enum VALUE_TYPE
         {
@@ -103,7 +104,16 @@ namespace SimpleGraphing
             if (m_fPlotValueSubIncrements != c.m_fPlotValueSubIncrements)
                 return false;
 
+            if (m_nDataIdxForAxisLabel != c.m_nDataIdxForAxisLabel)
+                return false;
+
             return true;
+        }
+
+        public int DataIndexForAxisLabel
+        {
+            get { return m_nDataIdxForAxisLabel; }
+            set { m_nDataIdxForAxisLabel = value; }
         }
 
         public int PlotSpacing

@@ -148,7 +148,7 @@ namespace SimpleGraphing
             if (m_data.Count == 0)
                 return;
 
-            PlotCollection primaryPlot = m_data[0];
+            PlotCollection primaryPlot = m_data[m_config.DataIndexForAxisLabel];
 
             if (m_rgTickPositions.Count < primaryPlot.Count)
                 m_nStartPosition = primaryPlot.Count - m_rgTickPositions.Count;
@@ -156,7 +156,8 @@ namespace SimpleGraphing
             for (int i = StartPosition; i < primaryPlot.Count; i++)
             {
                 double dfLast = (i == 0) ? 0 : primaryPlot[i - 1].X;
-                m_rgTickValues.Add(new TickValue(primaryPlot[i], TickValue.TYPE.X, m_config, dfLast, ref m_nDayCount, ref m_nDayLast));                
+                TickValue tv = new TickValue(primaryPlot[i], TickValue.TYPE.X, m_config, dfLast, ref m_nDayCount, ref m_nDayLast);
+                m_rgTickValues.Add(tv);                
                 if (m_rgTickValues.Count == m_rgTickPositions.Count)
                     break;
             }
