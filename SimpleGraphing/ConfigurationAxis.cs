@@ -18,7 +18,9 @@ namespace SimpleGraphing
         Color m_clrTick = Color.Black;
         Color m_clrLabel = Color.Black;
         Font m_fontLabel = new Font("Century Gothic", 8.0f, FontStyle.Regular);
+        SizeF m_szFontLabel;
         Font m_fontLabelBold = new Font("Century Gothic", 8.0f, FontStyle.Bold);
+        SizeF m_szFontLabelBold;
         bool m_bVisible = true;
         double m_dfInitialMin = 0.0;
         double m_dfInitialMax = 1.0;
@@ -262,7 +264,15 @@ namespace SimpleGraphing
             {
                 m_fontLabel = value;
                 m_fontLabelBold = new Font(m_fontLabel, FontStyle.Bold);
+                m_szFontLabel = MeasureString("0000.00", m_fontLabel);
+                m_szFontLabelBold = MeasureString("0000.00", m_fontLabelBold);
             }
+        }
+
+        [Browsable(false)]
+        public SizeF LabelFontSize
+        {
+            get { return m_szFontLabel; }
         }
 
         [ReadOnly(true)]
@@ -272,10 +282,19 @@ namespace SimpleGraphing
             get
             {
                 if (m_fontLabelBold == null)
+                {
                     m_fontLabelBold = new Font(m_fontLabel, FontStyle.Bold);
+                    m_szFontLabelBold = MeasureString("0000.00", m_fontLabelBold);
+                }
 
                 return m_fontLabelBold;
             }
+        }
+
+        [Browsable(false)]
+        public SizeF LabelFontBoldSize
+        {
+            get { return m_szFontLabelBold; }
         }
 
         public Color ZeroLineColor
@@ -364,6 +383,20 @@ namespace SimpleGraphing
                 return VALUE_RESOLUTION.MINUTE;
 
             return VALUE_RESOLUTION.SECOND;
+        }
+
+        public static SizeF MeasureString(string s, Font font)
+        {
+            SizeF result;
+            using (var image = new Bitmap(1, 1))
+            {
+                using (var g = Graphics.FromImage(image))
+                {
+                    result = g.MeasureString(s, font);
+                }
+            }
+
+            return result;
         }
     }
 }
