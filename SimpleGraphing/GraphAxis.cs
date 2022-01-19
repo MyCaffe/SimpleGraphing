@@ -246,6 +246,7 @@ namespace SimpleGraphing
         bool m_bNewHour = false;
         DateTime m_dtLast;
         DateTime m_dt;
+        TYPE m_type;
 
         public enum TYPE
         {
@@ -265,6 +266,7 @@ namespace SimpleGraphing
         {
             m_config = config;
             m_plot = p;
+            m_type = type;
             m_dfVal = (type == TYPE.X) ? p.X : p.Y;
             m_nDayCount = nDayCount;
             m_nDayLast = nDayLast;
@@ -278,6 +280,13 @@ namespace SimpleGraphing
 
             nDayCount = DayCount;
             nDayLast = DayLast;
+        }
+
+        public TickValue Clone()
+        {
+            int nDayCount = DayCount;
+            int nDayLast = DayLast;
+            return new TickValue(m_plot.Clone(true), m_type, m_config.Clone(), m_dfLastVal, ref nDayCount, ref nDayLast);
         }
 
         public string UpdateValueString(bool bLabelVisible, DateTime? dtLastVisible)

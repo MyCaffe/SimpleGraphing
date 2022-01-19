@@ -54,6 +54,35 @@ namespace SimpleGraphing
         {
         }
 
+        public ConfigurationAxis Clone()
+        {
+            ConfigurationAxis c = new ConfigurationAxis();
+
+            c.m_clrZeroLine = m_clrZeroLine; 
+            c.m_clrTick = m_clrTick;
+            c.m_clrLabel = m_clrLabel;
+            c.m_fontLabel = new Font(m_fontLabel, FontStyle.Regular);
+            c.m_fontLabelBold = new Font(m_fontLabelBold, FontStyle.Bold);
+            c.m_bVisible = m_bVisible;
+            c.m_dfInitialMin = m_dfInitialMin;
+            c.m_dfInitialMax = m_dfInitialMax;
+            c.m_nMargin = m_nMargin;
+            c.m_nPlotSpacing = m_nPlotSpacing;
+            c.m_fPlotSpacing = m_fPlotSpacing;
+            c.m_nDecimals = m_nDecimals;
+            c.m_bShowAllNumbers = m_bShowAllNumbers;
+            c.m_valueType = m_valueType;
+            c.m_valueRes = m_valueRes;
+            c.m_dfTimeOffsetInHours = m_dfTimeOffsetInHours;
+            c.m_bShowSeconds = m_bShowSeconds;
+            c.m_bShowHourSeparators = m_bShowHourSeparators;
+            c.m_fPlotValueIncrements = m_fPlotValueIncrements;
+            c.m_fPlotValueSubIncrements = m_fPlotValueSubIncrements;
+            c.m_nDataIdxForAxisLabel = m_nDataIdxForAxisLabel;
+
+            return c;
+        }
+
         public bool Compare(ConfigurationAxis c)
         {
             if (m_clrZeroLine != c.m_clrZeroLine)
