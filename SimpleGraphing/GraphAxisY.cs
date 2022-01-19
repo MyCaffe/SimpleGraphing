@@ -91,6 +91,14 @@ namespace SimpleGraphing
                 int nHt = m_rcBounds.Height;
                 double dfRange = dfMax - dfMin;
                 int nPositions = (int)Math.Round(dfRange / fSubInc);
+                int nFontPositions = (int)Math.Ceiling(nHt / m_config.LabelFontSize.Height);
+
+                if (nFontPositions < nPositions)
+                {
+                    fSubInc = (float)Math.Ceiling(dfRange / nFontPositions / 0.25) * 0.25f;
+                    nPositions = (int)Math.Round(dfRange / fSubInc);
+                }
+
                 m_config.PlotSpacingF = (float)m_rcBounds.Height / nPositions;
 
                 m_rgTickPositions = new List<int>();
