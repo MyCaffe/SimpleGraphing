@@ -203,7 +203,7 @@ namespace SimpleGraphing
             if (bRemove)
             {
                 m_output = m_surface.BuildGraph(m_config, m_data);
-                SimpleGraphingControl_Resize(this, new EventArgs());
+                SimpleGraphingControl_Resize(this, EventArgs.Empty);
                 ScrollToEnd(false);
             }
 
@@ -294,7 +294,7 @@ namespace SimpleGraphing
             }
 
             m_output = m_surface.BuildGraph(m_config, m_data);
-            SimpleGraphingControl_Resize(this, new EventArgs());
+            SimpleGraphingControl_Resize(this, EventArgs.Empty);
             ScrollToEnd(bRender);
         }
 
@@ -318,7 +318,7 @@ namespace SimpleGraphing
 
             if (bResize)
             {
-                SimpleGraphingControl_Resize(this, new EventArgs());
+                SimpleGraphingControl_Resize(this, EventArgs.Empty);
                 List<PlotCollectionSet> output = m_surface.BuildGraphPost(m_config, data);
                 int nIdx = 0;
 
@@ -374,7 +374,7 @@ namespace SimpleGraphing
         public void UpdateGraph()
         {
             m_output = m_surface.BuildGraph(m_config, m_data);
-            SimpleGraphingControl_Resize(this, new EventArgs());
+            SimpleGraphingControl_Resize(this, EventArgs.Empty);
             Invalidate(true);
         }
 
