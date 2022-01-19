@@ -88,6 +88,9 @@ namespace SimpleGraphing
                 dfMin = (int)(dfMin / m_config.PlotValueIncrements) * m_config.PlotValueIncrements;
                 dfMax = (int)(dfMax / m_config.PlotValueIncrements) * m_config.PlotValueIncrements;
 
+                if (m_config.PlotValueIncrementFloor != 1.0f)
+                    dfMin = Math.Floor(dfMin / m_config.PlotValueIncrementFloor) * m_config.PlotValueIncrementFloor;
+
                 int nHt = m_rcBounds.Height;
                 double dfRange = dfMax - dfMin;
                 int nPositions = (int)Math.Round(dfRange / fSubInc);

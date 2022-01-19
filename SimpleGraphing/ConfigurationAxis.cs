@@ -36,6 +36,7 @@ namespace SimpleGraphing
         bool m_bShowHourSeparators = false;
         float m_fPlotValueIncrements = 0;
         float m_fPlotValueSubIncrements = 0;
+        float m_fPlotValueIncrementFloor = 1.0f;
         int m_nDataIdxForAxisLabel = 0;
 
         public enum VALUE_TYPE
@@ -80,6 +81,7 @@ namespace SimpleGraphing
             c.m_bShowHourSeparators = m_bShowHourSeparators;
             c.m_fPlotValueIncrements = m_fPlotValueIncrements;
             c.m_fPlotValueSubIncrements = m_fPlotValueSubIncrements;
+            c.m_fPlotValueIncrementFloor = m_fPlotValueIncrementFloor;
             c.m_nDataIdxForAxisLabel = m_nDataIdxForAxisLabel;
 
             return c;
@@ -167,6 +169,12 @@ namespace SimpleGraphing
         {
             get { return m_fPlotSpacing; }
             set { m_fPlotSpacing = value; }
+        }
+
+        public float PlotValueIncrementFloor
+        {
+            get { return m_fPlotValueIncrementFloor; }
+            set { m_fPlotValueIncrementFloor = value; }
         }
 
         public float PlotValueIncrements
