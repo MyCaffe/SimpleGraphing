@@ -254,9 +254,47 @@ namespace SimpleGraphing
             }
         }
 
+        public float ScalePosition(int nPos, bool bInvert)
+        {
+            double dfMin = m_dfMin;
+            double dfMax = m_dfMax;
+
+            if (m_dfScaleMin.HasValue && m_dfScaleMax.HasValue)
+            {
+                dfMin = m_dfScaleMin.Value;
+                dfMax = m_dfScaleMax.Value;
+            }
+
+            float fPlotMin = plot_min;
+            float fPlotMax = plot_max;
+            float fDataMin = (float)dfMin;
+            float fDataMax = (float)dfMax;
+            float fPlotRange = fPlotMax - fPlotMin;
+            float fDataRange = fDataMax - fDataMin;
+
+            float fVal = (float)nPos;
+
+            fVal = (fPlotRange == 0) ? 0 : (fVal - fPlotMin) / fPlotRange;
+            fVal *= fDataRange;
+
+            if (bInvert)
+                fVal = fDataMax - fVal;
+            else
+                fVal = fDataMin + fVal;
+
+            return fVal;
+        }
+
         private void drawFlag(Graphics g, Flag flag)
         {
-            drawFlag(g, flag.YVal, true, flag.FillColor, flag.TextColor, flag.LineColor, flag.Format);
+            if (flag.Enabled && (flag.YVal.HasValue || flag.YPosition.HasValue))
+            {
+                double dfYVal = flag.YVal.GetValueOrDefault(0);
+                if (flag.YPosition.HasValue)
+                    dfYVal = ScalePosition(flag.YPosition.Value, true);
+
+                drawFlag(g, dfYVal, true, flag.FillColor, flag.TextColor, flag.LineColor, flag.Format);
+            }
         }
 
         private void drawFlag(Graphics g, GraphPlot plot, GraphAxisStyle style)
@@ -365,44 +403,69 @@ namespace SimpleGraphing
 
     public class Flag
     {
-        double m_dfYVal;
+        double? m_dfYVal = null;
+        int? m_nYPos = null;
         Color m_clrFill;
         Color m_clrLine;
         Color m_clrText;
-        string m_strFmt;
+        string m_strFmt = null;
+        bool m_bEnabled = true;
 
-        public Flag(double dfYVal, Color clrFill, Color clrLine, Color clrText, string strFmt)
+        public Flag()
+            : this(null, null, Color.SkyBlue, Color.Blue, Color.Blue, null)
+        {
+        }
+
+        public Flag(double? dfYVal, int? nYPos, Color clrFill, Color clrLine, Color clrText, string strFmt = null)
         {
             m_dfYVal = dfYVal;
+            m_nYPos = nYPos;
             m_clrFill = clrFill;
             m_clrLine = clrLine;
             m_clrText = clrText;
             m_strFmt = strFmt;
         }
 
-        public double YVal
+        public bool Enabled
+        {
+            get { return m_bEnabled; }
+            set { m_bEnabled = value; }
+        }
+
+        public int? YPosition
+        { 
+            get { return m_nYPos; }
+            set { m_nYPos = value;}
+        }
+
+        public double? YVal
         {
             get { return m_dfYVal; }    
+            set { m_dfYVal = value; }
         }
 
         public Color FillColor
         {
             get { return m_clrFill; }
+            set { m_clrFill = value; }
         }
 
         public Color LineColor
         {
             get { return m_clrLine; }
+            set { m_clrLine = value; }
         }
 
         public Color TextColor
         {
             get { return m_clrText; }
+            set { m_clrText = value; }
         }
 
         public string Format
         {
             get { return m_strFmt; }
+            set { m_strFmt = value; }
         }
     }
 }

@@ -480,7 +480,13 @@ namespace SimpleGraphing
                 return;
 
             if (m_crosshairs != null)
-                m_crosshairs.HandlePaint(e, pbImage.Image);
+            {
+                int nMargin = 0;
+                if (m_surface.Frames.Count > 0)
+                    nMargin = m_surface.Frames[0].YAxis.Bounds.Width;
+
+                m_crosshairs.HandlePaint(e, pbImage.Image, nMargin + 5);
+            }
 
             if (OnUserPaint != null)
                 OnUserPaint(sender, e);
@@ -492,7 +498,7 @@ namespace SimpleGraphing
                 return;
 
             if (m_crosshairs != null)
-                m_crosshairs.HandleMouseMove(e, pbImage);
+                m_crosshairs.HandleMouseMove(e, pbImage, this);
 
             if (OnUserMouseMove != null)
                 OnUserMouseMove(sender, e);
@@ -771,6 +777,7 @@ namespace SimpleGraphing
         bool m_bSnapToXAxisTicks = true;
         GraphAxisX m_xAxis = null;
         GraphAxisY m_yAxis = null;
+        Flag m_yAxisFlag = new Flag();
         Bitmap m_bmpHoriz = null;
         Bitmap m_bmpVert = null;
         Point m_ptMouse;
@@ -799,13 +806,20 @@ namespace SimpleGraphing
             set { m_bSnapToXAxisTicks = value; }
         }
 
+        public bool EnableYAxisFlag
+        {
+            get { return m_yAxisFlag.Enabled; }
+            set { m_yAxisFlag.Enabled = value; }
+        }
+
         public void SetAxes(GraphAxisX xAxis, GraphAxisY yAxis)
         {
             m_xAxis = xAxis;
             m_yAxis = yAxis;
+            m_yAxis.CustomFlagsPost.Add(m_yAxisFlag);
         }
 
-        public void HandleMouseMove(MouseEventArgs e, Control ctrl)
+        public void HandleMouseMove(MouseEventArgs e, Control ctrl, SimpleGraphingControl grph)
         {
             if (!m_bEnableCrosshairs)
                 return;
@@ -843,9 +857,16 @@ namespace SimpleGraphing
                 if (nPos >= 0)
                     m_ptMouse = new Point(nPos, m_ptMouse.Y);
             }
+            
+            m_yAxisFlag.YPosition = m_ptMouse.Y;
 
             if (!m_bUserUpdateCrosshairs)
                 ctrl.Invalidate();
+
+            if (m_yAxis != null && m_yAxisFlag.Enabled)
+                grph.Invalidate(m_yAxis.Bounds);
+
+            grph.Refresh();
         }
 
         public void SetLocation(Point pt, Control ctrl)
@@ -854,45 +875,17 @@ namespace SimpleGraphing
             ctrl.Invalidate();
         }
 
-        public void HandlePaint(PaintEventArgs e, Image imgBack)
+        public void HandlePaint(PaintEventArgs e, Image imgBack, int nMargin)
         {
             if (!m_bEnableCrosshairs)
-                return;
-
-            if (imgBack == null)
                 return;
 
             Graphics gimg = e.Graphics;
             Point pt = m_ptMouse;
 
-            if (!m_ptMouseOld.IsEmpty)
-            {
-                if (m_bmpHoriz != null)
-                    gimg.DrawImage(m_bmpHoriz, new PointF(0, m_ptMouseOld.Y));
-
-                if (m_bmpVert != null)
-                    gimg.DrawImage(m_bmpVert, new PointF(m_ptMouseOld.X, 0));
-            }
-
-            if (m_bmpHoriz == null)
-                m_bmpHoriz = new Bitmap(imgBack.Width, 1);
-
-            if (m_bmpVert == null)
-                m_bmpVert = new Bitmap(1, imgBack.Height);
-
-            using (Graphics g = Graphics.FromImage(m_bmpVert))
-            {
-                g.DrawImage(imgBack, new Rectangle(0, 0, m_bmpVert.Width, m_bmpVert.Height), new Rectangle(pt.X, 0, 1, imgBack.Height), GraphicsUnit.Pixel);
-            }
-
-            using (Graphics g = Graphics.FromImage(m_bmpHoriz))
-            {
-                g.DrawImage(imgBack, new Rectangle(0, 0, m_bmpHoriz.Width, m_bmpHoriz.Height), new Rectangle(0, pt.Y, imgBack.Width, 1), GraphicsUnit.Pixel);
-            }
-
             Pen p = new Pen(Color.FromArgb(64, 0, 0, 255), 1.0f);
             p.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
-            gimg.DrawLine(p, new Point(0, pt.Y), new Point(imgBack.Width, pt.Y));
+            gimg.DrawLine(p, new Point(0, pt.Y), new Point(imgBack.Width - nMargin, pt.Y));
             gimg.DrawLine(p, new Point(pt.X, 0), new Point(pt.X, imgBack.Height));
             p.Dispose();
 
