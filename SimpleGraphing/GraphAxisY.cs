@@ -293,7 +293,7 @@ namespace SimpleGraphing
                 if (flag.YPosition.HasValue)
                     dfYVal = ScalePosition(flag.YPosition.Value, true);
 
-                drawFlag(g, dfYVal, true, flag.FillColor, flag.TextColor, flag.LineColor, flag.Format);
+                drawFlag(g, dfYVal, true, flag.FillColor, flag.TextColor, flag.LineColor, flag.Format, flag.DisplayYVal);
             }
         }
 
@@ -320,7 +320,7 @@ namespace SimpleGraphing
             drawFlag(g, line.YValue, line.EnableFlag, line.FlagColor, line.FlagTextColor, line.FlagBorderColor);
         }
 
-        private void drawFlag(Graphics g, double dfY, bool bEnableFlag, Color flagColor, Color flagText, Color flagBorder, string strFmt = null)
+        private void drawFlag(Graphics g, double dfY, bool bEnableFlag, Color flagColor, Color flagText, Color flagBorder, string strFmt = null, double? dfDisplayYVal = null)
         {
             if (!bEnableFlag)
                 return;
@@ -332,7 +332,12 @@ namespace SimpleGraphing
             if (float.IsNaN(fY) || float.IsInfinity(fY))
                 return;
 
-            string strVal = (strFmt != null) ? dfY.ToString(strFmt) : dfY.ToString("N" + m_config.Decimals.ToString());
+            double dfDisplayY = dfY;
+            if (dfDisplayYVal.HasValue)
+                dfDisplayY = dfDisplayYVal.Value;
+
+            string strVal = (strFmt != null) ? dfDisplayY.ToString(strFmt) : dfDisplayY.ToString("N" + m_config.Decimals.ToString());
+
             SizeF szVal = g.MeasureString(strVal, m_config.LabelFont);
             float fHalf = szVal.Height / 2;
 
@@ -416,6 +421,7 @@ namespace SimpleGraphing
     {
         double? m_dfYVal = null;
         int? m_nYPos = null;
+        double? m_dfDisplayYVal = null;
         Color m_clrFill;
         Color m_clrLine;
         Color m_clrText;
@@ -453,6 +459,12 @@ namespace SimpleGraphing
         {
             get { return m_dfYVal; }    
             set { m_dfYVal = value; }
+        }
+
+        public double? DisplayYVal
+        {
+            get { return m_dfDisplayYVal; }
+            set { m_dfDisplayYVal = value; }
         }
 
         public Color FillColor
