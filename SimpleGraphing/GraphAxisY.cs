@@ -380,6 +380,11 @@ namespace SimpleGraphing
             set { m_rgFlags[index] = value; }
         }
 
+        public void Remove(Flag flag)
+        {
+            m_rgFlags.Remove(flag);
+        }
+
         public void AddUnique(Flag flag)
         {
             if (!m_rgFlags.Contains(flag))
