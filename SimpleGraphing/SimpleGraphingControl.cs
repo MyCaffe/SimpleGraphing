@@ -359,7 +359,9 @@ namespace SimpleGraphing
             }
 
             if (m_surface.Frames.Count > 0)
-                m_crosshairs.SetXAxis(m_surface.Frames[0].XAxis);
+            {
+                m_crosshairs.SetAxes(m_surface.Frames[0].XAxis, m_surface.Frames[0].YAxis);
+            }
 
             return m_output;
         }
@@ -767,7 +769,8 @@ namespace SimpleGraphing
     {
         bool m_bEnableCrosshairs = false;
         bool m_bSnapToXAxisTicks = true;
-        GraphAxis m_xAxis = null;
+        GraphAxisX m_xAxis = null;
+        GraphAxisY m_yAxis = null;
         Bitmap m_bmpHoriz = null;
         Bitmap m_bmpVert = null;
         Point m_ptMouse;
@@ -796,9 +799,10 @@ namespace SimpleGraphing
             set { m_bSnapToXAxisTicks = value; }
         }
 
-        public void SetXAxis(GraphAxis axis)
+        public void SetAxes(GraphAxisX xAxis, GraphAxisY yAxis)
         {
-            m_xAxis = axis;
+            m_xAxis = xAxis;
+            m_yAxis = yAxis;
         }
 
         public void HandleMouseMove(MouseEventArgs e, Control ctrl)

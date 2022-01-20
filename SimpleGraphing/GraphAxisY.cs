@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -16,6 +17,8 @@ namespace SimpleGraphing
         BrushCollection m_colFlagColor = new BrushCollection();
         BrushCollection m_colFlagText = new BrushCollection();
         PenCollection m_colFlagBorder = new PenCollection();
+        FlagCollection m_colCustomFlagsPre = new FlagCollection();
+        FlagCollection m_colCustomFlagsPost = new FlagCollection();
 
         public GraphAxisY()
         {
@@ -28,6 +31,16 @@ namespace SimpleGraphing
             m_colFlagBorder.Dispose();
             m_colFlagText.Dispose();
             m_colFlagBorder.Dispose();
+        }
+
+        public FlagCollection CustomFlagsPre
+        {
+            get { return m_colCustomFlagsPre; }
+        }
+
+        public FlagCollection CustomFlagsPost
+        {
+            get { return m_colCustomFlagsPost; }
         }
 
         public void SetGraphPlots(GraphPlotCollection plots)
@@ -208,6 +221,11 @@ namespace SimpleGraphing
                 }
             }
 
+            foreach (Flag flag in m_colCustomFlagsPre)
+            {
+                drawFlag(g, flag);
+            }
+
             if (m_plots != null)
             {
                 for (int i = 0; i < m_plots.Count; i++)
@@ -224,11 +242,21 @@ namespace SimpleGraphing
                 }
             }
 
+            foreach (Flag flag in m_colCustomFlagsPost)
+            {
+                drawFlag(g, flag);
+            }
+
             if (m_dfMin != m_dfMinLast)
             {
                 m_nLongOffset = (m_nLongOffset == 0) ? 1 : 0;
                 m_dfMinLast = m_dfMin;
             }
+        }
+
+        private void drawFlag(Graphics g, Flag flag)
+        {
+            drawFlag(g, flag.YVal, true, flag.FillColor, flag.TextColor, flag.LineColor, flag.Format);
         }
 
         private void drawFlag(Graphics g, GraphPlot plot, GraphAxisStyle style)
@@ -254,7 +282,7 @@ namespace SimpleGraphing
             drawFlag(g, line.YValue, line.EnableFlag, line.FlagColor, line.FlagTextColor, line.FlagBorderColor);
         }
 
-        private void drawFlag(Graphics g, double dfY, bool bEnableFlag, Color flagColor, Color flagText, Color flagBorder)
+        private void drawFlag(Graphics g, double dfY, bool bEnableFlag, Color flagColor, Color flagText, Color flagBorder, string strFmt = null)
         {
             if (!bEnableFlag)
                 return;
@@ -266,7 +294,7 @@ namespace SimpleGraphing
             if (float.IsNaN(fY) || float.IsInfinity(fY))
                 return;
 
-            string strVal = dfY.ToString("N" + m_config.Decimals.ToString());
+            string strVal = (strFmt != null) ? dfY.ToString(strFmt) : dfY.ToString("N" + m_config.Decimals.ToString());
             SizeF szVal = g.MeasureString(strVal, m_config.LabelFont);
             float fHalf = szVal.Height / 2;
 
@@ -292,6 +320,89 @@ namespace SimpleGraphing
             m_colFlagBorder.Add(flagBorder);
             Pen p = m_colFlagBorder[flagBorder];
             g.DrawPolygon(p, rgpt.ToArray());
+        }
+    }
+
+    public class FlagCollection : IEnumerable<Flag>
+    {
+        List<Flag> m_rgFlags = new List<Flag>();
+
+        public FlagCollection()
+        {
+        }
+
+        public int Count
+        {
+            get { return m_rgFlags.Count; }
+        }
+
+        public Flag this[int index]
+        {
+            get { return m_rgFlags[index]; }
+            set { m_rgFlags[index] = value; }
+        }
+
+        public void Add(Flag flag)
+        {
+            m_rgFlags.Add(flag);
+        }
+
+        public void Clear()
+        {
+            m_rgFlags.Clear();
+        }
+
+        public IEnumerator<Flag> GetEnumerator()
+        {
+            return m_rgFlags.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return m_rgFlags.GetEnumerator();
+        }
+    }
+
+    public class Flag
+    {
+        double m_dfYVal;
+        Color m_clrFill;
+        Color m_clrLine;
+        Color m_clrText;
+        string m_strFmt;
+
+        public Flag(double dfYVal, Color clrFill, Color clrLine, Color clrText, string strFmt)
+        {
+            m_dfYVal = dfYVal;
+            m_clrFill = clrFill;
+            m_clrLine = clrLine;
+            m_clrText = clrText;
+            m_strFmt = strFmt;
+        }
+
+        public double YVal
+        {
+            get { return m_dfYVal; }    
+        }
+
+        public Color FillColor
+        {
+            get { return m_clrFill; }
+        }
+
+        public Color LineColor
+        {
+            get { return m_clrLine; }
+        }
+
+        public Color TextColor
+        {
+            get { return m_clrText; }
+        }
+
+        public string Format
+        {
+            get { return m_strFmt; }
         }
     }
 }
