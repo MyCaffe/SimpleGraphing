@@ -39,7 +39,7 @@ namespace SimpleGraphing
             InitializeComponent();
             m_cache = new ModuleCache();
             m_surface = new GraphSurface(m_cache);
-            m_output = m_surface.BuildGraph(m_config, null);
+            m_output = m_surface.BuildGraph(m_config, null);            
         }
 
         public List<PlotCollectionSet> Data
@@ -127,6 +127,12 @@ namespace SimpleGraphing
         {
             get { return m_crosshairs.EnableCrosshairs; }
             set { m_crosshairs.EnableCrosshairs = value; }
+        }
+
+        public bool EnableCrossHairXTickSnap
+        {
+            get { return m_crosshairs.EnableSnapToXTicks; }
+            set { m_crosshairs.EnableSnapToXTicks = value; }
         }
 
         public Bitmap Image
@@ -351,6 +357,9 @@ namespace SimpleGraphing
                     }
                 }
             }
+
+            if (m_surface.Frames.Count > 0)
+                m_crosshairs.SetXAxis(m_surface.Frames[0].XAxis);
 
             return m_output;
         }
@@ -757,6 +766,8 @@ namespace SimpleGraphing
     public class Crosshairs
     {
         bool m_bEnableCrosshairs = false;
+        bool m_bSnapToXAxisTicks = true;
+        GraphAxis m_xAxis = null;
         Bitmap m_bmpHoriz = null;
         Bitmap m_bmpVert = null;
         Point m_ptMouse;
@@ -779,12 +790,55 @@ namespace SimpleGraphing
             set { m_bUserUpdateCrosshairs = value; }
         }
 
+        public bool EnableSnapToXTicks
+        {
+            get { return m_bSnapToXAxisTicks; }
+            set { m_bSnapToXAxisTicks = value; }
+        }
+
+        public void SetXAxis(GraphAxis axis)
+        {
+            m_xAxis = axis;
+        }
+
         public void HandleMouseMove(MouseEventArgs e, Control ctrl)
         {
             if (!m_bEnableCrosshairs)
                 return;
 
             m_ptMouse = e.Location;
+
+            if (m_bSnapToXAxisTicks && m_xAxis != null)
+            {
+                int nPos = -1;
+                for (int i = 0; i < m_xAxis.TickPositions.Count - 1; i++)
+                {
+                    if (i == 0 && m_ptMouse.X < m_xAxis.TickPositions[i])
+                    {
+                        nPos = m_xAxis.TickPositions[i];
+                        break;
+                    }
+                    else if (m_ptMouse.X >= m_xAxis.TickPositions[i] && m_ptMouse.X < m_xAxis.TickPositions[i + 1])
+                    {
+                        int nDiff1 = (int)Math.Abs(m_ptMouse.X - m_xAxis.TickPositions[i]);
+                        int nDiff2 = (int)Math.Abs(m_ptMouse.X - m_xAxis.TickPositions[i + 1]);
+
+                        if (nDiff1 < nDiff2)
+                            nPos = m_xAxis.TickPositions[i];
+                        else
+                            nPos = m_xAxis.TickPositions[i + 1];
+                        break;
+                    }
+                    else if (i == m_xAxis.TickPositions.Count - 2 && m_ptMouse.X >= m_xAxis.TickPositions[i + 1])
+                    {
+                        nPos = m_xAxis.TickPositions[i + 1];
+                        break;
+                    }
+                }
+
+                if (nPos >= 0)
+                    m_ptMouse = new Point(nPos, m_ptMouse.Y);
+            }
 
             if (!m_bUserUpdateCrosshairs)
                 ctrl.Invalidate();
