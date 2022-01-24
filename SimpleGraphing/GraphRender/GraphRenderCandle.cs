@@ -57,10 +57,34 @@ namespace SimpleGraphing.GraphRender
                         Color clrFill = (bPositive) ? Color.White : Color.Black;
                         Color clrLine = (bPositive) ? Color.Black : Color.Black;
 
+                        int nClr = clrLine.ToArgb();
+                        int nClr1 = (int)m_config.GetExtraSetting("LineColorUp", nClr);
+                        if (nClr != nClr1)
+                            clrLine = Color.FromArgb(nClr1);
+
+                        nClr = clrFill.ToArgb();
+                        string strSetting = (bPositive) ? "UpFillColor" : "DnFillColor";
+                        nClr1 = (int)m_config.GetExtraSetting(strSetting, nClr);
+                        if (nClr != nClr1)
+                            clrFill = Color.FromArgb(nClr1);
+                       
                         if (nIdx > 0 && fClose < plots[nIdx - 1].Y)
                         {
                             clrFill = Color.Firebrick;
                             clrLine = Color.Firebrick;
+
+                            nClr = clrFill.ToArgb();
+                            nClr1 = (int)m_config.GetExtraSetting("DnPrevFillColor", nClr);
+                            if (nClr != nClr1)
+                            {
+                                clrFill = Color.FromArgb(nClr1);
+                                clrLine = clrFill;
+                            }
+
+                            nClr = clrLine.ToArgb();
+                            nClr1 = (int)m_config.GetExtraSetting("LineColorDn", nClr);
+                            if (nClr != nClr1)
+                                clrLine = Color.FromArgb(nClr1);
                         }
 
                         float fHspace = m_gx.Configuration.PlotSpacing / 2;
