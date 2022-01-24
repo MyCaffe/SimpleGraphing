@@ -83,6 +83,15 @@ namespace SimpleGraphing
             get { return m_rgPlots; }
         }
 
+        public void UpdateStyle()
+        {
+            PlotAreaStyle style = m_style;
+            m_style = createStyle(m_config);
+
+            if (style != null)
+                style.Dispose();
+        }
+
         public PlotCollectionSet BuildGraph(ConfigurationFrame config, List<ConfigurationPlot> plots, PlotCollectionSet data, bool bAddToParams = false, GETDATAORDER order = GETDATAORDER.PRE)
         {
             PlotCollectionSet data1 = new PlotCollectionSet();
