@@ -17,6 +17,7 @@ namespace SimpleGraphing
         Color m_clrGrid = Color.FromArgb(244, 244, 244);
         Color m_clrBack = Color.White;
         Color m_clrZeroLine = Color.Gray;
+        Color m_clrSeparator = Color.Lavender;
         Font m_fontLabels = new Font("Century Gothic", 8.0f, FontStyle.Regular);
         int m_nLookahead = 0;
         int m_nCalculationLookahead = 0;
@@ -34,6 +35,9 @@ namespace SimpleGraphing
                 return false;
 
             if (m_clrZeroLine != c.m_clrZeroLine)
+                return false;
+
+            if (m_clrSeparator != c.m_clrSeparator)
                 return false;
 
             if (m_fontLabels.Name != c.m_fontLabels.Name || m_fontLabels.Size != c.m_fontLabels.Size || m_fontLabels.Style != c.m_fontLabels.Style)
@@ -75,6 +79,12 @@ namespace SimpleGraphing
             set { m_clrGrid = value; }
         }
 
+        public Color SeparatorColor
+        {
+            get { return m_clrSeparator; }
+            set { m_clrSeparator = value; }
+        }
+
         public Color BackColor
         {
             get { return m_clrBack; }
@@ -109,6 +119,7 @@ namespace SimpleGraphing
             ser.Add("BackColor", m_clrBack);
             ser.Add("ZeroLineColor", m_clrZeroLine);
             ser.Add("LabelFont", m_fontLabels);
+            ser.Add("SeparatorColor", m_clrSeparator);
 
             if (m_rgTimeZones != null)
             {
@@ -131,6 +142,10 @@ namespace SimpleGraphing
             plotArea.BackColor = SerializeToXml.LoadColor(child, "BackColor").Value;
             plotArea.ZeroLine = SerializeToXml.LoadColor(child, "ZeroLineColor").Value;
             plotArea.LabelFont = SerializeToXml.LoadFont(child, "LabelFont");
+
+            Color? clr = SerializeToXml.LoadColor(child, "SeparatorColor");
+            if (clr.HasValue)
+                plotArea.m_clrSeparator = clr.Value;
 
             plotArea.m_rgTimeZones = ConfigurationTimeZone.Deserialize(elm.Descendants());
 

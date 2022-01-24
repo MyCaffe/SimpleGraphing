@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SimpleGraphing
@@ -85,11 +86,8 @@ namespace SimpleGraphing
 
         public void UpdateStyle()
         {
-            PlotAreaStyle style = m_style;
-            m_style = createStyle(m_config);
-
-            if (style != null)
-                style.Dispose();
+            if (m_style != null)
+                m_style.Update(m_config);
         }
 
         public PlotCollectionSet BuildGraph(ConfigurationFrame config, List<ConfigurationPlot> plots, PlotCollectionSet data, bool bAddToParams = false, GETDATAORDER order = GETDATAORDER.PRE)
@@ -206,7 +204,8 @@ namespace SimpleGraphing
 
         public void Render(Graphics g)
         {
-            drawGrid(g, m_style);
+            PlotAreaStyle style = m_style;
+            drawGrid(g, style);
 
             foreach (ConfigurationTargetLine line in m_config.TargetLines)
             {
@@ -306,10 +305,16 @@ namespace SimpleGraphing
 
         public void RenderVerticalBar(Graphics g, int nX)
         {
-            Color clr = Color.FromArgb(128, Color.Lavender);
-            Pen pen = new Pen(clr, 2.0f);
-            g.DrawLine(pen, nX, m_rcBounds.Bottom, nX, m_rcBounds.Top);
-            pen.Dispose();
+            try
+            {
+                m_style.Lock();
+                Pen pen = m_style.SeparatorPen;
+                g.DrawLine(pen, nX, m_rcBounds.Bottom, nX, m_rcBounds.Top);
+            }
+            finally
+            {
+                m_style.Unlock();
+            }
         }
 
         private void drawTitle(Graphics g, ConfigurationFrame config, PlotAreaStyle style)
@@ -363,68 +368,163 @@ namespace SimpleGraphing
             List<int> rgYTicks = m_gy.TickPositions;
             Dictionary<Color, Brush> rgBrushes = new Dictionary<Color, Brush>();
 
-            g.FillRectangle(style.BackBrush, m_rcBounds);
-
-            if (m_config.PlotArea.TimeZones != null)
+            try
             {
-                foreach (ConfigurationTimeZone tz in m_config.PlotArea.TimeZones)
+                style.Lock();
+                g.FillRectangle(style.BackBrush, m_rcBounds);
+
+                if (m_config.PlotArea.TimeZones != null)
                 {
-                    List<int> rgX0 = ((GraphAxisX)m_gx).GetTickPositions(tz.StartTime, tz.Relative);
-                    List<int> rgX1 = ((GraphAxisX)m_gx).GetTickPositions(tz.EndTime, tz.Relative, rgX0.Count);
-
-                    for (int i = 0; i < rgX0.Count; i++)
+                    foreach (ConfigurationTimeZone tz in m_config.PlotArea.TimeZones)
                     {
-                        int nX0 = rgX0[i];
-                        int nX1 = rgX1[i];
+                        List<int> rgX0 = ((GraphAxisX)m_gx).GetTickPositions(tz.StartTime, tz.Relative);
+                        List<int> rgX1 = ((GraphAxisX)m_gx).GetTickPositions(tz.EndTime, tz.Relative, rgX0.Count);
 
-                        if (!rgBrushes.ContainsKey(tz.BackColor))
-                            rgBrushes.Add(tz.BackColor, new SolidBrush(tz.BackColor));
+                        for (int i = 0; i < rgX0.Count; i++)
+                        {
+                            int nX0 = rgX0[i];
+                            int nX1 = rgX1[i];
 
-                        Brush br = rgBrushes[tz.BackColor];
-                        Rectangle rc = new Rectangle(nX0, m_rcBounds.Top, nX1 - nX0, m_rcBounds.Height);
-                        g.FillRectangle(br, rc);
+                            if (!rgBrushes.ContainsKey(tz.BackColor))
+                                rgBrushes.Add(tz.BackColor, new SolidBrush(tz.BackColor));
+
+                            Brush br = rgBrushes[tz.BackColor];
+                            Rectangle rc = new Rectangle(nX0, m_rcBounds.Top, nX1 - nX0, m_rcBounds.Height);
+                            g.FillRectangle(br, rc);
+                        }
+                    }
+
+                    foreach (KeyValuePair<Color, Brush> kv in rgBrushes)
+                    {
+                        kv.Value.Dispose();
                     }
                 }
 
-                foreach (KeyValuePair<Color, Brush> kv in rgBrushes)
+                for (int i = 0; i < rgXTicks.Count; i++)
                 {
-                    kv.Value.Dispose();
+                    g.DrawLine(style.GridPen, rgXTicks[i], m_rcBounds.Bottom, rgXTicks[i], m_rcBounds.Top);
                 }
-            }
 
-            for (int i = 0; i < rgXTicks.Count; i++)
+                for (int i = 0; i < rgYTicks.Count; i++)
+                {
+                    g.DrawLine(style.GridPen, m_rcBounds.Left, rgYTicks[i], m_rcBounds.Right, rgYTicks[i]);
+                }
+
+                if (m_gy.ZeroLinePosition >= 0)
+                    g.DrawLine(style.ZeroPen, m_rcBounds.Left, m_gy.ZeroLinePosition, m_rcBounds.Right, m_gy.ZeroLinePosition);
+
+                if (m_gx.ZeroLinePosition >= 0)
+                    g.DrawLine(style.ZeroPen, m_gx.ZeroLinePosition, m_rcBounds.Top, m_gx.ZeroLinePosition, m_rcBounds.Bottom);
+
+                g.DrawRectangle(style.GridPen, m_rcBounds);
+            }
+            finally
             {
-                g.DrawLine(style.GridPen, rgXTicks[i], m_rcBounds.Bottom, rgXTicks[i], m_rcBounds.Top);
+                style.Unlock();
             }
-
-            for (int i = 0; i < rgYTicks.Count; i++)
-            {
-                g.DrawLine(style.GridPen, m_rcBounds.Left, rgYTicks[i], m_rcBounds.Right, rgYTicks[i]);
-            }
-
-            if (m_gy.ZeroLinePosition >= 0)
-                g.DrawLine(style.ZeroPen, m_rcBounds.Left, m_gy.ZeroLinePosition, m_rcBounds.Right, m_gy.ZeroLinePosition);
-
-            if (m_gx.ZeroLinePosition >= 0)
-                g.DrawLine(style.ZeroPen, m_gx.ZeroLinePosition, m_rcBounds.Top, m_gx.ZeroLinePosition, m_rcBounds.Bottom);
-
-            g.DrawRectangle(style.GridPen, m_rcBounds);
         }
     }
 
     class PlotAreaStyle : IDisposable
     {
+        Color m_clrTitle;
+        Color m_clrBack;
+        Color m_clrGrid;
+        Color m_clrSeparator;
+        Color m_clrZero;
         Brush m_brTitle;
         Brush m_brBack;
         Pen m_penGrid;
+        Pen m_penSeparator;
         Pen m_penZero;
+        object m_syncObj = new object();
+        bool m_bLockAcquired = false;
 
         public PlotAreaStyle(ConfigurationFrame c)
         {
+            m_clrTitle = c.TitleColor;
             m_brTitle = new SolidBrush(c.TitleColor);
+            m_clrBack = c.PlotArea.BackColor;
             m_brBack = new SolidBrush(c.PlotArea.BackColor);
+            m_clrGrid = c.PlotArea.GridColor;
             m_penGrid = new Pen(c.PlotArea.GridColor, 1.0f);
+            m_clrSeparator = c.PlotArea.SeparatorColor;
+            m_penSeparator = new Pen(c.PlotArea.SeparatorColor, 2.0f);
+            m_clrZero = c.PlotArea.ZeroLine;
             m_penZero = new Pen(c.PlotArea.ZeroLine, 1.0f);
+        }
+
+        public void Lock()
+        {
+            Monitor.Enter(m_syncObj, ref m_bLockAcquired);
+        }
+
+        public void Unlock()
+        {
+            if (m_bLockAcquired)
+            {
+                Monitor.Exit(m_syncObj);
+                m_bLockAcquired = false;
+            }
+        }
+
+        public void Update(ConfigurationFrame c)
+        {
+            if (m_clrBack != c.PlotArea.BackColor)
+            {
+                lock (m_syncObj)
+                {
+                    if (m_brBack != null)
+                        m_brBack.Dispose();
+                    m_brBack = new SolidBrush(c.PlotArea.BackColor);
+                    m_clrBack = c.PlotArea.BackColor;
+                }
+            }
+
+            if (m_clrTitle != c.TitleColor)
+            {
+                lock (m_syncObj)
+                {
+                    if (m_brTitle != null)
+                        m_brTitle.Dispose();
+                    m_brTitle = new SolidBrush(c.TitleColor);
+                    m_clrTitle = c.TitleColor;
+                }
+            }
+
+            if (m_clrGrid != c.PlotArea.GridColor)
+            {
+                lock (m_syncObj)
+                {
+                    if (m_penGrid != null)
+                        m_penGrid.Dispose();
+                    m_penGrid = new Pen(c.PlotArea.GridColor, 1.0f);
+                    m_clrGrid = c.PlotArea.GridColor;
+                }
+            }
+
+            if (m_clrSeparator != c.PlotArea.SeparatorColor)
+            {
+                lock (m_syncObj)
+                {
+                    if (m_penSeparator != null)
+                        m_penSeparator.Dispose();
+                    m_penSeparator = new Pen(c.PlotArea.SeparatorColor, 2.0f);
+                    m_clrSeparator = c.PlotArea.SeparatorColor;
+                }
+            }
+
+            if (m_clrZero != c.PlotArea.ZeroLine)
+            {
+                lock (m_syncObj)
+                {
+                    if (m_penZero != null)
+                        m_penZero.Dispose();
+                    m_penZero = new Pen(c.PlotArea.ZeroLine, 1.0f);
+                    m_clrZero = c.PlotArea.ZeroLine;
+                }
+            }
+
         }
 
         public Brush TitleBrush
@@ -442,6 +542,11 @@ namespace SimpleGraphing
             get { return m_penGrid; }
         }
 
+        public Pen SeparatorPen
+        {
+            get { return m_penSeparator; }
+        }
+
         public Pen ZeroPen
         {
             get { return m_penZero; }
@@ -449,6 +554,7 @@ namespace SimpleGraphing
 
         public void Dispose()
         {
+            Unlock();
             if (m_brBack != null)
             {
                 m_brBack.Dispose();
@@ -459,6 +565,12 @@ namespace SimpleGraphing
             {
                 m_penGrid.Dispose();
                 m_penGrid = null;
+            }
+
+            if (m_penSeparator != null)
+            {
+                m_penSeparator.Dispose();
+                m_penSeparator = null;
             }
 
             if (m_penZero != null)
