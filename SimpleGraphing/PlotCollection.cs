@@ -70,6 +70,14 @@ namespace SimpleGraphing
             get { return m_rgParamEx; }
         }
 
+        public Plot Last()
+        {
+            if (m_rgPlot.Count == 0)
+                return null;
+
+            return m_rgPlot[m_rgPlot.Count - 1];
+        }
+
         public byte[] Save()
         {
             using (MemoryStream ms = new MemoryStream())
