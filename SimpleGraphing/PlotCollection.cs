@@ -397,6 +397,36 @@ namespace SimpleGraphing
             return col;
         }
 
+        public PlotCollection SimpleClone(bool bCalculateMinMax, MINMAX_TARGET? minmax = null)
+        {
+            PlotCollection col = new PlotCollection(m_strName, m_nMax, m_dfXIncrement);
+
+            if (!minmax.HasValue)
+                minmax = m_minmaxTarget;
+
+            col.m_strSrcName = m_strSrcName;
+            col.m_dfXPosition = m_dfXPosition;
+            col.m_dfMinVal = m_dfMinVal;
+            col.m_dfMaxVal = m_dfMaxVal;
+            col.m_tag1 = m_tag1;
+            col.m_tag2 = m_tag2;
+            col.m_dfCalculatedEndY = m_dfCalculatedEndY;
+            col.m_bExcludeFromMinMax = m_bExcludeFromMinMax;
+            col.m_minmaxTarget = minmax.Value;
+            col.m_bLockMinMax = m_bLockMinMax;
+            col.m_dtLastUpdate = m_dtLastUpdate;
+
+            lock (m_syncObj)
+            {
+                col.m_rgPlot = m_rgPlot;
+            }
+
+            if (bCalculateMinMax)
+                col.SetMinMax(0, true);
+
+            return col;
+        }
+
         public void TransferParameters(PlotCollection col, string strParam)
         {
             for (int i = 0; i < m_rgPlot.Count; i++)
@@ -989,10 +1019,9 @@ namespace SimpleGraphing
                 if (bAdd)
                     m_rgPlot.Add(p);
 
+                Plot last = getLast();
                 if (bCalculateMinMax)
                 {
-                    Plot last = getLast();
-
                     if (p.Active)
                     {
                         if (m_minmaxTarget == MINMAX_TARGET.VALUES)
