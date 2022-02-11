@@ -291,9 +291,9 @@ namespace SimpleGraphing
         }
 
         public void Render(Graphics g)
-        {            
-            m_plotArea.Render(g);
+        {
             m_gx.Render(g);
+            m_plotArea.Render(g);
             m_gy.Render(g);
             m_graphics = g;
 
