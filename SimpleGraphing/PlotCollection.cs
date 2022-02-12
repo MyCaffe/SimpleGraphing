@@ -385,8 +385,9 @@ namespace SimpleGraphing
                     col.Add(p, false);
                 }
 
-                foreach (KeyValuePair<string, double> kv in Parameters)
+                for (int i=0; i<Parameters.Count; i++)
                 {
+                    KeyValuePair<string, double> kv = Parameters.ElementAt(i);
                     col.Parameters.Add(kv.Key, kv.Value);
                 }
             }
