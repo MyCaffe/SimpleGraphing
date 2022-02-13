@@ -141,8 +141,9 @@ namespace SimpleGraphing
             else
             {
                 bw.Write(m_rgParams.Count);
-                foreach (KeyValuePair<string, float> kv in m_rgParams)
+                for (int i=0; i<m_rgParams.Count; i++)
                 {
+                    KeyValuePair<string, float> kv = m_rgParams.ElementAt(i);
                     bw.Write(kv.Key);
                     double df = kv.Value;
                     bw.Write(df);
