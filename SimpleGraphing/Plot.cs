@@ -134,19 +134,22 @@ namespace SimpleGraphing
             if (m_tag != null)
                 bw.Write(m_tag.ToString());
 
-            if (m_rgParams == null)
+            lock (m_syncObj)
             {
-                bw.Write(0);
-            }
-            else
-            {
-                bw.Write(m_rgParams.Count);
-                for (int i=0; i<m_rgParams.Count; i++)
+                if (m_rgParams == null)
                 {
-                    KeyValuePair<string, float> kv = m_rgParams.ElementAt(i);
-                    bw.Write(kv.Key);
-                    double df = kv.Value;
-                    bw.Write(df);
+                    bw.Write(0);
+                }
+                else
+                {
+                    bw.Write(m_rgParams.Count);
+                    for (int i = 0; i < m_rgParams.Count; i++)
+                    {
+                        KeyValuePair<string, float> kv = m_rgParams.ElementAt(i);
+                        bw.Write(kv.Key);
+                        double df = kv.Value;
+                        bw.Write(df);
+                    }
                 }
             }
 
