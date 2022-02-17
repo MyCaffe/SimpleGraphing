@@ -212,7 +212,7 @@ namespace SimpleGraphing
                 float fY1 = m_gy.ScaleValue(line.YValue, true);
                 line.SetActiveValues(fY1);
 
-                if (line.Enabled)
+                if (line.Enabled && line.Visible)
                 {
                     Color clrFill = Color.FromArgb(32, line.LineColor);
                     m_colLinePens.Add(line.LineColor);

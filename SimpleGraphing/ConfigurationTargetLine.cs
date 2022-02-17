@@ -27,6 +27,7 @@ namespace SimpleGraphing
         string m_strName = null;
         float m_fActiveY = 0;
         object m_tag = null;
+        bool m_bVisible = true;
 
         public enum LINE_TYPE
         {
@@ -60,6 +61,12 @@ namespace SimpleGraphing
         {
             get { return m_tag; }
             set { m_tag = value; }
+        }
+
+        public bool Visible
+        {
+            get { return m_bVisible; }
+            set { m_bVisible = value; }
         }
 
         public void SetActiveValues(float fYVal)
