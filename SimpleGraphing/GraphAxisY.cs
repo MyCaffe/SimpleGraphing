@@ -238,13 +238,22 @@ namespace SimpleGraphing
             {
                 for (int i = 0; i < m_rgLines.Count; i++)
                 {
-                    drawFlag(g, m_rgLines[i]);
+                    if (m_rgLines[i].Visible)
+                        drawFlag(g, m_rgLines[i]);
                 }
             }
 
             foreach (Flag flag in m_colCustomFlagsPost)
             {
                 drawFlag(g, flag);
+            }
+
+            if (m_plots != null)
+            {
+                for (int i = 0; i < m_plots.Count; i++)
+                {
+                    drawFlag(g, m_plots[i], m_style, true);
+                }
             }
 
             if (m_dfMin != m_dfMinLast)
@@ -297,7 +306,7 @@ namespace SimpleGraphing
             }
         }
 
-        private void drawFlag(Graphics g, GraphPlot plot, GraphAxisStyle style)
+        private void drawFlag(Graphics g, GraphPlot plot, GraphAxisStyle style, bool bTopMost = false)
         {
             if (plot.Plots.Count == 0 || plot.Plots[0] == null || plot.Plots[0].Count == 0)
                 return;
@@ -307,6 +316,10 @@ namespace SimpleGraphing
                 return;
 
             if (!plotLast.Active)
+                return;
+
+            bool bEnabled = plot.Configuration.EnableFlag;
+            if (plot.Configuration.EnableTopMostFlag != bTopMost)
                 return;
 
             drawFlag(g, plotLast.Y, plot.Configuration.EnableFlag, plot.Configuration.FlagColor, plot.Configuration.FlagTextColor, plot.Configuration.FlagBorderColor);

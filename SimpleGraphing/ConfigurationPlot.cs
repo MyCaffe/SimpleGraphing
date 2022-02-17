@@ -24,6 +24,7 @@ namespace SimpleGraphing
         int m_nActionActiveAlpha = 32;
         float m_fLineWidth = 1.0f;
         bool m_bEnableFlag = true;
+        bool m_bEnableTopMostFlag = false;
         bool m_bEnableLabel = true;
         Color m_clrFlag = Color.Cyan;
         Color m_clrFlagBorder = Color.Black;
@@ -95,6 +96,7 @@ namespace SimpleGraphing
             m_nActionActiveAlpha = p.m_nActionActiveAlpha;
             m_fLineWidth = p.m_fLineWidth;
             m_bEnableFlag = p.m_bEnableFlag;
+            m_bEnableTopMostFlag = p.m_bEnableTopMostFlag;
             m_bEnableLabel = p.m_bEnableLabel;
             m_clrFlag = p.m_clrFlag;
             m_clrFlagBorder = p.m_clrFlagBorder;
@@ -201,6 +203,9 @@ namespace SimpleGraphing
                 return false;
 
             if (m_bEnableFlag != c.m_bEnableFlag)
+                return false;
+
+            if (m_bEnableTopMostFlag != c.m_bEnableTopMostFlag)
                 return false;
 
             if (m_bEnableLabel != c.m_bEnableLabel)
@@ -378,6 +383,12 @@ namespace SimpleGraphing
             set { m_bEnableFlag = value; }
         }
 
+        public bool EnableTopMostFlag
+        {
+            get { return m_bEnableTopMostFlag; }
+            set { m_bEnableTopMostFlag = value;}
+        }
+
         public bool EnableLabel
         {
             get { return m_bEnableLabel; }
@@ -489,6 +500,7 @@ namespace SimpleGraphing
             ser.Add("ActionActiveColorAlpha", m_nActionActiveAlpha);
             ser.Add("LineWidth", m_fLineWidth);
             ser.Add("EnableFlag", m_bEnableFlag);
+            ser.Add("EnableTopMostFlag", m_bEnableTopMostFlag);
             ser.Add("FlagColor", m_clrFlag);
             ser.Add("FlagBorderColor", m_clrFlagBorder);
             ser.Add("FlagTextColor", m_clrFlagText);
@@ -583,7 +595,11 @@ namespace SimpleGraphing
                     plot.ExtraSettings.Add(strName, dfVal);
             }
 
-            bool? bVal = SerializeToXml.LoadBool(elm, "EnableLabel");
+            bool? bVal = SerializeToXml.LoadBool(elm, "EnableTopMostFlag");
+            if (bVal.HasValue)
+                plot.EnableTopMostFlag = bVal.Value;
+
+            bVal = SerializeToXml.LoadBool(elm, "EnableLabel");
             if (bVal.HasValue)
                 plot.EnableLabel = bVal.Value;
 
