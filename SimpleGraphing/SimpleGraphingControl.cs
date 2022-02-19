@@ -691,6 +691,25 @@ namespace SimpleGraphing
             return simpleGraphingControl1.Render(nWidth, nHeight);
         }
 
+        public static Image QuickRender(List<PlotCollectionSet> rgData, Configuration cfg, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null)
+        {
+            SimpleGraphingControl simpleGraphingControl1 = new SimpleGraphingControl();
+            simpleGraphingControl1.Name = "SimpleGraphing";
+            simpleGraphingControl1.LoadModuleCache();
+            simpleGraphingControl1.Configuration = cfg;
+
+            simpleGraphingControl1.BuildGraph(rgData, false, true);
+
+            if (nWidth <= 0)
+                nWidth = 600;
+
+            if (nHeight <= 0)
+                nHeight = 300;
+
+            simpleGraphingControl1.ScrollToEnd(false);
+            return simpleGraphingControl1.Render(nWidth, nHeight);
+        }
+
         public static Image QuickRenderEx(PlotCollectionSet set, Configuration cfg, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null, bool bUseTimeResolutionForValueType = false)
         {
             foreach (PlotCollection col in set)
@@ -739,44 +758,6 @@ namespace SimpleGraphing
 
                 simpleGraphingControl1.Configuration.Frames[0].EnableRelativeScaling(true, true);
             }
-
-            simpleGraphingControl1.LoadModuleCache();
-            simpleGraphingControl1.Configuration = cfg;
-
-            List<PlotCollectionSet> rgSet = new List<PlotCollectionSet>() { set };
-
-            if (!bIncludeTitle)
-                simpleGraphingControl1.Configuration.Frames[0].Name = "";
-
-            if (rgTargetLines != null && rgTargetLines.Count > 0)
-                simpleGraphingControl1.Configuration.Frames[0].TargetLines.AddRange(rgTargetLines);
-
-            simpleGraphingControl1.BuildGraph(rgSet, false, true);
-
-            if (nWidth <= 0)
-                nWidth = 600;
-
-            if (nHeight <= 0)
-                nHeight = 300;
-
-            simpleGraphingControl1.ScrollToEnd(false);
-            return simpleGraphingControl1.Render(nWidth, nHeight);
-        }
-
-        public static Image QuickRenderEx2(PlotCollectionSet set, Configuration cfg, int nWidth = -1, int nHeight = -1, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null)
-        {
-            foreach (PlotCollection col in set)
-            {
-                if (col.AbsoluteMinYVal == double.MaxValue || col.AbsoluteMaxYVal == -double.MaxValue)
-                    col.SetMinMax();
-            }
-
-            SimpleGraphingControl simpleGraphingControl1 = new SimpleGraphingControl();
-            simpleGraphingControl1.Name = "SimpleGraphing";
-
-            int nValCount = 1;
-            if (set.Count > 0 && set[0].Count > 0)
-                nValCount = set[0][0].Y_values.Length;
 
             simpleGraphingControl1.LoadModuleCache();
             simpleGraphingControl1.Configuration = cfg;
