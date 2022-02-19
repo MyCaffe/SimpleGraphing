@@ -22,6 +22,14 @@ namespace SimpleGraphing
         {
         }
 
+        public ConfigurationTimeZone(ConfigurationTimeZone zone)
+        {
+            m_dtStart = zone.m_dtStart;
+            m_dtEnd = zone.m_dtEnd;
+            m_clrBackground = zone.m_clrBackground;
+            m_bRelative = zone.m_bRelative;
+        }
+
         public ConfigurationTimeZone(DateTime dtStart, DateTime dtEnd, Color clr, bool bRelative)
         {
             m_dtStart = dtStart;

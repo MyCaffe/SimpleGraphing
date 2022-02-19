@@ -26,6 +26,22 @@ namespace SimpleGraphing
         {
         }
 
+        public ConfigurationPlotArea(ConfigurationPlotArea pa)
+        {
+            foreach (ConfigurationTimeZone zone in pa.TimeZones)
+            {
+                m_rgTimeZones.Add(new ConfigurationTimeZone(zone));
+            }
+
+            m_clrGrid = pa.m_clrGrid;
+            m_clrBack = pa.m_clrBack;
+            m_clrZeroLine= pa.m_clrZeroLine;
+            m_clrSeparator = pa.m_clrSeparator;
+            m_fontLabels = new Font(pa.m_fontLabels, FontStyle.Regular);
+            m_nLookahead= pa.m_nLookahead;
+            m_nCalculationLookahead= pa.m_nCalculationLookahead;
+        }
+
         public bool Compare(ConfigurationPlotArea c)
         {
             if (m_clrGrid != c.m_clrGrid)

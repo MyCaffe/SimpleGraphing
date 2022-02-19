@@ -38,6 +38,24 @@ namespace SimpleGraphing
         {
         }
 
+        public ConfigurationFrame(ConfigurationFrame f)
+        {
+            m_configPlotArea = new ConfigurationPlotArea(f.m_configPlotArea);
+            m_configXAxis = f.m_configXAxis.Clone();
+            m_configYAxis = f.m_configYAxis.Clone();
+            m_nDataIndex = f.m_nDataIndex;
+            m_nFrameHeight = f.m_nFrameHeight;
+            m_clrTitle = f.m_clrTitle;
+            m_fontTitle = new Font(f.m_fontTitle, FontStyle.Bold);
+            m_strName = f.m_strName;
+            m_bVisible = f.m_bVisible;
+            m_dfMarginPercent = f.m_dfMarginPercent;
+            m_minmaxTarget = f.m_minmaxTarget;
+            m_bScaleToVisibleWhenRelative = f.m_bScaleToVisibleWhenRelative;
+            m_dfMinYRange = f.m_dfMinYRange;
+            m_rcActivePlotAreaBounds = f.m_rcActivePlotAreaBounds;
+        }
+
         public void SetActiveValues(Tuple<double, double> yVal, Tuple<double, double> yData, Rectangle rc)
         {
             m_rcActivePlotAreaBounds = rc;
