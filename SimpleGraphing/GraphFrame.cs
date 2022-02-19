@@ -240,13 +240,13 @@ namespace SimpleGraphing
             double dfAbsMax;
             data.GetAbsMinMax(0, 0, out dfAbsMin, out dfAbsMax);
 
-            if (bMin)
+            if (bMin || dfMin == double.MaxValue)
             {
                 dfMin = Math.Min(dfMin, dfAbsMin);
                 dfMin = Math.Min(dfMin, dfLineMin);
             }
 
-            if (bMax)
+            if (bMax || dfMax == -double.MaxValue)
             {
                 dfMax = Math.Max(dfMax, dfAbsMax);
                 dfMax = Math.Max(dfMax, dfLineMax);
