@@ -16,7 +16,6 @@ namespace SimpleGraphing
         Rectangle m_rcBounds = new Rectangle();
         Bitmap m_bmp = null;
         GraphicsEx m_graphics = new GraphicsEx();
-        bool m_bRendering = false;
 
         public GraphSurface(ModuleCache cache)
         {
@@ -179,7 +178,7 @@ namespace SimpleGraphing
             int nWidth1 = nWidth - (nMargin * 2);
             int nHeight1 = 0;
 
-            for (int i = 0; i < m_frames.Count; i++)
+            for (int i=0; i<m_frames.Count; i++)
             {
                 GraphFrame frame = m_frames[i];
 
