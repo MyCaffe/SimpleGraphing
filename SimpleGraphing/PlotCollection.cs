@@ -14,7 +14,7 @@ namespace SimpleGraphing
     {
         string m_strSrcName = "";
         string m_strName;
-        List<Plot> m_rgPlot = new List<Plot>();
+        List<Plot> m_rgPlot = new List<Plot>(2500);
         double m_dfXIncrement = 1.0;
         double m_dfXPosition = 0;
         int m_nMax;
