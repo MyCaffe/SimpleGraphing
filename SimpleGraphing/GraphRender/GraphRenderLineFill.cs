@@ -203,7 +203,6 @@ namespace SimpleGraphing.GraphRender
                         {
                             if ((fYLast > fYMid && fY > fYMid) || (fYLast < fYMid && fY < fYMid))
                             {
-                                List<PointF> rgPt = new List<PointF>();
                                 m_rgpts5[0].X = fXLast;
                                 m_rgpts5[0].Y = fYMid;
 
@@ -216,8 +215,8 @@ namespace SimpleGraphing.GraphRender
                                 m_rgpts5[3].X = fX;
                                 m_rgpts5[3].Y = fYMid;
 
-                                m_rgpts5[4].X = rgPt[0].X;
-                                m_rgpts5[4].Y = rgPt[0].Y;
+                                m_rgpts5[4].X = m_rgpts5[0].X;
+                                m_rgpts5[4].Y = m_rgpts5[0].Y;
 
                                 if (fY > fYMid)
                                     g.FillPolygon(brDn, m_rgpts5);
