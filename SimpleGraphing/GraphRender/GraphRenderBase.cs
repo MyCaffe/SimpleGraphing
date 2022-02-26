@@ -13,6 +13,8 @@ namespace SimpleGraphing.GraphRender
         protected GraphAxis m_gx;
         protected GraphAxis m_gy;
         protected GraphPlotStyle m_style;
+        protected Dictionary<Color, Pen> m_rgPens = new Dictionary<Color, Pen>(10);
+        protected Dictionary<Color, Brush> m_rgBrushes = new Dictionary<Color, Brush>(10);
 
         public GraphRenderBase(ConfigurationPlot config, GraphAxis gx, GraphAxis gy, GraphPlotStyle style)
         {
@@ -29,6 +31,15 @@ namespace SimpleGraphing.GraphRender
 
         protected virtual void dispose()
         {
+            foreach (KeyValuePair<Color, Pen> kv in m_rgPens)
+            {
+                kv.Value.Dispose();
+            }
+
+            foreach (KeyValuePair<Color, Brush> kv in m_rgBrushes)
+            {
+                kv.Value.Dispose();
+            }
         }
 
         protected void renderActions(Graphics g, PlotCollectionSet dataset, int nLookahead)

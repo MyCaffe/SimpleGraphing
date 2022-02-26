@@ -10,6 +10,8 @@ namespace SimpleGraphing.GraphRender
     public class GraphRenderHighLow : GraphRenderBase, IGraphPlotRender
     {
         bool m_bDrawLines = false;
+        PointF[] m_rgpt = new PointF[5];
+        Dictionary<Color, Pen> m_rgPens1 = new Dictionary<Color, Pen>(10);
 
         enum TYPE
         {
@@ -24,6 +26,22 @@ namespace SimpleGraphing.GraphRender
             {
                 if (config.ExtraSettings["DrawLines"] != 0)
                     m_bDrawLines = true;
+            }
+
+            m_rgpt[0] = new PointF();
+            m_rgpt[1] = new PointF();
+            m_rgpt[2] = new PointF();
+            m_rgpt[3] = new PointF();
+            m_rgpt[4] = new PointF();
+        }
+
+        protected override void dispose()
+        {
+            base.dispose();
+
+            foreach (KeyValuePair<Color, Pen> kv in m_rgPens1)
+            {
+                kv.Value.Dispose();
             }
         }
 
@@ -101,42 +119,61 @@ namespace SimpleGraphing.GraphRender
         private void drawPlot(TYPE type, int i, Graphics g, float fX, float fY, Pen pen, Brush br)
         {
             float fHspace = m_gx.Configuration.PlotSpacing / 2;
-            RectangleF rc = new RectangleF(fX - fHspace, fY - fHspace, m_gx.Configuration.PlotSpacing, m_gx.Configuration.PlotSpacing);
+            float frcX = fX - fHspace;
+            float frcY = fY - fHspace;
+            float frcW = m_gx.Configuration.PlotSpacing;
+            float frcH = m_gy.Configuration.PlotSpacing;
 
             if (i == 0)
             {
-                g.FillEllipse(br, rc.X, rc.Y, rc.Width, rc.Height);
-                g.DrawEllipse(pen, rc.X, rc.Y, rc.Width, rc.Height);
+                g.FillEllipse(br, frcX, frcY, frcW, frcH);
+                g.DrawEllipse(pen, frcX, frcY, frcW, frcH);
             }
             else if (i == 1)
             {
-                List<PointF> rgpts = new List<PointF>();
+                m_rgpt[0].X = fX;
+                m_rgpt[0].Y = fY - (fHspace + 1);
 
-                rgpts.Add(new PointF(fX, fY - (fHspace + 1)));
-                rgpts.Add(new PointF(fX + (fHspace + 1), fY));
-                rgpts.Add(new PointF(fX, fY + (fHspace + 1)));
-                rgpts.Add(new PointF(fX - (fHspace + 1), fY));
-                rgpts.Add(new PointF(fX, fY - (fHspace + 1)));
+                m_rgpt[1].X = fX + (fHspace + 1);
+                m_rgpt[1].Y = fY;
 
-                g.FillPolygon(br, rgpts.ToArray());
-                g.DrawPolygon(pen, rgpts.ToArray());
+                m_rgpt[2].X = fX;
+                m_rgpt[2].Y = fY + (fHspace + 1);
+
+                m_rgpt[3].X = fX - (fHspace + 1);
+                m_rgpt[3].Y = fY;
+
+                m_rgpt[4].X = fX;
+                m_rgpt[4].Y = fY - (fHspace + 1);
+
+                g.FillPolygon(br, m_rgpt);
+                g.DrawPolygon(pen, m_rgpt);
             }
             else
             {
                 if (m_bDrawLines)
                 {
-                    float fX1 = rc.X + 1;
+                    float fX1 = frcX + 1;
                     float fX2 = m_gx.TickPositions[m_gx.TickPositions.Count - 1];
 
+                    Pen p;
                     Color clr1 = Color.FromArgb(92, ((SolidBrush)br).Color);
-                    Pen p = new Pen(clr1, 1.0f);
-                   
-                    p.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                    if (!m_rgPens1.ContainsKey(clr1))
+                    {
+                        p = new Pen(clr1, 1.0f);
+                        p.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                        m_rgPens1.Add(clr1, p);
+                    }
+                    else
+                    {
+                        p = m_rgPens1[clr1];
+                    }
+
                     g.DrawLine(p, fX1, fY, fX2, fY);
                 }
 
-                g.FillRectangle(br, rc.X, rc.Y, rc.Width, rc.Height);
-                g.DrawRectangle(pen, rc.X, rc.Y, rc.Width, rc.Height);
+                g.FillRectangle(br, frcX, frcY, frcW, frcH);
+                g.DrawRectangle(pen, frcX, frcY, frcW, frcH);
             }
         }
     }

@@ -9,9 +9,16 @@ namespace SimpleGraphing.GraphRender
 {
     public class GraphRenderBB : GraphRenderBase, IGraphPlotRender
     {
+        PointF[] m_rgpt = new PointF[5];
+
         public GraphRenderBB(ConfigurationPlot config, GraphAxis gx, GraphAxis gy, GraphPlotStyle style)
             : base(config, gx, gy, style)
         {
+            m_rgpt[0] = new PointF();
+            m_rgpt[1] = new PointF();
+            m_rgpt[2] = new PointF();
+            m_rgpt[3] = new PointF();
+            m_rgpt[4] = new PointF();
         }
 
         public string Name
@@ -141,39 +148,47 @@ namespace SimpleGraphing.GraphRender
                             m_style.LinePen.DashStyle = System.Drawing.Drawing2D.DashStyle.Solid;
 
                             Color clr = Color.Transparent;
-                            List<PointF> rgpt = new List<PointF>();
 
-                            rgpt.Add(new PointF(fXLast, fYtLast));
-                            rgpt.Add(new PointF(fX, fYt));
-                            rgpt.Add(new PointF(fX, fYa));
-                            rgpt.Add(new PointF(fXLast, fYaLast));
-                            rgpt.Add(rgpt[0]);
+                            m_rgpt[0].X = fXLast;
+                            m_rgpt[0].Y = fYtLast;
+                            m_rgpt[1].X = fX;
+                            m_rgpt[1].Y = fYt;
+                            m_rgpt[2].X = fX;
+                            m_rgpt[2].Y = fYa;
+                            m_rgpt[3].X = fXLast;
+                            m_rgpt[3].Y = fYaLast;
+                            m_rgpt[4].X = m_rgpt[0].X;
+                            m_rgpt[4].Y = m_rgpt[0].Y;
                             clr = Color.FromArgb(nTopOpacity, m_config.PlotFillColor);
 
                             if (!m_style.Brushes.ContainsKey(clr))
                                 m_style.Brushes.Add(clr, new SolidBrush(clr));
 
-                            g.FillPolygon(m_style.Brushes[clr], rgpt.ToArray());
+                            g.FillPolygon(m_style.Brushes[clr], m_rgpt);
 
-                            rgpt.Clear();
-                            rgpt.Add(new PointF(fXLast, fYbLast));
-                            rgpt.Add(new PointF(fX, fYb));
-                            rgpt.Add(new PointF(fX, fYa));
-                            rgpt.Add(new PointF(fXLast, fYaLast));
-                            rgpt.Add(rgpt[0]);
+                            m_rgpt[0].X = fXLast;
+                            m_rgpt[0].Y = fYbLast;
+                            m_rgpt[1].X = fX;
+                            m_rgpt[1].Y = fYb;
+                            m_rgpt[2].X = fX;
+                            m_rgpt[2].Y = fYa;
+                            m_rgpt[3].X = fXLast;
+                            m_rgpt[3].Y = fYaLast;
+                            m_rgpt[4].X = m_rgpt[0].X;
+                            m_rgpt[4].Y = m_rgpt[0].Y;
                             clr = Color.FromArgb(nBtmOpacity, m_config.PlotFillColor);
 
                             if (!m_style.Brushes.ContainsKey(clr))
                                 m_style.Brushes.Add(clr, new SolidBrush(clr));
 
-                            g.FillPolygon(m_style.Brushes[clr], rgpt.ToArray());
+                            g.FillPolygon(m_style.Brushes[clr], m_rgpt);
 
-                            if (clr != Color.Transparent && rgpt.Count > 0)
+                            if (clr != Color.Transparent)
                             {
                                 if (!m_style.Brushes.ContainsKey(clr))
                                     m_style.Brushes.Add(clr, new SolidBrush(clr));
 
-                                g.FillPolygon(m_style.Brushes[clr], rgpt.ToArray());
+                                g.FillPolygon(m_style.Brushes[clr], m_rgpt);
                             }
                         }
                     }

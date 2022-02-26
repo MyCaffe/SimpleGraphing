@@ -213,10 +213,7 @@ namespace SimpleGraphing
                             bNewHour = true;
 
                         if (bNewHour)
-                        {
-                            RectangleF rc = new RectangleF(nX - m_config.PlotSpacing, nY + 2, sz.Height, sz.Width);
-                            g.FillRectangle(m_style.HourLabel, rc);
-                        }
+                            g.FillRectangle(m_style.HourLabel, nX - m_config.PlotSpacing, nY + 2, sz.Height, sz.Width);
 
                         DrawRotatedTextAt(g, 270.0f, strVal, nX - m_config.PlotSpacing, nY + 2, font, m_style.LabelBrush);
 

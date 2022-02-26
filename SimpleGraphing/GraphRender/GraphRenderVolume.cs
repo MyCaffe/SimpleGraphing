@@ -34,8 +34,6 @@ namespace SimpleGraphing.GraphRender
             PlotCollection plots = dataset[m_config.DataIndexOnRender];
             List<int> rgX = m_gx.TickPositions;
             int nStartIdx = m_gx.StartPosition;
-            Dictionary<Color, Pen> rgPens = new Dictionary<Color, Pen>();
-            Dictionary<Color, Brush> rgBrushes = new Dictionary<Color, Brush>();
 
             for (int i = 0; i < rgX.Count; i++)
             {
@@ -63,38 +61,26 @@ namespace SimpleGraphing.GraphRender
                         float fBottom = m_gy.ScaleValue(0.0, true);
                         float fHt = Math.Abs(fBottom - fTop);
 
-                        RectangleF rc = new RectangleF(fX1, fTop, fWid, fHt);
+                        if (!m_rgPens.ContainsKey(clrLine))
+                            m_rgPens.Add(clrLine, new Pen(clrLine, 1.0f));
 
-                        if (!rgPens.ContainsKey(clrLine))
-                            rgPens.Add(clrLine, new Pen(clrLine, 1.0f));
+                        if (!m_rgBrushes.ContainsKey(clrFill))
+                            m_rgBrushes.Add(clrFill, new SolidBrush(clrFill));
 
-                        if (!rgBrushes.ContainsKey(clrFill))
-                            rgBrushes.Add(clrFill, new SolidBrush(clrFill));
+                        Pen pLine = m_rgPens[clrLine];
+                        Brush brFill = m_rgBrushes[clrFill];
 
-                        Pen pLine = rgPens[clrLine];
-                        Brush brFill = rgBrushes[clrFill];
-
-                        g.FillRectangle(brFill, rc);
-                        g.DrawRectangle(pLine, rc.X, rc.Y, rc.Width, rc.Height);
+                        g.FillRectangle(brFill, fX1, fTop, fWid, fHt);
+                        g.DrawRectangle(pLine, fX1, fTop, fWid, fHt);
 
                         if (plot.Clipped)
                         {
-                            g.DrawLine(Pens.Red, rc.X, rc.Y, rc.X + rc.Width, rc.Y);
-                            g.DrawLine(Pens.Red, rc.X, rc.Y + 1, rc.X + rc.Width, rc.Y + 1);
-                            g.DrawLine(Pens.Red, rc.X, rc.Y + 2, rc.X + rc.Width, rc.Y + 2);
+                            g.DrawLine(Pens.Red, fX1, fTop, fX1 + fWid, fTop);
+                            g.DrawLine(Pens.Red, fX1, fTop + 1, fX1 + fWid, fTop + 1);
+                            g.DrawLine(Pens.Red, fX1, fTop + 2, fX1 + fWid, fTop + 2);
                         }
                     }
                 }
-            }
-
-            foreach (KeyValuePair<Color, Pen> kv in rgPens)
-            {
-                kv.Value.Dispose();
-            }
-
-            foreach (KeyValuePair<Color, Brush> kv in rgBrushes)
-            {
-                kv.Value.Dispose();
             }
         }
     }

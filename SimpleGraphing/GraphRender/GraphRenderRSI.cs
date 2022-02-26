@@ -9,6 +9,8 @@ namespace SimpleGraphing.GraphRender
 {
     public class GraphRenderRSI : GraphRenderBase, IGraphPlotRender
     {
+        List<PointF> m_rgpt = new List<PointF>(5);
+
         public GraphRenderRSI(ConfigurationPlot config, GraphAxis gx, GraphAxis gy, GraphPlotStyle style)
             : base(config, gx, gy, style)
         {
@@ -111,37 +113,38 @@ namespace SimpleGraphing.GraphRender
                         {
                             g.DrawLine(m_style.LinePen, fXLast, fYLast, fX, fY);
                             Color clr = Color.Transparent;
-                            List<PointF> rgpt = new List<PointF>();
+
+                            m_rgpt.Clear();
 
                             if (fY < fLevel70)
                             {
-                                rgpt.Add(new PointF(fXLast, fLevel70));
+                                m_rgpt.Add(new PointF(fXLast, fLevel70));
                                 if (fYLast < fLevel70)
-                                    rgpt.Add(new PointF(fXLast, fYLast));
+                                    m_rgpt.Add(new PointF(fXLast, fYLast));
                                 if (fY < fLevel70)
-                                    rgpt.Add(new PointF(fX, fY));
-                                rgpt.Add(new PointF(fX, fLevel70));
-                                rgpt.Add(rgpt[0]);
+                                    m_rgpt.Add(new PointF(fX, fY));
+                                m_rgpt.Add(new PointF(fX, fLevel70));
+                                m_rgpt.Add(m_rgpt[0]);
                                 clr = Color.FromArgb(64, Color.Green);
                             }
                             else if (fY > fLevel30)
                             {
-                                rgpt.Add(new PointF(fXLast, fLevel30));
+                                m_rgpt.Add(new PointF(fXLast, fLevel30));
                                 if (fYLast > fLevel30)
-                                    rgpt.Add(new PointF(fXLast, fYLast));
+                                    m_rgpt.Add(new PointF(fXLast, fYLast));
                                 if (fY > fLevel30)
-                                    rgpt.Add(new PointF(fX, fY));
-                                rgpt.Add(new PointF(fX, fLevel30));
-                                rgpt.Add(rgpt[0]);
+                                    m_rgpt.Add(new PointF(fX, fY));
+                                m_rgpt.Add(new PointF(fX, fLevel30));
+                                m_rgpt.Add(m_rgpt[0]);
                                 clr = Color.FromArgb(64, Color.Red);
                             }
 
-                            if (clr != Color.Transparent && rgpt.Count > 0)
+                            if (clr != Color.Transparent && m_rgpt.Count > 0)
                             {
                                 if (!m_style.Brushes.ContainsKey(clr))
                                     m_style.Brushes.Add(clr, new SolidBrush(clr));
 
-                                g.FillPolygon(m_style.Brushes[clr], rgpt.ToArray());
+                                g.FillPolygon(m_style.Brushes[clr], m_rgpt.ToArray());
                             }
                         }
                     }

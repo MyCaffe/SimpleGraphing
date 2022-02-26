@@ -34,8 +34,6 @@ namespace SimpleGraphing.GraphRender
             PlotCollection plots = dataset[m_config.DataIndexOnRender];
             List<int> rgX = m_gx.TickPositions;
             int nStartIdx = m_gx.StartPosition;
-            Dictionary<Color, Pen> rgPens = new Dictionary<Color, Pen>();
-            Dictionary<Color, Brush> rgBrushes = new Dictionary<Color, Brush>();
 
             for (int i = 0; i < rgX.Count; i++)
             {
@@ -99,48 +97,41 @@ namespace SimpleGraphing.GraphRender
                         float fBottom1 = Math.Max(fOpen1, fClose1);
                         float fHt = Math.Abs(fBottom1 - fTop1);
 
-                        RectangleF rc = new RectangleF(fX1, fTop1, fWid - 1, fHt);
+                        float frcX = fX1;
+                        float frcY = fTop1;
+                        float frcW = fWid - 1;
+                        float frcH = fHt;
 
-                        if (!rgPens.ContainsKey(clrLine))
-                            rgPens.Add(clrLine, new Pen(clrLine, 1.0f));
+                        if (!m_rgPens.ContainsKey(clrLine))
+                            m_rgPens.Add(clrLine, new Pen(clrLine, 1.0f));
 
-                        if (!rgBrushes.ContainsKey(clrFill))
-                            rgBrushes.Add(clrFill, new SolidBrush(clrFill));
+                        if (!m_rgBrushes.ContainsKey(clrFill))
+                            m_rgBrushes.Add(clrFill, new SolidBrush(clrFill));
 
-                        Pen pLine = rgPens[clrLine];
-                        Brush brFill = rgBrushes[clrFill];
+                        Pen pLine = m_rgPens[clrLine];
+                        Brush brFill = m_rgBrushes[clrFill];
 
                         float fTop2 = Math.Min(fTop, fBottom);
                         float fBottom2 = Math.Max(fTop, fBottom);
 
-                        if (isValid(rc))
+                        if (isValid(frcW, frcH))
                         {
                             g.DrawLine(pLine, fX, fTop2, fX, fBottom2);
-                            g.DrawLine(pLine, rc.Left, rc.Top, rc.Right, rc.Top);
-                            g.FillRectangle(brFill, rc);
-                            g.DrawRectangle(pLine, rc.X, rc.Y, rc.Width, rc.Height);
+                            g.DrawLine(pLine, frcX, frcY, frcX + frcW, frcY);
+                            g.FillRectangle(brFill, frcX, frcY, frcW, frcH);
+                            g.DrawRectangle(pLine, frcX, frcY, frcW, frcH);
                         }
                     }
                 }
             }
-
-            foreach (KeyValuePair<Color, Pen> kv in rgPens)
-            {
-                kv.Value.Dispose();
-            }
-
-            foreach (KeyValuePair<Color, Brush> kv in rgBrushes)
-            {
-                kv.Value.Dispose();
-            }
         }
 
-        private bool isValid(RectangleF rc)
+        private bool isValid(float frcW, float frcH)
         {
-            if (double.IsNaN(rc.Width) || double.IsInfinity(rc.Width))
+            if (double.IsNaN(frcW) || double.IsInfinity(frcW))
                 return false;
 
-            if (double.IsNaN(rc.Height) || double.IsInfinity(rc.Width))
+            if (double.IsNaN(frcH) || double.IsInfinity(frcH))
                 return false;
 
             return true;

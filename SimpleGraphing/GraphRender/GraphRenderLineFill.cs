@@ -10,9 +10,35 @@ namespace SimpleGraphing.GraphRender
 {
     public class GraphRenderLineFill : GraphRenderBase, IGraphPlotRender
     {
+        Dictionary<float, Dictionary<Color, Pen>> m_rgPens1 = new Dictionary<float, Dictionary<Color, Pen>>();
+        PointF[] m_rgpts5 = new PointF[5];
+        PointF[] m_rgpts4 = new PointF[4];
+
         public GraphRenderLineFill(ConfigurationPlot config, GraphAxis gx, GraphAxis gy, GraphPlotStyle style)
             : base(config, gx, gy, style)
         {
+            m_rgpts5[0] = new PointF();
+            m_rgpts5[1] = new PointF();
+            m_rgpts5[2] = new PointF();
+            m_rgpts5[3] = new PointF();
+            m_rgpts5[4] = new PointF();
+            m_rgpts4[0] = new PointF();
+            m_rgpts4[1] = new PointF();
+            m_rgpts4[2] = new PointF();
+            m_rgpts4[3] = new PointF();
+        }
+
+        protected override void dispose()
+        {
+            base.dispose();
+
+            foreach (KeyValuePair<float, Dictionary<Color, Pen>> kv in m_rgPens1)
+            {
+                foreach (KeyValuePair<Color, Pen> kv1 in kv.Value)
+                {
+                    kv1.Value.Dispose();
+                }
+            }
         }
 
         public string Name
@@ -90,14 +116,30 @@ namespace SimpleGraphing.GraphRender
             bool bTransparentFill = (m_config.GetExtraSetting("TransparentFill", 0) != 0) ? true : false;
             Color clrFillUp = (bTransparentFill) ? Color.Transparent : Color.FromArgb(nAlpha, m_config.LineColor);
             Color clrFillDn = (bTransparentFill) ? Color.Transparent : Color.FromArgb(nAlpha, m_config.PlotLineColor);
-            SolidBrush brUp = new SolidBrush(clrFillUp);
-            SolidBrush brDn = new SolidBrush(clrFillDn);
+
+            if (!m_rgBrushes.ContainsKey(clrFillUp))
+                m_rgBrushes.Add(clrFillUp, new SolidBrush(clrFillUp));
+            Brush brUp = m_rgBrushes[clrFillUp];
+
+            if (!m_rgBrushes.ContainsKey(clrFillDn))
+                m_rgBrushes.Add(clrFillDn, new SolidBrush(clrFillDn));
+            Brush brDn = m_rgBrushes[clrFillDn];
 
             bool bTransparentLine = (m_config.GetExtraSetting("TransparentLine", 0) != 0) ? true : false;
             Color clrLineUp = (bTransparentLine) ? Color.Transparent : m_config.LineColor;
             Color clrLineDn = (bTransparentLine) ? Color.Transparent : m_config.PlotLineColor;
-            Pen penUp = new Pen(clrLineUp, m_config.LineWidth);
-            Pen penDn = new Pen(clrLineDn, m_config.LineWidth);
+
+            if (!m_rgPens1.ContainsKey(m_config.LineWidth))
+                m_rgPens1.Add(m_config.LineWidth, new Dictionary<Color, Pen>());
+
+            if (!m_rgPens1[m_config.LineWidth].ContainsKey(clrLineUp))
+                m_rgPens1[m_config.LineWidth].Add(clrLineUp, new Pen(clrLineUp, m_config.LineWidth));
+
+            if (!m_rgPens1[m_config.LineWidth].ContainsKey(clrLineDn))
+                m_rgPens1[m_config.LineWidth].Add(clrLineDn, new Pen(clrLineDn, m_config.LineWidth));
+
+            Pen penUp = m_rgPens1[m_config.LineWidth][clrLineUp];
+            Pen penDn = m_rgPens1[m_config.LineWidth][clrLineDn];
             double dfMidPoint = m_config.MidPoint;
             bool bMidPointReady = false;
 
@@ -162,32 +204,47 @@ namespace SimpleGraphing.GraphRender
                             if ((fYLast > fYMid && fY > fYMid) || (fYLast < fYMid && fY < fYMid))
                             {
                                 List<PointF> rgPt = new List<PointF>();
-                                rgPt.Add(new PointF(fXLast, fYMid));
-                                rgPt.Add(new PointF(fXLast, fYLast));
-                                rgPt.Add(new PointF(fX, fY));
-                                rgPt.Add(new PointF(fX, fYMid));
-                                rgPt.Add(rgPt[0]);
+                                m_rgpts5[0].X = fXLast;
+                                m_rgpts5[0].Y = fYMid;
+
+                                m_rgpts5[1].X = fXLast;
+                                m_rgpts5[1].Y = fYLast;
+
+                                m_rgpts5[2].X = fX;
+                                m_rgpts5[2].Y = fY;
+
+                                m_rgpts5[3].X = fX;
+                                m_rgpts5[3].Y = fYMid;
+
+                                m_rgpts5[4].X = rgPt[0].X;
+                                m_rgpts5[4].Y = rgPt[0].Y;
 
                                 if (fY > fYMid)
-                                    g.FillPolygon(brDn, rgPt.ToArray());
+                                    g.FillPolygon(brDn, m_rgpts5);
                                 else
-                                    g.FillPolygon(brUp, rgPt.ToArray());
+                                    g.FillPolygon(brUp, m_rgpts5);
                             }
                             else
                             {
                                 float fYMid1 = fYLast + (Math.Abs(fY - fYLast) / 2.0f);
                                 float fXMid1 = fXLast + (Math.Abs(fX - fXLast) / 2.0f);
 
-                                List<PointF> rgPt = new List<PointF>();
-                                rgPt.Add(new PointF(fXLast, fYMid));
-                                rgPt.Add(new PointF(fXLast, fYLast));
-                                rgPt.Add(new PointF(fXMid1, fYMid));
-                                rgPt.Add(rgPt[0]);
+                                m_rgpts4[0].X = fXLast;
+                                m_rgpts4[0].Y = fYMid;
+           
+                                m_rgpts4[1].X = fXLast;
+                                m_rgpts4[1].Y = fYLast;
+
+                                m_rgpts4[2].X = fXMid1;
+                                m_rgpts4[2].Y = fYMid;
+
+                                m_rgpts4[3].X = m_rgpts4[0].X;
+                                m_rgpts4[3].Y = m_rgpts4[0].Y;
 
                                 if (fYLast < fYMid)
-                                    g.FillPolygon(brUp, rgPt.ToArray());
+                                    g.FillPolygon(brUp, m_rgpts4);
                                 else
-                                    g.FillPolygon(brDn, rgPt.ToArray());
+                                    g.FillPolygon(brDn, m_rgpts4);
                             }
                         }
 
@@ -256,11 +313,6 @@ namespace SimpleGraphing.GraphRender
                     }
                 }
             }
-
-            brUp.Dispose();
-            brDn.Dispose();
-            penUp.Dispose();
-            penDn.Dispose();
         }
 
         private bool isValid(float f1)

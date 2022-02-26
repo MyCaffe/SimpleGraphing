@@ -19,9 +19,16 @@ namespace SimpleGraphing
         PenCollection m_colFlagBorder = new PenCollection();
         FlagCollection m_colCustomFlagsPre = new FlagCollection();
         FlagCollection m_colCustomFlagsPost = new FlagCollection();
+        PointF[] m_rgpt = new PointF[6];
 
         public GraphAxisY()
         {
+            m_rgpt[0] = new PointF();
+            m_rgpt[1] = new PointF();
+            m_rgpt[2] = new PointF();
+            m_rgpt[3] = new PointF();
+            m_rgpt[4] = new PointF();
+            m_rgpt[5] = new PointF();
         }
 
         protected override void dispose()
@@ -357,17 +364,23 @@ namespace SimpleGraphing
             if (fY < Bounds.Top || fY > Bounds.Bottom)
                 return;
 
-            List<PointF> rgpt = new List<PointF>();
-            rgpt.Add(new PointF(m_rcBounds.Left, fY));
-            rgpt.Add(new PointF(m_rcBounds.Left + fHalf, fY - fHalf));
-            rgpt.Add(new PointF(m_rcBounds.Left + fHalf + szVal.Width + 2, fY - fHalf));
-            rgpt.Add(new PointF(m_rcBounds.Left + fHalf + szVal.Width + 2, fY + fHalf));
-            rgpt.Add(new PointF(m_rcBounds.Left + fHalf, fY + fHalf));
-            rgpt.Add(new PointF(m_rcBounds.Left, fY));
+            PointF[] rgpt = m_rgpt;
+            rgpt[0].X = m_rcBounds.Left;
+            rgpt[0].Y = fY;
+            rgpt[1].X = m_rcBounds.Left + fHalf;
+            rgpt[1].Y = fY - fHalf;
+            rgpt[2].X = m_rcBounds.Left + fHalf + szVal.Width + 2;
+            rgpt[2].Y = fY - fHalf;
+            rgpt[3].X = m_rcBounds.Left + fHalf + szVal.Width + 2;
+            rgpt[3].Y = fY + fHalf;
+            rgpt[4].X = m_rcBounds.Left + fHalf;
+            rgpt[4].Y = fY + fHalf;
+            rgpt[5].X = m_rcBounds.Left;
+            rgpt[5].Y = fY;
 
             m_colFlagColor.Add(flagColor);
             Brush br = m_colFlagColor[flagColor];
-            g.FillPolygon(br, rgpt.ToArray());
+            g.FillPolygon(br, rgpt);
 
             m_colFlagText.Add(flagText);
             br = m_colFlagText[flagText];
@@ -375,7 +388,7 @@ namespace SimpleGraphing
 
             m_colFlagBorder.Add(flagBorder);
             Pen p = m_colFlagBorder[flagBorder];
-            g.DrawPolygon(p, rgpt.ToArray());
+            g.DrawPolygon(p, rgpt);
         }
     }
 

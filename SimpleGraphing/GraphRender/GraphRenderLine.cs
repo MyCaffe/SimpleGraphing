@@ -133,22 +133,25 @@ namespace SimpleGraphing.GraphRender
                         continue;
 
                     float fY = fY1.Value;
+                    float frcY = fY - 2.0f;
 
-                    RectangleF rcPlot = new RectangleF(fX - 2.0f, fY - 2.0f, 4.0f, 4.0f);
-
-                    if (isValid(rcPlot))
+                    if (isValid(frcY))
                     {
+                        float frcX = fX - 2.0f;
+                        float frcW = 4.0f;
+                        float frcH = 4.0f;
+
                         if (m_config.PlotFillColor != Color.Transparent)
                         {
                             Brush brFill = (plot.Active) ? m_style.PlotFillBrush : Brushes.Transparent;
 
                             if ((m_config.PlotShape & ConfigurationPlot.PLOTSHAPE.SQUARE) == ConfigurationPlot.PLOTSHAPE.SQUARE)
                             {
-                                g.FillRectangle(brFill, rcPlot);
+                                g.FillRectangle(brFill, frcX, frcY, frcW, frcH);
                             }
                             else
                             {
-                                g.FillEllipse(brFill, rcPlot);
+                                g.FillEllipse(brFill, frcX, frcY, frcW, frcH);
                             }
                         }
 
@@ -160,28 +163,28 @@ namespace SimpleGraphing.GraphRender
 
                                 if ((m_config.PlotShape & ConfigurationPlot.PLOTSHAPE.SQUARE) == ConfigurationPlot.PLOTSHAPE.SQUARE)
                                 {
-                                    g.DrawRectangle(pLine, rcPlot.X, rcPlot.Y, rcPlot.Width, rcPlot.Height);
+                                    g.DrawRectangle(pLine, frcX, frcY, frcW, frcH);
 
                                     if ((m_config.PlotShape & ConfigurationPlot.PLOTSHAPE.ARROW_DOWN) == ConfigurationPlot.PLOTSHAPE.ARROW_DOWN)
                                     {
                                         if (pLineThin == null)
                                             pLineThin = new Pen(pLine.Color, 1.0f);
 
-                                        g.DrawLine(pLineThin, rcPlot.Left, rcPlot.Bottom + 3, rcPlot.Left + (rcPlot.Width / 2), rcPlot.Bottom + 6);
-                                        g.DrawLine(pLineThin, rcPlot.Right, rcPlot.Bottom + 3, rcPlot.Left + (rcPlot.Width / 2), rcPlot.Bottom + 6);
+                                        g.DrawLine(pLineThin, frcX, frcY + frcH + 3, frcX + (frcW / 2), frcY + frcH + 6);
+                                        g.DrawLine(pLineThin, frcX + frcW, frcY + frcH + 3, frcX + (frcW / 2), frcY + frcH + 6);
                                     }
                                     else if ((m_config.PlotShape & ConfigurationPlot.PLOTSHAPE.ARROW_UP) == ConfigurationPlot.PLOTSHAPE.ARROW_UP)
                                     {
                                         if (pLineThin == null)
                                             pLineThin = new Pen(pLine.Color, 1.0f);
 
-                                        g.DrawLine(pLineThin, rcPlot.Left, rcPlot.Top - 3, rcPlot.Left + (rcPlot.Width / 2), rcPlot.Top - 6);
-                                        g.DrawLine(pLineThin, rcPlot.Right, rcPlot.Top - 3, rcPlot.Left + (rcPlot.Width / 2), rcPlot.Top - 6);
+                                        g.DrawLine(pLineThin, frcX, frcX - 3, frcX + (frcW / 2), frcX - 6);
+                                        g.DrawLine(pLineThin, frcX + frcW, frcX - 3, frcX + (frcW / 2), frcX - 6);
                                     }
                                 }
                                 else
                                 {
-                                    g.DrawEllipse(pLine, rcPlot);
+                                    g.DrawEllipse(pLine, frcX, frcY, frcW, frcH);
                                 }
                             }
                         }
@@ -193,9 +196,9 @@ namespace SimpleGraphing.GraphRender
                 pLineThin.Dispose();
         }
 
-        private bool isValid(RectangleF rc)
+        private bool isValid(float fY)
         {
-            if (double.IsNaN(rc.Y) || double.IsInfinity(rc.Y))
+            if (double.IsNaN(fY) || double.IsInfinity(fY))
                 return false;
 
             return true;

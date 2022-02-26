@@ -78,11 +78,13 @@ namespace SimpleGraphing.GraphRender
             float fBottom = m_fBottom;
 
             // Fill the background
-            RectangleF rcBack = new RectangleF(0, fTop, m_nWidth, fBottom - fTop);
             Color clr = Color.FromArgb(128, Color.LightCyan);
-            Brush br = new SolidBrush(clr);
-            g.FillRectangle(br, rcBack);
-            br.Dispose();
+
+            if (!m_rgBrushes.ContainsKey(clr))
+                m_rgBrushes.Add(clr, new SolidBrush(clr));
+
+            Brush br = m_rgBrushes[clr];
+            g.FillRectangle(br, 0, fTop, m_nWidth, fBottom - fTop);
 
             // Draw the price zones
             float fY = fTop;
@@ -90,12 +92,13 @@ namespace SimpleGraphing.GraphRender
             for (int i = m_rgHistogram.Count-1; i>=0; i--)
             {
                 float fWid = (float)(m_rgHistogram[i].NormalizedCount * (m_nWidth - 5));
-                RectangleF rc = new RectangleF(2, fY, fWid, fHt);
-
                 clr = m_clrMap.GetColor(m_rgHistogram[i].NormalizedCount);
-                br = new SolidBrush(clr);
-                g.FillRectangle(br, rc);
-                br.Dispose();
+
+                if (!m_rgBrushes.ContainsKey(clr))
+                    m_rgBrushes.Add(clr, new SolidBrush(clr));
+
+                br = m_rgBrushes[clr];
+                g.FillRectangle(br, 2, fY, fWid, fHt);
 
                 fY += fHt;
             }
