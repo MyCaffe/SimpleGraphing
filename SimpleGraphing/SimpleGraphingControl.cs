@@ -25,6 +25,8 @@ namespace SimpleGraphing
         Size m_szOriginal;
         Crosshairs m_crosshairs = new Crosshairs();
         double m_dfScrollPct = 0;
+        bool m_bResizing = false;
+        bool m_bUpdating = false;
 
         public event EventHandler<PaintEventArgs> OnUserPaint;
         public event EventHandler<MouseEventArgs> OnUserMouseMove;
@@ -382,11 +384,30 @@ namespace SimpleGraphing
             }
         }
 
-        public void UpdateGraph()
+        public void UpdateGraph(bool bBuildGraph = true, bool bRefresh = false)
         {
-            m_output = m_surface.BuildGraph(m_config, m_data);
-            SimpleGraphingControl_Resize(this, EventArgs.Empty);
-            Invalidate(true);
+            if (m_bResizing)
+                return;
+
+            if (m_bUpdating)
+                return;
+
+            try
+            {
+                m_bUpdating = true;
+
+                if (bBuildGraph)
+                    m_output = m_surface.BuildGraph(m_config, m_data);
+                SimpleGraphingControl_Resize(this, EventArgs.Empty);
+                Invalidate(true);
+
+                if (bRefresh)
+                    Refresh();
+            }
+            finally
+            {
+                m_bUpdating = false;
+            }
         }
 
         private void SimpleGraphingControl_Resize(object sender, EventArgs e)
@@ -394,8 +415,16 @@ namespace SimpleGraphing
             if (DesignMode || m_surface == null)
                 return;
 
-            m_surface.Resize(pbImage.Width, pbImage.Height);
-            m_szOriginal = pbImage.Size;
+            try
+            {
+                m_bResizing = true;
+                m_surface.Resize(pbImage.Width, pbImage.Height);
+                m_szOriginal = pbImage.Size;
+            }
+            finally
+            {
+                m_bResizing = false;
+            }
         }
 
         private void SimpleGraphingControl_Paint(object sender, PaintEventArgs e)
