@@ -87,8 +87,11 @@ namespace SimpleGraphing.GraphRender
                     plots.GetMinMaxOverWindow(0, plots.Count, out dfMinX, out dfMinY, out dfMaxX, out dfMaxY);
             }
 
-            float fLevel70 = m_gy.ScaleValue(70, true);
-            float fLevel30 = m_gy.ScaleValue(30, true);
+            double dfScaleHigh = m_config.GetExtraSetting("ScaleHigh", 70);
+            double dfScaleLow = m_config.GetExtraSetting("ScaleLow", 30);
+
+            float fLevel70 = m_gy.ScaleValue(dfScaleHigh, true);
+            float fLevel30 = m_gy.ScaleValue(dfScaleLow, true);
 
             for (int i = 0; i < rgX.Count; i++)
             {
