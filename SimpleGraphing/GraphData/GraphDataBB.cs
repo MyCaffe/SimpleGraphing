@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SimpleGraphing.GraphData
 {
-    class GraphDataBB : IGraphPlotData
+    public class GraphDataBB : IGraphPlotData
     {
-        int m_nStdDev = 2;
+        double m_dfStdDev = 2;
         ConfigurationPlot m_config;
         CalculationArray m_caVal;
         CalculationArray m_caValExt;
@@ -24,6 +24,7 @@ namespace SimpleGraphing.GraphData
         public GraphDataBB(ConfigurationPlot config)
         {
             m_config = config;
+            m_dfStdDev = config.GetExtraSetting("StdDev", 2.0);
         }
 
         public string Name
@@ -43,9 +44,14 @@ namespace SimpleGraphing.GraphData
 
         public BbData Pre(PlotCollectionSet dataset, int nDataIdx)
         {
+            return Pre(dataset[nDataIdx]);
+        }
+
+        public BbData Pre(PlotCollection dataset)
+        {
             m_caVal = new CalculationArray((int)m_config.Interval);
             m_caValExt = new CalculationArray((int)m_config.Interval);
-            PlotCollection dataSrc = dataset[nDataIdx];
+            PlotCollection dataSrc = dataset;
             PlotCollection dataDst = new PlotCollection(dataSrc.Name + " BB" + m_config.Interval.ToString());
 
             if (m_config.GetExtraSetting("BbTarget:BarRange", 0) == 1)
@@ -68,7 +74,7 @@ namespace SimpleGraphing.GraphData
         /// <param name="nLookahead">Specifies the look ahead value if any.</param>
         /// <param name="bAddToParams">Optionally, specifies whether or not to add the BB to the parameters of the original data.</param>
         /// <returns>The new BB values are returned.</returns>
-        public Tuple<double, double, double> Process(BbData data, int i, MinMax minmax = null, int nLookahead = 0, bool bAddToParams = false)
+        public Tuple<long, double, double, double, double, double> Process(BbData data, int i, MinMax minmax = null, int nLookahead = 0, bool bAddToParams = false)
         {
             bool bActive = data.SrcData[i].Active;
 
@@ -99,15 +105,27 @@ namespace SimpleGraphing.GraphData
                 if (m_target != TARGET.DEFAULT)
                     fStdevTp = (float)m_caValExt.StdDev;
 
-                data.BbAbove = data.Ave + (m_nStdDev * fStdevTp);
-                data.BbBelow = data.Ave - (m_nStdDev * fStdevTp);
+                double dfStdDvTp = (m_dfStdDev * fStdevTp);
+                data.BbAbove = data.Ave + dfStdDvTp;
+                data.BbBelow = data.Ave - dfStdDvTp;
                 plot.SetYValues(new float[] { (float)data.BbBelow, (float)data.Ave, (float)data.BbAbove }, true);
+
+                double dfAboveBelow = data.BbAbove - data.BbBelow;
+                data.BbPctb = 0;
+                if (dfAboveBelow != 0)
+                    data.BbPctb = (data.SrcData[i].Y - data.BbBelow) / dfAboveBelow;
+
+                data.BbWid = 0;
+                if (data.Ave != 0)
+                    data.BbWid = dfAboveBelow / data.Ave;
 
                 if (bAddToParams && bActive)
                 {
                     data.SrcData[i].SetParameter(data.DstData.Name + " Below", data.BbBelow);
                     data.SrcData[i].SetParameter(data.DstData.Name + " Ave", data.Ave);
                     data.SrcData[i].SetParameter(data.DstData.Name + " Above", data.BbAbove);
+                    data.SrcData[i].SetParameter(data.DstData.Name + " %b", data.BbPctb);
+                    data.SrcData[i].SetParameter(data.DstData.Name + " BandWidth", data.BbWid);
                 }
 
                 if (minmax != null)
@@ -120,7 +138,7 @@ namespace SimpleGraphing.GraphData
 
             data.Count++;
 
-            return new Tuple<double, double, double>(data.BbBelow, data.Ave, data.BbAbove);
+            return new Tuple<long, double, double, double, double, double>((long)data.SrcData[i].X, data.BbBelow, data.Ave, data.BbAbove, data.BbPctb, data.BbWid);
         }
 
         public BbData GetBbData(PlotCollectionSet dataset, int nDataIdx, int nLookahead = 0, bool bAddToParams = false)
@@ -154,6 +172,8 @@ namespace SimpleGraphing.GraphData
         double m_dfAve;
         double m_dfBbAbove;
         double m_dfBbBelow;
+        double m_dfPctB;
+        double m_dfBbWid;
 
         public BbData(PlotCollection src, PlotCollection dst, uint nInterval)
         {
@@ -164,6 +184,8 @@ namespace SimpleGraphing.GraphData
             m_dfAve = 0;
             m_dfBbAbove = 0;
             m_dfBbBelow = 0;
+            m_dfPctB = 0;
+            m_dfBbWid = 0;
         }
 
         public PlotCollection SrcData
@@ -198,6 +220,18 @@ namespace SimpleGraphing.GraphData
         {
             get { return m_dfAve; }
             set { m_dfAve = value; }
+        }
+
+        public double BbPctb
+        {
+            get { return m_dfPctB; }
+            set { m_dfPctB = value; }
+        }
+
+        public double BbWid
+        {
+            get { return m_dfBbWid; }
+            set { m_dfBbWid = value; }
         }
 
         public int Interval
