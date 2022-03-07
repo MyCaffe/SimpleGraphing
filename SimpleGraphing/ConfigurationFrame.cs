@@ -33,6 +33,7 @@ namespace SimpleGraphing
         Rectangle m_rcActivePlotAreaBounds = new Rectangle();
         Tuple<double, double> m_activeYValueRange = new Tuple<double, double>(0, 0);
         Tuple<double, double> m_activeYDataRange = new Tuple<double, double>(0, 0);
+        object m_tag = null;
 
         public ConfigurationFrame()
         {
@@ -61,6 +62,12 @@ namespace SimpleGraphing
             m_rcActivePlotAreaBounds = rc;
             m_activeYValueRange = yVal;
             m_activeYDataRange = yData;
+        }
+
+        public object Tag
+        {
+            get { return m_tag; }
+            set { m_tag = value; }
         }
 
         public Rectangle ActivePlotAreaBounds
