@@ -50,12 +50,15 @@ namespace SimpleGraphing.GraphData
         /// <param name="nLookahead">Specifies the look ahead value if any.</param>
         /// <param name="bAddToParams">Optionally, specifies whether or not to add the RSI to the parameters of the original data.</param>
         /// <returns>The new RSI value is returned.</returns>
-        public double Process(RsiData data, int i, MinMax minmax = null, int nLookahead = 0, bool bAddToParams = false)
+        public double Process(RsiData data, int i, MinMax minmax = null, int nLookahead = 0, bool bAddToParams = false, bool bIgnoreDst = false)
         {
             bool bActive = false;
 
-            Plot plot = new Plot(data.SrcData[i].X, 0, null, false, data.SrcData[i].Index, data.SrcData[i].Action1Active, data.SrcData[i].Action2Active);
-            data.DstData.Add(plot, false);
+            if (!bIgnoreDst)
+            {
+                Plot plot = new Plot(data.SrcData[i].X, 0, null, false, data.SrcData[i].Index, data.SrcData[i].Action1Active, data.SrcData[i].Action2Active);
+                data.DstData.Add(plot, false);
+            }
 
             if (i > 0)
             {
@@ -96,8 +99,11 @@ namespace SimpleGraphing.GraphData
                 }
             }
 
-            data.DstData[i].Y = (float)data.RSI;
-            data.DstData[i].Active = bActive;
+            if (!bIgnoreDst)
+            {
+                data.DstData[i].Y = (float)data.RSI;
+                data.DstData[i].Active = bActive;
+            }
 
             if (bAddToParams && bActive)
                 data.SrcData[i].SetParameter(data.DstData.Name, (float)data.RSI);
