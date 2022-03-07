@@ -39,6 +39,22 @@ namespace SimpleGraphing
             get { return m_rgUserProperties; }
         }
 
+        public string GetUserProperty(string strName, string strDefault)
+        {
+            if (!m_rgUserProperties.ContainsKey(strName))
+                return strDefault;
+
+            return m_rgUserProperties[strName];
+        }
+
+        public void SetUserProperty(string strName, string strVal)
+        {
+            if (!m_rgUserProperties.ContainsKey(strName))
+                m_rgUserProperties.Add(strName, strVal);
+            else
+                m_rgUserProperties[strVal] = strName;
+        }
+
         public void SynchronizeStart()
         {
             if (m_rgSet.Count <= 1)
