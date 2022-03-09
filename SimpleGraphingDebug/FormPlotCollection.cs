@@ -64,6 +64,9 @@ namespace SimpleGraphingDebug
                     simpleGraphingControl1.Configuration.Frames[0].Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.LINE;
                     simpleGraphingControl1.Configuration.Frames[0].XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.NUMBER;
                 }
+
+                if (m_set[0].Parameters.ContainsKey("ValueType"))
+                    simpleGraphingControl1.Configuration.Frames[0].XAxis.ValueType = (ConfigurationAxis.VALUE_TYPE)m_set[0].Parameters["ValueType"];
             }
 
             simpleGraphingControl1.Configuration.Frames[0].EnableRelativeScaling(true, true);
