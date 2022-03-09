@@ -223,11 +223,11 @@ namespace SimpleGraphing
                 }
             }
 
-            if (m_dfMin != m_dfMinLast)
-            {
-                m_nLongOffset = (m_nLongOffset == 0) ? 1 : 0;
-                m_dfMinLast = m_dfMin;
-            }
+            //if (m_dfMin != m_dfMinLast)
+            //{
+            //    m_nLongOffset = (m_nLongOffset == 0) ? 1 : 0;
+            //    m_dfMinLast = m_dfMin;
+            //}
         }
 
         // Modified from: http://csharphelper.com/blog/2014/07/draw-rotated-text-in-c/
