@@ -49,6 +49,12 @@ namespace SimpleGraphing
             }
         }
 
+        public void UpdateStyle()
+        {
+            if (m_style != null)
+                m_style.Update(m_config);
+        }
+
         public GraphFrameCollection Frames
         {
             get { return m_frames; }
@@ -235,16 +241,28 @@ namespace SimpleGraphing
 
     class SurfaceStyle : IDisposable
     {
+        ConfigurationSurface m_config;
         Brush m_brBack;
 
         public SurfaceStyle(ConfigurationSurface c)
         {
+            m_config = c;
             m_brBack = new SolidBrush(c.BackColor);
         }
 
         public Brush BackBrush
         {
             get { return m_brBack; }
+        }
+
+        public void Update(ConfigurationSurface c)
+        {
+            m_config = c;
+
+            if (m_brBack != null)
+                m_brBack.Dispose();
+
+            m_brBack = new SolidBrush(m_config.BackColor);
         }
 
         public void Dispose()
