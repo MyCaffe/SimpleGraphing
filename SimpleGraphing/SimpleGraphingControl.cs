@@ -432,6 +432,18 @@ namespace SimpleGraphing
             if (DesignMode)
                 return;
 
+            if (m_crosshairs != null)
+            {
+                int nMargin = 0;
+                if (m_surface.Frames.Count > 0)
+                    nMargin = m_surface.Frames[0].YAxis.Bounds.Width;
+
+                m_crosshairs.HandlePaint(e, pbImage.Image, nMargin + 5);
+            }
+
+            if (OnUserPaint != null)
+                OnUserPaint(sender, e);
+
             pbImage.Image = m_surface.Render();
         }
 
