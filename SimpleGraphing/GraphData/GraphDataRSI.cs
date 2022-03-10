@@ -31,10 +31,13 @@ namespace SimpleGraphing.GraphData
             get { return m_config.DataName; }
         }
 
-        public RsiData Pre(PlotCollectionSet dataset, int nDataIdx)
+        public RsiData Pre(PlotCollectionSet dataset, int nDataIdx, PlotCollection dataDst = null)
         {
             PlotCollection dataSrc = dataset[nDataIdx];
-            PlotCollection dataDst = new PlotCollection(dataSrc.Name + " RSI" + m_config.Interval.ToString());
+            
+            if (dataDst == null)
+                dataDst = new PlotCollection(dataSrc.Name + " RSI" + m_config.Interval.ToString());
+
             return new RsiData(dataSrc, dataDst, m_config.Interval);
         }
 
