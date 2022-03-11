@@ -9,7 +9,7 @@ namespace SimpleGraphing
     public class CalculationArray
     {
         int m_nMax = 0;
-        List<double> m_rgdf = new List<double>();
+        List<double> m_rgdf;
         double m_dfAve = 0;
         double m_dfSum = 0;
         DateTime? m_dt;
@@ -18,6 +18,19 @@ namespace SimpleGraphing
         public CalculationArray(int nMax)
         {
             m_nMax = nMax;
+
+            if (nMax == int.MaxValue)
+                nMax = 1000;
+
+            m_rgdf = new List<double>(nMax);
+        }
+
+        public void Clear()
+        {
+            m_rgdf.Clear();
+            m_dfAve = 0;
+            m_dfSum = 0;
+            m_dfLast = 0;
         }
 
         public bool IsFull
@@ -25,14 +38,33 @@ namespace SimpleGraphing
             get { return (m_rgdf.Count == m_nMax) ? true : false; }
         }
 
+        public void ReplaceLast(double df)
+        {
+            if (m_rgdf.Count == 0)
+                return;
+
+            double dfLast = m_rgdf[m_rgdf.Count - 1];
+
+            m_dfAve -= dfLast / m_nMax;
+            m_dfAve += df / m_nMax;
+
+            m_dfSum -= dfLast;
+            m_dfSum += df;
+
+            m_rgdf[m_rgdf.Count - 1] = df;
+            m_dfLast = df;
+        }
+
         public bool Add(double df, DateTime? dt, bool bAbs = true)
         {
             double dfVal = (bAbs) ? Math.Abs(df) : df;
+            double dfFirst = 0;
 
             if (m_rgdf.Count == m_nMax)
             {
-                m_dfAve -= (m_rgdf[0] / m_nMax);
-                m_dfSum -= m_rgdf[0];
+                dfFirst = m_rgdf[0];
+                m_dfAve -= (dfFirst / m_nMax);
+                m_dfSum -= dfFirst;
                 m_rgdf.RemoveAt(0);
             }
 
@@ -63,6 +95,16 @@ namespace SimpleGraphing
                 throw new Exception("There are not enough items in the list to reach the specified offset from the back.");
 
             return m_rgdf[nIdx];
+        }
+
+        public double FirstVal
+        {
+            get { return (m_rgdf.Count == 0) ? 0 : m_rgdf[0]; }
+        }
+
+        public double LastVal
+        {
+            get { return (m_rgdf.Count == 0) ? 0 : m_rgdf[m_rgdf.Count - 1]; }
         }
 
         public double LastRaw
