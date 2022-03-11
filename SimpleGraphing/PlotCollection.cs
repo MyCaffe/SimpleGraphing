@@ -53,7 +53,7 @@ namespace SimpleGraphing
             m_dfXIncrement = dfXInc;
             m_strName = strName;
 
-            int nCapacity = Math.Min(nMax, 3000);
+            int nCapacity = Math.Min(nMax, 2500);
             m_rgPlot = new List<Plot>(nCapacity);
         }
 
