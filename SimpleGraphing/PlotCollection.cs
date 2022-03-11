@@ -355,6 +355,41 @@ namespace SimpleGraphing
             return this;
         }
 
+        public PlotCollection CloneNew(string strName, int nValCount)
+        {
+            PlotCollection col = new PlotCollection(strName, m_nMax, m_dfXIncrement);
+
+            col.m_strSrcName = m_strSrcName;
+            col.m_dfXPosition = m_dfXPosition;
+            col.m_dfMinVal = m_dfMinVal;
+            col.m_dfMaxVal = m_dfMaxVal;
+            col.m_tag1 = m_tag1;
+            col.m_tag2 = m_tag2;
+            col.m_dfCalculatedEndY = m_dfCalculatedEndY;
+            col.m_bExcludeFromMinMax = m_bExcludeFromMinMax;
+            col.m_minmaxTarget = m_minmaxTarget;
+            col.m_bLockMinMax = m_bLockMinMax;
+            col.m_dtLastUpdate = m_dtLastUpdate;
+
+            lock (m_syncObj)
+            {
+                for (int i = 0; i < m_rgPlot.Count; i++)
+                {
+                    Plot p = m_rgPlot[i].Clone(false);
+                    p.SetYValues(new float[nValCount]);
+                    col.Add(p, false);
+                }
+
+                for (int i = 0; i < Parameters.Count; i++)
+                {
+                    KeyValuePair<string, double> kv = Parameters.ElementAt(i);
+                    col.Parameters.Add(kv.Key, kv.Value);
+                }
+            }
+
+            return col;
+        }
+
         public PlotCollection Clone(int nIdxStart = 0, bool bCalculateMinMax = true, int? nPrimaryIndexY = null, bool? bActive = null, bool bSetDateOnTag = false)
         {
             PlotCollection col = new PlotCollection(m_strName, m_nMax, m_dfXIncrement);
