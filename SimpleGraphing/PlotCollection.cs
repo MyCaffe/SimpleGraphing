@@ -592,9 +592,9 @@ namespace SimpleGraphing
                 m_bLockMinMax = bLock.Value;
         }
 
-        public void SetMinMax(MinMax minmax)
+        public void SetMinMax(MinMax minmax, bool? bLock = null)
         {
-            if (m_bLockMinMax)
+            if (m_bLockMinMax && (!bLock.HasValue || !bLock.Value))
                 return;
 
             m_dfMinVal = minmax.Min;
