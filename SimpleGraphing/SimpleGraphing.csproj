@@ -75,6 +75,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CalculationArray.cs" />
     <Compile Include="GraphData\GraphDataBB.cs" />
     <Compile Include="GraphData\GraphDataHighLow.cs" />
     <Compile Include="GraphData\GraphDataRSI.cs" />
