@@ -14,7 +14,7 @@ namespace SimpleGraphing
     {
         string m_strSrcName = "";
         string m_strName;
-        List<Plot> m_rgPlot = new List<Plot>(2500);
+        List<Plot> m_rgPlot = new List<Plot>();
         double m_dfXIncrement = 1.0;
         double m_dfXPosition = 0;
         int m_nMax;
@@ -52,6 +52,9 @@ namespace SimpleGraphing
             m_nMax = nMax;
             m_dfXIncrement = dfXInc;
             m_strName = strName;
+
+            int nCapacity = Math.Min(nMax, 3000);
+            m_rgPlot = new List<Plot>(nCapacity);
         }
 
         public DateTime LastUpdateTime
