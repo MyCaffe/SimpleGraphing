@@ -1,6 +1,7 @@
 ﻿using SimpleGraphing.GraphData;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -96,7 +97,9 @@ namespace SimpleGraphing
 
             if (order == GETDATAORDER.PRE)
             {
-                data.SetMinMax();
+                if (!config.UseExistingDataMinMax)
+                    data.SetMinMax();
+
                 data.GetAbsMinMax(0, 0, out m_dfAbsMinY, out m_dfAbsMaxY);
 
                 setMinMaxLines(config);
