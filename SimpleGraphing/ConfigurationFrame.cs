@@ -34,6 +34,7 @@ namespace SimpleGraphing
         Tuple<double, double> m_activeYValueRange = new Tuple<double, double>(0, 0);
         Tuple<double, double> m_activeYDataRange = new Tuple<double, double>(0, 0);
         object m_tag = null;
+        bool m_bUseExistingDataMinMax = false;
 
         public ConfigurationFrame()
         {
@@ -55,6 +56,7 @@ namespace SimpleGraphing
             m_bScaleToVisibleWhenRelative = f.m_bScaleToVisibleWhenRelative;
             m_dfMinYRange = f.m_dfMinYRange;
             m_rcActivePlotAreaBounds = f.m_rcActivePlotAreaBounds;
+            m_bUseExistingDataMinMax = f.m_bUseExistingDataMinMax;
         }
 
         public void SetActiveValues(Tuple<double, double> yVal, Tuple<double, double> yData, Rectangle rc)
@@ -68,6 +70,12 @@ namespace SimpleGraphing
         {
             get { return m_tag; }
             set { m_tag = value; }
+        }
+
+        public bool UseExistingDataMinMax
+        {
+            get { return m_bUseExistingDataMinMax; }
+            set { m_bUseExistingDataMinMax = value; }
         }
 
         public Rectangle ActivePlotAreaBounds
