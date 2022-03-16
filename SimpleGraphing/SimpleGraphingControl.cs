@@ -924,8 +924,8 @@ namespace SimpleGraphing
             if (!m_bUserUpdateCrosshairs)
                 ctrl.Invalidate();
 
-            if (m_yAxis != null && m_yAxisFlag.Enabled)
-                grph.Invalidate(m_yAxis.Bounds);
+            //if (m_yAxis != null && m_yAxisFlag.Enabled)
+            //    grph.Invalidate(m_yAxis.Bounds);
 
             grph.Refresh();
         }
