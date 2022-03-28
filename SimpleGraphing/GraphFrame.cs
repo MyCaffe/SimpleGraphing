@@ -113,7 +113,9 @@ namespace SimpleGraphing
             {
                 double dfAbsMinY;
                 double dfAbsMaxY;
-                data.SetMinMax();
+
+                if (!config.UseExistingDataMinMax)
+                    data.SetMinMax();
                 data.GetAbsMinMax(0, 0, out dfAbsMinY, out dfAbsMaxY);
 
                 double dfRange = dfAbsMaxY - dfAbsMinY;
@@ -240,16 +242,24 @@ namespace SimpleGraphing
             double dfAbsMax;
             data.GetAbsMinMax(0, 0, out dfAbsMin, out dfAbsMax);
 
-            if (bMin || dfMin == double.MaxValue)
+            if (config.UseExistingDataMinMax)
             {
-                dfMin = Math.Min(dfMin, dfAbsMin);
-                dfMin = Math.Min(dfMin, dfLineMin);
+                dfMin = dfAbsMin;
+                dfMax = dfAbsMax;
             }
-
-            if (bMax || dfMax == -double.MaxValue)
+            else
             {
-                dfMax = Math.Max(dfMax, dfAbsMax);
-                dfMax = Math.Max(dfMax, dfLineMax);
+                if (bMin || dfMin == double.MaxValue)
+                {
+                    dfMin = Math.Min(dfMin, dfAbsMin);
+                    dfMin = Math.Min(dfMin, dfLineMin);
+                }
+
+                if (bMax || dfMax == -double.MaxValue)
+                {
+                    dfMax = Math.Max(dfMax, dfAbsMax);
+                    dfMax = Math.Max(dfMax, dfLineMax);
+                }
             }
 
             m_gx.SetMinMax(dfMin, dfMax);
