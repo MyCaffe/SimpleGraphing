@@ -118,6 +118,9 @@ namespace SimpleGraphing.GraphRender
 
         private void drawPlot(TYPE type, int i, Graphics g, float fX, float fY, Pen pen, Brush br)
         {
+            if (float.IsNaN(fY))
+                return;
+
             float fHspace = m_gx.Configuration.PlotSpacing / 2;
             float frcX = fX - fHspace;
             float frcY = fY - fHspace;
