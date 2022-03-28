@@ -607,6 +607,13 @@ namespace SimpleGraphing
             m_dfMaxVal = minmax.Max;
         }
 
+        public void SetMinMaxForce(double dfMin, double dfMax)
+        {
+            m_dfMinVal = dfMin;
+            m_dfMaxVal = dfMax;
+        }
+
+
         public bool ExcludeFromMinMax
         {
             get { return m_bExcludeFromMinMax; }
