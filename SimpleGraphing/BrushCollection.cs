@@ -25,10 +25,12 @@ namespace SimpleGraphing
             m_rgBrushes.Clear();
         }
 
-        public void Add(Color clr)
+        public Brush Add(Color clr)
         {
             if (!m_rgBrushes.ContainsKey(clr))
                 m_rgBrushes.Add(clr, new SolidBrush(clr));
+
+            return m_rgBrushes[clr];
         }
 
         public Brush this[Color clr]
