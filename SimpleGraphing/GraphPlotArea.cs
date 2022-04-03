@@ -23,6 +23,7 @@ namespace SimpleGraphing
         double m_dfAbsMaxY;
         BrushCollection m_colLabelBrushes = new BrushCollection();
         BrushCollection m_colLineBrushes = new BrushCollection();
+        BrushCollection m_colGridBrushes = new BrushCollection();
         PenCollection m_colLinePens = new PenCollection();
         PlotCollectionSet m_rgData = new PlotCollectionSet();
         Font m_fontNote = null;
@@ -71,6 +72,12 @@ namespace SimpleGraphing
             {
                 m_colLinePens.Dispose();
                 m_colLinePens = null;
+            }
+
+            if (m_colGridBrushes != null)
+            {
+                m_colGridBrushes.Dispose();
+                m_colGridBrushes = null;
             }
         }
 
@@ -218,10 +225,8 @@ namespace SimpleGraphing
                 if (line.Enabled && line.Visible)
                 {
                     Color clrFill = Color.FromArgb(32, line.LineColor);
-                    m_colLinePens.Add(line.LineColor);
-                    m_colLineBrushes.Add(clrFill);
-                    Pen p = m_colLinePens[line.LineColor];
-                    Brush br = m_colLineBrushes[clrFill];
+                    Pen p = m_colLinePens.Add(line.LineColor);
+                    Brush br = m_colLineBrushes.Add(clrFill);
                     RectangleF rc;
 
                     if (!float.IsNaN(fY1) && !float.IsInfinity(fY1))
@@ -246,11 +251,9 @@ namespace SimpleGraphing
                             if (!string.IsNullOrEmpty(line.Note))
                             {
                                 SizeF sz = g.MeasureString(line.Note, m_fontNote);
+                                Brush brNote = m_colLineBrushes.Add(line.NoteColor);
 
-                                if (!m_colLineBrushes.Contains(line.NoteColor))
-                                    m_colLineBrushes.Add(line.NoteColor);
-
-                                g.DrawString(line.Note, m_fontNote, m_colLineBrushes[line.NoteColor], new PointF(100, fY1 - sz.Height));
+                                g.DrawString(line.Note, m_fontNote, brNote, new PointF(100, fY1 - sz.Height));
                             }
                         }
                     }
@@ -358,8 +361,7 @@ namespace SimpleGraphing
             if (clr == Color.Transparent)
                 return 0;
 
-            m_colLabelBrushes.Add(clr);
-            Brush br = m_colLabelBrushes[clr];
+            Brush br = m_colLabelBrushes.Add(clr);
             g.DrawString(plot.Configuration.Name, m_config.PlotArea.LabelFont, br, m_rcBounds.Left + fX, m_rcBounds.Top + fY);
 
             return g.MeasureString(plot.Configuration.Name, m_config.PlotArea.LabelFont).Height;
@@ -369,7 +371,6 @@ namespace SimpleGraphing
         {
             List<int> rgXTicks = m_gx.TickPositions;
             List<int> rgYTicks = m_gy.TickPositions;
-            Dictionary<Color, Brush> rgBrushes = new Dictionary<Color, Brush>();
 
             try
             {
@@ -388,18 +389,10 @@ namespace SimpleGraphing
                             int nX0 = rgX0[i];
                             int nX1 = rgX1[i];
 
-                            if (!rgBrushes.ContainsKey(tz.BackColor))
-                                rgBrushes.Add(tz.BackColor, new SolidBrush(tz.BackColor));
-
-                            Brush br = rgBrushes[tz.BackColor];
+                            Brush br = m_colGridBrushes.Add(tz.BackColor);
                             Rectangle rc = new Rectangle(nX0, m_rcBounds.Top, nX1 - nX0, m_rcBounds.Height);
                             g.FillRectangle(br, rc);
                         }
-                    }
-
-                    foreach (KeyValuePair<Color, Brush> kv in rgBrushes)
-                    {
-                        kv.Value.Dispose();
                     }
                 }
 
