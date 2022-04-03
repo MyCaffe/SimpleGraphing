@@ -25,10 +25,12 @@ namespace SimpleGraphing
             m_rgPens.Clear();
         }
 
-        public void Add(Color clr)
+        public Pen Add(Color clr)
         {
             if (!m_rgPens.ContainsKey(clr))
                 m_rgPens.Add(clr, new Pen(clr, 1.0f));
+
+            return m_rgPens[clr];
         }
 
         public Pen this[Color clr]
