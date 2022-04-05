@@ -93,7 +93,7 @@ namespace SimpleGraphing
         {
             m_rcBounds = new Rectangle(nX, nY, nWidth, nHeight);
 
-            if (m_dfMin == double.MaxValue)
+            if (m_dfMin == double.MaxValue || double.IsInfinity(m_dfMax) || double.IsInfinity(m_dfMin))
                 return;
 
             double dfMin = m_dfMin;
@@ -126,7 +126,11 @@ namespace SimpleGraphing
 
                 m_rgTickPositions = new List<int>();
 
-                for (float y = m_rcBounds.Bottom; y > m_rcBounds.Top; y -= m_config.PlotSpacingF.Value)
+                float fPlotSpacing = m_config.PlotSpacingF.Value;
+                if (fPlotSpacing < 1)
+                    fPlotSpacing = 1;
+
+                for (float y = m_rcBounds.Bottom; y > m_rcBounds.Top; y -= fPlotSpacing)
                 {
                     m_rgTickPositions.Add((int)y);
                 }
