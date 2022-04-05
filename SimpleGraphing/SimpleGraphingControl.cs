@@ -29,6 +29,7 @@ namespace SimpleGraphing
         bool m_bUpdating = false;
 
         public event EventHandler<PaintEventArgs> OnUserPaint;
+        public event EventHandler<PaintEventExArgs> OnUserPaintEx;
         public event EventHandler<MouseEventArgs> OnUserMouseMove;
         public event EventHandler<MouseEventArgs> OnUserMouseDown;
         public event EventHandler<MouseEventArgs> OnUserMouseUp;
@@ -412,7 +413,7 @@ namespace SimpleGraphing
 
         private void SimpleGraphingControl_Resize(object sender, EventArgs e)
         {
-            if (DesignMode || m_surface == null)
+            if (DesignMode || m_surface == null || m_bResizing)
                 return;
 
             try
@@ -432,19 +433,22 @@ namespace SimpleGraphing
             if (DesignMode)
                 return;
 
-            if (m_crosshairs != null)
-            {
-                int nMargin = 0;
-                if (m_surface.Frames.Count > 0)
-                    nMargin = m_surface.Frames[0].YAxis.Bounds.Width;
+            //if (m_crosshairs != null)
+            //{
+            //    int nMargin = 0;
+            //    if (m_surface.Frames.Count > 0)
+            //        nMargin = m_surface.Frames[0].YAxis.Bounds.Width;
 
-                m_crosshairs.HandlePaint(e, pbImage.Image, nMargin + 5);
-            }
+            //    m_crosshairs.HandlePaint(e, pbImage.Image, nMargin + 5);
+            //}
+
+            pbImage.Image = m_surface.Render();
 
             if (OnUserPaint != null)
                 OnUserPaint(sender, e);
 
-            pbImage.Image = m_surface.Render();
+            if (OnUserPaintEx != null)
+                OnUserPaintEx(sender, new PaintEventExArgs(e, pbImage.Image));
         }
 
         private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
@@ -529,8 +533,11 @@ namespace SimpleGraphing
                 m_crosshairs.HandlePaint(e, pbImage.Image, nMargin + 5);
             }
 
-            if (OnUserPaint != null)
-                OnUserPaint(sender, e);
+            //if (OnUserPaint != null)
+            //    OnUserPaint(sender, e);
+
+            //if (OnUserPaintEx != null)
+            //    OnUserPaintEx(sender, new PaintEventExArgs(e, pbImage.Image));
         }
 
         private void pbImage_MouseMove(object sender, MouseEventArgs e)
@@ -951,6 +958,28 @@ namespace SimpleGraphing
             p.Dispose();
 
             m_ptMouseOld = m_ptMouse;
+        }
+    }
+
+    public class PaintEventExArgs
+    {
+        PaintEventArgs m_args;
+        Image m_img;
+
+        public PaintEventExArgs(PaintEventArgs e, Image img)
+        {
+            m_args = e;
+            m_img = img;
+        }
+
+        public PaintEventArgs Args
+        {
+            get { return m_args; }
+        }
+
+        public Image Image
+        {
+            get { return m_img; }
         }
     }
 }
