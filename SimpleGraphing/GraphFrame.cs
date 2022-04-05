@@ -215,8 +215,8 @@ namespace SimpleGraphing
             double dfMin = m_gx.MinimumY;
             double dfMax = m_gx.MaximumY;
 
-            double dfLineMin = 0;
-            double dfLineMax = 0;
+            double? dfLineMin = null;
+            double? dfLineMax = null;
             bool bMin = false;
             bool bMax = false;
 
@@ -251,19 +251,28 @@ namespace SimpleGraphing
             {
                 if (bMin || dfMin == double.MaxValue)
                 {
-                    dfMin = Math.Min(dfMin, dfAbsMin);
-                    dfMin = Math.Min(dfMin, dfLineMin);
+                    if (dfAbsMin != double.MaxValue)
+                        dfMin = Math.Min(dfMin, dfAbsMin);
+
+                    if (dfLineMin.HasValue)
+                        dfMin = Math.Min(dfMin, dfLineMin.Value);
                 }
 
                 if (bMax || dfMax == -double.MaxValue)
                 {
-                    dfMax = Math.Max(dfMax, dfAbsMax);
-                    dfMax = Math.Max(dfMax, dfLineMax);
+                    if (dfAbsMax != -double.MaxValue)
+                        dfMax = Math.Max(dfMax, dfAbsMax);
+
+                    if (dfLineMax.HasValue)
+                        dfMax = Math.Max(dfMax, dfLineMax.Value);
                 }
             }
 
-            m_gx.SetMinMax(dfMin, dfMax);
-            m_gy.SetMinMax(dfMin, dfMax);
+            if (dfMin != double.MaxValue && dfMax != -double.MinValue)
+            {
+                m_gx.SetMinMax(dfMin, dfMax);
+                m_gy.SetMinMax(dfMin, dfMax);
+            }
 
             dfMin = m_gy.ActiveMin;
             dfMax = m_gy.ActiveMax;
