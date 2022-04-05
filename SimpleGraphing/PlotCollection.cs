@@ -723,7 +723,7 @@ namespace SimpleGraphing
             {
                 int nIdx = nStartIdx + i;
 
-                if (nIdx < m_rgPlot.Count && m_rgPlot[i].Active)
+                if (nIdx < m_rgPlot.Count && m_rgPlot[nIdx].Active)
                 {
                     double dfValX = m_rgPlot[nIdx].X;
                     dfMinX = Math.Min(dfMinX, dfValX);
