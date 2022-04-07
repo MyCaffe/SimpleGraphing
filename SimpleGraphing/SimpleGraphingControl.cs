@@ -444,9 +444,6 @@ namespace SimpleGraphing
 
             pbImage.Image = m_surface.Render();
 
-            if (OnUserPaint != null)
-                OnUserPaint(sender, e);
-
             if (OnUserPaintEx != null)
                 OnUserPaintEx(sender, new PaintEventExArgs(e, pbImage.Image));
         }
@@ -533,11 +530,8 @@ namespace SimpleGraphing
                 m_crosshairs.HandlePaint(e, pbImage.Image, nMargin + 5);
             }
 
-            //if (OnUserPaint != null)
-            //    OnUserPaint(sender, e);
-
-            //if (OnUserPaintEx != null)
-            //    OnUserPaintEx(sender, new PaintEventExArgs(e, pbImage.Image));
+            if (OnUserPaint != null)
+                OnUserPaint(sender, e);
         }
 
         private void pbImage_MouseMove(object sender, MouseEventArgs e)
