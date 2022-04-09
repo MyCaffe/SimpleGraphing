@@ -355,7 +355,7 @@ namespace SimpleGraphing
             return this;
         }
 
-        public PlotCollection CloneNew(string strName, int nValCount)
+        public PlotCollection CloneNew(string strName, int nValCount, int nStart = 0)
         {
             PlotCollection col = new PlotCollection(strName, m_nMax, m_dfXIncrement);
 
@@ -373,9 +373,13 @@ namespace SimpleGraphing
 
             lock (m_syncObj)
             {
-                for (int i = 0; i < m_rgPlot.Count; i++)
+                for (int i = nStart; i < m_rgPlot.Count; i++)
                 {
                     Plot p = m_rgPlot[i].Clone(false);
+
+                    if (nValCount < 0)
+                        nValCount = p.Y_values.Length;
+
                     p.SetYValues(new float[nValCount]);
                     col.Add(p, false);
                 }
