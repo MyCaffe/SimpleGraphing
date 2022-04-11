@@ -402,7 +402,7 @@ namespace SimpleGraphing
             return null;
         }
 
-        public Plot Clone(bool bCopyData = false)
+        public Plot Clone(bool bCopyData = false, bool bCopyParams = true)
         {
             float[] rgf = m_rgfY;
 
@@ -415,10 +415,10 @@ namespace SimpleGraphing
                 }
             }
 
-            return Clone(rgf, m_bActive, m_nIdxPrimaryY);
+            return Clone(rgf, m_bActive, m_nIdxPrimaryY, bCopyParams);
         }
 
-        public Plot Clone(List<double> rgY, bool bActive, int nPrimaryIdx)
+        public Plot Clone(List<double> rgY, bool bActive, int nPrimaryIdx, bool bCopyParams = true)
         {
             float[] rgfY = new float[rgY.Count];
             for (int i = 0; i < rgY.Count; i++)
@@ -426,10 +426,10 @@ namespace SimpleGraphing
                 rgfY[i] = (float)rgY[i];
             }
 
-            return Clone(rgfY, bActive, nPrimaryIdx);
+            return Clone(rgfY, bActive, nPrimaryIdx, bCopyParams);
         }
 
-        public Plot Clone(float[] rgY, bool bActive, int nPrimaryIdx)
+        public Plot Clone(float[] rgY, bool bActive, int nPrimaryIdx, bool bCopyParams = true)
         {
             Plot p = new Plot(m_dfX, rgY, m_strName, bActive, m_nIndex);
             p.m_nIdxPrimaryY = (short)nPrimaryIdx;
@@ -441,13 +441,16 @@ namespace SimpleGraphing
             p.m_tagEx = m_tagEx;
             p.m_nIndex = m_nIndex;
 
-            lock (m_syncObj)
+            if (bCopyParams)
             {
-                if (m_rgParams != null)
+                lock (m_syncObj)
                 {
-                    foreach (KeyValuePair<string, float> kv in m_rgParams)
+                    if (m_rgParams != null)
                     {
-                        p.SetParameter(kv.Key, kv.Value);
+                        foreach (KeyValuePair<string, float> kv in m_rgParams)
+                        {
+                            p.SetParameter(kv.Key, kv.Value);
+                        }
                     }
                 }
             }
