@@ -129,7 +129,9 @@ namespace SimpleGraphing
             }
         }
 
-        public static PlotCollection Load(byte[] rg)
+
+
+        public static PlotCollection Load(byte[] rg, PlotCollection col = null)
         {
             using (MemoryStream ms = new MemoryStream(rg))
             using (BinaryReader br = new BinaryReader(ms))
@@ -157,7 +159,16 @@ namespace SimpleGraphing
                 bool bExcludeMinMax = br.ReadBoolean();
                 MINMAX_TARGET minmaxTarget = (MINMAX_TARGET)br.ReadInt32();
 
-                PlotCollection col = new PlotCollection(strName, nMax, dfXInc);
+                if (col == null)
+                {
+                    col = new PlotCollection(strName, nMax, dfXInc);
+                }
+                else
+                {
+                    col.m_rgPlot.Clear();
+                    col.m_rgParam.Clear();
+                }
+
                 col.SourceName = strSrc;
                 col.m_dfXPosition = dfXPos;
                 col.m_dfMinVal = dfMin;
