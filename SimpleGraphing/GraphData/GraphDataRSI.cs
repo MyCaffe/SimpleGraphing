@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -60,6 +61,7 @@ namespace SimpleGraphing.GraphData
             if (!bIgnoreDst)
             {
                 Plot plot = new Plot(data.SrcData[i].X, 0, null, false, data.SrcData[i].Index, data.SrcData[i].Action1Active, data.SrcData[i].Action2Active);
+                plot.Tag = data.SrcData[i].Tag;
                 data.DstData.Add(plot, false);
             }
 
@@ -157,6 +159,61 @@ namespace SimpleGraphing.GraphData
             m_nCount = 0;
             m_nInterval = (int)nInterval;
             m_dfRsi = 0;
+        }
+
+        public byte[] Save()
+        {
+            using (MemoryStream ms = new MemoryStream())
+            using (BinaryWriter bw = new BinaryWriter(ms))
+            {
+                bw.Write(m_nCount);
+                bw.Write(m_nInterval);
+                bw.Write(m_dfRsi);
+                bw.Write(m_dfAveGain);
+                bw.Write(m_dfAveLoss);
+                bw.Write(m_dfRs);
+
+                byte[] rgb = m_src.Save();
+                bw.Write(rgb.Length);
+                bw.Write(rgb);
+
+                rgb = m_dst.Save();
+                bw.Write(rgb.Length);
+                bw.Write(rgb);
+
+                return ms.ToArray();
+            }
+        }
+
+        public static RsiData Load(byte[] rgb)
+        {
+            using (MemoryStream ms = new MemoryStream(rgb))
+            using (BinaryReader br = new BinaryReader(ms))
+            {
+                int nCount = br.ReadInt32();
+                int nInterval = br.ReadInt32();
+                double dfRsi = br.ReadDouble();
+                double dfAveGain = br.ReadDouble();
+                double dfAveLoss = br.ReadDouble();
+                double dfRs = br.ReadDouble();
+
+                int nLen = br.ReadInt32();
+                byte[] rgb2 = br.ReadBytes(nLen);
+                PlotCollection src = PlotCollection.Load(rgb2);
+
+                nLen = br.ReadInt32();
+                rgb2 = br.ReadBytes(nLen);
+                PlotCollection dst = PlotCollection.Load(rgb2);
+
+                RsiData data = new RsiData(src, dst, (uint)nInterval);
+                data.m_nCount = nCount;
+                data.m_dfAveGain = dfAveGain;
+                data.m_dfAveLoss = dfAveLoss;
+                data.m_dfRs = dfRs;
+                data.m_dfRsi = dfRsi;
+
+                return data;
+            }
         }
 
         public PlotCollection SrcData
