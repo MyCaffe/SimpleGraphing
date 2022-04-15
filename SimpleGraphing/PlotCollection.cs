@@ -1356,11 +1356,14 @@ namespace SimpleGraphing
         /// Calculate the A and B regression values.
         /// </summary>
         /// <param name="nDataIdx">Optionally, specifies the data index into Y_values to use (default = -1, which uses Y).</param>
+        /// <param name="nStartIdx">Optionally, specifies the start index in the data (default = 0).</param>
+        /// <param name="nEndIdx">Optionally, specifies the end index in the data (default = count-1).</param>
+        /// <param name="strParamName">Optionally, specifies to calculate regression of a parameter instead of the Y value at the data index.</param>
         /// <remarks>
         /// @see [Linear Regresssion: Simple Steps](https://www.statisticshowto.datasciencecentral.com/probability-and-statistics/regression-analysis/find-a-linear-regression-equation/)
         /// </remarks>
         /// <returns>A tuple containing the A and B values is returned.</returns>
-        public Tuple<double, double> CalculateLinearRegressionAB(int nDataIdx = -1, int nStartIdx = 0, int nEndIdx = -1)
+        public Tuple<double, double> CalculateLinearRegressionAB(int nDataIdx = -1, int nStartIdx = 0, int nEndIdx = -1, string strParamName = null)
         {
             double dfSumX = 0;
             double dfSumY = 0;
@@ -1380,7 +1383,12 @@ namespace SimpleGraphing
                 {
                     dfSumX += nIdx;
 
-                    double dfY = (nDataIdx >= 0 && nDataIdx < p.Y_values.Length) ? p.Y_values[nDataIdx] : (p.Y_values.Length == 1) ? p.Y_values[0] : p.Y;
+                    double dfY = 0;
+
+                    if (!string.IsNullOrEmpty(strParamName))
+                        dfY = p.GetParameter(strParamName).Value;
+                    else
+                        dfY = (nDataIdx >= 0 && nDataIdx < p.Y_values.Length) ? p.Y_values[nDataIdx] : (p.Y_values.Length == 1) ? p.Y_values[0] : p.Y;
 
                     dfSumY += dfY;
                     dfSumX2 += nIdx * nIdx;
@@ -1416,10 +1424,13 @@ namespace SimpleGraphing
         /// <param name="dfSlope">Returns the regression line slope.</param>
         /// <param name="dfConfidenceWidth">Returns the regression line confidence width.</param>
         /// <param name="nDataIdx">Optionally, specifies the data index into Y_values to use (default = -1, which uses Y).</param>
+        /// <param name="nStartIdx">Optionally, specifies the start index in the data (default = 0).</param>
+        /// <param name="nEndIdx">Optionally, specifies the end index in the data (default = count-1).</param>
+        /// <param name="strParamName">Optionally, specifies to calculate regression of a parameter instead of the Y value at the data index.</param>
         /// <returns>The regression line is returned.</returns>
-        public PlotCollection CalculateLinearRegressionLines(out double dfSlope, out double dfConfidenceWidth, int nDataIdx = -1, int nStartIdx = 0, int nEndIdx = -1)
+        public PlotCollection CalculateLinearRegressionLines(out double dfSlope, out double dfConfidenceWidth, int nDataIdx = -1, int nStartIdx = 0, int nEndIdx = -1, string strParamName = null)
         {
-            Tuple<double, double> ab = CalculateLinearRegressionAB(nDataIdx, nStartIdx, nEndIdx);
+            Tuple<double, double> ab = CalculateLinearRegressionAB(nDataIdx, nStartIdx, nEndIdx, strParamName);
 
             PlotCollection col = new PlotCollection(Name + " Regresssion Line");
             List<float> rgRegY = new List<float>();
