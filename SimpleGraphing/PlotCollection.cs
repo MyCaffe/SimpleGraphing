@@ -1438,7 +1438,12 @@ namespace SimpleGraphing
         /// <returns>The regression line is returned.</returns>
         public PlotCollection CalculateLinearRegressionLines(out double dfSlope, out double dfConfidenceWidth, int nDataIdx = -1, int nStartIdx = 0, int nEndIdx = -1, string strParamName = null)
         {
+            dfSlope = 0;
+            dfConfidenceWidth = 0;
+
             Tuple<double, double> ab = CalculateLinearRegressionAB(nDataIdx, nStartIdx, nEndIdx, strParamName);
+            if (ab == null)
+                return null;
 
             PlotCollection col = new PlotCollection(Name + " Regresssion Line");
             List<float> rgRegY = new List<float>();
