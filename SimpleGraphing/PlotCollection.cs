@@ -1386,9 +1386,17 @@ namespace SimpleGraphing
                     double dfY = 0;
 
                     if (!string.IsNullOrEmpty(strParamName))
-                        dfY = p.GetParameter(strParamName).Value;
+                    {
+                        float? fVal = p.GetParameter(strParamName);
+                        if (!fVal.HasValue)
+                            return null;
+
+                        dfY = fVal.Value;
+                    }
                     else
+                    {
                         dfY = (nDataIdx >= 0 && nDataIdx < p.Y_values.Length) ? p.Y_values[nDataIdx] : (p.Y_values.Length == 1) ? p.Y_values[0] : p.Y;
+                    }
 
                     dfSumY += dfY;
                     dfSumX2 += nIdx * nIdx;
