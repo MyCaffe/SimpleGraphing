@@ -79,6 +79,7 @@ namespace SimpleGraphing.GraphData
             bool bActive = data.SrcData[i].Active;
 
             Plot plot = new Plot(data.SrcData[i].X, new float[] { 0, 0, 0 }, null, false, data.SrcData[i].Index, data.SrcData[i].Action1Active, data.SrcData[i].Action2Active);
+            plot.Tag = data.SrcData[i].Tag;
             data.DstData.Add(plot, false);
             
             float fTypicalValue = (data.SrcData[i].Y_values.Length == 4) ? (data.SrcData[i].Y_values[1] + data.SrcData[i].Y_values[2] + data.SrcData[i].Y_values[3]) / 3 : data.SrcData[i].Y;
@@ -141,12 +142,12 @@ namespace SimpleGraphing.GraphData
             return new Tuple<long, double, double, double, double, double>((long)data.SrcData[i].X, data.BbBelow, data.Ave, data.BbAbove, data.BbPctb, data.BbWid);
         }
 
-        public BbData GetBbData(PlotCollectionSet dataset, int nDataIdx, int nLookahead = 0, bool bAddToParams = false)
+        public BbData GetBbData(PlotCollectionSet dataset, int nDataIdx, int nLookahead = 0, bool bAddToParams = false, int nStartIdx = 0)
         {
             BbData data = Pre(dataset, nDataIdx);
             MinMax minmax = new MinMax();
 
-            for (int i = 0; i < data.SrcData.Count; i++)
+            for (int i = nStartIdx; i < data.SrcData.Count; i++)
             {
                 Process(data, i, minmax, nLookahead, bAddToParams);
             }
