@@ -389,14 +389,17 @@ namespace SimpleGraphing
 
         public string FindParameterNameContaining(string str)
         {
-            if (m_rgParams == null || m_rgParams.Count == 0)
-                return null;
-
-            foreach (KeyValuePair<string, float> kv in m_rgParams)
+            lock (m_syncObj)
             {
-                string strKey = kv.Key.ToLower();
-                if (strKey.Contains(str.ToLower()))
-                    return kv.Key;
+                if (m_rgParams == null || m_rgParams.Count == 0)
+                    return null;
+
+                foreach (KeyValuePair<string, float> kv in m_rgParams)
+                {
+                    string strKey = kv.Key.ToLower();
+                    if (strKey.Contains(str.ToLower()))
+                        return kv.Key;
+                }
             }
 
             return null;
