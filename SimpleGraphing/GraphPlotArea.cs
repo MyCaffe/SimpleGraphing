@@ -256,7 +256,7 @@ namespace SimpleGraphing
                                 SizeF sz = g.MeasureString(line.Note, m_fontNote);
                                 Brush brNote = m_colLineBrushes.Add(line.NoteColor);
 
-                                if (line.NoteBackgroundColor != Color.Transparent && line.NoteBackgroundTransparency > 0)
+                                if (line.NoteBackgroundColor != Color.Transparent)
                                 {
                                     RectangleF rcTxt = new RectangleF(100, fY1 - sz.Height, sz.Width, sz.Height);
                                     Brush brTxt = m_colLineBrushes.Add(Color.FromArgb(line.NoteBackgroundTransparency, line.NoteBackgroundColor));
@@ -265,7 +265,7 @@ namespace SimpleGraphing
 
                                 g.DrawString(line.Note, m_fontNote, brNote, new PointF(100, fY1 - sz.Height));
 
-                                if (line.NoteBackgroundColor != Color.Transparent && line.NoteBackgroundTransparency > 0)
+                                if (line.NoteBackgroundColor != Color.Transparent)
                                 {
                                     RectangleF rcTxt = new RectangleF(100, fY1 - sz.Height, sz.Width, sz.Height);
                                     Pen penTxt = m_colLinePens.Add(Color.FromArgb(line.NoteBackgroundTransparency, line.NoteColor));
@@ -362,7 +362,7 @@ namespace SimpleGraphing
                                 SizeF sz = g.MeasureString(line.Note, m_fontNote);
                                 Brush brNote = m_colLineBrushes.Add(line.NoteColor);
 
-                                if (line.NoteBackgroundColor != Color.Transparent && line.NoteBackgroundTransparency < 255)
+                                if (line.NoteBackgroundColor != Color.Transparent)
                                 {
                                     RectangleF rcTxt = new RectangleF(100, fY1 - sz.Height, sz.Width, sz.Height);
                                     Brush brTxt = m_colLineBrushes.Add(Color.FromArgb(line.NoteBackgroundTransparency, line.NoteBackgroundColor));
@@ -371,7 +371,7 @@ namespace SimpleGraphing
 
                                 g.DrawString(line.Note, m_fontNote, brNote, new PointF(100, fY1 - sz.Height));
 
-                                if (line.NoteBackgroundColor != Color.Transparent && line.NoteBackgroundTransparency < 255)
+                                if (line.NoteBackgroundColor != Color.Transparent)
                                 {
                                     RectangleF rcTxt = new RectangleF(100, fY1 - sz.Height, sz.Width, sz.Height);
                                     Pen penTxt = m_colLinePens.Add(Color.FromArgb(line.NoteBackgroundTransparency, line.NoteColor));
