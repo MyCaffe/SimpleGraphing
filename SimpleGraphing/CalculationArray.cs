@@ -128,9 +128,9 @@ namespace SimpleGraphing
             {
                 double dfTotal = 0;
 
-                foreach (double df in m_rgdf)
+                for (int i=0; i<m_rgdf.Count; i++)
                 {
-                    double dfDiff = (df - m_dfAve);
+                    double dfDiff = (m_rgdf[i] - m_dfAve);
                     dfTotal += (dfDiff * dfDiff);
                 }
 
