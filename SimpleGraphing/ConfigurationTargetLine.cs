@@ -28,6 +28,15 @@ namespace SimpleGraphing
         float m_fActiveY = 0;
         object m_tag = null;
         bool m_bVisible = true;
+        Color m_clrNoteBackground = Color.Transparent;
+        int m_nNoteBackgroundTransparency = 0;
+        ORDER m_order = ORDER.PRE;
+
+        public enum ORDER
+        {
+            PRE,
+            POST
+        }
 
         public enum LINE_TYPE
         {
@@ -40,7 +49,7 @@ namespace SimpleGraphing
         {
         }
 
-        public ConfigurationTargetLine(double dfY, Color clrLine, LINE_TYPE type = LINE_TYPE.VALUE, bool bEnableFlag = false, Color? clrFlagText = null, string strNote = null, Color? clrNote = null)
+        public ConfigurationTargetLine(double dfY, Color clrLine, LINE_TYPE type = LINE_TYPE.VALUE, bool bEnableFlag = false, Color? clrFlagText = null, string strNote = null, Color? clrNote = null, Color? clrBack = null, int? nBackTransparency = null, ORDER? order = null)
         {
             m_strNote = strNote;
             m_dfYValue = dfY;
@@ -52,6 +61,15 @@ namespace SimpleGraphing
 
             if (clrFlagText.HasValue)
                 m_clrFlagText = clrFlagText.Value;
+
+            if (clrBack.HasValue)
+                m_clrNoteBackground = clrBack.Value;
+
+            if (nBackTransparency.HasValue)
+                m_nNoteBackgroundTransparency = nBackTransparency.Value;
+
+            if (order.HasValue)
+                m_order = order.Value;
 
             m_bEnableFlag = bEnableFlag;
             m_lineType = type;
@@ -67,6 +85,11 @@ namespace SimpleGraphing
         {
             get { return m_bVisible; }
             set { m_bVisible = value; }
+        }
+
+        public ORDER Order
+        {
+            get { return m_order; }
         }
 
         public void SetActiveValues(float fYVal)
@@ -189,6 +212,18 @@ namespace SimpleGraphing
             set { m_clrNote = value; }
         }
 
+        public Color NoteBackgroundColor
+        {
+            get { return m_clrNoteBackground; }
+            set { m_clrNoteBackground = value; }
+        }
+
+        public int NoteBackgroundTransparency
+        {
+            get { return m_nNoteBackgroundTransparency; }
+            set { m_nNoteBackgroundTransparency = value; }
+        }
+
         public void Serialize(SerializeToXml ser)
         {
             ser.Open("TargetLine");
@@ -204,6 +239,8 @@ namespace SimpleGraphing
             ser.Add("FlagTextColor", m_clrFlagText);
             ser.Add("Note", m_strNote);
             ser.Add("NoteColor", m_clrNote);
+            ser.Add("NoteBackColor", m_clrNoteBackground);
+            ser.Add("NoteBackTransparency", m_nNoteBackgroundTransparency);
             ser.Close();
         }
 
@@ -240,6 +277,14 @@ namespace SimpleGraphing
             Color? clr = SerializeToXml.LoadColor(elm, "NoteColor");
             if (clr.HasValue)
                 line.NoteColor = clr.Value;
+
+            clr = SerializeToXml.LoadColor(elm, "NoteBackColor");
+            if (clr.HasValue)
+                line.NoteBackgroundColor = clr.Value;
+
+            int? nVal = SerializeToXml.LoadInt(elm, "NoteBackTransparency");
+            if (nVal.HasValue)
+                line.NoteBackgroundTransparency = nVal.Value;
 
             return line;
         }

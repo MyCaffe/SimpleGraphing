@@ -219,6 +219,9 @@ namespace SimpleGraphing
 
             foreach (ConfigurationTargetLine line in m_config.TargetLines)
             {
+                if (line.Order != ConfigurationTargetLine.ORDER.PRE)
+                    continue;
+
                 float fY1 = m_gy.ScaleValue(line.YValue, true);
                 line.SetActiveValues(fY1);
 
@@ -253,7 +256,21 @@ namespace SimpleGraphing
                                 SizeF sz = g.MeasureString(line.Note, m_fontNote);
                                 Brush brNote = m_colLineBrushes.Add(line.NoteColor);
 
+                                if (line.NoteBackgroundColor != Color.Transparent && line.NoteBackgroundTransparency > 0)
+                                {
+                                    RectangleF rcTxt = new RectangleF(100, fY1 - sz.Height, sz.Width, sz.Height);
+                                    Brush brTxt = m_colLineBrushes.Add(Color.FromArgb(line.NoteBackgroundTransparency, line.NoteBackgroundColor));
+                                    g.FillRectangle(brTxt, rcTxt);
+                                }
+
                                 g.DrawString(line.Note, m_fontNote, brNote, new PointF(100, fY1 - sz.Height));
+
+                                if (line.NoteBackgroundColor != Color.Transparent && line.NoteBackgroundTransparency > 0)
+                                {
+                                    RectangleF rcTxt = new RectangleF(100, fY1 - sz.Height, sz.Width, sz.Height);
+                                    Pen penTxt = m_colLinePens.Add(Color.FromArgb(line.NoteBackgroundTransparency, line.NoteColor));
+                                    g.DrawRectangle(penTxt, rcTxt.X, rcTxt.Y, rcTxt.Width, rcTxt.Height);
+                                }
                             }
                         }
                     }
@@ -304,6 +321,66 @@ namespace SimpleGraphing
 
                 fHt = drawLabel(g, fX, fY, graphPlot);
                 fY += fHt;
+            }
+
+            foreach (ConfigurationTargetLine line in m_config.TargetLines)
+            {
+                if (line.Order != ConfigurationTargetLine.ORDER.POST)
+                    continue;
+
+                float fY1 = m_gy.ScaleValue(line.YValue, true);
+                line.SetActiveValues(fY1);
+
+                if (line.Enabled && line.Visible)
+                {
+                    Color clrFill = Color.FromArgb(32, line.LineColor);
+                    Pen p = m_colLinePens.Add(line.LineColor);
+                    Brush br = m_colLineBrushes.Add(clrFill);
+                    RectangleF rc;
+
+                    if (!float.IsNaN(fY1) && !float.IsInfinity(fY1))
+                    {
+                        if (fY1 > Bounds.Top && fY1 < Bounds.Bottom)
+                        {
+                            if (line.YValueRange > 0)
+                            {
+                                float fYTop = m_gy.ScaleValue(line.YValue - (line.YValueRange / 2.0f), true);
+                                float fYBtm = m_gy.ScaleValue(line.YValue + (line.YValueRange / 2.0f), true);
+
+                                rc = new RectangleF(m_rcBounds.Left, fYBtm, m_rcBounds.Width, fYTop - fYBtm);
+                            }
+                            else
+                            {
+                                rc = new RectangleF(m_rcBounds.Left, fY1 - 2, m_rcBounds.Width, 5);
+                            }
+
+                            g.FillRectangle(br, rc);
+                            g.DrawLine(p, m_rcBounds.Left, fY1, m_rcBounds.Right, fY1);
+
+                            if (!string.IsNullOrEmpty(line.Note))
+                            {
+                                SizeF sz = g.MeasureString(line.Note, m_fontNote);
+                                Brush brNote = m_colLineBrushes.Add(line.NoteColor);
+
+                                if (line.NoteBackgroundColor != Color.Transparent && line.NoteBackgroundTransparency < 255)
+                                {
+                                    RectangleF rcTxt = new RectangleF(100, fY1 - sz.Height, sz.Width, sz.Height);
+                                    Brush brTxt = m_colLineBrushes.Add(Color.FromArgb(line.NoteBackgroundTransparency, line.NoteBackgroundColor));
+                                    g.FillRectangle(brTxt, rcTxt);
+                                }
+
+                                g.DrawString(line.Note, m_fontNote, brNote, new PointF(100, fY1 - sz.Height));
+
+                                if (line.NoteBackgroundColor != Color.Transparent && line.NoteBackgroundTransparency < 255)
+                                {
+                                    RectangleF rcTxt = new RectangleF(100, fY1 - sz.Height, sz.Width, sz.Height);
+                                    Pen penTxt = m_colLinePens.Add(Color.FromArgb(line.NoteBackgroundTransparency, line.NoteColor));
+                                    g.DrawRectangle(penTxt, rcTxt.X, rcTxt.Y, rcTxt.Width, rcTxt.Height);
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             drawTitle(g, m_config, m_style);
