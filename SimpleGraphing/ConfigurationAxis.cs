@@ -38,6 +38,7 @@ namespace SimpleGraphing
         float m_fPlotValueSubIncrements = 0;
         float m_fPlotValueIncrementFloor = 1.0f;
         int m_nDataIdxForAxisLabel = 0;
+        bool m_bStyleDirty = false;
 
         public enum VALUE_TYPE
         {
@@ -55,6 +56,16 @@ namespace SimpleGraphing
 
         public ConfigurationAxis()
         {
+        }
+
+        public void ClearStyleDirty()
+        {
+            m_bStyleDirty = false;
+        }
+
+        public bool IsStyleDirty
+        {
+            get { return m_bStyleDirty; }
         }
 
         public ConfigurationAxis Clone()
@@ -146,7 +157,10 @@ namespace SimpleGraphing
         public int DataIndexForAxisLabel
         {
             get { return m_nDataIdxForAxisLabel; }
-            set { m_nDataIdxForAxisLabel = value; }
+            set 
+            { 
+                m_nDataIdxForAxisLabel = value;
+            }
         }
 
         public int PlotSpacing
@@ -168,7 +182,10 @@ namespace SimpleGraphing
         public float? PlotSpacingF
         {
             get { return m_fPlotSpacing; }
-            set { m_fPlotSpacing = value; }
+            set 
+            { 
+                m_fPlotSpacing = value; 
+            }
         }
 
         public float PlotValueIncrementFloor
@@ -256,13 +273,21 @@ namespace SimpleGraphing
         public Color TickColor
         {
             get { return m_clrTick; }
-            set { m_clrTick = value; }
+            set 
+            { 
+                m_clrTick = value;
+                m_bStyleDirty = true;
+            }
         }
 
         public Color LabelColor
         {
             get { return m_clrLabel; }
-            set { m_clrLabel = value; }
+            set 
+            { 
+                m_clrLabel = value;
+                m_bStyleDirty = true;
+            }
         }
 
         public Font LabelFont
@@ -270,7 +295,14 @@ namespace SimpleGraphing
             get { return m_fontLabel; }
             set
             {
+                if (m_fontLabel != null)
+                    m_fontLabel.Dispose();
+
                 m_fontLabel = value;
+
+                if (m_fontLabelBold != null)
+                    m_fontLabelBold.Dispose();
+
                 m_fontLabelBold = new Font(m_fontLabel, FontStyle.Bold);
                 m_szFontLabel = MeasureString("0000.00", m_fontLabel);
                 m_szFontLabelBold = MeasureString("0000.00", m_fontLabelBold);
@@ -308,7 +340,11 @@ namespace SimpleGraphing
         public Color ZeroLineColor
         {
             get { return m_clrZeroLine; }
-            set { m_clrZeroLine = value; }
+            set 
+            { 
+                m_clrZeroLine = value;
+                m_bStyleDirty = true;
+            }
         }
 
         public double TimeOffsetInHours

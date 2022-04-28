@@ -226,6 +226,14 @@ namespace SimpleGraphing
 
         public virtual void Render(Graphics g)
         {
+            if (m_config.IsStyleDirty)
+            {
+                if (m_style != null)
+                    m_style.Dispose();
+
+                m_style = new GraphAxisStyle(m_config);
+                m_config.ClearStyleDirty();
+            }
         }
 
         public virtual void Scroll(double dfPct)

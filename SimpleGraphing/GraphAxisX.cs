@@ -177,6 +177,8 @@ namespace SimpleGraphing
             if (!m_config.Visible)
                 return;
 
+            base.Render(g);
+
             DateTime? dtLastVisible = null;
 
             for (int i = 0; i < m_rgTickPositions.Count; i++)

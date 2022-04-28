@@ -202,6 +202,8 @@ namespace SimpleGraphing
             if (!m_config.Visible)
                 return;
 
+            base.Render(g);
+
             if (m_config.PlotValueIncrements > 0)
                 m_nLongOffset = 0;
 
