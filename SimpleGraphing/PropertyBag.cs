@@ -39,6 +39,20 @@ namespace SimpleGraphing
             set { m_strValue = value; }
         }
 
+        public bool Compare(PropertyValue pv)
+        {
+            if (m_strName != pv.m_strName)
+                return false;
+
+            if (m_dfVal != pv.m_dfVal)
+                return false;
+
+            if (m_strValue != pv.m_strValue)
+                return false;
+
+            return true;
+        }
+
         public void Save(BinaryWriter bw)
         {
             bw.Write(m_strName);
@@ -92,6 +106,20 @@ namespace SimpleGraphing
 
         public PropertyBag()
         {
+        }
+
+        public bool Compare(PropertyBag pb)
+        {
+            if (m_rgProperties.Count != pb.Count)
+                return false;
+
+            for (int i = 0; i < m_rgProperties.Count; i++)
+            {
+                if (!m_rgProperties[i].Compare(pb.m_rgProperties[i]))
+                    return false;
+            }
+
+            return true;
         }
 
         public int Count
