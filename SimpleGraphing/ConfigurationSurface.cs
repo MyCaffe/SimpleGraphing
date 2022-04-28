@@ -15,15 +15,30 @@ namespace SimpleGraphing
     {
         Color m_clrBack = Color.SkyBlue;
         bool m_bEnableSmoothing = true;
+        bool m_bStyleDirty = false;
 
         public ConfigurationSurface()
         {
         }
 
+        public void ClearStyleDirty()
+        {
+            m_bStyleDirty = false;
+        }
+
+        public bool IsStyleDirty
+        {
+            get { return m_bStyleDirty; }
+        }
+
         public Color BackColor
         {
             get { return m_clrBack; }
-            set { m_clrBack = value; }
+            set 
+            { 
+                m_clrBack = value;
+                m_bStyleDirty = true;
+            }
         }
 
         public bool EnableSmoothing

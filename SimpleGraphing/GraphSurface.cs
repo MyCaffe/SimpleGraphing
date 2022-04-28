@@ -49,8 +49,11 @@ namespace SimpleGraphing
             }
         }
 
-        public void UpdateStyle()
+        public void UpdateStyle(ConfigurationSurface c = null)
         {
+            if (c != null)
+                m_config = c;
+
             if (m_style != null)
                 m_style.Update(m_config);
         }
@@ -145,13 +148,14 @@ namespace SimpleGraphing
 
         private SurfaceStyle createStyle(ConfigurationSurface c)
         {
-            if (m_style != null && m_config != null && m_config.Compare(c))
+            if (m_style != null && m_config != null && m_config.Compare(c) && !c.IsStyleDirty && !m_config.IsStyleDirty)
                 return m_style;
 
             if (m_style != null)
                 m_style.Dispose();
 
             m_config = c;
+            m_config.ClearStyleDirty();
             return new SimpleGraphing.SurfaceStyle(m_config);
         }
 
