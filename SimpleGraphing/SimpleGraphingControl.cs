@@ -527,6 +527,7 @@ namespace SimpleGraphing
                 if (m_surface.Frames.Count > 0)
                     nMargin = m_surface.Frames[0].YAxis.Bounds.Width;
 
+                m_crosshairs.CrossHairColor = m_config.Surface.CrossHairColor;
                 m_crosshairs.HandlePaint(e, pbImage.Image, nMargin + 5);
             }
 
@@ -833,21 +834,36 @@ namespace SimpleGraphing
         }
     }
 
-    public class Crosshairs
+    public class Crosshairs : IDisposable
     {
         bool m_bEnableCrosshairs = false;
         bool m_bSnapToXAxisTicks = true;
         GraphAxisX m_xAxis = null;
         GraphAxisY m_yAxis = null;
         Flag m_yAxisFlag = new Flag();
-        Bitmap m_bmpHoriz = null;
-        Bitmap m_bmpVert = null;
         Point m_ptMouse;
         Point m_ptMouseOld;
         bool m_bUserUpdateCrosshairs = false;
+        Color m_clrCrossHair = Color.FromArgb(64, 0, 0, 255);
+        Pen m_penCrossHair = null;
 
         public Crosshairs()
         {
+        }
+
+        public void Dispose()
+        {
+            if (m_penCrossHair != null)
+            {
+                m_penCrossHair.Dispose();
+                m_penCrossHair = null;
+            }
+        }
+
+        public Color CrossHairColor
+        {
+            get { return m_clrCrossHair; }
+            set { m_clrCrossHair = value; }
         }
 
         public bool EnableCrosshairs
@@ -945,11 +961,21 @@ namespace SimpleGraphing
             Graphics gimg = e.Graphics;
             Point pt = m_ptMouse;
 
-            Pen p = new Pen(Color.FromArgb(64, 0, 0, 255), 1.0f);
-            p.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+            if (m_penCrossHair == null)
+            {
+                m_penCrossHair = new Pen(m_clrCrossHair, 1.0f);
+                m_penCrossHair.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+            }
+            else if (m_penCrossHair.Color != m_clrCrossHair)
+            {
+                m_penCrossHair.Dispose();
+                m_penCrossHair = new Pen(m_clrCrossHair);
+                m_penCrossHair.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+            }
+
+            Pen p = m_penCrossHair;
             gimg.DrawLine(p, new Point(0, pt.Y), new Point(imgBack.Width - nMargin, pt.Y));
             gimg.DrawLine(p, new Point(pt.X, 0), new Point(pt.X, imgBack.Height));
-            p.Dispose();
 
             m_ptMouseOld = m_ptMouse;
         }

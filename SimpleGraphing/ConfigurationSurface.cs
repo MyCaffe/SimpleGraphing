@@ -13,6 +13,7 @@ namespace SimpleGraphing
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public class ConfigurationSurface
     {
+        Color m_clrCrossHair = Color.FromArgb(64, 0, 0, 255);
         Color m_clrBack = Color.SkyBlue;
         bool m_bEnableSmoothing = true;
         bool m_bStyleDirty = false;
@@ -29,6 +30,16 @@ namespace SimpleGraphing
         public bool IsStyleDirty
         {
             get { return m_bStyleDirty; }
+        }
+
+        public Color CrossHairColor
+        {
+            get { return m_clrCrossHair; }
+            set 
+            { 
+                m_clrCrossHair = value;
+                m_bStyleDirty = true;
+            }
         }
 
         public Color BackColor
@@ -52,6 +63,9 @@ namespace SimpleGraphing
             if (m_clrBack != c.m_clrBack)
                 return false;
 
+            if (m_clrCrossHair != c.m_clrCrossHair)
+                return false;
+
             if (m_bEnableSmoothing != c.m_bEnableSmoothing)
                 return false;
 
@@ -63,6 +77,7 @@ namespace SimpleGraphing
             ser.Open("Surface");
             ser.Add("BackColor", m_clrBack);
             ser.Add("EnableSmoothing", m_bEnableSmoothing.ToString());
+            ser.Add("CrossHairColor", m_clrCrossHair);
             ser.Close();
         }
 
@@ -73,6 +88,9 @@ namespace SimpleGraphing
             XElement elm = SerializeToXml.GetElement(elms, "Surface");
             surface.m_clrBack = SerializeToXml.LoadColor(elm, "BackColor").Value;
             surface.m_bEnableSmoothing = SerializeToXml.LoadBool(elm, "EnableSmoothing").Value;
+            Color? clr = SerializeToXml.LoadColor(elm, "CrossHairColor").Value;
+            if (clr.HasValue)
+                surface.m_clrCrossHair = clr.Value;
 
             return surface;
         }

@@ -212,6 +212,7 @@
             this.simpleGraphingControl1.Configuration = ((SimpleGraphing.Configuration)(resources.GetObject("simpleGraphingControl1.Configuration")));
             this.simpleGraphingControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.simpleGraphingControl1.EnableCrossHairs = true;
+            this.simpleGraphingControl1.EnableCrossHairXTickSnap = true;
             this.simpleGraphingControl1.Location = new System.Drawing.Point(0, 0);
             this.simpleGraphingControl1.Name = "simpleGraphingControl1";
             this.simpleGraphingControl1.ScrollPercent = 0D;
