@@ -214,10 +214,21 @@ namespace SimpleGraphing.GraphData
 
                 if (i == nIdxCurrent && nIdx < rgActive.Count - 1)
                 {
+                    if (nIdxCurrent >= data.Count)
+                        continue;
+
                     Plot plotCurrent = data[nIdxCurrent];
                     int nIdxPast = rgActive[nIdx - 1].Item1;
+
+                    if (nIdxPast >= data.Count)
+                        continue;
+                    
                     Plot plotPast = data[nIdxPast];
                     int nIdxFuture = rgActive[nIdx + 1].Item1;
+
+                    if (nIdxFuture >= data.Count)
+                        continue;
+
                     Plot plotFuture = data[nIdxFuture];
 
                     double dfOpen = (plotCurrent.Y_values.Length == 1) ? plotCurrent.Y : plotCurrent.Y_values[nOpen];
