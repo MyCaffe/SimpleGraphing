@@ -88,7 +88,7 @@ namespace SimpleGraphing
             XElement elm = SerializeToXml.GetElement(elms, "Surface");
             surface.m_clrBack = SerializeToXml.LoadColor(elm, "BackColor").Value;
             surface.m_bEnableSmoothing = SerializeToXml.LoadBool(elm, "EnableSmoothing").Value;
-            Color? clr = SerializeToXml.LoadColor(elm, "CrossHairColor").Value;
+            Color? clr = SerializeToXml.LoadColor(elm, "CrossHairColor");
             if (clr.HasValue)
                 surface.m_clrCrossHair = clr.Value;
 
