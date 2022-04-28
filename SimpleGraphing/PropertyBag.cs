@@ -13,12 +13,23 @@ namespace SimpleGraphing
         string m_strName;
         double m_dfVal;
         string m_strValue;
+        bool m_bDirty = false;
 
         public PropertyValue(string strName = "", double dfVal = 0, string strValue = null)
         {
             m_strName = strName;
             m_dfVal = dfVal;
             m_strValue = strValue;
+        }
+
+        public bool IsDirty
+        {
+            get { return m_bDirty; }
+        }
+
+        public void ClearDirty()
+        {
+            m_bDirty = false;
         }
 
         public string Name
@@ -30,13 +41,21 @@ namespace SimpleGraphing
         public double Value
         {
             get { return m_dfVal; }
-            set { m_dfVal = value; }
+            set 
+            { 
+                m_dfVal = value;
+                m_bDirty = true;
+            }
         }
 
         public string TextValue
         {
             get { return m_strValue; }
-            set { m_strValue = value; }
+            set 
+            { 
+                m_strValue = value;
+                m_bDirty = true;
+            }
         }
 
         public bool Compare(PropertyValue pv)
@@ -120,6 +139,28 @@ namespace SimpleGraphing
             }
 
             return true;
+        }
+
+        public bool IsDirty
+        {
+            get
+            {
+                foreach (PropertyValue pv in m_rgProperties)
+                {
+                    if (pv.IsDirty)
+                        return true;
+                }
+
+                return false;
+            }
+        }
+
+        public void ClearDirty()
+        {
+            foreach (PropertyValue pv in m_rgProperties)
+            {
+                pv.ClearDirty();
+            }
         }
 
         public int Count
