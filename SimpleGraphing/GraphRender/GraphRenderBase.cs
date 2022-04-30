@@ -47,6 +47,7 @@ namespace SimpleGraphing.GraphRender
             if ((m_config.ActionActive1Color == Color.Transparent && m_config.ActionActive2Color == Color.Transparent) ||
                 m_config.ActionActiveColorAlpha == 0 ||
                 dataset.Count == 0 ||
+                dataset[0] == null ||
                 dataset[0].Count < 2)
                 return;
 
