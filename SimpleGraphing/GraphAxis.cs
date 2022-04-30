@@ -88,20 +88,19 @@ namespace SimpleGraphing
 
         public virtual void SetMinMax(double dfMin, double dfMax)
         {
-            if (double.IsNaN(dfMin))
-                throw new Exception("The minimum is an invalid NAN!");
-
-            if (double.IsNaN(dfMax))
-                throw new Exception("The maximum is an invalid NAN!");
-
-            if (double.IsInfinity(dfMin))
-                throw new Exception("The minimum is an invalid Infinity!");
-
-            if (double.IsInfinity(dfMax))
-                throw new Exception("the maximum is an invalid Infinity!");
-
-            m_dfMin = Math.Min(dfMin, m_config.InitialMinimum);
-            m_dfMax = Math.Max(dfMax, m_config.InitialMaximum);
+            if (!double.IsNaN(dfMin) &&
+                !double.IsNaN(dfMax) &&
+                !double.IsInfinity(dfMin) &&
+                !double.IsInfinity(dfMax))
+            {
+                m_dfMin = Math.Min(dfMin, m_config.InitialMinimum);
+                m_dfMax = Math.Max(dfMax, m_config.InitialMaximum);
+            }
+            else
+            {
+                m_dfMin = m_config.InitialMinimum;
+                m_dfMax = m_config.InitialMaximum;
+            }
         }
 
         public int StartPosition
