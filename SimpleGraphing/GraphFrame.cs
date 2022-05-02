@@ -226,13 +226,13 @@ namespace SimpleGraphing
                 {
                     if (line.LineType == ConfigurationTargetLine.LINE_TYPE.MIN)
                     {
-                        dfLineMin = line.YValue;
+                        dfLineMin = line.YValueMin;
                         bMin = true;
                     }
 
                     else if (line.LineType == ConfigurationTargetLine.LINE_TYPE.MAX)
                     {
-                        dfLineMax = line.YValue;
+                        dfLineMax = line.YValueMax;
                         bMax = true;
                     }
                 }

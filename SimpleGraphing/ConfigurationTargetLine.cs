@@ -29,9 +29,11 @@ namespace SimpleGraphing
         object m_tag = null;
         bool m_bVisible = true;
         bool m_bLockVisible = false;
+        bool m_bLockVisibleDirty = false;
         Color m_clrNoteBackground = Color.Transparent;
         int m_nNoteBackgroundTransparency = 0;
         ORDER m_order = ORDER.PRE;
+        double m_dfYMargin = 0;
 
         public enum ORDER
         {
@@ -91,7 +93,24 @@ namespace SimpleGraphing
         public bool LockVisible
         {
             get { return m_bLockVisible; }
-            set { m_bLockVisible = value; }
+            set 
+            {
+                if (m_bLockVisible != value)
+                {
+                    m_bLockVisible = value;
+                    m_bLockVisibleDirty = true;
+                }
+            }
+        }
+
+        public bool IsLockVisibleDirty
+        {
+            get { return m_bLockVisibleDirty; }
+        }
+
+        public void ClearLockVisibleDirty()
+        {
+            m_bLockVisibleDirty = false;
         }
 
         public ORDER Order
@@ -144,7 +163,10 @@ namespace SimpleGraphing
             if (m_clrNote != c.m_clrNote)
                 return false;
 
-            if (!m_bVisible != c.m_bVisible)
+            if (m_bVisible != c.m_bVisible)
+                return false;
+
+            if (m_dfYMargin != c.m_dfYMargin)
                 return false;
 
             return true;
@@ -178,6 +200,22 @@ namespace SimpleGraphing
         {
             get { return m_dfYValue; }
             set { m_dfYValue = value; }
+        }
+
+        public double YMargin
+        {
+            get { return m_dfYMargin; }
+            set { m_dfYMargin = value; }
+        }
+
+        public double YValueMax
+        {
+            get { return YValue + YMargin; }
+        }
+
+        public double YValueMin
+        {
+            get { return YValue - YMargin; }
         }
 
         public double YValueRange

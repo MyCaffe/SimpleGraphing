@@ -70,8 +70,8 @@ namespace SimpleGraphing
                 {
                     if (line.Visible)
                     {
-                        m_dfMin = Math.Min(m_dfMin, line.YValue);
-                        m_dfMax = Math.Max(m_dfMax, line.YValue);
+                        m_dfMin = Math.Min(m_dfMin, line.YValueMin);
+                        m_dfMax = Math.Max(m_dfMax, line.YValueMax);
                     }
                 }
             }

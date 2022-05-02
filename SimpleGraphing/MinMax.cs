@@ -11,6 +11,7 @@ namespace SimpleGraphing
         double m_dfMin = double.MaxValue;
         double m_dfMax = -double.MaxValue;
         double m_dfSum = 0;
+        int m_nCount = 0;
 
         public MinMax()
         {
@@ -27,6 +28,7 @@ namespace SimpleGraphing
             m_dfMin = double.MaxValue;
             m_dfMax = -double.MaxValue;
             m_dfSum = 0;
+            m_nCount = 0;
         }
 
         public void Add(double dfVal)
@@ -34,6 +36,7 @@ namespace SimpleGraphing
             m_dfMax = Math.Max(dfVal, m_dfMax);
             m_dfMin = Math.Min(dfVal, m_dfMin);
             m_dfSum += dfVal;
+            m_nCount++;
         }
 
         public MinMax Clone(double? dfScale = null)
@@ -49,7 +52,13 @@ namespace SimpleGraphing
 
             MinMax minmax = new MinMax(dfMin, dfMax);
             minmax.m_dfSum = m_dfSum;
+            minmax.m_nCount = m_nCount;
             return minmax;
+        }
+
+        public int Count
+        {
+            get { return m_nCount; }
         }
 
         public double Min
