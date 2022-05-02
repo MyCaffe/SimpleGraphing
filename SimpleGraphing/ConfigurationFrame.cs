@@ -297,7 +297,8 @@ namespace SimpleGraphing
             for (int i=0; i<TargetLines.Count; i++)
             {
                 if (TargetLines[i].LineType == ConfigurationTargetLine.LINE_TYPE.MIN ||
-                    TargetLines[i].LineType == ConfigurationTargetLine.LINE_TYPE.MAX)
+                    TargetLines[i].LineType == ConfigurationTargetLine.LINE_TYPE.MAX ||
+                    !TargetLines[i].Visible)
                     rgRemoveIdx.Add(i);
             }
 
