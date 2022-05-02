@@ -28,6 +28,7 @@ namespace SimpleGraphing
         float m_fActiveY = 0;
         object m_tag = null;
         bool m_bVisible = true;
+        bool m_bLockVisible = false;
         Color m_clrNoteBackground = Color.Transparent;
         int m_nNoteBackgroundTransparency = 0;
         ORDER m_order = ORDER.PRE;
@@ -87,6 +88,12 @@ namespace SimpleGraphing
             set { m_bVisible = value; }
         }
 
+        public bool LockVisible
+        {
+            get { return m_bLockVisible; }
+            set { m_bLockVisible = value; }
+        }
+
         public ORDER Order
         {
             get { return m_order; }
@@ -135,6 +142,9 @@ namespace SimpleGraphing
                 return false;
 
             if (m_clrNote != c.m_clrNote)
+                return false;
+
+            if (!m_bVisible != c.m_bVisible)
                 return false;
 
             return true;
