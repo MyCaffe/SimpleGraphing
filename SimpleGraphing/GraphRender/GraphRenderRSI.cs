@@ -167,27 +167,30 @@ namespace SimpleGraphing.GraphRender
                 if (nIdx < plots.Count)
                 {
                     Plot plot = plots[nStartIdx + i];
-                    float fX = rgX[i];
-                    float? fY1 = getYValue(plot, dfMinY, dfMaxY, dfParamMin, dfParamMax, strDataParam, bNative);
-                    if (!fY1.HasValue)
-                        continue;
-
-                    float fY = fY1.Value;
-
-                    RectangleF rcPlot = new RectangleF(fX - 2.0f, fY - 2.0f, 4.0f, 4.0f);
-
-                    if (isValid(rcPlot))
+                    if (plot.Active)
                     {
-                        if (m_config.PlotFillColor != Color.Transparent)
-                        {
-                            Brush brFill = (plot.Active) ? m_style.PlotFillBrush : Brushes.Transparent;
-                            g.FillEllipse(brFill, rcPlot);
-                        }
+                        float fX = rgX[i];
+                        float? fY1 = getYValue(plot, dfMinY, dfMaxY, dfParamMin, dfParamMax, strDataParam, bNative);
+                        if (!fY1.HasValue)
+                            continue;
 
-                        if (m_config.PlotLineColor != Color.Transparent)
+                        float fY = fY1.Value;
+
+                        RectangleF rcPlot = new RectangleF(fX - 2.0f, fY - 2.0f, 4.0f, 4.0f);
+
+                        if (isValid(rcPlot))
                         {
-                            Pen pLine = (plot.Active) ? m_style.PlotLinePen : Pens.Transparent;
-                            g.DrawEllipse(pLine, rcPlot);
+                            if (m_config.PlotFillColor != Color.Transparent)
+                            {
+                                Brush brFill = (plot.Active) ? m_style.PlotFillBrush : Brushes.Transparent;
+                                g.FillEllipse(brFill, rcPlot);
+                            }
+
+                            if (m_config.PlotLineColor != Color.Transparent)
+                            {
+                                Pen pLine = (plot.Active) ? m_style.PlotLinePen : Pens.Transparent;
+                                g.DrawEllipse(pLine, rcPlot);
+                            }
                         }
                     }
                 }

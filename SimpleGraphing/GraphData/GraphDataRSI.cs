@@ -50,13 +50,14 @@ namespace SimpleGraphing.GraphData
         /// </remarks>
         /// <param name="data">Specifies the RSI data from the previous cycle.</param>
         /// <param name="i">Specifies the current data index.</param>
+        /// <param name="bActive">Output whether or not the data created is active.</param>
         /// <param name="minmax">Currently, not used here.</param>
         /// <param name="nLookahead">Specifies the look ahead value if any.</param>
         /// <param name="bAddToParams">Optionally, specifies whether or not to add the RSI to the parameters of the original data.</param>
         /// <returns>The new RSI value is returned.</returns>
-        public double Process(RsiData data, int i, MinMax minmax = null, int nLookahead = 0, bool bAddToParams = false, bool bIgnoreDst = false)
+        public double Process(RsiData data, int i, out bool bActive, MinMax minmax = null, int nLookahead = 0, bool bAddToParams = false, bool bIgnoreDst = false)
         {
-            bool bActive = false;
+            bActive = false;
 
             if (!bIgnoreDst)
             {
@@ -119,10 +120,11 @@ namespace SimpleGraphing.GraphData
         public RsiData GetRsiData(PlotCollectionSet dataset, int nDataIdx, int nLookahead = 0, bool bAddToParams = false)
         {
             RsiData data = Pre(dataset, nDataIdx);
+            bool bActive;
 
             for (int i = 0; i < data.SrcData.Count; i++)
             {
-                Process(data, i, null, nLookahead, bAddToParams);
+                Process(data, i, out bActive, null, nLookahead, bAddToParams);
             }
 
             MinMax minmax = new MinMax();
