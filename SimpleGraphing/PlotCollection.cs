@@ -1635,7 +1635,7 @@ namespace SimpleGraphing
             col.Tag2 = Tag2;
             col.LastUpdateTime = m_dtLastUpdate;
 
-            for (int i = nStartIdx; i <= nEndIdx; i++)
+            for (int i = nStartIdx; i <= nEndIdx && i < m_rgPlot.Count; i++)
             {
                 col.Add(m_rgPlot[i]);
             }
