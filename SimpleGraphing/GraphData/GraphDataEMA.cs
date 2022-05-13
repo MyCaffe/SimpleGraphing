@@ -15,6 +15,11 @@ namespace SimpleGraphing.GraphData
             m_config = config;
         }
 
+        public ConfigurationPlot Configuration
+        {
+            get { return m_config; }
+        }
+
         public string Name
         {
             get { return "EMA"; }
