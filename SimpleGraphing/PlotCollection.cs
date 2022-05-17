@@ -14,7 +14,7 @@ namespace SimpleGraphing
     {
         string m_strSrcName = "";
         string m_strName;
-        List<Plot> m_rgPlot = new List<Plot>();
+        List<Plot> m_rgPlot = null;
         double m_dfXIncrement = 1.0;
         double m_dfXPosition = 0;
         int m_nMax;
@@ -42,6 +42,7 @@ namespace SimpleGraphing
 
         public PlotCollection()
         {
+            m_rgPlot = new List<Plot>();
             m_nMax = int.MaxValue;
             m_dfXIncrement = 1.0;
             m_strName = "";
