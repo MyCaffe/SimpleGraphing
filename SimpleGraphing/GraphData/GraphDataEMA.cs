@@ -35,16 +35,25 @@ namespace SimpleGraphing.GraphData
             get { return m_config.DataName; }
         }
 
-        public EmaData Pre(PlotCollectionSet dataset, int nDataIdx)
+        public EmaData Pre(PlotCollectionSet dataset, int nDataIdx, PlotCollection dataDst = null)
         {
             PlotCollection dataSrc = dataset[nDataIdx];
-            PlotCollection dataDst = new PlotCollection(dataSrc.Name + " EMA" + m_config.Interval.ToString());
+
+            if (dataDst == null)
+                dataDst = new PlotCollection(dataSrc.Name + " EMA" + m_config.Interval.ToString());
+
             return new EmaData(dataSrc, dataDst, m_config.Interval);
         }
 
         public double Process(EmaData data, int i, MinMax minmax = null, int nLookahead = 0, bool bAddToParams = false)
         {
-            bool bActive = data.SrcData[i].Active;
+            bool bActive;
+            return Process(data, i, out bActive, minmax, nLookahead, bAddToParams);
+        }
+
+        public double Process(EmaData data, int i, out bool bActive, MinMax minmax = null, int nLookahead = 0, bool bAddToParams = false, bool bIgnoreDst = false)
+        {
+            bActive = false;
 
             PlotCollection dataSrc = data.SrcData;
             PlotCollection dataDst = data.DstData;
@@ -54,16 +63,16 @@ namespace SimpleGraphing.GraphData
             {
                 if (data.Index < m_config.Interval)
                 {
-                    if (bActive)
+                    if (data.SrcData[i].Active)
                     {
                         data.Total += dataSrc[i].Y;
                         data.Index++;
-                        if (dataDst != null)
+                        if (dataDst != null && !bIgnoreDst)
                             dataDst.Add(dataSrc[i].X, data.Total / (data.Index + 1), false, dataSrc[i].Index);
                     }
                     else
                     {
-                        if (dataDst != null)
+                        if (dataDst != null && !bIgnoreDst)
                             dataDst.Add(dataSrc[i].X, dataSrc[i].Y, false, dataSrc[i].Index);
                     }
                 }
@@ -73,11 +82,14 @@ namespace SimpleGraphing.GraphData
                         data.EMA = data.Total / m_config.Interval;
 
                     if (i < dataSrc.Count - nLookahead)
+                    {
                         data.EMA = (dataSrc[i].Y - data.EMA) * data.Multiplier + data.EMA;
+                        bActive = true;
+                    }
                     else
                         bActive = false;
 
-                    if (dataDst != null)
+                    if (dataDst != null && !bIgnoreDst)
                         dataDst.Add(data.EMA, bActive, dataSrc[i].Index);
 
                     if (bAddToParams && bActive)
