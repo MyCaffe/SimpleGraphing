@@ -187,7 +187,7 @@ namespace SimpleGraphing.GraphData
             }
         }
 
-        public static RsiData Load(byte[] rgb)
+        public static RsiData Load(byte[] rgb, RsiData data = null)
         {
             using (MemoryStream ms = new MemoryStream(rgb))
             using (BinaryReader br = new BinaryReader(ms))
@@ -199,15 +199,19 @@ namespace SimpleGraphing.GraphData
                 double dfAveLoss = br.ReadDouble();
                 double dfRs = br.ReadDouble();
 
-                int nLen = br.ReadInt32();
-                byte[] rgb2 = br.ReadBytes(nLen);
-                PlotCollection src = PlotCollection.Load(rgb2);
+                if (data == null)
+                {
+                    int nLen = br.ReadInt32();
+                    byte[] rgb2 = br.ReadBytes(nLen);
+                    PlotCollection src = PlotCollection.Load(rgb2);
 
-                nLen = br.ReadInt32();
-                rgb2 = br.ReadBytes(nLen);
-                PlotCollection dst = PlotCollection.Load(rgb2);
+                    nLen = br.ReadInt32();
+                    rgb2 = br.ReadBytes(nLen);
+                    PlotCollection dst = PlotCollection.Load(rgb2);
 
-                RsiData data = new RsiData(src, dst, (uint)nInterval);
+                    data = new RsiData(src, dst, (uint)nInterval);
+                }
+
                 data.m_nCount = nCount;
                 data.m_dfAveGain = dfAveGain;
                 data.m_dfAveLoss = dfAveLoss;
