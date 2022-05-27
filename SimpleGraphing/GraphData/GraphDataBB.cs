@@ -47,12 +47,16 @@ namespace SimpleGraphing.GraphData
             return Pre(dataset[nDataIdx]);
         }
 
-        public BbData Pre(PlotCollection dataset)
+        public BbData Pre(PlotCollection dataset, string strName = null)
         {
             m_caVal = new CalculationArray((int)m_config.Interval);
             m_caValExt = new CalculationArray((int)m_config.Interval);
             PlotCollection dataSrc = dataset;
-            PlotCollection dataDst = new PlotCollection(dataSrc.Name + " BB" + m_config.Interval.ToString());
+
+            if (string.IsNullOrEmpty(strName))
+                strName = dataSrc.Name;
+
+            PlotCollection dataDst = new PlotCollection(strName + " BB" + m_config.Interval.ToString());
 
             if (m_config.GetExtraSetting("BbTarget:BarRange", 0) == 1)
                 m_target = TARGET.BAR;
