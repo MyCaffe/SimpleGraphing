@@ -85,6 +85,28 @@ namespace SimpleGraphing
                 return nStartIdx;
         }
 
+        public Plot First()
+        {
+            int nStartIdx = StartIndex;
+            if (nStartIdx >= m_rgPlot.Count)
+                return null;
+
+            return m_rgPlot[nStartIdx];
+        }
+
+        public long SumItemCount()
+        {
+            long lCount = 0;
+
+            for (int i = StartIndex; i < m_rgPlot.Count; i++)
+            {
+                if (m_rgPlot[i].Active)
+                    lCount += m_rgPlot[i].Count.GetValueOrDefault();
+            }
+
+            return lCount;
+        }
+
         public int? StartOffsetFromEnd
         {
             get { return m_nStartOffsetFromEnd; }
@@ -778,6 +800,9 @@ namespace SimpleGraphing
             dfMinY = double.MaxValue;
             dfMaxY = -double.MaxValue;
 
+            if (nCount <= 0)
+                nCount = m_rgPlot.Count;
+
             for (int i = StartIndex; i < nCount; i++)
             {
                 int nIdx = nStartIdx + i;
@@ -842,6 +867,11 @@ namespace SimpleGraphing
         {
             get { return m_dfXIncrement; }
             set { m_dfXIncrement = value; }
+        }
+
+        public int FullCount
+        {
+            get { return m_rgPlot.Count; }
         }
 
         public int Count
