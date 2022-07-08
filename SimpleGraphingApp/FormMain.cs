@@ -16,6 +16,7 @@ namespace SimpleGraphingApp
 {
     public partial class FormMain : Form
     {
+        bool m_bFullData = false;
         int m_nDataCount = 600;
         FormMovingAverages m_dlgMovAve = null;
         Random m_random = new Random();
@@ -117,7 +118,28 @@ namespace SimpleGraphingApp
             updateGraph(rgSet);
         }
 
-        private void candleToolStripMenuItem_Click(object sender, EventArgs e)
+        private void candleWithFullDataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            m_bFullData = true;
+            m_nDataCount = 600;
+            candle(sender);
+        }
+
+        private void candleVisibleOnlyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            m_bFullData = false;
+            m_nDataCount = simpleGraphingControl1.VisiblePlotCount;
+            candle(sender);
+        }
+
+        private void candleClipToVisibleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            m_bFullData = true;
+            m_nDataCount = 600;
+            candle(sender, 100);
+        }
+
+        private void candle(object sender, int nClipToVisible = 0)
         {
             List<PlotCollectionSet> rgSet = new List<PlotCollectionSet>();
             int nCount = m_nDataCount;
@@ -179,6 +201,15 @@ namespace SimpleGraphingApp
             double dfConfWid;
             PlotCollection colReg = rgSet[0][0].CalculateLinearRegressionLines(out dfSlope, out dfConfWid);
             rgSet[0].Add(colReg);
+
+            int? nCount1 = null;
+            if (nClipToVisible > 0)
+                nCount1 = simpleGraphingControl1.VisiblePlotCount + nClipToVisible;
+
+            foreach (PlotCollectionSet set1 in rgSet)
+            {
+                set1.SetStartOffsetFromEnd(nCount1);
+            }
 
             configureCandleCharts(bEnableOverlay, rgSet, false);
 
@@ -299,7 +330,7 @@ namespace SimpleGraphingApp
                 ConfigurationFrame frame = simpleGraphingControl1.Configuration.Frames[i];
 
                 if (i == 0)
-                {
+                {                    
                     frame.Visible = true;
                     frame.Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.CANDLE;
 
@@ -465,6 +496,7 @@ namespace SimpleGraphingApp
         {
             m_szMinBounds = MinimumSize;
             m_szMaxBounds = MaximumSize;
+            
             m_nDataCount = simpleGraphingControl1.VisiblePlotCount;
 
             if (Properties.Settings.Default.Width > 0 && Properties.Settings.Default.Height > 0)
@@ -583,8 +615,11 @@ namespace SimpleGraphingApp
 
         private void FormMain_Resize(object sender, EventArgs e)
         {
-            m_nDataCount = simpleGraphingControl1.VisiblePlotCount;
-            Trace.WriteLine("Visible Plot Count: " + m_nDataCount.ToString());
+            if (m_nDataCount < simpleGraphingControl1.VisiblePlotCount || !m_bFullData)
+            {
+                m_nDataCount = simpleGraphingControl1.VisiblePlotCount;
+                Trace.WriteLine("Visible Plot Count: " + m_nDataCount.ToString());
+            }
         }
 
         private void btnReDraw_Click(object sender, EventArgs e)

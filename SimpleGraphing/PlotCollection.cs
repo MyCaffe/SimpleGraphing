@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace SimpleGraphing
 {
     [Serializable]
-    public class PlotCollection : IEnumerable<Plot>
+    public class PlotCollection //: IEnumerable<Plot>
     {
         string m_strSrcName = "";
         string m_strName;
@@ -30,6 +30,7 @@ namespace SimpleGraphing
         Dictionary<string, object> m_rgParamEx = new Dictionary<string, object>();
         DateTime m_dtLastUpdate = DateTime.MinValue;
         object m_syncObj = new object();
+        int? m_nStartOffsetFromEnd = null;
 
         public event EventHandler<PlotUpdateArgs> OnUpdatePlot;
 
@@ -53,9 +54,41 @@ namespace SimpleGraphing
             m_nMax = nMax;
             m_dfXIncrement = dfXInc;
             m_strName = strName;
-
+            
             int nCapacity = Math.Min(nMax, 2500);
             m_rgPlot = new List<Plot>(nCapacity);
+        }
+
+        public int StartIndex
+        {
+            get
+            {
+                int nIdx = 0;
+
+                if (m_nStartOffsetFromEnd.HasValue)
+                {
+                    nIdx = m_rgPlot.Count - m_nStartOffsetFromEnd.Value;
+                    if (nIdx < 0)
+                        nIdx = 0;
+                }
+
+                return nIdx;
+            }
+        }
+
+        public int GetStartIndex(int nStartIdx)
+        {
+            int nStartIdx1 = StartIndex;
+            if (nStartIdx < nStartIdx1)
+                return nStartIdx1;
+            else
+                return nStartIdx;
+        }
+
+        public int? StartOffsetFromEnd
+        {
+            get { return m_nStartOffsetFromEnd; }
+            set { m_nStartOffsetFromEnd = value; }
         }
 
         public DateTime LastUpdateTime
@@ -130,8 +163,6 @@ namespace SimpleGraphing
             }
         }
 
-
-
         public static PlotCollection Load(byte[] rg, PlotCollection col = null)
         {
             using (MemoryStream ms = new MemoryStream(rg))
@@ -200,18 +231,19 @@ namespace SimpleGraphing
         {
             PlotCollection col = new PlotCollection(m_strName, m_nMax, m_dfXIncrement);
 
-            foreach (Plot p in m_rgPlot)
+            for (int i=StartIndex; i<m_rgPlot.Count; i++)
             {
+                Plot p = m_rgPlot[i];
                 if (p.Active)
                     col.Add(p);
             }
 
             return col;
         }
-
+        
         public Plot GetFirstActive()
         {
-            for (int i = 0; i < m_rgPlot.Count; i++)
+            for (int i = StartIndex; i < m_rgPlot.Count; i++)
             {
                 if (m_rgPlot[i].Active)
                     return m_rgPlot[i];
@@ -243,14 +275,15 @@ namespace SimpleGraphing
 
             if (dfSqueezePct > 0)
                 dfParamRange *= (1.0 + dfSqueezePct);
-
-            foreach (Plot plot in m_rgPlot)
+            
+            for (int i=StartIndex; i<m_rgPlot.Count; i++)
             {
+                Plot plot = m_rgPlot[i];
                 if (plot.Active && !bOnlyUnscaled || !plot.Scaled)
                 {
-                    for (int i = 0; i < rgstrParams.Length; i++)
+                    for (int j = 0; j < rgstrParams.Length; j++)
                     {
-                        string strKey = rgstrParams[i];
+                        string strKey = rgstrParams[j];
                         if (plot.Parameters != null && plot.Parameters.ContainsKey(strKey))
                         {
                             double dfVal = plot.Parameters[strKey];
@@ -276,7 +309,7 @@ namespace SimpleGraphing
         public int ClipUpToDate(DateTime dt)
         {
             int nClipCount = 0;
-
+            
             while (m_rgPlot.Count > 0)
             {
                 if (!(m_rgPlot[0].Tag is DateTime))
@@ -284,7 +317,7 @@ namespace SimpleGraphing
 
                 if ((DateTime)m_rgPlot[0].Tag < dt)
                 {
-                    nClipCount++;
+                    nClipCount++;                    
                     m_rgPlot.RemoveAt(0);
                 }
                 else
@@ -297,9 +330,9 @@ namespace SimpleGraphing
         public PlotCollection ClipToFirstActive(int nMinConsecutiveCount)
         {            
             int nIdx = 0;
-            int nConsecutiveCount = 0;
+            int nConsecutiveCount = 0;          
 
-            for (int i = 0; i < m_rgPlot.Count; i++)
+            for (int i = StartIndex; i < m_rgPlot.Count; i++)
             {
                 if (m_rgPlot[i].Active)
                 {
@@ -330,12 +363,12 @@ namespace SimpleGraphing
                 m_rgPlot.RemoveAt(m_rgPlot.Count - 1);
             }
         }
-
+        
         public PlotCollection FillInactive(int nConsecutiveInactiveMax)
         {
             int nLastActiveIdx = -1;
 
-            for (int i = 0; i < m_rgPlot.Count; i++)
+            for (int i = StartIndex; i < m_rgPlot.Count; i++)
             {
                 if (m_rgPlot[i].Active)
                     nLastActiveIdx = i;
@@ -367,7 +400,7 @@ namespace SimpleGraphing
             return this;
         }
 
-        public PlotCollection CloneNew(string strName, int nValCount, int nStart = 0, bool? bActive = null)
+        public PlotCollection CloneNew(string strName, int nValCount, int nStartIdx = 0, bool? bActive = null)
         {
             PlotCollection col = new PlotCollection(strName, m_nMax, m_dfXIncrement);
 
@@ -383,9 +416,11 @@ namespace SimpleGraphing
             col.m_bLockMinMax = m_bLockMinMax;
             col.m_dtLastUpdate = m_dtLastUpdate;
 
+            nStartIdx = GetStartIndex(nStartIdx);
+
             lock (m_syncObj)
             {
-                for (int i = nStart; i < m_rgPlot.Count; i++)
+                for (int i = nStartIdx; i < m_rgPlot.Count; i++)
                 {
                     Plot p = m_rgPlot[i].Clone(false);
 
@@ -409,7 +444,7 @@ namespace SimpleGraphing
             return col;
         }
 
-        public PlotCollection Clone(int nIdxStart = 0, bool bCalculateMinMax = true, int? nPrimaryIndexY = null, bool? bActive = null, bool bSetDateOnTag = false)
+        public PlotCollection Clone(int nStartIdx = 0, bool bCalculateMinMax = true, int? nPrimaryIndexY = null, bool? bActive = null, bool bSetDateOnTag = false)
         {
             PlotCollection col = new PlotCollection(m_strName, m_nMax, m_dfXIncrement);
 
@@ -424,10 +459,11 @@ namespace SimpleGraphing
             col.m_minmaxTarget = m_minmaxTarget;
             col.m_bLockMinMax = m_bLockMinMax;
             col.m_dtLastUpdate = m_dtLastUpdate;
+            col.m_nStartOffsetFromEnd = m_nStartOffsetFromEnd;
 
             lock (m_syncObj)
             {
-                for (int i = nIdxStart; i < m_rgPlot.Count; i++)
+                for (int i = nStartIdx; i < m_rgPlot.Count; i++)
                 {
                     Plot p = m_rgPlot[i].Clone();
                     if (nPrimaryIndexY.HasValue)
@@ -473,6 +509,7 @@ namespace SimpleGraphing
             col.m_minmaxTarget = minmax.Value;
             col.m_bLockMinMax = m_bLockMinMax;
             col.m_dtLastUpdate = m_dtLastUpdate;
+            col.m_nStartOffsetFromEnd = m_nStartOffsetFromEnd;
 
             lock (m_syncObj)
             {
@@ -487,7 +524,7 @@ namespace SimpleGraphing
 
         public void TransferParameters(PlotCollection col, string strParam)
         {
-            for (int i = 0; i < m_rgPlot.Count; i++)
+            for (int i = StartIndex; i < m_rgPlot.Count; i++)
             {
                 double? dfVal = m_rgPlot[i].GetParameter(strParam);
                 if (dfVal.HasValue)
@@ -506,7 +543,7 @@ namespace SimpleGraphing
             if (string.IsNullOrEmpty(strParam))
                 return;
 
-            for (int i = 0; i < m_rgPlot.Count; i++)
+            for (int i = StartIndex; i < m_rgPlot.Count; i++)
             {
                 if (m_rgPlot[i].Active)
                 {
@@ -570,6 +607,8 @@ namespace SimpleGraphing
 
         public void SetMinMax(int nStartIdx = 0, bool? bLock = null)
         {
+            nStartIdx = GetStartIndex(nStartIdx);
+
             if (nStartIdx >= m_rgPlot.Count)
                 return;
 
@@ -632,7 +671,6 @@ namespace SimpleGraphing
             m_dfMaxVal = dfMax;
         }
 
-
         public bool ExcludeFromMinMax
         {
             get { return m_bExcludeFromMinMax; }
@@ -673,14 +711,16 @@ namespace SimpleGraphing
 
         public double? GetSlope(out double dfEndY, out int nIdxStart, out int nIdxEnd)
         {
-            nIdxStart = m_rgPlot[0].Index;
+            int nStartIdx = StartIndex;
+
+            nIdxStart = m_rgPlot[nStartIdx].Index;
             nIdxEnd = m_rgPlot[m_rgPlot.Count-1].Index;
             dfEndY = 0;
 
             if (nIdxStart < 0 || nIdxEnd <= nIdxStart)
                 return null;
             
-            double dfY0 = m_rgPlot[0].Y;
+            double dfY0 = m_rgPlot[nStartIdx].Y;
             double dfY1 = m_rgPlot[m_rgPlot.Count-1].Y;
             int nSteps = nIdxEnd - nIdxStart;
 
@@ -693,7 +733,7 @@ namespace SimpleGraphing
         {
             get
             {
-                for (int i = 0; i < m_rgPlot.Count; i++)
+                for (int i = StartIndex; i < m_rgPlot.Count; i++)
                 {
                     if (m_rgPlot[i].Active)
                         return i;
@@ -707,7 +747,7 @@ namespace SimpleGraphing
         {
             get
             {
-                for (int i = m_rgPlot.Count - 1; i >= 0; i--)
+                for (int i = m_rgPlot.Count - 1; i >= StartIndex; i--)
                 {
                     if (m_rgPlot[i].Active)
                         return i;
@@ -722,7 +762,7 @@ namespace SimpleGraphing
             if (m_rgPlot.Count != plots.Count)
                 return false;
 
-            for (int i = 0; i < m_rgPlot.Count; i++)
+            for (int i = StartIndex; i < m_rgPlot.Count; i++)
             {
                 if (m_rgPlot[i].Compare(plots[i]))
                     return false;
@@ -738,7 +778,7 @@ namespace SimpleGraphing
             dfMinY = double.MaxValue;
             dfMaxY = -double.MaxValue;
 
-            for (int i = 0; i < nCount; i++)
+            for (int i = StartIndex; i < nCount; i++)
             {
                 int nIdx = nStartIdx + i;
 
@@ -806,18 +846,35 @@ namespace SimpleGraphing
 
         public int Count
         {
-            get { return m_rgPlot.Count; }
+            get { return m_rgPlot.Count - StartIndex; }
         }
 
         public int ActiveCount
         {
-            get { return m_rgPlot.Where(p => p.Active == true).Count(); }
+            get
+            {
+                int nCount = 0;
+
+                for (int i = StartIndex; i < m_rgPlot.Count; i++)
+                {
+                    if (m_rgPlot[i].Active)
+                        nCount++;
+                }
+
+                return nCount;
+            }
         }
 
         public Plot this[int nIdx]
         {
-            get { return m_rgPlot[nIdx]; }
-            set { m_rgPlot[nIdx] = value; }
+            get 
+            {
+                return m_rgPlot[StartIndex + nIdx]; 
+            }
+            set 
+            {
+                m_rgPlot[StartIndex + nIdx] = value; 
+            }
         }
 
         public double AbsoluteMinYVal
@@ -888,7 +945,7 @@ namespace SimpleGraphing
                     }
                 }
 
-                for (int i = 0; i < m_rgPlot.Count; i++)
+                for (int i = StartIndex; i < m_rgPlot.Count; i++)
                 {
                     if (m_rgPlot[i].Active)
                     {
@@ -923,7 +980,7 @@ namespace SimpleGraphing
                     }
                 }
 
-                for (int i = 0; i < m_rgPlot.Count; i++)
+                for (int i = StartIndex; i < m_rgPlot.Count; i++)
                 {
                     if (m_rgPlot[i].Active)
                     {
@@ -1174,7 +1231,7 @@ namespace SimpleGraphing
         public void AddToStart(Plot p)
         {
             lock (m_syncObj)
-            {
+            {                
                 m_rgPlot.Insert(0, p);
             }
         }
@@ -1205,6 +1262,7 @@ namespace SimpleGraphing
 
         public int Find(DateTime dt, int nStartIdx = 0)
         {
+            nStartIdx = GetStartIndex(nStartIdx);
             for (int i = nStartIdx; i < m_rgPlot.Count; i++)
             {
                 DateTime dt1 = (DateTime)m_rgPlot[i].Tag;
@@ -1218,7 +1276,7 @@ namespace SimpleGraphing
 
         public int FindFromEnd(DateTime dt)
         {
-            for (int i = m_rgPlot.Count-1; i>=0; i--)
+            for (int i = m_rgPlot.Count-1; i>=StartIndex; i--)
             {
                 DateTime dt1 = (DateTime)m_rgPlot[i].Tag;
 
@@ -1231,16 +1289,17 @@ namespace SimpleGraphing
 
         public void SetAllActive(bool bActivate)
         {
-            foreach (Plot p in m_rgPlot)
+            for (int i = StartIndex; i < m_rgPlot.Count; i++)
             {
-                p.Active = bActivate;
+                m_rgPlot[i].Active = bActivate;
             }
         }
 
         public void SetAllActive(bool bActive, string strParam, bool bExact = true)
         {
-            foreach (Plot p in m_rgPlot)
+            for (int i=StartIndex; i<m_rgPlot.Count; i++)
             {
+                Plot p = m_rgPlot[i]; 
                 bool bFoundParam = false;
 
                 if (p.Parameters != null)
@@ -1276,7 +1335,11 @@ namespace SimpleGraphing
             int nIdx = 0;
             nFoundCount = 0;
 
-            for (int i = 0; i < col.Count; i++)
+            int nStartIdx = StartIndex;
+            if (col2.StartIndex != nStartIdx)
+                throw new Exception("The overlay plot collection must have the same start index as the destination plot collection.");
+           
+            for (int i = nStartIdx; i < col.Count; i++)
             {
                 if (col[i].Tag == null)
                     col[i].Tag = DateTime.FromFileTime((long)col[i].X);
@@ -1316,15 +1379,15 @@ namespace SimpleGraphing
             return col;
         }
 
-        public IEnumerator<Plot> GetEnumerator()
-        {
-            return m_rgPlot.GetEnumerator();
-        }
+        //public IEnumerator<Plot> GetEnumerator()
+        //{
+        //    return m_rgPlot.GetEnumerator();
+        //}
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return m_rgPlot.GetEnumerator();
-        }
+        //IEnumerator IEnumerable.GetEnumerator()
+        //{
+        //    return m_rgPlot.GetEnumerator();
+        //}
 
         public override string ToString()
         {
@@ -1339,9 +1402,10 @@ namespace SimpleGraphing
                 strOut += " ~ [" + m_rgPlot.Count.ToString() + "] ";
 
                 string strDates = "";
+                int nStartIdx = StartIndex;
 
-                if (m_rgPlot[0].Tag is DateTime)
-                    strDates += ((DateTime)m_rgPlot[0].Tag).ToString();
+                if (m_rgPlot[nStartIdx].Tag is DateTime)
+                    strDates += ((DateTime)m_rgPlot[nStartIdx].Tag).ToString();
 
                 if (m_rgPlot[m_rgPlot.Count - 1].Tag is DateTime)
                 {
@@ -1378,6 +1442,7 @@ namespace SimpleGraphing
             if (nEndIdx < 0 || nEndIdx > m_rgPlot.Count-1)
                 nEndIdx = m_rgPlot.Count - 1;
 
+            nStartIdx = GetStartIndex(nStartIdx);            
             for (int i = nStartIdx; i <= nEndIdx; i++)
             {
                 int nIdx = i + 1;
@@ -1445,6 +1510,7 @@ namespace SimpleGraphing
             dfSlope = 0;
             dfConfidenceWidth = 0;
 
+            nStartIdx = GetStartIndex(nStartIdx);
             Tuple<double, double> ab = CalculateLinearRegressionAB(nDataIdx, nStartIdx, nEndIdx, strParamName);
             if (ab == null)
                 return null;
@@ -1500,6 +1566,7 @@ namespace SimpleGraphing
             CalculationArray ca = new CalculationArray(nCount);
             RangeStatisticsCollection rgCol = new RangeStatisticsCollection();
 
+            nStartIdx = GetStartIndex(nStartIdx);
             for (int i = nStartIdx; i < m_rgPlot.Count; i++)
             {
                 Plot p = m_rgPlot[i];
@@ -1527,6 +1594,7 @@ namespace SimpleGraphing
             if (plots.Count != Count)
                 throw new Exception("The two plot collections must have the same counts!");
 
+            nStartIdx = GetStartIndex(nStartIdx);
             if (nEndIdx < 0 || nEndIdx > m_rgPlot.Count - 1)
                 nEndIdx = m_rgPlot.Count - 1;
 
@@ -1585,7 +1653,7 @@ namespace SimpleGraphing
             double dfNewRange = dfNewMax - dfNewMin;
             double dfRatio = (dfOldRange == 0) ? 0 : dfNewRange / dfOldRange;
 
-            for (int i = 0; i < m_rgPlot.Count; i++)
+            for (int i = StartIndex; i < m_rgPlot.Count; i++)
             {
                 for (int j = 0; j < m_rgPlot[i].Y_values.Length; j++)
                 {
@@ -1599,7 +1667,7 @@ namespace SimpleGraphing
 
         public void Scale(double dfScale, double dfShift, bool bSetMinMax = true)
         {
-            for (int i = 0; i < m_rgPlot.Count; i++)
+            for (int i = StartIndex; i < m_rgPlot.Count; i++)
             {
                 m_rgPlot[i].Y *= (float)dfScale;
                 m_rgPlot[i].Y += (float)dfShift;
@@ -1613,7 +1681,7 @@ namespace SimpleGraphing
         {
             List<float> rgVal = new List<float>();
 
-            for (int i = 0; i < m_rgPlot.Count; i++)
+            for (int i = StartIndex; i < m_rgPlot.Count; i++)
             {
                 rgVal.Add(m_rgPlot[i].Y);
                 if (rgVal.Count > nPeriod)
@@ -1639,7 +1707,7 @@ namespace SimpleGraphing
             col.Tag2 = Tag2;
             col.LastUpdateTime = m_dtLastUpdate;
 
-            for (int i = nStartIdx; i <= nEndIdx && i < m_rgPlot.Count; i++)
+            for (int i = StartIndex; i <= nEndIdx && i < m_rgPlot.Count; i++)
             {
                 col.Add(m_rgPlot[i]);
             }
@@ -1652,7 +1720,7 @@ namespace SimpleGraphing
 
         public int FindX(double dfX)
         {
-            for (int i = 1; i < m_rgPlot.Count; i++)
+            for (int i = StartIndex + 1; i < m_rgPlot.Count; i++)
             {
                 if (m_rgPlot[i - 1].X <= (float)dfX && m_rgPlot[i].X > dfX)
                     return i - 1;
@@ -1704,7 +1772,7 @@ namespace SimpleGraphing
             if (m_rgPlot.Count < nMinTest)
                 return null;
 
-            for (int i = 1; i < nMinTest; i++)
+            for (int i = StartIndex + 1; i < nMinTest; i++)
             {
                 if (m_rgPlot[i].Tag != null &&
                     m_rgPlot[i - 1].Tag != null)

@@ -33,6 +33,14 @@ namespace SimpleGraphing
                 m_rgSet.Add(set[i]);
             }
         }
+        
+        public void SetStartOffsetFromEnd(int? nCount = null)
+        {
+            foreach (PlotCollection col in m_rgSet)
+            {
+                col.StartOffsetFromEnd = nCount;
+            }
+        }
 
         public Dictionary<string, string> UserProperties
         {

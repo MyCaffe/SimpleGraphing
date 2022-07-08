@@ -37,6 +37,9 @@
             this.showDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.candleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.visibleOnlyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fullDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clipToVisibleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.candleWithOverlayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.candleFromExternalDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -127,17 +130,41 @@
             // 
             // candleToolStripMenuItem
             // 
+            this.candleToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.visibleOnlyToolStripMenuItem,
+            this.fullDataToolStripMenuItem,
+            this.clipToVisibleToolStripMenuItem});
             this.candleToolStripMenuItem.Name = "candleToolStripMenuItem";
             this.candleToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             this.candleToolStripMenuItem.Text = "Candle";
-            this.candleToolStripMenuItem.Click += new System.EventHandler(this.candleToolStripMenuItem_Click);
+            // 
+            // visibleOnlyToolStripMenuItem
+            // 
+            this.visibleOnlyToolStripMenuItem.Name = "visibleOnlyToolStripMenuItem";
+            this.visibleOnlyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.visibleOnlyToolStripMenuItem.Text = "Visible Only";
+            this.visibleOnlyToolStripMenuItem.Click += new System.EventHandler(this.candleVisibleOnlyToolStripMenuItem_Click);
+            // 
+            // fullDataToolStripMenuItem
+            // 
+            this.fullDataToolStripMenuItem.Name = "fullDataToolStripMenuItem";
+            this.fullDataToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.fullDataToolStripMenuItem.Text = "Full Data";
+            this.fullDataToolStripMenuItem.Click += new System.EventHandler(this.candleWithFullDataToolStripMenuItem_Click);
+            // 
+            // clipToVisibleToolStripMenuItem
+            // 
+            this.clipToVisibleToolStripMenuItem.Name = "clipToVisibleToolStripMenuItem";
+            this.clipToVisibleToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.clipToVisibleToolStripMenuItem.Text = "Clip to Visible";
+            this.clipToVisibleToolStripMenuItem.Click += new System.EventHandler(this.candleClipToVisibleToolStripMenuItem_Click);
             // 
             // candleWithOverlayToolStripMenuItem
             // 
             this.candleWithOverlayToolStripMenuItem.Name = "candleWithOverlayToolStripMenuItem";
             this.candleWithOverlayToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             this.candleWithOverlayToolStripMenuItem.Text = "Candle with Overlay";
-            this.candleWithOverlayToolStripMenuItem.Click += new System.EventHandler(this.candleToolStripMenuItem_Click);
+            this.candleWithOverlayToolStripMenuItem.Click += new System.EventHandler(this.candleVisibleOnlyToolStripMenuItem_Click);
             // 
             // candleFromExternalDataToolStripMenuItem
             // 
@@ -393,5 +420,8 @@
         private System.Windows.Forms.ToolStripButton btnScaleToVisible;
         private System.Windows.Forms.ToolStripMenuItem candleFromExternalDataToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialogBin;
+        private System.Windows.Forms.ToolStripMenuItem visibleOnlyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fullDataToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem clipToVisibleToolStripMenuItem;
     }
 }
