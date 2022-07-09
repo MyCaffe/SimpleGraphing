@@ -107,6 +107,19 @@ namespace SimpleGraphing
             return lCount;
         }
 
+        public MinMax GetMinMaxY()
+        {
+            MinMax minmax = new MinMax();
+
+            for (int i = StartIndex; i < m_rgPlot.Count; i++)
+            {
+                if (m_rgPlot[i].Active)
+                    minmax.Add(m_rgPlot[i].Y);
+            }
+
+            return minmax;
+        }
+
         public int? StartOffsetFromEnd
         {
             get { return m_nStartOffsetFromEnd; }
