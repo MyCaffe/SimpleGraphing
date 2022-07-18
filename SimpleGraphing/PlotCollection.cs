@@ -908,6 +908,21 @@ namespace SimpleGraphing
             }
         }
 
+        public int GetActiveCountFromEnd()
+        {
+            int nCount = 0;
+
+            for (int i = m_rgPlot.Count - 1; i >= StartIndex; i--)
+            {
+                if (m_rgPlot[i].Active)
+                    nCount++;
+                else
+                    break;
+            }
+
+            return nCount;
+        }
+
         public Plot this[int nIdx]
         {
             get 
