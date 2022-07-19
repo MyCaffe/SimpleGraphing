@@ -13,6 +13,7 @@ namespace SimpleGraphing
         string m_strName;
         double m_dfVal;
         string m_strValue;
+        object m_objValue = null;
         bool m_bDirty = false;
 
         public PropertyValue(string strName = "", double dfVal = 0, string strValue = null)
@@ -44,6 +45,16 @@ namespace SimpleGraphing
             set 
             { 
                 m_dfVal = value;
+                m_bDirty = true;
+            }
+        }
+
+        public object GenericValue
+        {
+            get { return m_objValue; }
+            set 
+            { 
+                m_objValue = value;
                 m_bDirty = true;
             }
         }
