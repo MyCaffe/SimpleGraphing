@@ -479,7 +479,7 @@ namespace SimpleGraphing
             return col;
         }
 
-        public PlotCollection Clone(int nStartIdx = 0, bool bCalculateMinMax = true, int? nPrimaryIndexY = null, bool? bActive = null, bool bSetDateOnTag = false)
+        public PlotCollection Clone(int nStartIdx = 0, bool bCalculateMinMax = true, int? nPrimaryIndexY = null, bool? bActive = null, bool bSetDateOnTag = false, int? nCount = null)
         {
             PlotCollection col = new PlotCollection(m_strName, m_nMax, m_dfXIncrement);
 
@@ -498,7 +498,10 @@ namespace SimpleGraphing
 
             lock (m_syncObj)
             {
-                for (int i = nStartIdx; i < m_rgPlot.Count; i++)
+                if (!nCount.HasValue || nCount.Value > m_rgPlot.Count)
+                    nCount = m_rgPlot.Count;
+
+                for (int i = nStartIdx; i < nCount.Value; i++)
                 {
                     Plot p = m_rgPlot[i].Clone();
                     if (nPrimaryIndexY.HasValue)
@@ -512,7 +515,7 @@ namespace SimpleGraphing
 
                     col.Add(p, false);
                 }
-
+                
                 for (int i=0; i<Parameters.Count; i++)
                 {
                     KeyValuePair<string, double> kv = Parameters.ElementAt(i);
