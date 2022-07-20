@@ -498,10 +498,10 @@ namespace SimpleGraphing
 
             lock (m_syncObj)
             {
-                if (!nCount.HasValue || nCount.Value > m_rgPlot.Count)
-                    nCount = m_rgPlot.Count;
+                if (!nCount.HasValue || nStartIdx + nCount.Value > m_rgPlot.Count)
+                    nCount = m_rgPlot.Count - nStartIdx;
 
-                for (int i = nStartIdx; i < nCount.Value; i++)
+                for (int i = nStartIdx; i < nStartIdx + nCount.Value; i++)
                 {
                     Plot p = m_rgPlot[i].Clone();
                     if (nPrimaryIndexY.HasValue)
