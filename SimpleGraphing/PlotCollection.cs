@@ -1622,9 +1622,10 @@ namespace SimpleGraphing
             return col;
         }
 
-        public RangeStatisticsCollection CalculateRangeStatistics(int nStartIdx = 0, int nCount = 20)
+        public RangeStatisticsCollection CalculateRangeStatistics(int nStartIdx = 0, int nCount = 20, bool bFullRange = false)
         {
             CalculationArray ca = new CalculationArray(nCount);
+            CalculationArray caTotal = new CalculationArray(nCount);
             RangeStatisticsCollection rgCol = new RangeStatisticsCollection();
 
             nStartIdx = GetStartIndex(nStartIdx);
@@ -1634,10 +1635,12 @@ namespace SimpleGraphing
 
                 if (p.Active)
                 {
-                    double dfA = p.Y_values[0];
-                    double dfB = p.Y;
+                    int nO = (bFullRange) ? 1 : 0;
+                    int nC = (bFullRange) ? 2 : 3;
+                    double dfA = p.Y_values[nC];
+                    double dfB = p.Y_values[nO];
                     double dfRange = dfA - dfB;
-
+                    
                     DateTime? dt = null;
                     if (p.Tag != null)
                         dt = (DateTime)p.Tag;
