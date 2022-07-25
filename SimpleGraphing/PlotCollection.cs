@@ -535,6 +535,14 @@ namespace SimpleGraphing
             return col;
         }
 
+        public PlotCollection CloneFromEnd(int nCount)
+        {
+            if (m_rgPlot.Count < nCount)
+                return Clone(0, false);
+
+            return Clone(m_rgPlot.Count - nCount, false);
+        }
+
         public PlotCollection SimpleCloneEnd(int nCount)
         {
             if (m_rgPlot.Count < nCount)
