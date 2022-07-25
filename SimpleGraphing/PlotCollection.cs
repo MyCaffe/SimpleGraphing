@@ -535,6 +535,17 @@ namespace SimpleGraphing
             return col;
         }
 
+        public PlotCollection SimpleCloneEnd(int nCount)
+        {
+            if (m_rgPlot.Count < nCount)
+                return SimpleClone(false);
+
+            PlotCollection plots = SimpleClone(false);
+            plots.StartOffsetFromEnd = nCount;
+
+            return plots;
+        }
+
         public PlotCollection SimpleClone(bool bCalculateMinMax, MINMAX_TARGET? minmax = null)
         {
             PlotCollection col = new PlotCollection(m_strName, m_nMax, m_dfXIncrement);
