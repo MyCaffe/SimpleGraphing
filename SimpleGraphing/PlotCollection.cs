@@ -123,7 +123,13 @@ namespace SimpleGraphing
         public int? StartOffsetFromEnd
         {
             get { return m_nStartOffsetFromEnd; }
-            set { m_nStartOffsetFromEnd = value; }
+            set 
+            {
+                if (value < m_rgPlot.Count)
+                    m_nStartOffsetFromEnd = value;
+                else
+                    m_nStartOffsetFromEnd = null;
+            }
         }
 
         public DateTime LastUpdateTime
