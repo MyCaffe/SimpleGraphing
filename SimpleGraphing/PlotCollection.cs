@@ -535,12 +535,19 @@ namespace SimpleGraphing
             return col;
         }
 
-        public PlotCollection CloneFromEnd(int nCount)
+        public PlotCollection CloneFromEnd(int nCount, bool bResetStartIndex = true)
         {
-            if (m_rgPlot.Count < nCount)
-                return Clone(0, false);
+            PlotCollection plots = null;
 
-            return Clone(m_rgPlot.Count - nCount, false);
+            if (m_rgPlot.Count < nCount)
+                plots = Clone(0, false);
+            else
+                plots = Clone(m_rgPlot.Count - nCount, false);
+
+            if (bResetStartIndex)
+                plots.StartOffsetFromEnd = null;
+
+            return plots;
         }
 
         public PlotCollection SimpleCloneEnd(int nCount)
