@@ -1539,11 +1539,12 @@ namespace SimpleGraphing
             for (int i = nStartIdx; i <= nEndIdx; i++)
             {
                 int nIdx = i + 1;
+                int nIdx0 = nIdx - nStartIdx;
                 Plot p = m_rgPlot[i];
 
                 if (p.Active)
                 {
-                    dfSumX += nIdx;
+                    dfSumX += nIdx0;
 
                     double dfY = 0;
 
@@ -1561,8 +1562,8 @@ namespace SimpleGraphing
                     }
 
                     dfSumY += dfY;
-                    dfSumX2 += nIdx * nIdx;
-                    dfSumXY += nIdx * dfY;
+                    dfSumX2 += nIdx0 * nIdx0;
+                    dfSumXY += nIdx0 * dfY;
                     nN++;
                 }
             }
