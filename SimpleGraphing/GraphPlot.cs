@@ -182,6 +182,11 @@ namespace SimpleGraphing
                     m_irender = new GraphRenderRSI(m_config, m_gx, m_gy, style);
                     break;
 
+                case ConfigurationPlot.PLOTTYPE.LRSI:
+                    m_idata = new GraphDataLRSI(m_config);
+                    m_irender = new GraphRenderRSI(m_config, m_gx, m_gy, style);
+                    break;
+
                 case ConfigurationPlot.PLOTTYPE.HIGHLOW:
                     m_idata = new GraphDataHighLow(m_config);
                     m_irender = new GraphRenderHighLow(m_config, m_gx, m_gy, style);

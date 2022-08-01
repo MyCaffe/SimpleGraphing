@@ -69,7 +69,8 @@ namespace SimpleGraphing
             VOLUME,
             LINE_FILL,
             ZONE,
-            BOLLINGERBANDS
+            BOLLINGERBANDS,
+            LRSI
         }
 
         public enum PLOTSHAPE
@@ -628,6 +629,9 @@ namespace SimpleGraphing
 
             else if (str == PLOTTYPE.RSI.ToString())
                 return PLOTTYPE.RSI;
+
+            else if (str == PLOTTYPE.LRSI.ToString())
+                return PLOTTYPE.LRSI;
 
             else if (str == PLOTTYPE.SMA.ToString())
                 return PLOTTYPE.SMA;

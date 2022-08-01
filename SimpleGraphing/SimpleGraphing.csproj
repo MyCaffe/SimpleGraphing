@@ -79,6 +79,7 @@
     <Compile Include="CalculationArray.cs" />
     <Compile Include="GraphData\GraphDataBB.cs" />
     <Compile Include="GraphData\GraphDataHighLow.cs" />
+    <Compile Include="GraphData\GraphDataLRSI.cs" />
     <Compile Include="GraphData\GraphDataRSI.cs" />
     <Compile Include="GraphData\GraphDataEMA.cs" />
     <Compile Include="GraphData\GraphDataZones.cs" />

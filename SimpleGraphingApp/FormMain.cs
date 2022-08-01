@@ -365,7 +365,7 @@ namespace SimpleGraphingApp
                 else if (i == 1)
                 {
                     frame.Visible = true;
-                    frame.Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.RSI;
+                    frame.Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.LRSI;
                     frame.Plots[0].Interval = 14;
                     frame.Plots[0].LineColor = Color.DarkGreen;
                     frame.Plots[0].LineWidth = 2.0f;
@@ -383,7 +383,7 @@ namespace SimpleGraphingApp
                     for (int j = 2; j < frame.Plots.Count; j++)
                     {
                         if (frame.Plots[j].PlotType == ConfigurationPlot.PLOTTYPE.CUSTOM)
-                            frame.Plots[j].Visible = true;
+                            frame.Plots[j].Visible = (frame.Plots[0].PlotType == ConfigurationPlot.PLOTTYPE.LRSI) ? false : true;
                         else
                             frame.Plots[j].Visible = false;
                     }

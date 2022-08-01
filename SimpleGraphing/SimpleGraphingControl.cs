@@ -757,6 +757,9 @@ namespace SimpleGraphing
         {
             foreach (PlotCollection col in set)
             {
+                if (col == null)
+                    return null;
+
                 if (col.AbsoluteMinYVal == double.MaxValue || col.AbsoluteMaxYVal == -double.MaxValue)
                     col.SetMinMax();
             }
