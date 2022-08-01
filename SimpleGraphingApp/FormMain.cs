@@ -485,6 +485,7 @@ namespace SimpleGraphingApp
         {
             simpleGraphingControl1.Configuration.Frames[0].Plots[1].Interval = (uint)e.SMAInterval;
             simpleGraphingControl1.Configuration.Frames[0].Plots[2].Interval = (uint)e.EMAInterval;
+            simpleGraphingControl1.Configuration.Frames[0].Plots[11].Interval = (uint)e.HMAInterval;
             simpleGraphingControl1.UpdateGraph();
         }
 

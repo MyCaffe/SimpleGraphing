@@ -141,21 +141,21 @@
             // visibleOnlyToolStripMenuItem
             // 
             this.visibleOnlyToolStripMenuItem.Name = "visibleOnlyToolStripMenuItem";
-            this.visibleOnlyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.visibleOnlyToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.visibleOnlyToolStripMenuItem.Text = "Visible Only";
             this.visibleOnlyToolStripMenuItem.Click += new System.EventHandler(this.candleVisibleOnlyToolStripMenuItem_Click);
             // 
             // fullDataToolStripMenuItem
             // 
             this.fullDataToolStripMenuItem.Name = "fullDataToolStripMenuItem";
-            this.fullDataToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.fullDataToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.fullDataToolStripMenuItem.Text = "Full Data";
             this.fullDataToolStripMenuItem.Click += new System.EventHandler(this.candleWithFullDataToolStripMenuItem_Click);
             // 
             // clipToVisibleToolStripMenuItem
             // 
             this.clipToVisibleToolStripMenuItem.Name = "clipToVisibleToolStripMenuItem";
-            this.clipToVisibleToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.clipToVisibleToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.clipToVisibleToolStripMenuItem.Text = "Clip to Visible";
             this.clipToVisibleToolStripMenuItem.Click += new System.EventHandler(this.candleClipToVisibleToolStripMenuItem_Click);
             // 

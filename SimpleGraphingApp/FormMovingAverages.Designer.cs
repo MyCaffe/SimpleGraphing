@@ -34,8 +34,12 @@
             this.lblEMA = new System.Windows.Forms.Label();
             this.lblEMAValue = new System.Windows.Forms.Label();
             this.tbEMA = new System.Windows.Forms.TrackBar();
+            this.lblHMA = new System.Windows.Forms.Label();
+            this.lblHMAValue = new System.Windows.Forms.Label();
+            this.tbHMA = new System.Windows.Forms.TrackBar();
             ((System.ComponentModel.ISupportInitialize)(this.tbSMA)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbEMA)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbHMA)).BeginInit();
             this.SuspendLayout();
             // 
             // lblSMA
@@ -96,13 +100,45 @@
             this.tbEMA.Value = 10;
             this.tbEMA.Scroll += new System.EventHandler(this.tbEMA_Scroll);
             // 
+            // lblHMA
+            // 
+            this.lblHMA.AutoSize = true;
+            this.lblHMA.Location = new System.Drawing.Point(15, 129);
+            this.lblHMA.Name = "lblHMA";
+            this.lblHMA.Size = new System.Drawing.Size(72, 13);
+            this.lblHMA.TabIndex = 0;
+            this.lblHMA.Text = "HMA Interval:";
+            // 
+            // lblHMAValue
+            // 
+            this.lblHMAValue.AutoSize = true;
+            this.lblHMAValue.Location = new System.Drawing.Point(329, 129);
+            this.lblHMAValue.Name = "lblHMAValue";
+            this.lblHMAValue.Size = new System.Drawing.Size(19, 13);
+            this.lblHMAValue.TabIndex = 0;
+            this.lblHMAValue.Text = "10";
+            // 
+            // tbHMA
+            // 
+            this.tbHMA.Location = new System.Drawing.Point(92, 114);
+            this.tbHMA.Maximum = 100;
+            this.tbHMA.Minimum = 2;
+            this.tbHMA.Name = "tbHMA";
+            this.tbHMA.Size = new System.Drawing.Size(231, 45);
+            this.tbHMA.TabIndex = 1;
+            this.tbHMA.Value = 10;
+            this.tbHMA.Scroll += new System.EventHandler(this.tbHMA_Scroll);
+            // 
             // FormMovingAverages
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(398, 114);
+            this.ClientSize = new System.Drawing.Size(398, 180);
+            this.Controls.Add(this.tbHMA);
+            this.Controls.Add(this.lblHMAValue);
             this.Controls.Add(this.tbEMA);
             this.Controls.Add(this.lblEMAValue);
+            this.Controls.Add(this.lblHMA);
             this.Controls.Add(this.tbSMA);
             this.Controls.Add(this.lblEMA);
             this.Controls.Add(this.lblSMAValue);
@@ -115,6 +151,7 @@
             this.Load += new System.EventHandler(this.FormMovingAverages_Load);
             ((System.ComponentModel.ISupportInitialize)(this.tbSMA)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbEMA)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbHMA)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -128,5 +165,8 @@
         private System.Windows.Forms.Label lblEMA;
         private System.Windows.Forms.Label lblEMAValue;
         private System.Windows.Forms.TrackBar tbEMA;
+        private System.Windows.Forms.Label lblHMA;
+        private System.Windows.Forms.Label lblHMAValue;
+        private System.Windows.Forms.TrackBar tbHMA;
     }
 }

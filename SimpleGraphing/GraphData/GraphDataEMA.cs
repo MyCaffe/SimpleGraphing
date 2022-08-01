@@ -146,6 +146,7 @@ namespace SimpleGraphing.GraphData
         public PlotCollection SrcData
         {
             get { return m_src; }
+            set { m_src = value; }
         }
 
         public PlotCollection DstData

@@ -25,7 +25,7 @@ namespace SimpleGraphingApp
             lblSMAValue.Text = tbSMA.Value.ToString();
 
             if (OnChange != null)
-                OnChange(this, new MovingAverageChangeArgs(tbSMA.Value, tbEMA.Value));
+                OnChange(this, new MovingAverageChangeArgs(tbSMA.Value, tbEMA.Value, tbHMA.Value));
         }
 
         private void tbEMA_Scroll(object sender, EventArgs e)
@@ -33,7 +33,15 @@ namespace SimpleGraphingApp
             lblEMAValue.Text = tbEMA.Value.ToString();
 
             if (OnChange != null)
-                OnChange(this, new MovingAverageChangeArgs(tbSMA.Value, tbEMA.Value));
+                OnChange(this, new MovingAverageChangeArgs(tbSMA.Value, tbEMA.Value, tbHMA.Value));
+        }
+
+        private void tbHMA_Scroll(object sender, EventArgs e)
+        {
+            lblHMAValue.Text = tbHMA.Value.ToString();
+
+            if (OnChange != null)
+                OnChange(this, new MovingAverageChangeArgs(tbSMA.Value, tbEMA.Value, tbHMA.Value));
         }
 
         private void FormMovingAverages_FormClosing(object sender, FormClosingEventArgs e)
@@ -52,11 +60,13 @@ namespace SimpleGraphingApp
     {
         int m_nSMAInterval;
         int m_nEMAInterval;
+        int m_nHMAInterval;
 
-        public MovingAverageChangeArgs(int nSMA, int nEMA)
+        public MovingAverageChangeArgs(int nSMA, int nEMA, int nHMA)
         {
             m_nSMAInterval = nSMA;
             m_nEMAInterval = nEMA;
+            m_nHMAInterval = nHMA;
         }
 
         public int SMAInterval
@@ -67,6 +77,11 @@ namespace SimpleGraphingApp
         public int EMAInterval
         {
             get { return m_nEMAInterval; }
+        }
+
+        public int HMAInterval
+        {
+            get { return m_nHMAInterval; }
         }
     }
 }

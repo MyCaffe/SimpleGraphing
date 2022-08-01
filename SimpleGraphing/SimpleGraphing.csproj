@@ -78,6 +78,7 @@
   <ItemGroup>
     <Compile Include="CalculationArray.cs" />
     <Compile Include="GraphData\GraphDataBB.cs" />
+    <Compile Include="GraphData\GraphDataHMA.cs" />
     <Compile Include="GraphData\GraphDataHighLow.cs" />
     <Compile Include="GraphData\GraphDataLRSI.cs" />
     <Compile Include="GraphData\GraphDataRSI.cs" />
