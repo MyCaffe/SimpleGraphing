@@ -94,12 +94,11 @@ namespace SimpleGraphing.GraphData
                 if (data.SrcData[i].Active && bActiveEma1 && bActiveEma2)
                 {
                     double dfRawHma = (2 * dfEma1) - dfEma2;
-
-                    data.TmpData.Add(dataSrc[i].X, dfRawHma, true, dataSrc[i].Index);
+                    data.TmpData[i].SetYValue((float)dfRawHma, true);
                 }
                 else
                 {
-                    data.TmpData.Add(dataSrc[i].X, dataSrc[i].Y, false, dataSrc[i].Index);
+                    data.TmpData[i].SetYValue(dataSrc[i].Y, false);
                 }
             }
 
@@ -146,7 +145,7 @@ namespace SimpleGraphing.GraphData
         {
             m_src = src;
             m_dst = dst;
-            m_tmp = dst.Clone(0, false);
+            m_tmp = src.Clone(0, false, null, null, false, null, true);
             m_ema1 = new EmaData(src, dst, nInterval / 2);
             m_ema2 = new EmaData(src, dst, nInterval);
             m_ema3 = new EmaData(src, dst, (uint)Math.Sqrt(nInterval));
