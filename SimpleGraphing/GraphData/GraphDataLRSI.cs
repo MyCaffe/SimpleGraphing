@@ -35,7 +35,7 @@ namespace SimpleGraphing.GraphData
             get { return m_config.DataName; }
         }
 
-        public LRsiData Pre(PlotCollectionSet dataset, int nDataIdx, PlotCollection dataDst = null)
+        public RsiData Pre(PlotCollectionSet dataset, int nDataIdx, PlotCollection dataDst = null)
         {
             PlotCollection dataSrc = dataset[nDataIdx];
             
@@ -46,7 +46,7 @@ namespace SimpleGraphing.GraphData
             m_rgAl.Add(new float[4]);
             m_rgAl.Add(new float[4]);
 
-            return new LRsiData(dataSrc, dataDst, m_config.Interval);
+            return new RsiData(dataSrc, dataDst, m_config.Interval);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace SimpleGraphing.GraphData
         /// <param name="nLookahead">Specifies the look ahead value if any.</param>
         /// <param name="bAddToParams">Optionally, specifies whether or not to add the RSI to the parameters of the original data.</param>
         /// <returns>The new RSI value is returned.</returns>
-        public double Process(LRsiData data, int i, out bool bActive, MinMax minmax = null, int nLookahead = 0, bool bAddToParams = false, bool bIgnoreDst = false)
+        public double Process(RsiData data, int i, out bool bActive, MinMax minmax = null, int nLookahead = 0, bool bAddToParams = false, bool bIgnoreDst = false)
         {
             bActive = false;
 
@@ -118,9 +118,9 @@ namespace SimpleGraphing.GraphData
             return data.RSI;
         }
 
-        public LRsiData GetRsiData(PlotCollectionSet dataset, int nDataIdx, int nLookahead = 0, bool bAddToParams = false)
+        public RsiData GetRsiData(PlotCollectionSet dataset, int nDataIdx, int nLookahead = 0, bool bAddToParams = false)
         {
-            LRsiData data = Pre(dataset, nDataIdx);
+            RsiData data = Pre(dataset, nDataIdx);
             bool bActive;
 
             for (int i = 0; i < data.SrcData.Count; i++)
@@ -139,106 +139,8 @@ namespace SimpleGraphing.GraphData
 
         public PlotCollectionSet GetData(PlotCollectionSet dataset, int nDataIdx, int nLookahead, Guid? guid = null, bool bAddToParams = false)
         {
-            LRsiData data = GetRsiData(dataset, nDataIdx, nLookahead, bAddToParams);
+            RsiData data = GetRsiData(dataset, nDataIdx, nLookahead, bAddToParams);
             return new PlotCollectionSet(new List<PlotCollection>() { data.DstData });
-        }
-    }
-
-    public class LRsiData
-    {
-        PlotCollection m_src;
-        PlotCollection m_dst;
-        int m_nCount;
-        int m_nInterval;
-        double m_dfRsi;
-
-        public LRsiData(PlotCollection src, PlotCollection dst, uint nInterval)
-        {
-            m_src = src;
-            m_dst = dst;
-            m_nCount = 0;
-            m_nInterval = (int)nInterval;
-            m_dfRsi = 0;
-        }
-
-        public byte[] Save()
-        {
-            using (MemoryStream ms = new MemoryStream())
-            using (BinaryWriter bw = new BinaryWriter(ms))
-            {
-                bw.Write(m_nCount);
-                bw.Write(m_nInterval);
-                bw.Write(m_dfRsi);
-
-                byte[] rgb = m_src.Save();
-                bw.Write(rgb.Length);
-                bw.Write(rgb);
-
-                rgb = m_dst.Save();
-                bw.Write(rgb.Length);
-                bw.Write(rgb);
-
-                return ms.ToArray();
-            }
-        }
-
-        public static LRsiData Load(byte[] rgb, LRsiData data = null)
-        {
-            using (MemoryStream ms = new MemoryStream(rgb))
-            using (BinaryReader br = new BinaryReader(ms))
-            {
-                int nCount = br.ReadInt32();
-                int nInterval = br.ReadInt32();
-                double dfRsi = br.ReadDouble();
-                double dfAveGain = br.ReadDouble();
-                double dfAveLoss = br.ReadDouble();
-                double dfRs = br.ReadDouble();
-
-                if (data == null)
-                {
-                    int nLen = br.ReadInt32();
-                    byte[] rgb2 = br.ReadBytes(nLen);
-                    PlotCollection src = PlotCollection.Load(rgb2);
-
-                    nLen = br.ReadInt32();
-                    rgb2 = br.ReadBytes(nLen);
-                    PlotCollection dst = PlotCollection.Load(rgb2);
-
-                    data = new LRsiData(src, dst, (uint)nInterval);
-                }
-
-                data.m_nCount = nCount;
-                data.m_dfRsi = dfRsi;
-
-                return data;
-            }
-        }
-
-        public PlotCollection SrcData
-        {
-            get { return m_src; }
-        }
-
-        public PlotCollection DstData
-        {
-            get { return m_dst; }
-        }
-
-        public int Count
-        {
-            get { return m_nCount; }
-            set { m_nCount = value; }
-        }
-
-        public double RSI
-        {
-            get { return m_dfRsi; }
-            set { m_dfRsi = value; }
-        }
-
-        public int Interval
-        {
-            get { return m_nInterval; }
         }
     }
 }
