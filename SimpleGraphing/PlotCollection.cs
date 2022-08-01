@@ -441,7 +441,7 @@ namespace SimpleGraphing
             return this;
         }
 
-        public PlotCollection CloneNew(string strName, int nValCount, int nStartIdx = 0, bool? bActive = null)
+        public PlotCollection CloneNew(string strName, int nValCount, int nStartIdx = 0, bool? bActive = null, bool bCopyData = false)
         {
             PlotCollection col = new PlotCollection(strName, m_nMax, m_dfXIncrement);
 
@@ -463,7 +463,7 @@ namespace SimpleGraphing
             {
                 for (int i = nStartIdx; i < m_rgPlot.Count; i++)
                 {
-                    Plot p = m_rgPlot[i].Clone(false);
+                    Plot p = m_rgPlot[i].Clone(bCopyData);
 
                     if (bActive.HasValue)
                         p.Active = bActive.Value;
