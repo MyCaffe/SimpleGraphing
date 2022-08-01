@@ -1,6 +1,6 @@
 ﻿namespace SimpleGraphingApp
 {
-    partial class FormMovingAverages
+    partial class FormSpecialSettings
     {
         /// <summary>
         /// Required designer variable.
@@ -37,9 +37,15 @@
             this.lblHMA = new System.Windows.Forms.Label();
             this.lblHMAValue = new System.Windows.Forms.Label();
             this.tbHMA = new System.Windows.Forms.TrackBar();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.rad_bbSMA = new System.Windows.Forms.RadioButton();
+            this.rad_bbDefault = new System.Windows.Forms.RadioButton();
+            this.rad_bbEMA = new System.Windows.Forms.RadioButton();
+            this.rad_bbHMA = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.tbSMA)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbEMA)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbHMA)).BeginInit();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblSMA
@@ -129,11 +135,74 @@
             this.tbHMA.Value = 10;
             this.tbHMA.Scroll += new System.EventHandler(this.tbHMA_Scroll);
             // 
-            // FormMovingAverages
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.rad_bbHMA);
+            this.groupBox1.Controls.Add(this.rad_bbEMA);
+            this.groupBox1.Controls.Add(this.rad_bbSMA);
+            this.groupBox1.Controls.Add(this.rad_bbDefault);
+            this.groupBox1.Location = new System.Drawing.Point(12, 165);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(374, 54);
+            this.groupBox1.TabIndex = 2;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Bolliner Band MA";
+            // 
+            // rad_bbSMA
+            // 
+            this.rad_bbSMA.AutoSize = true;
+            this.rad_bbSMA.Location = new System.Drawing.Point(80, 23);
+            this.rad_bbSMA.Name = "rad_bbSMA";
+            this.rad_bbSMA.Size = new System.Drawing.Size(48, 17);
+            this.rad_bbSMA.TabIndex = 1;
+            this.rad_bbSMA.TabStop = true;
+            this.rad_bbSMA.Text = "SMA";
+            this.rad_bbSMA.UseVisualStyleBackColor = true;
+            this.rad_bbSMA.Click += new System.EventHandler(this.rad_Click);
+            // 
+            // rad_bbDefault
+            // 
+            this.rad_bbDefault.AutoSize = true;
+            this.rad_bbDefault.Checked = true;
+            this.rad_bbDefault.Location = new System.Drawing.Point(12, 23);
+            this.rad_bbDefault.Name = "rad_bbDefault";
+            this.rad_bbDefault.Size = new System.Drawing.Size(59, 17);
+            this.rad_bbDefault.TabIndex = 0;
+            this.rad_bbDefault.TabStop = true;
+            this.rad_bbDefault.Text = "Default";
+            this.rad_bbDefault.UseVisualStyleBackColor = true;
+            this.rad_bbDefault.Click += new System.EventHandler(this.rad_Click);
+            // 
+            // rad_bbEMA
+            // 
+            this.rad_bbEMA.AutoSize = true;
+            this.rad_bbEMA.Location = new System.Drawing.Point(134, 23);
+            this.rad_bbEMA.Name = "rad_bbEMA";
+            this.rad_bbEMA.Size = new System.Drawing.Size(48, 17);
+            this.rad_bbEMA.TabIndex = 2;
+            this.rad_bbEMA.TabStop = true;
+            this.rad_bbEMA.Text = "EMA";
+            this.rad_bbEMA.UseVisualStyleBackColor = true;
+            this.rad_bbEMA.Click += new System.EventHandler(this.rad_Click);
+            // 
+            // rad_bbHMA
+            // 
+            this.rad_bbHMA.AutoSize = true;
+            this.rad_bbHMA.Location = new System.Drawing.Point(188, 23);
+            this.rad_bbHMA.Name = "rad_bbHMA";
+            this.rad_bbHMA.Size = new System.Drawing.Size(49, 17);
+            this.rad_bbHMA.TabIndex = 3;
+            this.rad_bbHMA.TabStop = true;
+            this.rad_bbHMA.Text = "HMA";
+            this.rad_bbHMA.UseVisualStyleBackColor = true;
+            this.rad_bbHMA.Click += new System.EventHandler(this.rad_Click);
+            // 
+            // FormSpecialSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(398, 180);
+            this.ClientSize = new System.Drawing.Size(398, 231);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.tbHMA);
             this.Controls.Add(this.lblHMAValue);
             this.Controls.Add(this.tbEMA);
@@ -144,7 +213,7 @@
             this.Controls.Add(this.lblSMAValue);
             this.Controls.Add(this.lblSMA);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "FormMovingAverages";
+            this.Name = "FormSpecialSettings";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Moving Averages";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMovingAverages_FormClosing);
@@ -152,6 +221,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.tbSMA)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbEMA)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbHMA)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -168,5 +239,10 @@
         private System.Windows.Forms.Label lblHMA;
         private System.Windows.Forms.Label lblHMAValue;
         private System.Windows.Forms.TrackBar tbHMA;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.RadioButton rad_bbDefault;
+        private System.Windows.Forms.RadioButton rad_bbSMA;
+        private System.Windows.Forms.RadioButton rad_bbHMA;
+        private System.Windows.Forms.RadioButton rad_bbEMA;
     }
 }

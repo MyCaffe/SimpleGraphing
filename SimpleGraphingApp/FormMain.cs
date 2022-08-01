@@ -18,7 +18,7 @@ namespace SimpleGraphingApp
     {
         bool m_bFullData = false;
         int m_nDataCount = 600;
-        FormMovingAverages m_dlgMovAve = null;
+        FormSpecialSettings m_dlgSpecialSettings = null;
         Random m_random = new Random();
         List<PlotCollectionSet> m_rgLastData = new List<PlotCollectionSet>();
         Size m_szMinBounds;
@@ -464,28 +464,29 @@ namespace SimpleGraphingApp
                 simpleGraphingControl1.Configuration.Frames[0].Plots[4].Visible = false;
         }
 
-        private void movingAveragesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void specialSettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (m_dlgMovAve == null)
+            if (m_dlgSpecialSettings == null)
             {
-                m_dlgMovAve = new FormMovingAverages();
-                m_dlgMovAve.OnChange += m_dlgMovAve_OnChange;
-                m_dlgMovAve.OnClosingWindow += m_dlgMovAve_OnClosing;
+                m_dlgSpecialSettings = new FormSpecialSettings();
+                m_dlgSpecialSettings.OnChange += m_dlgSpecialSettings_OnChange;
+                m_dlgSpecialSettings.OnClosingWindow += m_dlgMovAve_OnClosing;
             }
 
-            m_dlgMovAve.Show(this);
+            m_dlgSpecialSettings.Show(this);
         }
 
         private void m_dlgMovAve_OnClosing(object sender, EventArgs e)
         {
-            m_dlgMovAve = null;
+            m_dlgSpecialSettings = null;
         }
 
-        private void m_dlgMovAve_OnChange(object sender, MovingAverageChangeArgs e)
+        private void m_dlgSpecialSettings_OnChange(object sender, SpecialSettingChangeArgs e)
         {
             simpleGraphingControl1.Configuration.Frames[0].Plots[1].Interval = (uint)e.SMAInterval;
             simpleGraphingControl1.Configuration.Frames[0].Plots[2].Interval = (uint)e.EMAInterval;
             simpleGraphingControl1.Configuration.Frames[0].Plots[11].Interval = (uint)e.HMAInterval;
+            simpleGraphingControl1.Configuration.Frames[0].Plots[10].SetExtraSetting("MA", e.BBMa);                
             simpleGraphingControl1.UpdateGraph();
         }
 

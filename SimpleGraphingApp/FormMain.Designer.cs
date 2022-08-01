@@ -196,8 +196,8 @@
             // 
             this.movingAveragesToolStripMenuItem.Name = "movingAveragesToolStripMenuItem";
             this.movingAveragesToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.movingAveragesToolStripMenuItem.Text = "Moving Averages...";
-            this.movingAveragesToolStripMenuItem.Click += new System.EventHandler(this.movingAveragesToolStripMenuItem_Click);
+            this.movingAveragesToolStripMenuItem.Text = "Special Settings...";
+            this.movingAveragesToolStripMenuItem.Click += new System.EventHandler(this.specialSettingsToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 

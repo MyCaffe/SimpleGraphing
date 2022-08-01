@@ -13,6 +13,12 @@ namespace SimpleGraphing.GraphData
         CalculationArray m_caVal;
         CalculationArray m_caValExt;
         TARGET m_target = TARGET.DEFAULT;
+        GraphDataSMA m_sma = null;
+        SmaData m_smaData = null;
+        GraphDataEMA m_ema = null;
+        EmaData m_emaData = null;
+        GraphDataHMA m_hma = null;
+        HmaData m_hmaData = null;
 
         enum TARGET
         {
@@ -21,10 +27,39 @@ namespace SimpleGraphing.GraphData
             RANGE
         }
 
+        enum MA
+        {
+            DEFAULT = 0,
+            SMA = 1,
+            EMA = 2,
+            HMA = 3
+        }
+
         public GraphDataBB(ConfigurationPlot config)
         {
             m_config = config;
             m_dfStdDev = config.GetExtraSetting("StdDev", 2.0);
+
+            MA ma = (MA)config.GetExtraSetting("MA", 0);
+
+            if (ma == MA.SMA)
+            {
+                ConfigurationPlot cfg = config.Clone();
+                cfg.PlotType = ConfigurationPlot.PLOTTYPE.SMA;
+                m_sma = new GraphDataSMA(cfg);
+            }
+            else if (ma == MA.EMA)
+            {
+                ConfigurationPlot cfg = config.Clone();
+                cfg.PlotType = ConfigurationPlot.PLOTTYPE.EMA;
+                m_ema = new GraphDataEMA(cfg);
+            }
+            if (ma == MA.HMA)
+            {
+                ConfigurationPlot cfg = config.Clone();
+                cfg.PlotType = ConfigurationPlot.PLOTTYPE.HMA;
+                m_hma = new GraphDataHMA(cfg);
+            }
         }
 
         public string Name
@@ -52,6 +87,13 @@ namespace SimpleGraphing.GraphData
             m_caVal = new CalculationArray((int)m_config.Interval);
             m_caValExt = new CalculationArray((int)m_config.Interval);
             PlotCollection dataSrc = dataset;
+
+            if (m_sma != null)
+                m_smaData = m_sma.Pre(new PlotCollectionSet(dataset), 0);
+            else if (m_ema != null)
+                m_emaData = m_ema.Pre(new PlotCollectionSet(dataset), 0);
+            else if (m_hma != null)
+                m_hmaData = m_hma.Pre(new PlotCollectionSet(dataset), 0);
 
             if (string.IsNullOrEmpty(strName))
                 strName = dataSrc.Name;
@@ -102,9 +144,22 @@ namespace SimpleGraphing.GraphData
                 }
             }
 
-            if (m_caVal.Add(fTypicalValue, null, false))
-            {
-                data.Ave = (float)m_caVal.Average;
+            double? dfMa = null;
+            
+            if (m_sma != null)
+                dfMa = m_sma.Process(m_smaData, i, null, nLookahead, false);
+            else if (m_ema != null)
+                dfMa = m_ema.Process(m_emaData, i, null, nLookahead, false);
+            if (m_hma != null)
+                dfMa = m_hma.Process(m_hmaData, i, null, nLookahead, false);
+
+            if (m_caVal.Add(fTypicalValue, null, false) && (!dfMa.HasValue || dfMa.Value != 0))
+            {                
+                if (dfMa.HasValue)
+                    data.Ave = dfMa.Value;
+                else
+                    data.Ave = (float)m_caVal.Average;
+
                 float fStdevTp = (float)m_caVal.StdDev;
 
                 if (m_target != TARGET.DEFAULT)
