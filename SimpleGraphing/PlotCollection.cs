@@ -148,6 +148,22 @@ namespace SimpleGraphing
             get { return m_rgParamEx; }
         }
 
+        public double? GetParameter(string strName)
+        {
+            if (m_rgParam.ContainsKey(strName))
+                return m_rgParam[strName];
+            else
+                return null;
+        }
+
+        public void SetParameter(string strName, double dfVal)
+        {
+            if (m_rgParam.ContainsKey(strName))
+                m_rgParam[strName] = dfVal;
+            else
+                m_rgParam.Add(strName, dfVal);
+        }
+
         public Plot Last()
         {
             if (m_rgPlot.Count == 0)
