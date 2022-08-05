@@ -529,8 +529,8 @@ namespace SimpleGraphing
                 foreach (KeyValuePair<string, double> kv in m_rgExtraSettings)
                 {
                     ser.Open("Extra");
-                    ser.Add("ExtraName" + nIdx.ToString(), kv.Key);
-                    ser.Add("ExtraValue" + nIdx.ToString(), kv.Value);
+                    ser.Add("ExtraName", kv.Key);
+                    ser.Add("ExtraValue", kv.Value);
                     ser.Close();
                     nIdx++;
                 }
