@@ -959,11 +959,14 @@ namespace SimpleGraphing
             }
         }
 
-        public int GetActiveCountFromEnd()
+        public int GetActiveCountFromEnd(int nEndIdx = -1)
         {
             int nCount = 0;
 
-            for (int i = m_rgPlot.Count - 1; i >= StartIndex; i--)
+            if (nEndIdx == -1)
+                nEndIdx = m_rgPlot.Count - 1;
+
+            for (int i = nEndIdx; i >= StartIndex; i--)
             {
                 if (m_rgPlot[i].Active)
                     nCount++;
