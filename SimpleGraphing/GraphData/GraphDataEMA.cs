@@ -93,7 +93,7 @@ namespace SimpleGraphing.GraphData
                         dataDst.Add(data.EMA, bActive, dataSrc[i].Index);
 
                     if (bAddToParams && bActive)
-                        dataSrc[i].SetParameter(dataDst.Name, (float)data.EMA);
+                        dataSrc[i].SetParameter(dataDst.Name.Trim(), (float)data.EMA);
 
                     if (minmax != null)
                         minmax.Add(data.EMA);

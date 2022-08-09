@@ -103,6 +103,7 @@ namespace SimpleGraphing.GraphData
             }
 
             data.EMA3.SrcData = data.TmpData;
+            data.EMA3.Index = i;
             data.HMA = m_ema3.Process(data.EMA3, i, out bActive, minmax, 0, bAddToParams, bIgnoreDst);
 
             return data.HMA;
