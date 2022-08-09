@@ -825,7 +825,11 @@ namespace SimpleGraphing
                 nHeight = 300;
 
             simpleGraphingControl1.ScrollToEnd(false);
-            return simpleGraphingControl1.Render(nWidth, nHeight);
+            
+            Image img = simpleGraphingControl1.Render(nWidth, nHeight);
+            img.Tag = simpleGraphingControl1.VisiblePlotCount - 12;
+
+            return img;
         }
 
         public static Configuration GetQuickRenderConfiguration(string strName, int nValCount, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null, bool bUseTimeResolutionForValueType = false)
