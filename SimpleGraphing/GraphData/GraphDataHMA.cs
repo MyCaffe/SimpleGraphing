@@ -107,7 +107,7 @@ namespace SimpleGraphing.GraphData
             data.HMA = m_ema3.Process(data.EMA3, i, out bActive, minmax, 0, false, bIgnoreDst);
 
             if (bAddToParams && bActive)
-                dataSrc[dataSrc.Count-1].SetParameter(dataDst.Name.Trim(), data.HMA);
+                dataSrc[i].SetParameter(dataDst.Name.Trim(), data.HMA);
 
             return data.HMA;
         }
