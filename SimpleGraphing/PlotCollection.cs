@@ -1569,7 +1569,7 @@ namespace SimpleGraphing
 
                     if (!string.IsNullOrEmpty(strParamName))
                     {
-                        float? fVal = p.GetParameter(strParamName);
+                        float? fVal = p.GetParameterContaining(strParamName);
                         if (!fVal.HasValue)
                             return null;
 
