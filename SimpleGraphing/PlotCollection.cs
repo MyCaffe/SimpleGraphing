@@ -1812,6 +1812,9 @@ namespace SimpleGraphing
 
         public PlotCollection Clip(int nStartIdx, int nEndIdx, bool bSetMinMax = true)
         {
+            if (nEndIdx < 0)
+                nEndIdx = m_rgPlot.Count - 1;
+            
             PlotCollection col = new PlotCollection(Name);
 
             foreach (KeyValuePair<string, double> kv in m_rgParam)
