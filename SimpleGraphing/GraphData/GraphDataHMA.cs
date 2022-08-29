@@ -115,7 +115,8 @@ namespace SimpleGraphing.GraphData
             }
             else
             {
-                minmax.Add(data.HMA);
+                if (minmax != null)
+                    minmax.Add(data.HMA);
             }
 
             if (bAddToParams && bActive)
