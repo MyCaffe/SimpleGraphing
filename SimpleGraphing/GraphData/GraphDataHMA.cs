@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -104,7 +105,18 @@ namespace SimpleGraphing.GraphData
 
             data.EMA3.SrcData = data.TmpData;
             data.EMA3.Index = i;
-            data.HMA = m_ema3.Process(data.EMA3, i, out bActive, minmax, 0, false, bIgnoreDst);
+            data.HMA = m_ema3.Process(data.EMA3, i, out bActive, null, 0, false, bIgnoreDst);
+
+            if (i < m_ema2.Configuration.Interval + m_ema3.Configuration.Interval)
+            {
+                dataDst[i].SetYValue(data.SrcData[i].Y, false);
+                data.HMA = data.SrcData[i].Y;
+                bActive = false;
+            }
+            else
+            {
+                minmax.Add(data.HMA);
+            }
 
             if (bAddToParams && bActive)
                 dataSrc[i].SetParameter(dataDst.Name.Trim(), data.HMA);
