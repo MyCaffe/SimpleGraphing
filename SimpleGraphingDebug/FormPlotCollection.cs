@@ -47,12 +47,62 @@ namespace SimpleGraphingDebug
             simpleGraphingControl1.Configuration.Frames[0].YAxis.LabelFont = new Font("Century Gothic", 7.0f);
             simpleGraphingControl1.Configuration.Frames[0].YAxis.Decimals = 3;
 
+            List<ConfigurationPlot> rgCfgHma = new List<ConfigurationPlot>();
+            if (m_set.Count > 0 && m_set[0].Count > 0 && m_set[0].Last().Parameters != null)
+            {
+                int nIdxClr = 0;
+                List<Color> rgClr = new List<Color>()
+                {
+                    Color.Maroon,
+                    Color.Firebrick,
+                    Color.Red,
+                    Color.Tomato,
+                    Color.Salmon,
+                    Color.LightSalmon,
+                    Color.Orange,
+                    Color.Gold,
+                    Color.Yellow,
+                    Color.GreenYellow,
+                    Color.Lime,
+                    Color.DarkSeaGreen,
+                    Color.Green,
+                    Color.DarkGreen,
+                    Color.Blue,
+                    Color.Navy
+                };
+
+                foreach (KeyValuePair<string, float> kv in m_set[0].Last().Parameters)
+                {
+                    if (kv.Key.Contains("HMA"))
+                    {
+                        ConfigurationPlot cfg = new ConfigurationPlot();
+                        cfg.Name = kv.Key;
+                        cfg.LineColor = rgClr[nIdxClr];
+                        cfg.LineWidth = 1.0f;
+                        cfg.FlagColor = rgClr[nIdxClr];
+                        cfg.FlagTextColor = Color.White;
+                        cfg.PlotFillColor = Color.Transparent;
+                        cfg.PlotLineColor = Color.Transparent;
+                        cfg.PlotType = ConfigurationPlot.PLOTTYPE.LINE;
+                        cfg.DataParam = kv.Key + ":native";
+                        cfg.Visible = true;
+                        rgCfgHma.Add(cfg);
+
+                        nIdxClr++;
+                        if (nIdxClr == rgClr.Count)
+                            nIdxClr = 0;
+                    }
+                }
+            }
+
             for (int i = 0; i < m_set.Count; i++)
             {
                 ConfigurationPlot plotConfig = new ConfigurationPlot();
                 plotConfig.DataIndexOnRender = i;
 
                 simpleGraphingControl1.Configuration.Frames[0].Plots.Add(plotConfig);
+                if (rgCfgHma.Count > 0)
+                    simpleGraphingControl1.Configuration.Frames[0].Plots.AddRange(rgCfgHma);
 
                 if (m_set[0].Count > 0 && m_set[0][0].Y_values.Length == 4)
                 {
@@ -67,6 +117,8 @@ namespace SimpleGraphingDebug
 
                 if (m_set[0].Parameters.ContainsKey("ValueType"))
                     simpleGraphingControl1.Configuration.Frames[0].XAxis.ValueType = (ConfigurationAxis.VALUE_TYPE)m_set[0].Parameters["ValueType"];
+
+                
             }
 
             simpleGraphingControl1.Configuration.Frames[0].EnableRelativeScaling(true, true);

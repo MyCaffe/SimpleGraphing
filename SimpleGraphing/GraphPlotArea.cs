@@ -111,8 +111,16 @@ namespace SimpleGraphing
 
                 setMinMaxLines(config);
 
-                m_rgPlots = new SimpleGraphing.GraphPlotCollection();
-                m_rgData = new PlotCollectionSet();
+                if (m_rgPlots == null)
+                    m_rgPlots = new SimpleGraphing.GraphPlotCollection();
+                else
+                    m_rgPlots.Clear();
+
+                if (m_rgData == null)
+                    m_rgData = new PlotCollectionSet();
+                else
+                    m_rgData.Clear();
+                
                 m_rgData.Add(data);
             }
 

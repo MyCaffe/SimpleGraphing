@@ -290,7 +290,7 @@ namespace SimpleGraphingApp
         private void updateGraph(List<PlotCollectionSet> rgSet)
         {
             m_rgSet = rgSet;
-            simpleGraphingControl1.BuildGraph(rgSet);
+            simpleGraphingControl1.BuildGraph(rgSet, true, true);
             simpleGraphingControl1.Invalidate();
             simpleGraphingControl1.ScrollToEnd(true);
         }
