@@ -139,5 +139,15 @@ namespace SimpleGraphing
                 return Math.Sqrt(dfVar);
             }
         }
+
+        public double MaxVal
+        {
+            get { return m_rgdf.Max(); }
+        }
+
+        public double MinVal
+        {
+            get { return m_rgdf.Min(); }
+        }
     }
 }
