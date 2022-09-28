@@ -49,6 +49,16 @@ namespace SimpleGraphing
             dispose();
         }
 
+        public double Min
+        {
+            get { return m_dfMin; }
+        }
+
+        public double Max
+        {
+            get { return m_dfMax; }
+        }
+
         public double ActiveMin
         {
             get 
