@@ -308,12 +308,12 @@ namespace SimpleGraphing
             set { m_tagEx = value; }
         }
 
-        public void SetParameter(string strParam, double df)
+        public bool SetParameter(string strParam, double df)
         {
-            SetParameter(strParam, (float)df);
+            return SetParameter(strParam, (float)df);
         }
 
-        public void SetParameter(string strParam, float df)
+        public bool SetParameter(string strParam, float df)
         {
             lock (m_syncObj)
             {
@@ -321,9 +321,15 @@ namespace SimpleGraphing
                     m_rgParams = new Dictionary<string, float>();
 
                 if (!m_rgParams.ContainsKey(strParam))
+                {
                     m_rgParams.Add(strParam, df);
+                    return false;
+                }
                 else
+                {
                     m_rgParams[strParam] = df;
+                    return true;
+                }
             }
         }
 
