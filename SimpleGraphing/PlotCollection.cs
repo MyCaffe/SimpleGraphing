@@ -377,7 +377,7 @@ namespace SimpleGraphing
                 DateTime dtDst = (DateTime)dst[i].Tag;
                 DateTime dtSrc = (DateTime)this[nSrcIdx].Tag;
 
-                if (dtSrc == dtDst)
+                if (dtSrc == dtDst || i == dst.Count-1)
                 {
                     double? dfVal = this[nSrcIdx].GetParameterContaining(strParam);
                     if (dfVal.HasValue)
@@ -390,7 +390,7 @@ namespace SimpleGraphing
                             double dfStep = (dfLastDstVal.Value - dfVal.Value) / nSteps;
                             double dfVal1 = dfLastDstVal.Value;
 
-                            for (int j = nLastDstIdx-1; j > i; j--)
+                            for (int j = nLastDstIdx - 1; j > i; j--)
                             {
                                 dfVal1 -= dfStep;
                                 dst[j].SetParameter(strParamName, (float)dfVal1);
