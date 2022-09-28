@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -87,6 +88,12 @@ namespace SimpleGraphing.GraphRender
 
                 if (rgstr.Length > 1 && rgstr[1] == "r")
                     plots.GetMinMaxOverWindow(0, plots.Count, out dfMinX, out dfMinY, out dfMaxX, out dfMaxY);
+
+                if (rgstr.Length > 1 && rgstr[1] == "primary")
+                {
+                    dfMinY = m_gy.Min;
+                    dfMaxY = m_gy.Max;
+                }
             }
 
             for (int i = 0; i < rgX.Count; i++)
