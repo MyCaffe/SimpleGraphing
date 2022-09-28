@@ -363,6 +363,79 @@ namespace SimpleGraphing
             }
         }
 
+        public void CopyToDataParameters(string strParam, PlotCollection dst, string strParamName)
+        {
+            if (dst.Count == 0 || Count == 0)
+                return;
+
+            int nSrcIdx = Count - 1;
+            int nLastDstIdx = -1;
+            double? dfLastDstVal = null;
+
+            for (int i = dst.Count - 1; i >= 0; i--)
+            {
+                DateTime dtDst = (DateTime)dst[i].Tag;
+                DateTime dtSrc = (DateTime)this[nSrcIdx].Tag;
+
+                if (dtSrc == dtDst)
+                {
+                    double? dfVal = this[nSrcIdx].GetParameterContaining(strParam);
+                    if (dfVal.HasValue)
+                    {
+                        dst[i].SetParameter(strParamName, dfVal.Value);
+
+                        if (nLastDstIdx > 0)
+                        {
+                            int nSteps = nLastDstIdx - i;
+                            double dfStep = (dfLastDstVal.Value - dfVal.Value) / nSteps;
+                            double dfVal1 = dfLastDstVal.Value;
+
+                            for (int j = nLastDstIdx-1; j > i; j--)
+                            {
+                                dfVal1 -= dfStep;
+                                dst[j].SetParameter(strParamName, (float)dfVal1);
+                            }
+                        }
+
+                        nLastDstIdx = i;
+                        dfLastDstVal = dfVal;
+                    }
+
+                    nSrcIdx--;
+                }
+
+                if (nSrcIdx < 0)
+                    break;
+            }
+        }
+        
+        public PlotCollection ExtractDataParameter(string strParam)
+        {
+            PlotCollection col = new PlotCollection(Name + " " + strParam);
+
+            for (int i = 0; i < m_rgPlot.Count; i++)
+            {
+                Plot p = m_rgPlot[i];
+                double? dfVal = p.GetParameterContaining(strParam);
+                if (dfVal.HasValue)
+                {
+                    Plot p1 = new Plot(p.X, dfVal.Value);
+                    p1.Tag = p.Tag;
+                    p1.Active = m_rgPlot[i].Active;
+                    col.Add(p1);
+                }
+                else
+                {
+                    Plot p1 = new Plot(p.X, 0);
+                    p1.Tag = p.Tag;
+                    p1.Active = false;
+                    col.Add(p1);
+                }
+            }
+
+            return col;
+        }
+
         public int ClipUpToDate(DateTime dt)
         {
             int nClipCount = 0;
@@ -867,7 +940,9 @@ namespace SimpleGraphing
             if (nCount <= 0)
                 nCount = m_rgPlot.Count;
 
-            for (int i = StartIndex; i < nCount; i++)
+            int nStartIdxA = StartIndex;
+
+            for (int i = nStartIdxA; i < nStartIdxA + nCount; i++)
             {
                 int nIdx = nStartIdx + i;
 
