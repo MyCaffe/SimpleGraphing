@@ -288,7 +288,9 @@ namespace SimpleGraphing
             m_nDayCount = nDayCount;
             m_nDayLast = nDayLast;
             m_dfLastVal = dfLastVal;
-            m_dt = DateTime.FromFileTime((long)m_dfVal);
+            
+            if (config.ValueType == ConfigurationAxis.VALUE_TYPE.TIME)
+                m_dt = DateTime.FromFileTime((long)m_dfVal);
 
             if (m_dfLastVal > 0)
                 m_dtLast = DateTime.FromFileTime((long)m_dfLastVal);
