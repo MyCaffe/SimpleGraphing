@@ -60,6 +60,9 @@ namespace SimpleGraphing.GraphRender
                 return;
 
             PlotCollection plots = dataset[m_config.DataIndexOnRender];
+            if (plots == null || plots.Count == 0)
+                return;
+            
             List<int> rgX = m_gx.TickPositions;
             int nStartIdx = m_gx.StartPosition;
 
