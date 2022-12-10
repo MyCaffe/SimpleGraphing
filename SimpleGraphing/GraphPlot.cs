@@ -70,7 +70,7 @@ namespace SimpleGraphing
                 if (nIdx < 0)
                     nIdx = 0;
 
-                if (m_config.DataIndexOnRender >= m_rgPlots.Count || nIdx >= m_rgPlots[m_config.DataIndexOnRender].Count)
+                if (m_config.DataIndexOnRender >= m_rgPlots.Count || m_rgPlots[m_config.DataIndexOnRender] == null || nIdx >= m_rgPlots[m_config.DataIndexOnRender].Count)
                     return null;
 
                 return m_rgPlots[m_config.DataIndexOnRender][nIdx];
