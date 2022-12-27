@@ -25,6 +25,11 @@ namespace SimpleGraphing
             m_rgdf = new List<double>(nMax);
         }
 
+        public List<double> Items
+        {
+            get { return m_rgdf; }
+        }
+
         public void Clear()
         {
             m_rgdf.Clear();
