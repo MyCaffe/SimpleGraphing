@@ -109,9 +109,20 @@ namespace SimpleGraphing.GraphData
 
             if (i < m_ema2.Configuration.Interval + m_ema3.Configuration.Interval)
             {
-                dataDst[i].SetYValue(data.SrcData[i].Y, false);
-                data.HMA = data.SrcData[i].Y;
-                bActive = false;
+                if (dataDst.Count <= i)
+                {
+                    Trace.WriteLine("ERROR: GraphDataHMA - i (" + i.ToString() + ") > dataDst.Count (" + dataDst.Count.ToString() + ")");
+                }
+                else if (data.SrcData.Count <= i)
+                {
+                    Trace.WriteLine("ERROR: GraphDataHMA - i (" + i.ToString() + ") > data.SrcData.Count (" + data.SrcData.Count.ToString() + ")");
+                }
+                else
+                {
+                    dataDst[i].SetYValue(data.SrcData[i].Y, false);
+                    data.HMA = data.SrcData[i].Y;
+                    bActive = false;
+                }
             }
             else
             {
