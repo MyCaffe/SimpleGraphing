@@ -652,14 +652,14 @@ namespace SimpleGraphing
             return Configuration;
         }
 
-        public static Image QuickRender(PlotCollection plots, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null, bool bUseTimeResolutionForValueType = false)
+        public static Image QuickRender(PlotCollection plots, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null, bool bUseTimeResolutionForValueType = false, float[] rgPlotRange = null)
         {
             PlotCollectionSet set = new PlotCollectionSet();
             set.Add(plots);
-            return QuickRender(set, nWidth, nHeight, bConvertToEastern, timeResolution, strCfgXmlFile, bIncludeTitle, rgTargetLines, bUseTimeResolutionForValueType);
+            return QuickRender(set, nWidth, nHeight, bConvertToEastern, timeResolution, strCfgXmlFile, bIncludeTitle, rgTargetLines, bUseTimeResolutionForValueType, rgPlotRange);
         }
 
-        public static Image QuickRender(PlotCollectionSet set, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null, bool bUseTimeResolutionForValueType = false)
+        public static Image QuickRender(PlotCollectionSet set, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null, bool bUseTimeResolutionForValueType = false, float[] rgPlotRange = null)
         {
             foreach (PlotCollection col in set)
             {
@@ -731,7 +731,16 @@ namespace SimpleGraphing
                 nHeight = 300;
 
             simpleGraphingControl1.ScrollToEnd(false);
-            return simpleGraphingControl1.Render(nWidth, nHeight);
+            
+            Image img = simpleGraphingControl1.Render(nWidth, nHeight);
+
+            if (rgPlotRange != null && rgPlotRange.Length == 2)
+            {
+                rgPlotRange[0] = (float)simpleGraphingControl1.Surface.Frames[0].YAxis.ActiveMin;
+                rgPlotRange[1] = (float)simpleGraphingControl1.Surface.Frames[0].YAxis.ActiveMax;
+            }
+
+            return img;
         }
 
         public static Image QuickRender(List<PlotCollectionSet> rgData, Configuration cfg, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null)
