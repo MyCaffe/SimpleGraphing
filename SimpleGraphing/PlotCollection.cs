@@ -120,6 +120,24 @@ namespace SimpleGraphing
             return minmax;
         }
 
+        public MinMax GetMinMaxYRange()
+        {
+            MinMax minmax = new MinMax();
+
+            for (int i = StartIndex; i < m_rgPlot.Count; i++)
+            {
+                if (m_rgPlot[i].Active)
+                {
+                    for (int j = 0; j < m_rgPlot[i].Y_values.Length; j++)
+                    {
+                        minmax.Add(m_rgPlot[i].Y_values[j]);
+                    }
+                }
+            }
+
+            return minmax;
+        }
+
         public int? StartOffsetFromEnd
         {
             get { return m_nStartOffsetFromEnd; }
