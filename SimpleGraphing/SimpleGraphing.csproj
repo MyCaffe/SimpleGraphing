@@ -95,6 +95,7 @@
     <Compile Include="GraphRender\GraphRenderHighLow.cs" />
     <Compile Include="GraphRender\GraphRenderLine.cs" />
     <Compile Include="Interfaces.cs" />
+    <Compile Include="MinMaxRolling.cs" />
     <Compile Include="MinMax.cs" />
     <Compile Include="ModuleCache.cs" />
     <Compile Include="Modules.cs" />
