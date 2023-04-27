@@ -235,8 +235,6 @@ namespace SimpleGraphing
         // Modified from: http://csharphelper.com/blog/2014/07/draw-rotated-text-in-c/
         public static void DrawRotatedTextAt(Graphics gr, float angle, string txt, float x, float y, Font the_font, Brush the_brush)
         {
-            GraphicsState state = gr.Save();
-            // Save the graphics state.
             gr.ResetTransform();
 
             // Rotate.
@@ -253,7 +251,7 @@ namespace SimpleGraphing
             gr.DrawString(txt, the_font, the_brush, 0, 0, format);
 
             // Restore the graphics state.
-            gr.Restore(state);
+            gr.ResetTransform();
         }
 
         public override void Scroll(double dfPct)
