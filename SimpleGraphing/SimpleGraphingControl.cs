@@ -602,26 +602,32 @@ namespace SimpleGraphing
 
         public Configuration SetConfigurationToQuickRenderDefault(string strName, string strTag, int nValCount = 1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, bool bUseTimeResolutionForValueType = false)
         {
+            Configuration = SetConfigurationToQuickRenderDefaultEx(strName, strTag, nValCount, bConvertToEastern, timeResolution, bUseTimeResolutionForValueType);
+            EnableCrossHairs = true;
+            return Configuration;
+        }
+
+        public static Configuration SetConfigurationToQuickRenderDefaultEx(string strName, string strTag, int nValCount = 1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, bool bUseTimeResolutionForValueType = false)
+        {
             double dfTimeOffsetInHours = 0;
 
             if (bConvertToEastern)
                 dfTimeOffsetInHours = GetTimeZoneOffset();
 
-            Configuration = new Configuration();
-            Configuration.Frames.Add(new ConfigurationFrame());
-            EnableCrossHairs = true;
-            Configuration.Frames[0].XAxis.LabelFont = new Font("Century Gothic", 7.0f);
-            Configuration.Frames[0].XAxis.Visible = true;
-            Configuration.Frames[0].XAxis.Margin = 100;
-            Configuration.Frames[0].XAxis.TimeOffsetInHours = dfTimeOffsetInHours;
-            Configuration.Frames[0].YAxis.LabelFont = new Font("Century Gothic", 7.0f);
-            Configuration.Frames[0].YAxis.Decimals = 3;
-            Configuration.Frames[0].Plots.Add(new ConfigurationPlot());
+            Configuration cfg = new Configuration();
+            cfg.Frames.Add(new ConfigurationFrame());
+            cfg.Frames[0].XAxis.LabelFont = new Font("Century Gothic", 7.0f);
+            cfg.Frames[0].XAxis.Visible = true;
+            cfg.Frames[0].XAxis.Margin = 100;
+            cfg.Frames[0].XAxis.TimeOffsetInHours = dfTimeOffsetInHours;
+            cfg.Frames[0].YAxis.LabelFont = new Font("Century Gothic", 7.0f);
+            cfg.Frames[0].YAxis.Decimals = 3;
+            cfg.Frames[0].Plots.Add(new ConfigurationPlot());
 
             if (timeResolution.HasValue)
             {
-                Configuration.Frames[0].XAxis.ValueResolution = timeResolution.Value;
-                Configuration.Frames[0].XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.TIME;
+                cfg.Frames[0].XAxis.ValueResolution = timeResolution.Value;
+                cfg.Frames[0].XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.TIME;
             }
 
             if (strTag != null)
@@ -629,27 +635,27 @@ namespace SimpleGraphing
 
             if (!string.IsNullOrEmpty(strName))
             {
-                Configuration.Frames[0].Name = strName;
-                Configuration.Frames[0].TitleColor = Color.Black;
-                Configuration.Frames[0].TitleFont = new Font("Century Gothic", 12.0f, FontStyle.Bold);
+                cfg.Frames[0].Name = strName;
+                cfg.Frames[0].TitleColor = Color.Black;
+                cfg.Frames[0].TitleFont = new Font("Century Gothic", 12.0f, FontStyle.Bold);
             }
 
             if (nValCount == 4)
             {
-                Configuration.Frames[0].Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.CANDLE;
-                Configuration.Frames[0].XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.TIME;
+                cfg.Frames[0].Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.CANDLE;
+                cfg.Frames[0].XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.TIME;
             }
             else
             {
-                Configuration.Frames[0].Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.LINE;
+                cfg.Frames[0].Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.LINE;
 
                 if (!bUseTimeResolutionForValueType)
-                    Configuration.Frames[0].XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.NUMBER;
+                    cfg.Frames[0].XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.NUMBER;
             }
 
-            Configuration.Frames[0].EnableRelativeScaling(true, true, 0);
+            cfg.Frames[0].EnableRelativeScaling(true, true, 0);
 
-            return Configuration;
+            return cfg;
         }
 
         public static Image QuickRender(PlotCollection plots, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null, bool bUseTimeResolutionForValueType = false, float[] rgPlotRange = null)
