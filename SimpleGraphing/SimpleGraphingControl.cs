@@ -749,14 +749,14 @@ namespace SimpleGraphing
             return img;
         }
 
-        public static Image QuickRender(List<PlotCollectionSet> rgData, Configuration cfg, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null)
+        public static Image QuickRender(List<PlotCollectionSet> rgData, Configuration cfg, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, bool bResize = false)
         {
             SimpleGraphingControl simpleGraphingControl1 = new SimpleGraphingControl();
             simpleGraphingControl1.Name = "SimpleGraphing";
             simpleGraphingControl1.LoadModuleCache();
             simpleGraphingControl1.Configuration = cfg;
 
-            simpleGraphingControl1.BuildGraph(rgData, false, true);
+            simpleGraphingControl1.BuildGraph(rgData, bResize, true);
 
             if (nWidth <= 0)
                 nWidth = 600;
