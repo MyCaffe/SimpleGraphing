@@ -665,7 +665,7 @@ namespace SimpleGraphing
             return QuickRender(set, nWidth, nHeight, bConvertToEastern, timeResolution, strCfgXmlFile, bIncludeTitle, rgTargetLines, bUseTimeResolutionForValueType, rgPlotRange);
         }
 
-        public static Image QuickRender(PlotCollectionSet set, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null, bool bUseTimeResolutionForValueType = false, float[] rgPlotRange = null, string strTitle = null)
+        public static Image QuickRender(PlotCollectionSet set, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null, bool bUseTimeResolutionForValueType = false, float[] rgPlotRange = null, string strTitle = null, int? nMargin = null)
         {
             foreach (PlotCollection col in set)
             {
@@ -715,6 +715,8 @@ namespace SimpleGraphing
                 }
 
                 simpleGraphingControl1.Configuration.Frames[0].EnableRelativeScaling(true, true);
+                if (nMargin.HasValue)
+                    simpleGraphingControl1.Configuration.Frames[0].XAxis.Margin = (uint)nMargin.Value;
             }
 
             if (strCfgXmlFile != null && File.Exists(strCfgXmlFile))
