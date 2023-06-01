@@ -665,7 +665,7 @@ namespace SimpleGraphing
             return QuickRender(set, nWidth, nHeight, bConvertToEastern, timeResolution, strCfgXmlFile, bIncludeTitle, rgTargetLines, bUseTimeResolutionForValueType, rgPlotRange);
         }
 
-        public static Image QuickRender(PlotCollectionSet set, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null, bool bUseTimeResolutionForValueType = false, float[] rgPlotRange = null)
+        public static Image QuickRender(PlotCollectionSet set, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null, bool bUseTimeResolutionForValueType = false, float[] rgPlotRange = null, string strTitle = null)
         {
             foreach (PlotCollection col in set)
             {
@@ -680,7 +680,10 @@ namespace SimpleGraphing
             if (set.Count > 0 && set[0].Count > 0)
                 nValCount = set[0][0].Y_values.Length;
 
-            simpleGraphingControl1.SetConfigurationToQuickRenderDefault(set[0].Name, (string)set[0].Tag, nValCount, bConvertToEastern, timeResolution, bUseTimeResolutionForValueType);
+            if (strTitle == null)
+                strTitle = set[0].Name;
+
+            simpleGraphingControl1.SetConfigurationToQuickRenderDefault(strTitle, (string)set[0].Tag, nValCount, bConvertToEastern, timeResolution, bUseTimeResolutionForValueType);
 
             if (set.Count > 1)
             {
