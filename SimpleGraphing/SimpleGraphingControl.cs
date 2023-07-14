@@ -658,14 +658,14 @@ namespace SimpleGraphing
             return cfg;
         }
 
-        public static Image QuickRender(PlotCollection plots, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null, bool bUseTimeResolutionForValueType = false, float[] rgPlotRange = null)
+        public static Image QuickRender(PlotCollection plots, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null, bool bUseTimeResolutionForValueType = false, float[] rgPlotRange = null, int? nMinPtRange = null)
         {
             PlotCollectionSet set = new PlotCollectionSet();
             set.Add(plots);
-            return QuickRender(set, nWidth, nHeight, bConvertToEastern, timeResolution, strCfgXmlFile, bIncludeTitle, rgTargetLines, bUseTimeResolutionForValueType, rgPlotRange);
+            return QuickRender(set, nWidth, nHeight, bConvertToEastern, timeResolution, strCfgXmlFile, bIncludeTitle, rgTargetLines, bUseTimeResolutionForValueType, rgPlotRange, null, null, nMinPtRange);
         }
 
-        public static Image QuickRender(PlotCollectionSet set, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null, bool bUseTimeResolutionForValueType = false, float[] rgPlotRange = null, string strTitle = null, int? nMargin = null)
+        public static Image QuickRender(PlotCollectionSet set, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null, bool bUseTimeResolutionForValueType = false, float[] rgPlotRange = null, string strTitle = null, int? nMargin = null, int? nMinPtRange = null)
         {
             foreach (PlotCollection col in set)
             {
@@ -718,6 +718,9 @@ namespace SimpleGraphing
                 if (nMargin.HasValue)
                     simpleGraphingControl1.Configuration.Frames[0].XAxis.Margin = (uint)nMargin.Value;
             }
+
+            if (nMinPtRange.HasValue)
+                simpleGraphingControl1.Configuration.Frames[0].MinimumYRange = nMinPtRange.Value;
 
             if (strCfgXmlFile != null && File.Exists(strCfgXmlFile))
             {
