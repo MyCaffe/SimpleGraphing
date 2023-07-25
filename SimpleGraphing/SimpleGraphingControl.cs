@@ -665,7 +665,7 @@ namespace SimpleGraphing
             return QuickRender(set, nWidth, nHeight, bConvertToEastern, timeResolution, strCfgXmlFile, bIncludeTitle, rgTargetLines, bUseTimeResolutionForValueType, rgPlotRange, null, null, nMinPtRange);
         }
 
-        public static Image QuickRender(PlotCollectionSet set, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null, bool bUseTimeResolutionForValueType = false, float[] rgPlotRange = null, string strTitle = null, int? nMargin = null, int? nMinPtRange = null)
+        public static Image QuickRender(PlotCollectionSet set, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null, bool bUseTimeResolutionForValueType = false, float[] rgPlotRange = null, string strTitle = null, int? nMargin = null, int? nMinPtRange = null, bool bShowMinuteSeparators = false)
         {
             foreach (PlotCollection col in set)
             {
@@ -721,6 +721,9 @@ namespace SimpleGraphing
 
             if (nMinPtRange.HasValue)
                 simpleGraphingControl1.Configuration.Frames[0].MinimumYRange = nMinPtRange.Value;
+
+            if (bShowMinuteSeparators)
+                simpleGraphingControl1.Configuration.Frames[0].XAxis.ShowMinuteSeparators = true;
 
             if (strCfgXmlFile != null && File.Exists(strCfgXmlFile))
             {

@@ -261,6 +261,7 @@ namespace SimpleGraphing
         int m_nDayCount = 0;
         FontStyle m_style = FontStyle.Regular;
         bool m_bNewHour = false;
+        bool m_bNewMinute = false;
         DateTime m_dtLast;
         DateTime m_dt;
         TYPE m_type;
@@ -288,7 +289,7 @@ namespace SimpleGraphing
             m_nDayCount = nDayCount;
             m_nDayLast = nDayLast;
             m_dfLastVal = dfLastVal;
-            
+
             if (config.ValueType == ConfigurationAxis.VALUE_TYPE.TIME)
                 m_dt = DateTime.FromFileTime((long)m_dfVal);
 
@@ -333,7 +334,7 @@ namespace SimpleGraphing
         {
             string strNewHour = (m_bNewHour) ? "NEW" : "OLD";
             string strShowHourBars = (m_config.ShowHourSeparators) ? "Yes" : "No";
-            return m_strValue + " (hour: " + strNewHour + ", show hrsep: " + strShowHourBars + ")"; 
+            return m_strValue + " (hour: " + strNewHour + ", show hrsep: " + strShowHourBars + ")";
         }
 
         private string formatDayMonth(DateTime dt, bool? bLabelVisible, DateTime? dtLastVisible)
@@ -378,8 +379,16 @@ namespace SimpleGraphing
                     else
                         m_bNewHour = false;
 
+                    if (m_dt.Minute != m_dtLast.Minute)
+                        m_bNewMinute = true;
+                    else
+                        m_bNewMinute = false;
+
                     if (m_config.ShowHourSeparators && m_bNewHour)
-                        m_style = FontStyle.Bold;                       
+                        m_style = FontStyle.Bold;
+
+                    if (m_config.ShowMinuteSeparators && m_bNewMinute)
+                        m_style = FontStyle.Bold;
                 }
 
                 if (config.ValueResolution == ConfigurationAxis.VALUE_RESOLUTION.DAY)
@@ -452,6 +461,11 @@ namespace SimpleGraphing
         public bool NewHour
         {
             get { return m_bNewHour; }
+        }
+
+        public bool NewMinute
+        {
+            get { return m_bNewMinute; }
         }
     }
 

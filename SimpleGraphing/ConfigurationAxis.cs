@@ -34,6 +34,7 @@ namespace SimpleGraphing
         double m_dfTimeOffsetInHours = 0;
         bool m_bShowSeconds = true;
         bool m_bShowHourSeparators = false;
+        bool m_bShowMinuteSeparators = false;
         float m_fPlotValueIncrements = 0;
         float m_fPlotValueSubIncrements = 0;
         float m_fPlotValueIncrementFloor = 1.0f;
@@ -90,6 +91,7 @@ namespace SimpleGraphing
             c.m_dfTimeOffsetInHours = m_dfTimeOffsetInHours;
             c.m_bShowSeconds = m_bShowSeconds;
             c.m_bShowHourSeparators = m_bShowHourSeparators;
+            c.m_bShowMinuteSeparators = m_bShowMinuteSeparators;
             c.m_fPlotValueIncrements = m_fPlotValueIncrements;
             c.m_fPlotValueSubIncrements = m_fPlotValueSubIncrements;
             c.m_fPlotValueIncrementFloor = m_fPlotValueIncrementFloor;
@@ -222,6 +224,12 @@ namespace SimpleGraphing
         {
             get { return m_bShowHourSeparators; }
             set { m_bShowHourSeparators = value; }
+        }
+
+        public bool ShowMinuteSeparators
+        {
+            get { return m_bShowMinuteSeparators; }
+            set { m_bShowMinuteSeparators = value; }
         }
 
         public VALUE_TYPE ValueType
@@ -369,6 +377,7 @@ namespace SimpleGraphing
             ser.Add("ShowAllNumbers", m_bShowAllNumbers);
             ser.Add("ShowSeconds", m_bShowSeconds);
             ser.Add("ShowHourSeparators", m_bShowHourSeparators);
+            ser.Add("ShowMinuteSeparators", m_bShowMinuteSeparators);
             ser.Add("ValueType", m_valueType.ToString());
             ser.Add("ValueRes", m_valueRes.ToString());
             ser.Add("TimeOffsetInHours", m_dfTimeOffsetInHours.ToString());
@@ -403,6 +412,10 @@ namespace SimpleGraphing
             bool? bShowHourSeparators = SerializeToXml.LoadBool(child, "ShowHourSeparators");
             if (bShowHourSeparators.HasValue)
                 axis.ShowHourSeparators = bShowHourSeparators.Value;
+
+            bool? bShowMinuteSeparators = SerializeToXml.LoadBool(child, "ShowMinuteSeparators");
+            if (bShowMinuteSeparators.HasValue)
+                axis.ShowMinuteSeparators = bShowMinuteSeparators.Value;
 
             return axis;
         }

@@ -217,6 +217,16 @@ namespace SimpleGraphing
                         if (bNewHour)
                             g.FillRectangle(m_style.HourLabel, nX - m_config.PlotSpacing, nY + 2, sz.Height, sz.Width);
 
+                        if (m_config.ShowMinuteSeparators)
+                        {
+                            bool bNewMinute = m_rgTickValues[i].NewMinute;
+                            if (!bNewMinute && i > 0 && m_rgTickValues[i - 1].NewMinute)
+                                bNewMinute = true;
+
+                            if (bNewMinute)
+                                g.FillRectangle(m_style.HourLabel, nX - m_config.PlotSpacing, nY + 2, sz.Height, sz.Width);
+                        }
+
                         DrawRotatedTextAt(g, 270.0f, strVal, nX - m_config.PlotSpacing, nY + 2, font, m_style.LabelBrush);
 
                         if (m_config.ShowHourSeparators && bNewHour && OnNewHour != null)
