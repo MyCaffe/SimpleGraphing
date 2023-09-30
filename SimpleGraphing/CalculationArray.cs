@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SimpleGraphing
@@ -83,6 +84,11 @@ namespace SimpleGraphing
                 return true;
 
             return false;
+        }
+
+        public int Count
+        {
+            get { return m_rgdf.Count; }
         }
 
         public DateTime? TimeStamp
