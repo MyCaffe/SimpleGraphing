@@ -133,6 +133,18 @@ namespace SimpleGraphing
             get { return m_dfAve; }
         }
 
+        public void UpdateAverage()
+        {
+            m_dfAve = 0;
+
+            for (int i = 0; i < m_rgdf.Count; i++)
+            {
+                m_dfAve += m_rgdf[i];
+            }
+
+            m_dfAve /= m_rgdf.Count;
+        }
+
         public double StdDev
         {
             get
