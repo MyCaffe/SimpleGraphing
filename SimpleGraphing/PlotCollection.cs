@@ -737,7 +737,7 @@ namespace SimpleGraphing
             }
         }
 
-        public Tuple<PlotCollection, PlotCollection> Split(int nCount, bool bSetDateOnTag = false, bool bAppendSplitCountToName = false)
+        public Tuple<PlotCollection, PlotCollection> Split(int nCount, bool bSetDateOnTag = false, bool bAppendSplitCountToName = false, bool bCalculateMinMax = true)
         {
             string strName = m_strName + ((bAppendSplitCountToName) ? "_1" : "");
             PlotCollection p1 = new PlotCollection(strName, m_nMax, m_dfXIncrement);
@@ -755,7 +755,7 @@ namespace SimpleGraphing
                     if (bSetDateOnTag && p.Tag == null)
                         p.Tag = DateTime.FromFileTimeUtc((long)p.X);
 
-                    p1.Add(p);
+                    p1.Add(p, bCalculateMinMax);
                 }
 
                 for (int i = nCount; i < m_rgPlot.Count; i++)
@@ -764,7 +764,7 @@ namespace SimpleGraphing
                     if (bSetDateOnTag && p.Tag == null)
                         p.Tag = DateTime.FromFileTimeUtc((long)p.X);
 
-                    p2.Add(p);
+                    p2.Add(p, bCalculateMinMax);
                 }
             }
 
@@ -1201,7 +1201,7 @@ namespace SimpleGraphing
             }
         }
 
-        public Plot Add(double dfY, bool bActive = true, int nIdx = 0)
+        public Plot Add(double dfY, bool bActive = true, int nIdx = 0, bool bSkipMinMax = false)
         {
             lock (m_syncObj)
             {
@@ -1210,14 +1210,14 @@ namespace SimpleGraphing
                 m_dfXPosition += m_dfXIncrement;
                 Plot last = getLast();
 
-                if (bActive)
+                if (bActive && !bSkipMinMax)
                     setMinMax(last, new float[] { (float)dfY });
 
                 return p;
             }
         }
 
-        public Plot Add(double dfX, double dfY, bool bActive = true, int nIdx = 0)
+        public Plot Add(double dfX, double dfY, bool bActive = true, int nIdx = 0, bool bSkipMinMax = false)
         {
             lock (m_syncObj)
             {
@@ -1225,7 +1225,7 @@ namespace SimpleGraphing
                 m_rgPlot.Add(p);
                 Plot last = getLast();
 
-                if (bActive)
+                if (bActive && !bSkipMinMax)
                     setMinMax(last, new float[] { (float)dfY });
 
                 return p;

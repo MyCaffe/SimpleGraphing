@@ -52,7 +52,7 @@ namespace SimpleGraphing.GraphData
                     data.SMA += dataSrc[i].Y * dfInc;
 
                     if (dataDst != null)
-                        dataDst.Add(dataSrc[i].X, dataSrc[i].Y, false, dataSrc[i].Index);
+                        dataDst.Add(dataSrc[i].X, dataSrc[i].Y, false, dataSrc[i].Index, true);
                 }
                 else
                 {
@@ -60,7 +60,7 @@ namespace SimpleGraphing.GraphData
                         data.SMA = (data.SMA * (1 - dfInc)) + dataSrc[i].Y * dfInc;
 
                     if (dataDst != null)
-                        dataDst.Add(dataSrc[i].X, data.SMA, true, dataSrc[i].Index);
+                        dataDst.Add(dataSrc[i].X, data.SMA, true, dataSrc[i].Index, true);
 
                     if (bAddToParams)
                         dataSrc[i].SetParameter(dataDst.Name, (float)data.SMA);
@@ -74,7 +74,7 @@ namespace SimpleGraphing.GraphData
             else
             {
                 if (dataDst != null)
-                    dataDst.Add(dataSrc[i].X, dataSrc[i].Y, false, dataSrc[i].Index);
+                    dataDst.Add(dataSrc[i].X, dataSrc[i].Y, false, dataSrc[i].Index, true);
             }
 
             return data.SMA;

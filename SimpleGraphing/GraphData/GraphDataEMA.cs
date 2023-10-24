@@ -48,7 +48,7 @@ namespace SimpleGraphing.GraphData
         public double Process(EmaData data, int i, MinMax minmax = null, int nLookahead = 0, bool bAddToParams = false)
         {
             bool bActive;
-            return Process(data, i, out bActive, minmax, nLookahead, bAddToParams);
+            return Process(data, i, out bActive, minmax, nLookahead, bAddToParams, false);
         }
 
         public double Process(EmaData data, int i, out bool bActive, MinMax minmax = null, int nLookahead = 0, bool bAddToParams = false, bool bIgnoreDst = false)
@@ -68,12 +68,12 @@ namespace SimpleGraphing.GraphData
                         data.Total += dataSrc[i].Y;
                         data.Index++;
                         if (dataDst != null && !bIgnoreDst)
-                            dataDst.Add(dataSrc[i].X, data.Total / (data.Index + 1), false, dataSrc[i].Index);
+                            dataDst.Add(dataSrc[i].X, data.Total / (data.Index + 1), false, dataSrc[i].Index, true);
                     }
                     else
                     {
                         if (dataDst != null && !bIgnoreDst)
-                            dataDst.Add(dataSrc[i].X, dataSrc[i].Y, false, dataSrc[i].Index);
+                            dataDst.Add(dataSrc[i].X, dataSrc[i].Y, false, dataSrc[i].Index, true);
                     }
                 }
                 else
@@ -90,7 +90,7 @@ namespace SimpleGraphing.GraphData
                         bActive = false;
 
                     if (dataDst != null && !bIgnoreDst)
-                        dataDst.Add(data.EMA, bActive, dataSrc[i].Index);
+                        dataDst.Add(data.EMA, bActive, dataSrc[i].Index, true);
 
                     if (bAddToParams && bActive)
                         dataSrc[i].SetParameter(dataDst.Name.Trim(), (float)data.EMA);

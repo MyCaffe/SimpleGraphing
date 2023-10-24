@@ -54,6 +54,7 @@ namespace SimpleGraphing.GraphData
         /// <param name="minmax">Currently, not used here.</param>
         /// <param name="nLookahead">Specifies the look ahead value if any.</param>
         /// <param name="bAddToParams">Optionally, specifies whether or not to add the RSI to the parameters of the original data.</param>
+        /// <param name="bIgnoreDst">Ignore the destination (default = false).</param>
         /// <returns>The new RSI value is returned.</returns>
         public double Process(RsiData data, int i, out bool bActive, MinMax minmax = null, int nLookahead = 0, bool bAddToParams = false, bool bIgnoreDst = false)
         {

@@ -168,14 +168,14 @@ namespace SimpleGraphing.GraphData
 
                     minmax.Add(dfHigh1);
 
-                    dataHigh.Add(new Plot(data[nIdxCurrent].X, dfHigh1, null, bHigh, data[nIdxCurrent].Index));
-                    nIdx++;
+                    dataHigh.Add(new Plot(data[nIdxCurrent].X, dfHigh1, null, bHigh, data[nIdxCurrent].Index), false);
+                    nIdx++; 
                 }
                 else
                 {
                     double dfHigh = (data[i].Y_values.Length == 1) ? data[i].Y : data[i].Y_values[nHigh];
 
-                    dataHigh.Add(new Plot(data[i].X, dfHigh, null, false, data[i].Index));
+                    dataHigh.Add(new Plot(data[i].X, dfHigh, null, false, data[i].Index), false);
                 }
             }
 
@@ -258,14 +258,14 @@ namespace SimpleGraphing.GraphData
 
                     minmax.Add(dfLow1);
 
-                    dataLow.Add(new Plot(data[nIdxCurrent].X, dfLow1, null, bLow, data[nIdxCurrent].Index));
+                    dataLow.Add(new Plot(data[nIdxCurrent].X, dfLow1, null, bLow, data[nIdxCurrent].Index), false);
                     nIdx++;
                 }
                 else
                 {
                     double dfLow = (data[i].Y_values.Length == 1) ? data[i].Y : data[i].Y_values[nLow];
 
-                    dataLow.Add(new Plot(data[i].X, dfLow, null, false, data[i].Index));
+                    dataLow.Add(new Plot(data[i].X, dfLow, null, false, data[i].Index), false);
                 }
             }
 
