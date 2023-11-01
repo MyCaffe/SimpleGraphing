@@ -737,6 +737,14 @@ namespace SimpleGraphing
             }
         }
 
+        /// <summary>
+        /// Split the plot collection into two collections.
+        /// </summary>
+        /// <param name="nCount">Specifies the split size.</param>
+        /// <param name="bSetDateOnTag">Optionally, set the date on the tag of each item (default = false).</param>
+        /// <param name="bAppendSplitCountToName">Optionally, append the count to the name (default = false).</param>
+        /// <param name="bCalculateMinMax">Optionally, calculate the min/max (default = true).</param>
+        /// <returns></returns>
         public Tuple<PlotCollection, PlotCollection> Split(int nCount, bool bSetDateOnTag = false, bool bAppendSplitCountToName = false, bool bCalculateMinMax = true)
         {
             string strName = m_strName + ((bAppendSplitCountToName) ? "_1" : "");
