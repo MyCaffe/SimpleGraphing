@@ -18,6 +18,11 @@ namespace SimpleGraphing
 
         public CalculationArray(int nMax)
         {
+            UpdateMax(nMax);
+        }
+
+        public void UpdateMax(int nMax)
+        {
             m_nMax = nMax;
 
             if (nMax == int.MaxValue)
