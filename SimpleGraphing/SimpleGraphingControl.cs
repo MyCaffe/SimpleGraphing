@@ -701,6 +701,14 @@ namespace SimpleGraphing
                         simpleGraphingControl1.Configuration.Frames[0].Plots.Add(plotConfig);
                     }
 
+                    double? dfClr = set[i].GetParameter("ColorOverride");
+                    if (dfClr.HasValue)
+                        clr = Color.FromArgb((int)dfClr.Value);
+
+                    double? dfClrAlpha = set[i].GetParameter("ColorAlpha");
+                    if (dfClrAlpha.HasValue && dfClrAlpha > 0 && dfClrAlpha < 255)
+                        clr = Color.FromArgb((int)dfClrAlpha.Value, clr);
+
                     plotConfig = simpleGraphingControl1.Configuration.Frames[0].Plots[i];
                     plotConfig.LineColor = clr;
                     plotConfig.PlotLineColor = Color.Transparent;
