@@ -156,7 +156,21 @@ namespace SimpleGraphing
             for (int i = StartPosition; i < primaryPlot.Count; i++)
             {
                 double dfLast = (i == 0) ? 0 : primaryPlot[i - 1].X;
-                TickValue tv = new TickValue(primaryPlot[i], TickValue.TYPE.X, m_config, dfLast, ref m_nDayCount, ref m_nDayLast);
+                DateTime dtLast = DateTime.MinValue;
+
+                try
+                {
+                    dtLast = DateTime.FromFileTime((long)dfLast);
+                }
+                catch (Exception)
+                {
+                    dfLast = 0;
+                }
+
+                if (i > 0 && primaryPlot[i-1].Tag != null && primaryPlot[i-1].Tag is DateTime)
+                    dtLast = (DateTime)primaryPlot[i - 1].Tag;
+
+                TickValue tv = new TickValue(primaryPlot[i], TickValue.TYPE.X, m_config, dfLast, dtLast, ref m_nDayCount, ref m_nDayLast);
                 m_rgTickValues.Add(tv);                
                 if (m_rgTickValues.Count == m_rgTickPositions.Count)
                     break;

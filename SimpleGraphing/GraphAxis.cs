@@ -280,7 +280,7 @@ namespace SimpleGraphing
             m_strValue = GetValueString();
         }
 
-        public TickValue(Plot p, TYPE type, ConfigurationAxis config, double dfLastVal, ref int nDayCount, ref int nDayLast)
+        public TickValue(Plot p, TYPE type, ConfigurationAxis config, double dfLastVal, DateTime dtLast, ref int nDayCount, ref int nDayLast)
         {
             m_config = config;
             m_plot = p;
@@ -289,13 +289,23 @@ namespace SimpleGraphing
             m_nDayCount = nDayCount;
             m_nDayLast = nDayLast;
             m_dfLastVal = dfLastVal;
-
+            
             if (config.ValueType == ConfigurationAxis.VALUE_TYPE.TIME)
-                m_dt = DateTime.FromFileTime((long)m_dfVal);
+            {
+                try
+                {
+                    m_dt = DateTime.FromFileTime((long)m_dfVal);
+                }
+                catch (Exception)
+                {
+                    m_dt = DateTime.MinValue;
+                }
 
-            if (m_dfLastVal > 0)
-                m_dtLast = DateTime.FromFileTime((long)m_dfLastVal);
+                if (p.Tag != null && p.Tag is DateTime)
+                    m_dt = (DateTime)p.Tag;
+            }
 
+            m_dtLast = dtLast;
             m_strValue = GetValueString();
 
             nDayCount = DayCount;
@@ -306,7 +316,7 @@ namespace SimpleGraphing
         {
             int nDayCount = DayCount;
             int nDayLast = DayLast;
-            return new TickValue(m_plot.Clone(true), m_type, m_config.Clone(), m_dfLastVal, ref nDayCount, ref nDayLast);
+            return new TickValue(m_plot.Clone(true), m_type, m_config.Clone(), m_dfLastVal, m_dtLast, ref nDayCount, ref nDayLast);
         }
 
         public string UpdateValueString(bool bLabelVisible, DateTime? dtLastVisible)
