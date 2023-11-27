@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace SimpleGraphing
 {
     [Serializable]
-    public class PlotCollection //: IEnumerable<Plot>
+    public class PlotCollection : IEnumerable<Plot>
     {
         string m_strSrcName = "";
         string m_strName;
@@ -2013,6 +2013,16 @@ namespace SimpleGraphing
                 return null;
 
             return rgTp.OrderByDescending(p => p.Value).ToList()[0].Key;
+        }
+
+        public IEnumerator<Plot> GetEnumerator()
+        {
+            return m_rgPlot.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return m_rgPlot.GetEnumerator();
         }
     }
 
