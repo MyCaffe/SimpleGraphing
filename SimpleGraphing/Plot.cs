@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -296,12 +297,14 @@ namespace SimpleGraphing
             set { m_bClipped = value; }
         }
 
+        [IgnoreDataMember]
         public object Tag
         {
             get { return m_tag; }
             set { m_tag = value; }
         }
 
+        [IgnoreDataMember]
         public object TagEx
         {
             get { return m_tagEx; }
