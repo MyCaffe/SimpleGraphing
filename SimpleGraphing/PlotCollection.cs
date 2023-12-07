@@ -2033,7 +2033,7 @@ namespace SimpleGraphing
             return m_rgPlot.GetEnumerator();
         }
 
-        public static PlotCollection LoadFromCsvFile(string strName, string strFile, CSV_FORMAT fmt)
+        public static PlotCollection LoadFromCsvFile(string strName, string strFile, CSV_FORMAT fmt, int? nSpecificField = null, int? nIgnoreFiled = null)
         {
             PlotCollection col = new PlotCollection(strName);
 
@@ -2047,18 +2047,31 @@ namespace SimpleGraphing
                     string[] rgstr = strLine.Split(',');
 
                     DateTime dt = DateTime.Parse(rgstr[0]);
-                    float[] rgVal = new float[((int)fmt)-1];
+                    List<float> rgVal = new List<float>();
+                    long? lVol = null;
 
                     if (rgstr.Length != (int)fmt)
                         throw new Exception("The CSV file '" + strFile + "' is not in the correct format, the format " + fmt.ToString() + " expects " + ((int)fmt).ToString() + " fields!");
 
                     for (int i = 1; i < rgstr.Length; i++)
                     {
-                        rgVal[i] = (float)double.Parse(rgstr[i]);
+                        if (nIgnoreFiled.HasValue && nIgnoreFiled.Value == i)
+                            continue;
+
+                        if (fmt == CSV_FORMAT.DATE_OHLCV && i == 5)
+                            lVol = (long)double.Parse(rgstr[i]);
+                        else if (fmt == CSV_FORMAT.DATE_OHLCAV && i == 6)
+                            lVol = (long)double.Parse(rgstr[i]);
+                        else if (!nSpecificField.HasValue || nSpecificField.Value == i)
+                            rgVal.Add((float)double.Parse(rgstr[i]));
                     }
 
-                    Plot p = new Plot(dt.ToFileTime(), rgVal);
+                    Plot p = new Plot(dt.ToFileTime(), rgVal.ToArray());
                     p.Tag = dt;
+
+                    if (lVol.HasValue)
+                        p.Count = lVol.Value;
+
                     col.Add(p);
                 }
             }
