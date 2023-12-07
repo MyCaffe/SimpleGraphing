@@ -41,6 +41,14 @@ namespace SimpleGraphing
             PARAMS
         }
 
+        public enum CSV_FORMAT
+        {
+            DATE_VALUE1 = 2,
+            DATE_OHLC = 5,
+            DATE_OHLCV = 6,
+            DATE_OHLCAV = 7
+        }
+
         public PlotCollection()
         {
             m_rgPlot = new List<Plot>();
@@ -2023,6 +2031,39 @@ namespace SimpleGraphing
         IEnumerator IEnumerable.GetEnumerator()
         {
             return m_rgPlot.GetEnumerator();
+        }
+
+        public static PlotCollection LoadFromCsvFile(string strName, string strFile, CSV_FORMAT fmt)
+        {
+            PlotCollection col = new PlotCollection(strName);
+
+            using (StreamReader sr = new StreamReader(strFile))
+            {
+                string strLine = sr.ReadLine();
+
+                while (!sr.EndOfStream)
+                {
+                    strLine = sr.ReadLine();
+                    string[] rgstr = strLine.Split(',');
+
+                    DateTime dt = DateTime.Parse(rgstr[0]);
+                    float[] rgVal = new float[((int)fmt)-1];
+
+                    if (rgstr.Length != (int)fmt)
+                        throw new Exception("The CSV file '" + strFile + "' is not in the correct format, the format " + fmt.ToString() + " expects " + ((int)fmt).ToString() + " fields!");
+
+                    for (int i = 1; i < rgstr.Length; i++)
+                    {
+                        rgVal[i] = (float)double.Parse(rgstr[i]);
+                    }
+
+                    Plot p = new Plot(dt.ToFileTime(), rgVal);
+                    p.Tag = dt;
+                    col.Add(p);
+                }
+            }
+
+            return col;
         }
     }
 
