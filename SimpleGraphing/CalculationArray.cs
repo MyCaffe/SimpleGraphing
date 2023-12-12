@@ -168,6 +168,37 @@ namespace SimpleGraphing
             }
         }
 
+        // Calculate the Expoential Moving Window Mean
+        public double CalculateEwmMean()
+        {
+            double dfMean = 0;
+            double dfAlpha = 2.0 / (m_rgdf.Count + 1);
+
+            for (int i = 0; i < m_rgdf.Count; i++)
+            {
+                double dfVal = m_rgdf[i];
+                dfMean = (dfAlpha * dfVal) + ((1 - dfAlpha) * dfMean);
+            }
+
+            return dfMean;
+        }
+
+        public double CalculateEwmStdDev(double dfMean)
+        {
+            double dfTotal = 0;
+
+            for (int i = 0; i < m_rgdf.Count; i++)
+            {
+                double dfVal = m_rgdf[i];
+                double dfDiff = (dfVal - dfMean);
+                dfTotal += (dfDiff * dfDiff);
+            }
+
+            double dfVar = dfTotal / m_rgdf.Count;
+
+            return Math.Sqrt(dfVar);
+        }
+
         public double MaxVal
         {
             get { return m_rgdf.Max(); }
