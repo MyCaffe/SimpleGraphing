@@ -13,11 +13,16 @@ namespace SimpleGraphing
         List<double> m_rgdf;
         double m_dfAve = 0;
         double m_dfSum = 0;
+        List<double> m_rgdfEwm;
         DateTime? m_dt;
         double m_dfLast = 0;
+        double? m_dfEwmAlpha = null;
 
-        public CalculationArray(int nMax)
+        public CalculationArray(int nMax, bool bEnableEwm = false)
         {
+            if (bEnableEwm)
+                m_dfEwmAlpha = 1.0 - Math.Exp(-Math.Log(2.0) / nMax);
+
             UpdateMax(nMax);
         }
 
@@ -29,6 +34,9 @@ namespace SimpleGraphing
                 nMax = 1000;
 
             m_rgdf = new List<double>(nMax);
+
+            if (m_dfEwmAlpha.HasValue)
+                m_rgdfEwm = new List<double>(nMax);
         }
 
         public List<double> Items
@@ -85,6 +93,22 @@ namespace SimpleGraphing
             m_dfSum += dfVal;
             m_rgdf.Add(dfVal);
 
+            if (m_dfEwmAlpha.HasValue)
+            {
+                if (m_rgdfEwm.Count == 0)
+                {
+                    m_rgdfEwm.Add(dfVal);
+                }
+                else
+                {
+                    double dfEwm = (m_dfEwmAlpha.Value * dfVal) + ((1 - m_dfEwmAlpha.Value) * m_rgdfEwm[m_rgdfEwm.Count - 1]);
+                    m_rgdfEwm.Add(dfEwm);
+                }
+
+                if (m_rgdfEwm.Count > m_nMax)
+                    m_rgdfEwm.RemoveAt(0);
+            }
+
             if (m_rgdf.Count == m_nMax)
                 return true;
 
@@ -138,6 +162,11 @@ namespace SimpleGraphing
             get { return m_dfAve; }
         }
 
+        public double AverageEwm
+        {
+            get { return (m_rgdfEwm != null && m_rgdfEwm.Count > 0) ? m_rgdfEwm[m_rgdfEwm.Count-1] : 0; }
+        }
+
         public void UpdateAverage()
         {
             m_dfAve = 0;
@@ -168,35 +197,25 @@ namespace SimpleGraphing
             }
         }
 
-        // Calculate the Expoential Moving Window Mean
-        public double CalculateEwmMean()
+        public double StdDevEwm
         {
-            double dfMean = 0;
-            double dfAlpha = 2.0 / (m_rgdf.Count + 1);
-
-            for (int i = 0; i < m_rgdf.Count; i++)
+            get
             {
-                double dfVal = m_rgdf[i];
-                dfMean = (dfAlpha * dfVal) + ((1 - dfAlpha) * dfMean);
+                if (m_rgdfEwm == null || m_rgdfEwm.Count == 0)
+                    return 0;   
+
+                double dfTotal = 0;
+
+                for (int i = 0; i < m_rgdfEwm.Count; i++)
+                {
+                    double dfDiff = (m_rgdfEwm[i] - AverageEwm);
+                    dfTotal += (dfDiff * dfDiff);
+                }
+
+                double dfVar = dfTotal / m_rgdfEwm.Count;
+
+                return Math.Sqrt(dfVar);
             }
-
-            return dfMean;
-        }
-
-        public double CalculateEwmStdDev(double dfMean)
-        {
-            double dfTotal = 0;
-
-            for (int i = 0; i < m_rgdf.Count; i++)
-            {
-                double dfVal = m_rgdf[i];
-                double dfDiff = (dfVal - dfMean);
-                dfTotal += (dfDiff * dfDiff);
-            }
-
-            double dfVar = dfTotal / m_rgdf.Count;
-
-            return Math.Sqrt(dfVar);
         }
 
         public double MaxVal
