@@ -226,7 +226,7 @@ namespace SimpleGraphing
 
         public void PreRender(Graphics g, int nLookahead)
         {
-            if (!m_config.Visible)
+            if (!m_config.Visible || m_config.ExcludeFromRender)
                 return;
 
             if (m_rgPlots == null)
@@ -237,7 +237,7 @@ namespace SimpleGraphing
 
         public void Render(Graphics g, int nLookahead)
         {
-            if (!m_config.Visible)
+            if (!m_config.Visible || m_config.ExcludeFromRender)
                 return;
 
             if (m_rgPlots == null)
@@ -248,7 +248,7 @@ namespace SimpleGraphing
 
         public void RenderActions(Graphics g, int nLookahead)
         {
-            if (!m_config.Visible)
+            if (!m_config.Visible || m_config.ExcludeFromRender)
                 return;
 
             if (m_rgPlots == null)
