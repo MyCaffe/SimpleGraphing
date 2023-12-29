@@ -39,6 +39,7 @@ namespace SimpleGraphing
         PLOTTYPE m_plotType = PLOTTYPE.LINE;
         string m_strCustomName = "";
         bool m_bExcludeFromMinMax = false;
+        bool m_bExcludeFromRender = false;
         bool m_bLookaheadActive = true;
         double m_dfMarginPercent = 0;
         double m_dfTransparency = 0;
@@ -113,6 +114,7 @@ namespace SimpleGraphing
             m_plotType = p.m_plotType;
             m_strCustomName = p.m_strCustomName;
             m_bExcludeFromMinMax = p.m_bExcludeFromMinMax;
+            m_bExcludeFromRender = p.m_bExcludeFromRender;
             m_bLookaheadActive = p.m_bLookaheadActive;
             m_dfMarginPercent = p.m_dfMarginPercent;
             m_dfTransparency = p.m_dfTransparency;
@@ -241,6 +243,9 @@ namespace SimpleGraphing
                 return false;
 
             if (m_bExcludeFromMinMax != c.m_bExcludeFromMinMax)
+                return false;
+
+            if (m_bExcludeFromRender != c.m_bExcludeFromRender)
                 return false;
 
             if (m_clrAction1Active != c.m_clrAction1Active)
@@ -443,6 +448,12 @@ namespace SimpleGraphing
         {
             get { return m_bExcludeFromMinMax; }
             set { m_bExcludeFromMinMax = value; }
+        }
+
+        public bool ExcludeFromRender
+        {
+            get { return m_bExcludeFromRender; }
+            set { m_bExcludeFromRender = value; }
         }
 
         public Color ActionActive1Color
