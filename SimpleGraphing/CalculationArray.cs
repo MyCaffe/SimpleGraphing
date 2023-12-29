@@ -10,10 +10,10 @@ namespace SimpleGraphing
     public class CalculationArray
     {
         int m_nMax = 0;
-        List<double> m_rgdf;
+        protected List<double> m_rgdf;
         double m_dfAve = 0;
         double m_dfSum = 0;
-        List<double> m_rgdfEwm;
+        protected List<double> m_rgdfEwm;
         DateTime? m_dt;
         double m_dfLast = 0;
         double? m_dfEwmAlpha = null;
@@ -181,41 +181,33 @@ namespace SimpleGraphing
 
         public double StdDev
         {
-            get
-            {
-                double dfTotal = 0;
-
-                for (int i=0; i<m_rgdf.Count; i++)
-                {
-                    double dfDiff = (m_rgdf[i] - m_dfAve);
-                    dfTotal += (dfDiff * dfDiff);
-                }
-
-                double dfVar = dfTotal / m_rgdf.Count;
-
-                return Math.Sqrt(dfVar);
-            }
+            get { return CalculateStdDev(m_rgdf, Count); }
         }
 
         public double StdDevEwm
         {
-            get
+            get { return CalculateStdDev(m_rgdfEwm, Count); }
+        }
+
+        public double CalculateStdDev(List<double> rg, int nOffset)
+        {
+            if (rg == null || rg.Count == 0)
+                return 0;
+
+            if (rg.Count < nOffset)
+                return 0;
+
+            double dfTotal = 0;
+
+            for (int i = rg.Count - nOffset; i < rg.Count; i++)
             {
-                if (m_rgdfEwm == null || m_rgdfEwm.Count == 0)
-                    return 0;   
-
-                double dfTotal = 0;
-
-                for (int i = 0; i < m_rgdfEwm.Count; i++)
-                {
-                    double dfDiff = (m_rgdfEwm[i] - AverageEwm);
-                    dfTotal += (dfDiff * dfDiff);
-                }
-
-                double dfVar = dfTotal / m_rgdfEwm.Count;
-
-                return Math.Sqrt(dfVar);
+                double dfDiff = (rg[i] - AverageEwm);
+                dfTotal += (dfDiff * dfDiff);
             }
+
+            double dfVar = dfTotal / nOffset;
+
+            return Math.Sqrt(dfVar);
         }
 
         public double MaxVal
