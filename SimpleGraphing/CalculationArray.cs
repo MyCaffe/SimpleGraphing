@@ -181,15 +181,15 @@ namespace SimpleGraphing
 
         public double StdDev
         {
-            get { return CalculateStdDev(m_rgdf, Count); }
+            get { return CalculateStdDev(m_rgdf, Count, false); }
         }
 
         public double StdDevEwm
         {
-            get { return CalculateStdDev(m_rgdfEwm, Count); }
+            get { return CalculateStdDev(m_rgdfEwm, Count, true); }
         }
 
-        public double CalculateStdDev(List<double> rg, int nOffset)
+        public double CalculateStdDev(List<double> rg, int nOffset, bool bEwm)
         {
             if (rg == null || rg.Count == 0)
                 return 0;
@@ -198,10 +198,11 @@ namespace SimpleGraphing
                 return 0;
 
             double dfTotal = 0;
+            double dfAverage = (bEwm) ? AverageEwm : Average;
 
             for (int i = rg.Count - nOffset; i < rg.Count; i++)
             {
-                double dfDiff = (rg[i] - AverageEwm);
+                double dfDiff = (rg[i] - dfAverage);
                 dfTotal += (dfDiff * dfDiff);
             }
 
