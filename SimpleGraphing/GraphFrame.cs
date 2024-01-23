@@ -81,6 +81,34 @@ namespace SimpleGraphing
             return null;
         }
 
+        public int GetXLocationAtDate(DateTime dt)
+        {
+            PlotCollection col = m_data[0];
+            int nXSpacing = m_config.XAxis.PlotSpacing;
+            int nX1 = m_plotArea.Bounds.Right;
+            int nX0 = nX1 - nXSpacing;
+
+            for (int i = col.Count - 1; i >= 0; i--)
+            {
+                if (nX1 <= m_plotArea.Bounds.Left)
+                    return -1;
+
+                Plot plot = col[i];
+                if (plot.Tag == null)
+                    return -1;
+
+                DateTime dt1 = (DateTime)plot.Tag;
+
+                if (dt1 == dt)
+                    return nX0;
+
+                nX1 = nX0;
+                nX0 -= nXSpacing;
+            }
+
+            return -1;
+        }
+
         public GraphAxisX XAxis
         {
             get { return m_gx; }
