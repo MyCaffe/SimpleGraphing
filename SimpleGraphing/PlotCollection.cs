@@ -2078,6 +2078,50 @@ namespace SimpleGraphing
 
             return col;
         }
+
+        public static void SynchronizeInTime(PlotCollection p1, PlotCollection p2)
+        {
+            if (p1.Count == 0 || p2.Count == 0)
+                return;
+
+            int nIdx1 = 0;
+            int nIdx2 = 0;
+
+            while (nIdx1 < p1.Count && nIdx2 < p2.Count)
+            {
+                DateTime dt1 = (DateTime)p1[nIdx1].Tag;
+                DateTime dt2 = (DateTime)p2[nIdx2].Tag;
+
+                if (dt1 == dt2)
+                {
+                    nIdx1++;
+                    nIdx2++;
+                    continue;
+                }
+
+                if (dt1 < dt2)
+                {
+                    p1.RemoveAt(nIdx1);
+                    continue;
+                }
+
+                if (dt2 < dt1)
+                {
+                    p2.RemoveAt(nIdx2);
+                    continue;
+                }
+            }
+
+            while (nIdx1 < p1.Count)
+            {
+                p1.RemoveAt(nIdx1);
+            }
+
+            while (nIdx2 < p2.Count)
+            {
+                p2.RemoveAt(nIdx2);
+            }
+        }
     }
 
     public class PlotUpdateArgs : EventArgs
