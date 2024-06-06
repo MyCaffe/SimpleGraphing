@@ -37,7 +37,7 @@ namespace SimpleGraphing.GraphData
             return new SmaData(dataSrc, dataDst, m_config.Interval);
         }
 
-        public double Process(SmaData data, int i, MinMax minmax = null, int nLookahead = 0, bool bAddToParams = false)
+        public double Process(SmaData data, int i, MinMax minmax = null, int nLookahead = 0, bool bAddToParams = false, PlotCollection plotsPrimary = null)
         {
             bool bActive = data.SrcData[i].Active;
 
@@ -63,7 +63,15 @@ namespace SimpleGraphing.GraphData
                         dataDst.Add(dataSrc[i].X, data.SMA, true, dataSrc[i].Index, true);
 
                     if (bAddToParams)
-                        dataSrc[i].SetParameter(dataDst.Name, (float)data.SMA);
+                    {
+                        string strName = dataDst.Name.Trim();
+                        if (!string.IsNullOrEmpty(m_config.Name))
+                            strName = m_config.Name;
+
+                        if (plotsPrimary != null)
+                            plotsPrimary[i].SetParameter(strName, (float)data.SMA);
+                        dataSrc[i].SetParameter(strName, (float)data.SMA);
+                    }
                 }
 
                 if (minmax != null)
@@ -87,7 +95,7 @@ namespace SimpleGraphing.GraphData
 
             for (int i = 0; i < data.SrcData.Count; i++)
             {
-                Process(data, i, minmax, nLookahead, bAddToParams);
+                Process(data, i, minmax, nLookahead, bAddToParams, (nDataIdx != 0) ? dataset[0] : null);
             }
 
             data.DstData.SetMinMax(minmax);

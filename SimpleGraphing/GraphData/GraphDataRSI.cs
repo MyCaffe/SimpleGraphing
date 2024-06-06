@@ -113,7 +113,13 @@ namespace SimpleGraphing.GraphData
             }
 
             if (bAddToParams && bActive)
-                data.SrcData[i].SetParameter(data.DstData.Name, (float)data.RSI);
+            {
+                string strName = data.DstData.Name.Trim();
+                if (!string.IsNullOrEmpty(m_config.Name))
+                    strName = m_config.Name;
+
+                data.SrcData[i].SetParameter(strName, (float)data.RSI);
+            }
 
             return data.RSI;
         }

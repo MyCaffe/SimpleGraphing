@@ -73,13 +73,13 @@ namespace SimpleGraphing.GraphData
             return new HmaData(dataSrc, dataDst, m_config.Interval);
         }
 
-        public double Process(HmaData data, int i, MinMax minmax = null, int nLookahead = 0, bool bAddToParams = false)
+        public double Process(HmaData data, int i, MinMax minmax = null, int nLookahead = 0, bool bAddToParams = false, PlotCollection plotsPrimary = null)
         {
             bool bActive;
-            return Process(data, i, out bActive, minmax, nLookahead, bAddToParams);
+            return Process(data, i, out bActive, minmax, nLookahead, bAddToParams, false, plotsPrimary);
         }
 
-        public double Process(HmaData data, int i, out bool bActive, MinMax minmax = null, int nLookahead = 0, bool bAddToParams = false, bool bIgnoreDst = false)
+        public double Process(HmaData data, int i, out bool bActive, MinMax minmax = null, int nLookahead = 0, bool bAddToParams = false, bool bIgnoreDst = false, PlotCollection plotsPrimary = null)
         {
             bool bActiveEma1;
             bool bActiveEma2;
@@ -131,7 +131,15 @@ namespace SimpleGraphing.GraphData
             }
 
             if (bAddToParams && bActive)
-                dataSrc[i].SetParameter(dataDst.Name.Trim(), data.HMA);
+            {
+                string strName = dataDst.Name.Trim();
+                if (!string.IsNullOrEmpty(m_config.Name))
+                    strName = m_config.Name;
+
+                if (plotsPrimary != null)
+                    plotsPrimary[i].SetParameter(strName, (float)data.HMA);
+                dataSrc[i].SetParameter(strName, data.HMA);
+            }
 
             return data.HMA;
         }
@@ -143,7 +151,7 @@ namespace SimpleGraphing.GraphData
 
             for (int i = 0; i < data.SrcData.Count; i++)
             {
-                Process(data, i, minmax, nLookahead, bAddToParams);
+                Process(data, i, minmax, nLookahead, bAddToParams, (nDataIdx != 0) ? dataset[0] : null);
             }
 
             data.DstData.SetMinMax(minmax);
