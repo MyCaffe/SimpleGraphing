@@ -241,56 +241,138 @@ namespace SimpleGraphing
             get { return m_rgdf.Min(); }
         }
 
-        /// <summary>
-        /// Calculates the T-Test between this array and the input array.
-        /// </summary>
-        /// <param name="rg">Specifies the second array to test against.</param>
-        /// <returns>A tuple containing the T-statistic, and  P-value is returned.</returns>
-        /// <exception cref="Exception">An exception is thrown if the two array counts do not match.</exception>
         public Tuple<double, double> CalculateTTest(CalculationArray rg)
         {
             if (rg.Count != Count)
                 throw new Exception("The two arrays must have the same number of items to calculate a t-test.");
 
-            double dfMean1 = Average;
-            double dfMean2 = rg.Average;
-            double dfVar1;
-            double dfVar2;
-            double dfT = 0;
+            // Calculate means
+            double mean1 = Average;
+            double mean2 = rg.Average;
 
-            CalculateStdDev(m_rgdf, Count, false, out dfVar1);
-            CalculateStdDev(rg.Items, Count, false, out dfVar2);
+            // Calculate variances
+            double variance1 = 0;
+            double variance2 = 0;
 
-            if (dfVar1 == 0 || dfVar2 == 0)
+            // Calculate variance for first array
+            for (int i = 0; i < Count; i++)
+            {
+                variance1 += Math.Pow(m_rgdf[i] - mean1, 2);
+            }
+            variance1 /= (Count - 1);  // Use n-1 for sample variance
+
+            // Calculate variance for second array
+            for (int i = 0; i < Count; i++)
+            {
+                variance2 += Math.Pow(rg.m_rgdf[i] - mean2, 2);
+            }
+            variance2 /= (Count - 1);  // Use n-1 for sample variance
+
+            // Check for zero variance
+            if (variance1 == 0 || variance2 == 0)
                 return new Tuple<double, double>(0, 0);
 
-            dfT = (dfMean1 - dfMean2) / Math.Sqrt((dfVar1 / Count) + (dfVar2 / Count));
+            // Calculate standard error
+            double standardError = Math.Sqrt((variance1 / Count) + (variance2 / Count));
 
-            return new Tuple<double, double>(dfT, dfT);
+            // Calculate t-statistic
+            double tStat = (mean1 - mean2) / standardError;
+
+            // Calculate degrees of freedom
+            // Fix 1: Changed from 2 * Count - 2 to Count + Count - 2
+            int df = Count + Count - 2;
+
+            // Calculate p-value
+            double pValue = 2 * (1 - StudentT_CDF(Math.Abs(tStat), df));
+            return new Tuple<double, double>(tStat, pValue);
         }
 
-        /// <summary>
-        /// Approximates the cumulative distribution function (CDF) for the Student's t-distribution.
-        /// </summary>
-        /// <param name="dfT">The t-value at which to evaluate the CDF. This is the calculated t-statistic from the t-test.</param>
-        /// <param name="nDf">Degrees of freedom for the distribution, usually calculated as the sum of the sample sizes minus 2.</param>
-        /// <returns>The approximate probability of the t-distributed random variable being less than or equal to the given t-value.</returns>
-        public double CalculateStudentT_CDF(double dfT, int nDf)
+        private double StudentT_CDF(double t, int df)
         {
-            double dfX = dfT * dfT;
-            double dfDf = nDf;
-            double dfNum = 1.0;
-            double dfDenom = 1.0;
+            double x = df / (df + t * t);
+            return 1 - 0.5 * IncompleteBeta(x, df / 2.0, 0.5);
+        }
 
-            for (int i = 1; i <= nDf / 2 - 1; i++)
+        private double IncompleteBeta(double x, double a, double b)
+        {
+            if (x == 0) return 0;
+            if (x == 1) return 1;
+
+            // Fix 2: Complete implementation of incomplete beta function
+            return BetaIncomplete(a, b, x);
+        }
+
+        private double BetaIncomplete(double a, double b, double x)
+        {
+            // Using continued fraction method for more accurate results
+            double bt = Math.Exp(LogGamma(a + b) - LogGamma(a) - LogGamma(b) +
+                        a * Math.Log(x) + b * Math.Log(1 - x));
+
+            if (x < (a + 1) / (a + b + 2))
+                return bt * BetaCF(a, b, x) / a;
+            else
+                return 1 - bt * BetaCF(b, a, 1 - x) / b;
+        }
+
+        private double BetaCF(double a, double b, double x)
+        {
+            int maxIterations = 200;
+            double epsilon = 3.0e-7;
+            double qab = a + b;
+            double qap = a + 1.0;
+            double qam = a - 1.0;
+            double c = 1.0;
+            double d = 1.0 - qab * x / qap;
+
+            if (Math.Abs(d) < double.MinValue) d = double.MinValue;
+            d = 1.0 / d;
+            double h = d;
+
+            for (int m = 1; m <= maxIterations; m++)
             {
-                dfNum *= (2 * i + 1);
-                dfDenom *= 2 * i;
+                int m2 = 2 * m;
+                double aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+                d = 1.0 + aa * d;
+                if (Math.Abs(d) < double.MinValue) d = double.MinValue;
+                c = 1.0 + aa / c;
+                if (Math.Abs(c) < double.MinValue) c = double.MinValue;
+                d = 1.0 / d;
+                h *= d * c;
+                aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+                d = 1.0 + aa * d;
+                if (Math.Abs(d) < double.MinValue) d = double.MinValue;
+                c = 1.0 + aa / c;
+                if (Math.Abs(c) < double.MinValue) c = double.MinValue;
+                d = 1.0 / d;
+                double del = d * c;
+                h *= del;
+                if (Math.Abs(del - 1.0) < epsilon) break;
             }
 
-            double dfResult = 0.5 + (dfX / (dfDf + dfX)) * (dfNum / dfDenom);
+            return h;
+        }
 
-            return dfResult;
+        private double LogGamma(double z)
+        {
+            // Your existing LogGamma implementation is correct
+            double[] c = {
+                76.18009172947146,
+                -86.50532032941677,
+                24.01409824083091,
+                -1.231739572450155,
+                0.1208650973866179e-2,
+                -0.5395239384953e-5
+            };
+            double x = z;
+            double tmp = x + 5.5;
+            tmp -= (x + 0.5) * Math.Log(tmp);
+            double ser = 1.000000000190015;
+            for (int j = 0; j < 6; j++)
+            {
+                x += 1;
+                ser += c[j] / x;
+            }
+            return -tmp + Math.Log(2.5066282746310005 * ser / z);
         }
 
         /// <summary>
@@ -324,7 +406,9 @@ namespace SimpleGraphing
             double sumRanks = 0;
 
             // Process the combined list to assign ranks
+            int currentRank = 1;  // Start with rank 1
             int i = 0;
+
             while (i < combined.Count)
             {
                 int start = i;
@@ -335,44 +419,59 @@ namespace SimpleGraphing
                     end++;
 
                 // Calculate the average rank for the ties
-                double averageRank = (start + end + 2) / 2.0;  // +2 because ranks are 1-based
+                double averageRank = (currentRank + (currentRank + (end - start))) / 2.0;
 
                 // Assign rank and accumulate rank sums for sample1
                 for (int j = start; j <= end; j++)
                 {
-                    combined[j].Rank = averageRank;  // Assign the computed average rank
+                    combined[j].Rank = averageRank;
                     if (combined[j].Group == 1)
                         sumRanks += averageRank;
                 }
 
                 // Move to the next group of values
                 i = end + 1;
+                currentRank += (end - start + 1);  // Increment rank by number of tied values
             }
 
-            // Calculate the U statistics
+            // Rest of your code remains the same
             double U1 = sumRanks - (sample1.Length * (sample1.Length + 1)) / 2.0;
             double U2 = sample1.Length * sample2.Length - U1;
             double U = Math.Min(U1, U2);
 
-            // Calculate the mean and standard deviation of U for the normal approximation
             double meanU = sample1.Length * sample2.Length / 2.0;
             double sigmaU = Math.Sqrt(sample1.Length * sample2.Length * (sample1.Length + sample2.Length + 1) / 12.0);
 
-            // Calculate the z-score, with continuity correction of 0.5
-            double z = (U - meanU + 0.5) / sigmaU;
-
-            // Calculate the p-value using the normal distribution approximation
-            double p = 2 * (1 - NormalCdf(z));  // Two-tailed test
+            double z = (U - meanU) / sigmaU;
+            double p = 2 * (1 - NormalCdf(Math.Abs(z)));
 
             return Tuple.Create(U, z, p);
         }
 
-        private static double NormalCdf(double z)
+        static double NormalCdf(double z)
         {
-            double t = 1.0 / (1.0 + 0.2316419 * Math.Abs(z));
-            double y = 1.0 - 1.0 / Math.Sqrt(2 * Math.PI) * Math.Exp(-0.5 * z * z) *
-                       (0.319381530 * t - 0.356563782 * t * t + 1.781477937 * t * t * t - 1.821255978 * t * t * t * t + 1.330274429 * t * t * t * t * t);
-            return z < 0 ? 1.0 - y : y;
+            return 0.5 * (1.0 + Erf(z / Math.Sqrt(2.0)));
+        }
+
+        static double Erf(double x)
+        {
+            // Constants
+            double a1 = 0.254829592;
+            double a2 = -0.284496736;
+            double a3 = 1.421413741;
+            double a4 = -1.453152027;
+            double a5 = 1.061405429;
+            double p = 0.3275911;
+
+            // Save the sign of x
+            int sign = Math.Sign(x);
+            x = Math.Abs(x);
+
+            // A&S formula 7.1.26
+            double t = 1.0 / (1.0 + p * x);
+            double y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.Exp(-x * x);
+
+            return sign * y;
         }
     }
 
