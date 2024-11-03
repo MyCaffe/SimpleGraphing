@@ -2145,7 +2145,7 @@ namespace SimpleGraphing
             {
                 for (int i = nStartIdx.Value + 1; i < Count; i++)
                 {
-                    ca.Add((m_rgPlot[i].Y - m_rgPlot[i-1].Y) * dfScale, (DateTime)m_rgPlot[i].Tag, false);
+                    ca.Add((m_rgPlot[i].Y - m_rgPlot[i - 1].Y) * dfScale, (DateTime)m_rgPlot[i].Tag, false);
                 }
             }
             else
