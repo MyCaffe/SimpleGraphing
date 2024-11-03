@@ -2122,6 +2122,22 @@ namespace SimpleGraphing
                 p2.RemoveAt(nIdx2);
             }
         }
+
+        /// <summary>
+        /// Convert the PlotCollection to a CalculationArray, using the Y values.
+        /// </summary>
+        /// <returns>The new CalculationArray is returned.</returns>
+        public CalculationArray ToCalculationArray()
+        {
+            CalculationArray ca = new CalculationArray(Count);
+
+            for (int i = StartIndex; i < Count; i++)
+            {
+                ca.Add(m_rgPlot[i].Y, (DateTime)m_rgPlot[i].Tag, false);
+            }
+
+            return ca;
+        }
     }
 
     public class PlotUpdateArgs : EventArgs
