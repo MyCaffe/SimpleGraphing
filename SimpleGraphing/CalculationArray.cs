@@ -179,18 +179,38 @@ namespace SimpleGraphing
             m_dfAve /= m_rgdf.Count;
         }
 
+        public double Variance
+        {
+            get
+            {
+                double dfVar;
+                CalculateStdDev(m_rgdf, Count, false, out dfVar);
+                return dfVar;
+            }
+        }
+
         public double StdDev
         {
-            get { return CalculateStdDev(m_rgdf, Count, false); }
+            get 
+            {
+                double dfVar;
+                return CalculateStdDev(m_rgdf, Count, false, out dfVar); 
+            }
         }
 
         public double StdDevEwm
         {
-            get { return CalculateStdDev(m_rgdfEwm, Count, true); }
+            get 
+            {
+                double dfVar;
+                return CalculateStdDev(m_rgdfEwm, Count, true, out dfVar); 
+            }
         }
 
-        public double CalculateStdDev(List<double> rg, int nOffset, bool bEwm)
+        public double CalculateStdDev(List<double> rg, int nOffset, bool bEwm, out double dfVar)
         {
+            dfVar = 0;
+
             if (rg == null || rg.Count == 0)
                 return 0;
 
@@ -206,7 +226,7 @@ namespace SimpleGraphing
                 dfTotal += (dfDiff * dfDiff);
             }
 
-            double dfVar = dfTotal / nOffset;
+            dfVar = dfTotal / nOffset;
 
             return Math.Sqrt(dfVar);
         }
@@ -220,5 +240,147 @@ namespace SimpleGraphing
         {
             get { return m_rgdf.Min(); }
         }
+
+        /// <summary>
+        /// Calculates the T-Test between this array and the input array.
+        /// </summary>
+        /// <param name="rg">Specifies the second array to test against.</param>
+        /// <returns>A tuple containing the T-statistic, and  P-value is returned.</returns>
+        /// <exception cref="Exception">An exception is thrown if the two array counts do not match.</exception>
+        public Tuple<double, double> CalculateTTest(CalculationArray rg)
+        {
+            if (rg.Count != Count)
+                throw new Exception("The two arrays must have the same number of items to calculate a t-test.");
+
+            double dfMean1 = Average;
+            double dfMean2 = rg.Average;
+            double dfVar1;
+            double dfVar2;
+            double dfT = 0;
+
+            CalculateStdDev(m_rgdf, Count, false, out dfVar1);
+            CalculateStdDev(rg.Items, Count, false, out dfVar2);
+
+            if (dfVar1 == 0 || dfVar2 == 0)
+                return new Tuple<double, double>(0, 0);
+
+            dfT = (dfMean1 - dfMean2) / Math.Sqrt((dfVar1 / Count) + (dfVar2 / Count));
+
+            return new Tuple<double, double>(dfT, dfT);
+        }
+
+        /// <summary>
+        /// Approximates the cumulative distribution function (CDF) for the Student's t-distribution.
+        /// </summary>
+        /// <param name="dfT">The t-value at which to evaluate the CDF. This is the calculated t-statistic from the t-test.</param>
+        /// <param name="nDf">Degrees of freedom for the distribution, usually calculated as the sum of the sample sizes minus 2.</param>
+        /// <returns>The approximate probability of the t-distributed random variable being less than or equal to the given t-value.</returns>
+        public double CalculateStudentT_CDF(double dfT, int nDf)
+        {
+            double dfX = dfT * dfT;
+            double dfDf = nDf;
+            double dfNum = 1.0;
+            double dfDenom = 1.0;
+
+            for (int i = 1; i <= nDf / 2 - 1; i++)
+            {
+                dfNum *= (2 * i + 1);
+                dfDenom *= 2 * i;
+            }
+
+            double dfResult = 0.5 + (dfX / (dfDf + dfX)) * (dfNum / dfDenom);
+
+            return dfResult;
+        }
+
+        /// <summary>
+        /// Calculates the Mann-Whitney U test for two independent samples.
+        /// </summary>
+        /// <param name="ca">The second sample array.</param>
+        /// <returns>A tuple containing the U statistic, the Z-score, and the approximate p-value.</returns>
+        public Tuple<double, double, double> CalculateMannWhitneyU(CalculationArray ca)
+        {
+            return CalculateMannWhitneyU(m_rgdf.ToArray(), ca.Items.ToArray());
+        }
+
+        /// <summary>
+        /// Calculates the Mann-Whitney U test for two independent samples.
+        /// </summary>
+        /// <param name="sample1">The first sample array.</param>
+        /// <param name="sample2">The second sample array.</param>
+        /// <returns>A tuple containing the U statistic, the Z-score, and the approximate p-value.</returns>
+        // Updated CalculateMannWhitneyU function using the RankedValue class
+        public static Tuple<double, double, double> CalculateMannWhitneyU(double[] sample1, double[] sample2)
+        {
+            // Combine the samples and assign a group label to each sample
+            var combined = sample1.Select(x => new RankedSample { Value = x, Group = 1 })
+                                  .Concat(sample2.Select(x => new RankedSample { Value = x, Group = 2 }))
+                                  .ToList();
+
+            // Sort by Value
+            combined.Sort((a, b) => a.Value.CompareTo(b.Value));
+
+            // Initialize rank sum for the first sample
+            double sumRanks = 0;
+
+            // Process the combined list to assign ranks
+            int i = 0;
+            while (i < combined.Count)
+            {
+                int start = i;
+                int end = i;
+
+                // Determine the extent of ties
+                while (end < combined.Count - 1 && combined[end + 1].Value == combined[start].Value)
+                    end++;
+
+                // Calculate the average rank for the ties
+                double averageRank = (start + end + 2) / 2.0;  // +2 because ranks are 1-based
+
+                // Assign rank and accumulate rank sums for sample1
+                for (int j = start; j <= end; j++)
+                {
+                    combined[j].Rank = averageRank;  // Assign the computed average rank
+                    if (combined[j].Group == 1)
+                        sumRanks += averageRank;
+                }
+
+                // Move to the next group of values
+                i = end + 1;
+            }
+
+            // Calculate the U statistics
+            double U1 = sumRanks - (sample1.Length * (sample1.Length + 1)) / 2.0;
+            double U2 = sample1.Length * sample2.Length - U1;
+            double U = Math.Min(U1, U2);
+
+            // Calculate the mean and standard deviation of U for the normal approximation
+            double meanU = sample1.Length * sample2.Length / 2.0;
+            double sigmaU = Math.Sqrt(sample1.Length * sample2.Length * (sample1.Length + sample2.Length + 1) / 12.0);
+
+            // Calculate the z-score, with continuity correction of 0.5
+            double z = (U - meanU + 0.5) / sigmaU;
+
+            // Calculate the p-value using the normal distribution approximation
+            double p = 2 * (1 - NormalCdf(z));  // Two-tailed test
+
+            return Tuple.Create(U, z, p);
+        }
+
+        private static double NormalCdf(double z)
+        {
+            double t = 1.0 / (1.0 + 0.2316419 * Math.Abs(z));
+            double y = 1.0 - 1.0 / Math.Sqrt(2 * Math.PI) * Math.Exp(-0.5 * z * z) *
+                       (0.319381530 * t - 0.356563782 * t * t + 1.781477937 * t * t * t - 1.821255978 * t * t * t * t + 1.330274429 * t * t * t * t * t);
+            return z < 0 ? 1.0 - y : y;
+        }
+    }
+
+    // Define the RankedSample class that will be used to store values and their ranks
+    public class RankedSample
+    {
+        public double Value { get; set; }
+        public int Group { get; set; }
+        public double Rank { get; set; } // Property to store rank
     }
 }
