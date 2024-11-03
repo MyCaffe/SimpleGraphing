@@ -2127,16 +2127,39 @@ namespace SimpleGraphing
         /// Convert the PlotCollection to a CalculationArray, using the Y values.
         /// </summary>
         /// <returns>The new CalculationArray is returned.</returns>
-        public CalculationArray ToCalculationArray()
+        public CalculationArray ToCalculationArray(int? nStartIdx = null)
         {
             CalculationArray ca = new CalculationArray(Count);
 
-            for (int i = StartIndex; i < Count; i++)
+            if (!nStartIdx.HasValue)
+                nStartIdx = StartIndex;
+
+            for (int i = nStartIdx.Value; i < Count; i++)
             {
                 ca.Add(m_rgPlot[i].Y, (DateTime)m_rgPlot[i].Tag, false);
             }
 
             return ca;
+        }
+
+        /// <summary>
+        /// Find the index of the first divergence point between this PlotCollection and another PlotCollection.
+        /// </summary>
+        /// <param name="p2">Specifies the second plot.</param>
+        /// <returns>The divergence index is returned or -1 if the plot collections are the same.</returns>
+        /// <exception cref="Exception">An exception is thrown if the counts are not the same.</exception>
+        public int FindDivergencePoint(PlotCollection p2)
+        {
+            if (Count != p2.Count)
+                throw new Exception("The two PlotCollections must have the same count!");
+
+            for (int i = 0; i < Count; i++)
+            {
+                if (m_rgPlot[i].Y != p2[i].Y)
+                    return i;
+            }
+
+            return -1;
         }
     }
 
