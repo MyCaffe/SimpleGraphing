@@ -2126,17 +2126,34 @@ namespace SimpleGraphing
         /// <summary>
         /// Convert the PlotCollection to a CalculationArray, using the Y values.
         /// </summary>
+        /// <param name="nStartIdx">Optionally, specifies a starting index.</param>
+        /// <param name="bNonCumulative">Optionally, specifies to return non-cumulative values.</param>
         /// <returns>The new CalculationArray is returned.</returns>
-        public CalculationArray ToCalculationArray(int? nStartIdx = null)
+        public CalculationArray ToCalculationArray(int? nStartIdx = null, bool bNonCumulative = false, double dfScale = 1.0)
         {
-            CalculationArray ca = new CalculationArray(Count);
+            int nCount = Count;
+
+            if (nStartIdx.HasValue)
+                nCount -= nStartIdx.Value;
+
+            CalculationArray ca = new CalculationArray(nCount);
 
             if (!nStartIdx.HasValue)
                 nStartIdx = StartIndex;
 
-            for (int i = nStartIdx.Value; i < Count; i++)
+            if (bNonCumulative)
             {
-                ca.Add(m_rgPlot[i].Y, (DateTime)m_rgPlot[i].Tag, false);
+                for (int i = nStartIdx.Value + 1; i < Count; i++)
+                {
+                    ca.Add((m_rgPlot[i].Y - m_rgPlot[i-1].Y) * dfScale, (DateTime)m_rgPlot[i].Tag, false);
+                }
+            }
+            else
+            {
+                for (int i = nStartIdx.Value; i < Count; i++)
+                {
+                    ca.Add(m_rgPlot[i].Y * dfScale, (DateTime)m_rgPlot[i].Tag, false);
+                }
             }
 
             return ca;
