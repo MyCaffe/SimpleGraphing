@@ -1817,7 +1817,10 @@ namespace SimpleGraphing
         public float CalculateCorrelationCoefficient(PlotCollection plots, int nDataIdx = -1, int nStartIdx = 0, int nEndIdx = -1)
         {
             if (plots.Count != Count)
-                throw new Exception("The two plot collections must have the same counts!");
+            {
+                Trace.WriteLine("The two plot collections must have the same counts!");
+                return 0;
+            }
 
             nStartIdx = GetStartIndex(nStartIdx);
             if (nEndIdx < 0 || nEndIdx > m_rgPlot.Count - 1)
