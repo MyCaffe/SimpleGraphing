@@ -1,4 +1,7 @@
-﻿using System;
+﻿// SimpleGraphing Open-Source Project
+// License: Apache 2.0. See LICENSE file in root directory.
+// https://github.com/MyCaffe/SimpleGraphing/blob/master/LICENSE
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
