@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using SimpleGraphing;
 using SimpleGraphingDebug;
+using SimpleGraphingStd;
+using SkiaSharp;
 
 namespace SimpleGraphingApp
 {
@@ -20,19 +22,27 @@ namespace SimpleGraphingApp
         int m_nDataCount = 600;
         FormSpecialSettings m_dlgSpecialSettings = null;
         Random m_random = new Random();
-        List<PlotCollectionSet> m_rgLastData = new List<PlotCollectionSet>();
+        List<SimpleGraphing.PlotCollectionSet> m_rgLastData = new List<SimpleGraphing.PlotCollectionSet>();
         Size m_szMinBounds;
         Size m_szMaxBounds;
-        List<PlotCollectionSet> m_rgSet = null;
+        List<SimpleGraphing.PlotCollectionSet> m_rgSet = null;
+        List<SimpleGraphingStd.PlotCollectionSet> m_rgSet2 = null;
+        SimpleGraph m_sg;
 
         public FormMain()
         {
             InitializeComponent();
+            initializeSimpleGraphing();  // .NET Framework 4.8
+            initializeSimpleGraph();     // .NET Standard 2.0
+        }
+
+        private void initializeSimpleGraphing()
+        {
             List<string> rgstrNames = simpleGraphingControl1.LoadModuleCache();
 
             foreach (string strName in rgstrNames)
             {
-                IGraphPlotDataEx idata = simpleGraphingControl1.CustomModules.Find(strName, false);
+                SimpleGraphing.IGraphPlotDataEx idata = simpleGraphingControl1.CustomModules.Find(strName, false);
                 if (idata != null)
                 {
                     IGraphPlotUserEdit iedit = idata.CreateUserEdit();
@@ -43,20 +53,39 @@ namespace SimpleGraphingApp
                         item.Click += Item_Click;
                     }
 
-                    ConfigurationPlot plotConfig = new ConfigurationPlot(Guid.NewGuid());
-                    plotConfig.PlotType = ConfigurationPlot.PLOTTYPE.CUSTOM;
+                    SimpleGraphing.ConfigurationPlot plotConfig = new SimpleGraphing.ConfigurationPlot(Guid.NewGuid());
+                    plotConfig.PlotType = SimpleGraphing.ConfigurationPlot.PLOTTYPE.CUSTOM;
                     plotConfig.CustomName = idata.Name;
                     plotConfig.SetCustomBuildOrder(idata.BuildOrder);
 
                     simpleGraphingControl1.Configuration.Frames[0].Plots.Add(plotConfig);
 
-                    plotConfig = new ConfigurationPlot(Guid.NewGuid());
-                    plotConfig.PlotType = ConfigurationPlot.PLOTTYPE.CUSTOM;
+                    plotConfig = new SimpleGraphing.ConfigurationPlot(Guid.NewGuid());
+                    plotConfig.PlotType = SimpleGraphing.ConfigurationPlot.PLOTTYPE.CUSTOM;
                     plotConfig.CustomName = idata.Name;
                     plotConfig.DataIndex = 1;
 
                     simpleGraphingControl1.Configuration.Frames[1].Plots.Add(plotConfig);
                 }
+            }
+
+            string strCfgFile = getConfigFile();
+            if (File.Exists(strCfgFile))
+                simpleGraphingControl1.LoadConfiguration(strCfgFile);
+        }
+
+        private void initializeSimpleGraph()
+        {
+            m_sg = new SimpleGraph();
+
+            string strCfgFile = getConfigFile();
+            if (File.Exists(strCfgFile))
+                m_sg.LoadConfiguration(strCfgFile);
+
+            foreach (SimpleGraphingStd.ConfigurationFrame frame in m_sg.Configuration.Frames)
+            {
+                frame.XAxis.LabelFont.Size = 8;
+                frame.YAxis.LabelFont.Size = 8;
             }
         }
 
@@ -83,30 +112,36 @@ namespace SimpleGraphingApp
             simpleGraphingControl1.Configuration.SaveToFile("c:\\temp\\foo.xml");
         }
 
+        /// <summary>
+        /// Setup and update the graph with the line data shown for .NET Framework 4.8
+        /// </summary>
+        /// <param name="sender">Specifies the sender.</param>
+        /// <param name="e">Specifies the event.</param>
         private void lineToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            showVisuals();
             timerData.Enabled = false;
             toolStrip1.Visible = false;
 
-            List<PlotCollectionSet> rgSet = new List<PlotCollectionSet>();
+            List<SimpleGraphing.PlotCollectionSet> rgSet = new List<SimpleGraphing.PlotCollectionSet>();
             int nCount = m_nDataCount;
 
             for (int i = 0; i < 4; i++)
             {
-                PlotCollectionSet set = new PlotCollectionSet();
-                PlotCollection plots;
+                SimpleGraphing.PlotCollectionSet set = new SimpleGraphing.PlotCollectionSet();
+                SimpleGraphing.PlotCollection plots;
 
-                plots = new PlotCollection("plot_1 - " + i.ToString());
+                plots = new SimpleGraphing.PlotCollection("plot_1 - " + i.ToString());
                 for (int j = 0; j < nCount; j++)
                 {
-                    plots.Add(new Plot(j, j * Math.Sin(j)));
+                    plots.Add(new SimpleGraphing.Plot(j, j * Math.Sin(j)));
                 }
 
                 set.Add(plots);
-                plots = new PlotCollection("plot_2 - " + i.ToString());
+                plots = new SimpleGraphing.PlotCollection("plot_2 - " + i.ToString());
                 for (int j = 0; j < nCount; j++)
                 {
-                    plots.Add(new Plot(j, j * Math.Sin(j) * Math.Cos(j)));
+                    plots.Add(new SimpleGraphing.Plot(j, j * Math.Sin(j) * Math.Cos(j)));
                 }
 
                 set.Add(plots);
@@ -118,15 +153,66 @@ namespace SimpleGraphingApp
             updateGraph(rgSet);
         }
 
+        /// <summary>
+        /// Setup and update the graph with the line data shown for .NET Standard 2.0
+        /// </summary>
+        /// <param name="sender">Specifies the sender.</param>
+        /// <param name="e">Specifies the event.</param>
+        private void lineToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            showVisuals(true);
+            timerData.Enabled = false;
+            toolStrip1.Visible = false;
+
+            List<SimpleGraphingStd.PlotCollectionSet> rgSet = new List<SimpleGraphingStd.PlotCollectionSet>();
+            int nCount = m_nDataCount;
+
+            for (int i = 0; i < 4; i++)
+            {
+                SimpleGraphingStd.PlotCollectionSet set = new SimpleGraphingStd.PlotCollectionSet();
+                SimpleGraphingStd.PlotCollection plots;
+
+                plots = new SimpleGraphingStd.PlotCollection("plot_1 - " + i.ToString());
+                for (int j = 0; j < nCount; j++)
+                {
+                    plots.Add(new SimpleGraphingStd.Plot(j, j * Math.Sin(j)));
+                }
+
+                set.Add(plots);
+                plots = new SimpleGraphingStd.PlotCollection("plot_2 - " + i.ToString());
+                for (int j = 0; j < nCount; j++)
+                {
+                    plots.Add(new SimpleGraphingStd.Plot(j, j * Math.Sin(j) * Math.Cos(j)));
+                }
+
+                set.Add(plots);
+                rgSet.Add(set);
+            }
+
+            configureLineCharts2();
+
+            updateGraph2(rgSet);
+        }
+
         private void candleWithFullDataToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            showVisuals();
             m_bFullData = true;
             m_nDataCount = 600;
             candle(sender);
         }
 
+        private void candleWithFullDataToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            showVisuals(true);
+            m_bFullData = true;
+            m_nDataCount = 600;
+            candle2(sender);
+        }
+
         private void candleVisibleOnlyToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            showVisuals();
             m_bFullData = false;
             m_nDataCount = simpleGraphingControl1.VisiblePlotCount;
             candle(sender);
@@ -134,6 +220,7 @@ namespace SimpleGraphingApp
 
         private void candleClipToVisibleToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            showVisuals();
             m_bFullData = true;
             m_nDataCount = 600;
             candle(sender, 100);
@@ -141,12 +228,12 @@ namespace SimpleGraphingApp
 
         private void candle(object sender, int nClipToVisible = 0)
         {
-            List<PlotCollectionSet> rgSet = new List<PlotCollectionSet>();
+            List<SimpleGraphing.PlotCollectionSet> rgSet = new List<SimpleGraphing.PlotCollectionSet>();
             int nCount = m_nDataCount;
             double dfInc = TimeSpan.FromDays(1).TotalMinutes;
             DateTime dtStart = DateTime.Today - TimeSpan.FromDays(nCount);
             double dfTimeStart = dtStart.ToFileTime();
-            PlotCollection plotsLast = null;
+            SimpleGraphing.PlotCollection plotsLast = null;
             bool bEnableOverlay = false;
 
             if (sender == candleWithOverlayToolStripMenuItem)
@@ -154,8 +241,8 @@ namespace SimpleGraphingApp
 
             for (int i = 0; i < 4; i++)
             {
-                PlotCollectionSet set = new PlotCollectionSet();
-                PlotCollection plots;
+                SimpleGraphing.PlotCollectionSet set = new SimpleGraphing.PlotCollectionSet();
+                SimpleGraphing.PlotCollection plots;
                 double dfTime = dfTimeStart;
                 double dfVal = 100;
 
@@ -165,7 +252,7 @@ namespace SimpleGraphingApp
                 }
                 else
                 {
-                    plots = new PlotCollection("plot_1 - " + i.ToString(), int.MaxValue, dfInc);
+                    plots = new SimpleGraphing.PlotCollection("plot_1 - " + i.ToString(), int.MaxValue, dfInc);
                     for (int j = 0; j < nCount; j++)
                     {
                         double dfO = dfVal;
@@ -175,7 +262,7 @@ namespace SimpleGraphingApp
                         List<double> rgdfVal = new List<double>() { dfO, dfH, dfL, dfC };
                         long lVol = m_random.Next(10000);
 
-                        Plot p = new Plot(dfTime, rgdfVal, lVol);
+                        SimpleGraphing.Plot p = new SimpleGraphing.Plot(dfTime, rgdfVal, lVol);
 
                         if (bEnableOverlay)
                             p.SetParameter("cos", (float)Math.Cos(j));
@@ -199,14 +286,14 @@ namespace SimpleGraphingApp
 
             double dfSlope;
             double dfConfWid;
-            PlotCollection colReg = rgSet[0][0].CalculateLinearRegressionLines(out dfSlope, out dfConfWid);
+            SimpleGraphing.PlotCollection colReg = rgSet[0][0].CalculateLinearRegressionLines(out dfSlope, out dfConfWid);
             rgSet[0].Add(colReg);
 
             int? nCount1 = null;
             if (nClipToVisible > 0)
                 nCount1 = simpleGraphingControl1.VisiblePlotCount + nClipToVisible;
 
-            foreach (PlotCollectionSet set1 in rgSet)
+            foreach (SimpleGraphing.PlotCollectionSet set1 in rgSet)
             {
                 set1.SetStartOffsetFromEnd(nCount1);
             }
@@ -216,12 +303,80 @@ namespace SimpleGraphingApp
             updateGraph(rgSet);
         }
 
+        private void candle2(object sender, int nClipToVisible = 0)
+        {
+            List<SimpleGraphingStd.PlotCollectionSet> rgSet = new List<SimpleGraphingStd.PlotCollectionSet>();
+            int nCount = m_nDataCount;
+            double dfInc = TimeSpan.FromDays(1).TotalMinutes;
+            DateTime dtStart = DateTime.Today - TimeSpan.FromDays(nCount);
+            double dfTimeStart = dtStart.ToFileTime();
+            SimpleGraphingStd.PlotCollection plotsLast = null;
+            bool bEnableOverlay = false;
+
+            if (sender == candleWithOverlayToolStripMenuItem)
+                bEnableOverlay = true;
+
+            for (int i = 0; i < 4; i++)
+            {
+                SimpleGraphingStd.PlotCollectionSet set = new SimpleGraphingStd.PlotCollectionSet();
+                SimpleGraphingStd.PlotCollection plots;
+                double dfTime = dfTimeStart;
+                double dfVal = 100;
+
+                if (plotsLast != null)
+                {
+                    plots = plotsLast;
+                }
+                else
+                {
+                    plots = new SimpleGraphingStd.PlotCollection("plot_1 - " + i.ToString(), int.MaxValue, dfInc);
+                    for (int j = 0; j < nCount; j++)
+                    {
+                        double dfO = dfVal;
+                        double dfC = dfVal + (-1 + (2 * m_random.NextDouble()));
+                        double dfH = Math.Max(dfO, dfC) + (Math.Abs(dfC - dfO) * m_random.NextDouble());
+                        double dfL = Math.Min(dfO, dfC) - (Math.Abs(dfC - dfO) * m_random.NextDouble());
+                        List<double> rgdfVal = new List<double>() { dfO, dfH, dfL, dfC };
+                        long lVol = m_random.Next(10000);
+
+                        SimpleGraphingStd.Plot p = new SimpleGraphingStd.Plot(dfTime, rgdfVal, lVol);
+
+                        if (bEnableOverlay)
+                            p.SetParameter("cos", (float)Math.Cos(j));
+
+                        plots.Add(p);
+
+                        dtStart += TimeSpan.FromMinutes(1);
+                        dfTime = dtStart.ToFileTime();
+                        dfVal += -1 + (2 * m_random.NextDouble());
+                    }
+                }
+
+                set.Add(plots);
+                rgSet.Add(set);
+
+                if (i % 2 == 0)
+                    plotsLast = plots;
+                else
+                    plotsLast = null;
+            }
+
+            double dfSlope;
+            double dfConfWid;
+            SimpleGraphingStd.PlotCollection colReg = rgSet[0][0].CalculateLinearRegressionLines(out dfSlope, out dfConfWid);
+            rgSet[0].Add(colReg);
+
+            configureCandleCharts2(bEnableOverlay, rgSet, false);
+
+            updateGraph2(rgSet);
+        }
+
         private void candleFromExternalDataToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (openFileDialogBin.ShowDialog() != DialogResult.OK)
                 return;
 
-            List<PlotCollectionSet> rgSet = new List<PlotCollectionSet>();
+            List<SimpleGraphing.PlotCollectionSet> rgSet = new List<SimpleGraphing.PlotCollectionSet>();
 
             if (Path.GetExtension(openFileDialogBin.FileName).ToLower() == ".bin")
             {
@@ -229,12 +384,12 @@ namespace SimpleGraphingApp
                 using (BinaryReader br = new BinaryReader(fs))
                 {
                     byte[] rgBytes = br.ReadBytes((int)fs.Length);
-                    rgSet = PlotCollectionSet.LoadList(rgBytes);
+                    rgSet = SimpleGraphing.PlotCollectionSet.LoadList(rgBytes);
                 }
             }
             else
             {
-                PlotCollection colPlots = new PlotCollection("Prices");
+                SimpleGraphing.PlotCollection colPlots = new SimpleGraphing.PlotCollection("Prices");
 
                 using (StreamReader sr = new StreamReader(openFileDialogBin.FileName))
                 {
@@ -272,7 +427,7 @@ namespace SimpleGraphingApp
                     }
                 }
 
-                PlotCollectionSet set = new PlotCollectionSet();
+                SimpleGraphing.PlotCollectionSet set = new SimpleGraphing.PlotCollectionSet();
                 set.Add(colPlots);
                 rgSet.Add(set);
             }
@@ -287,7 +442,81 @@ namespace SimpleGraphingApp
             updateGraph(rgSet);
         }
 
-        private void updateGraph(List<PlotCollectionSet> rgSet)
+        private void candleFromExternalDataToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            if (openFileDialogBin.ShowDialog() != DialogResult.OK)
+                return;
+
+            List<SimpleGraphingStd.PlotCollectionSet> rgSet = new List<SimpleGraphingStd.PlotCollectionSet>();
+
+            if (Path.GetExtension(openFileDialogBin.FileName).ToLower() == ".bin")
+            {
+                using (FileStream fs = File.OpenRead(openFileDialogBin.FileName))
+                using (BinaryReader br = new BinaryReader(fs))
+                {
+                    byte[] rgBytes = br.ReadBytes((int)fs.Length);
+                    rgSet = SimpleGraphingStd.PlotCollectionSet.LoadList(rgBytes);
+                }
+            }
+            else
+            {
+                SimpleGraphingStd.PlotCollection colPlots = new SimpleGraphingStd.PlotCollection("Prices");
+
+                using (StreamReader sr = new StreamReader(openFileDialogBin.FileName))
+                {
+                    string strLine = sr.ReadLine();
+                    strLine = sr.ReadLine();
+
+                    while (strLine != null)
+                    {
+                        string[] rgstr = strLine.Split(',');
+
+                        int nIdx = 0;
+                        DateTime dt;
+                        if (!DateTime.TryParse(rgstr[nIdx], out dt))
+                        {
+                            nIdx++;
+                            dt = DateTime.Parse(rgstr[nIdx]);
+                        }
+
+                        nIdx++;
+                        float fOpen = float.Parse(rgstr[nIdx]);
+                        nIdx++;
+                        float fHigh = float.Parse(rgstr[nIdx]);
+                        nIdx++;
+                        float fLow = float.Parse(rgstr[nIdx]);
+                        nIdx++;
+                        float fClose = float.Parse(rgstr[nIdx]);
+                        nIdx++;
+                        long lVol = long.Parse(rgstr[nIdx]);
+
+                        colPlots.Add(dt.ToFileTime(), new float[] { fOpen, fHigh, fLow, fClose });
+                        colPlots[colPlots.Count - 1].Tag = dt;
+                        colPlots[colPlots.Count - 1].Count = lVol;
+
+                        strLine = sr.ReadLine();
+                    }
+                }
+
+                SimpleGraphingStd.PlotCollectionSet set = new SimpleGraphingStd.PlotCollectionSet();
+                set.Add(colPlots);
+                rgSet.Add(set);
+            }
+
+            while (rgSet.Count < 4)
+            {
+                rgSet.Add(rgSet[0].Clone());
+            }
+
+            configureCandleCharts2(false, rgSet, true);
+
+            updateGraph2(rgSet);
+        }
+
+        /// <summary>
+        /// Update the graph rendering for .NET Framework 4.8
+        /// </summary>
+        private void updateGraph(List<SimpleGraphing.PlotCollectionSet> rgSet)
         {
             m_rgSet = rgSet;
             simpleGraphingControl1.BuildGraph(rgSet, true, true);
@@ -295,7 +524,25 @@ namespace SimpleGraphingApp
             simpleGraphingControl1.ScrollToEnd(true);
         }
 
-        private void configureCandleCharts(bool bEnableOverlay, List<PlotCollectionSet> rgSet, bool bLoadedFromFile)
+        /// <summary>
+        /// Update the graph rendering for .NET Standard 2.0
+        /// </summary>
+        private void updateGraph2(List<SimpleGraphingStd.PlotCollectionSet> rgSet)
+        {
+            m_rgSet2 = rgSet;
+            m_sg.BuildGraph(rgSet, true);
+            SKImage img = m_sg.Render(pbImg.Width, pbImg.Height);
+
+            // Convert SKImage to Image
+            using (SKImage skImage = img)
+            using (SKData data = skImage.Encode())
+            using (MemoryStream mStream = new MemoryStream(data.ToArray()))
+            {
+                pbImg.Image = Image.FromStream(mStream);
+            }
+        }
+
+        private void configureCandleCharts(bool bEnableOverlay, List<SimpleGraphing.PlotCollectionSet> rgSet, bool bLoadedFromFile)
         {
             timerData.Enabled = false;
             toolStrip1.Visible = true;
@@ -317,8 +564,8 @@ namespace SimpleGraphingApp
                 DateTime dt0 = DateTime.FromFileTime((long)rgSet[0][0][nIdx1].X);
                 DateTime dt1 = DateTime.FromFileTime((long)rgSet[0][0][nIdx2].X);
 
-                simpleGraphingControl1.Configuration.Frames[0].PlotArea.TimeZones = new List<ConfigurationTimeZone>();
-                simpleGraphingControl1.Configuration.Frames[0].PlotArea.TimeZones.Add(new ConfigurationTimeZone(dt0, dt1, Color.LightGray, true));
+                simpleGraphingControl1.Configuration.Frames[0].PlotArea.TimeZones = new List<SimpleGraphing.ConfigurationTimeZone>();
+                simpleGraphingControl1.Configuration.Frames[0].PlotArea.TimeZones.Add(new SimpleGraphing.ConfigurationTimeZone(dt0, dt1, Color.LightGray, true));
             }
             else
             {
@@ -327,27 +574,27 @@ namespace SimpleGraphingApp
 
             for (int i = 0; i < simpleGraphingControl1.Configuration.Frames.Count; i++)
             {
-                ConfigurationFrame frame = simpleGraphingControl1.Configuration.Frames[i];
+                SimpleGraphing.ConfigurationFrame frame = simpleGraphingControl1.Configuration.Frames[i];
 
                 if (i == 0)
                 {                    
                     frame.Visible = true;
-                    frame.Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.CANDLE;
+                    frame.Plots[0].PlotType = SimpleGraphing.ConfigurationPlot.PLOTTYPE.CANDLE;
 
                     for (int j = 2; j < frame.Plots.Count; j++)
                     {
-                        if (frame.Plots[j].PlotType == ConfigurationPlot.PLOTTYPE.CUSTOM)
+                        if (frame.Plots[j].PlotType == SimpleGraphing.ConfigurationPlot.PLOTTYPE.CUSTOM)
                         {
                             frame.Plots[j].Visible = false;
                         }
-                        else if (frame.Plots[j].PlotType == ConfigurationPlot.PLOTTYPE.HIGHLOW)
+                        else if (frame.Plots[j].PlotType == SimpleGraphing.ConfigurationPlot.PLOTTYPE.HIGHLOW)
                         {
                             if (frame.Plots[j].ExtraSettings == null)
                                 frame.Plots[j].ExtraSettings = new Dictionary<string, double>();
                             if (!frame.Plots[j].ExtraSettings.ContainsKey("DrawLines"))
                                 frame.Plots[j].ExtraSettings.Add("DrawLines", 1.0);
                         }
-                        else if (frame.Plots[j].PlotType == ConfigurationPlot.PLOTTYPE.LINE)
+                        else if (frame.Plots[j].PlotType == SimpleGraphing.ConfigurationPlot.PLOTTYPE.LINE)
                         {
                             if (frame.Plots[j].Name == "Regression" ||
                                 frame.Plots[j].Name == "Conf+" ||
@@ -365,7 +612,7 @@ namespace SimpleGraphingApp
                 else if (i == 1)
                 {
                     frame.Visible = true;
-                    frame.Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.LRSI;
+                    frame.Plots[0].PlotType = SimpleGraphing.ConfigurationPlot.PLOTTYPE.LRSI;
                     frame.Plots[0].Interval = 14;
                     frame.Plots[0].LineColor = Color.DarkGreen;
                     frame.Plots[0].LineWidth = 2.0f;
@@ -374,7 +621,7 @@ namespace SimpleGraphingApp
 
                     if (frame.Plots.Count > 1)
                     {
-                        frame.Plots[1].PlotType = ConfigurationPlot.PLOTTYPE.HIGHLOW;
+                        frame.Plots[1].PlotType = SimpleGraphing.ConfigurationPlot.PLOTTYPE.HIGHLOW;
                         frame.Plots[1].DataName = "RSI";
                         frame.Plots[1].DataIndex = 1;
                         frame.Plots[1].Visible = true;
@@ -382,40 +629,162 @@ namespace SimpleGraphingApp
 
                     for (int j = 2; j < frame.Plots.Count; j++)
                     {
-                        if (frame.Plots[j].PlotType == ConfigurationPlot.PLOTTYPE.CUSTOM)
-                            frame.Plots[j].Visible = (frame.Plots[0].PlotType == ConfigurationPlot.PLOTTYPE.LRSI) ? false : true;
+                        if (frame.Plots[j].PlotType == SimpleGraphing.ConfigurationPlot.PLOTTYPE.CUSTOM)
+                            frame.Plots[j].Visible = (frame.Plots[0].PlotType == SimpleGraphing.ConfigurationPlot.PLOTTYPE.LRSI) ? false : true;
                         else
                             frame.Plots[j].Visible = false;
                     }
 
-                    frame.TargetLines.Add(new ConfigurationTargetLine(30, Color.Maroon));
-                    frame.TargetLines.Add(new ConfigurationTargetLine(70, Color.Green));
+                    frame.TargetLines.Add(new SimpleGraphing.ConfigurationTargetLine(30, Color.Maroon));
+                    frame.TargetLines.Add(new SimpleGraphing.ConfigurationTargetLine(70, Color.Green));
                     frame.YAxis.InitialMaximum = 100;
                     frame.YAxis.InitialMinimum = 0;
                 }
                 else if (i == 2)
                 {
                     frame.Visible = true;
-                    frame.Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.VOLUME;
+                    frame.Plots[0].PlotType = SimpleGraphing.ConfigurationPlot.PLOTTYPE.VOLUME;
                     frame.Plots[0].LineColor = Color.Blue;
                     frame.Plots[0].LineWidth = 1.0f;
                     frame.Plots[0].PlotFillColor = Color.Transparent;
                     frame.Plots[0].PlotLineColor = Color.Transparent;
-                    frame.MinMaxTarget = PlotCollection.MINMAX_TARGET.COUNT;
+                    frame.MinMaxTarget = SimpleGraphing.PlotCollection.MINMAX_TARGET.COUNT;
                 }
                 else
                 {
                     frame.Visible = false;
                 }
 
-                frame.XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.TIME;
-                frame.XAxis.ValueResolution = ConfigurationAxis.VALUE_RESOLUTION.DAY;
+                frame.XAxis.ValueType = SimpleGraphing.ConfigurationAxis.VALUE_TYPE.TIME;
+                frame.XAxis.ValueResolution = SimpleGraphing.ConfigurationAxis.VALUE_RESOLUTION.DAY;
                 frame.YAxis.Decimals = 2;
             }
 
             simpleGraphingControl1.SetLookahead(3);
         }
 
+        private void configureCandleCharts2(bool bEnableOverlay, List<SimpleGraphingStd.PlotCollectionSet> rgSet, bool bLoadedFromFile)
+        {
+            timerData.Enabled = false;
+            toolStrip1.Visible = true;
+
+            m_sg.Configuration.Surface.EnableSmoothing = true;
+            m_sg.Configuration.Frames[0].EnableRelativeScaling(true, btnScaleToVisible.Checked);
+
+            if (!bLoadedFromFile)
+            {
+                int nIdx1 = 30;
+                int nIdx2 = 60;
+
+                if (nIdx1 > rgSet[0][0].Count)
+                    nIdx1 = rgSet[0][0].Count - 1;
+
+                if (nIdx2 > rgSet[0][0].Count)
+                    nIdx2 = rgSet[0][0].Count - 1;
+
+                DateTime dt0 = DateTime.FromFileTime((long)rgSet[0][0][nIdx1].X);
+                DateTime dt1 = DateTime.FromFileTime((long)rgSet[0][0][nIdx2].X);
+
+                m_sg.Configuration.Frames[0].PlotArea.TimeZones = new List<SimpleGraphingStd.ConfigurationTimeZone>();
+                m_sg.Configuration.Frames[0].PlotArea.TimeZones.Add(new SimpleGraphingStd.ConfigurationTimeZone(dt0, dt1, SKColors.LightGray, true));
+            }
+            else
+            {
+                m_sg.Configuration.Frames[0].MinimumYRange = 5;
+            }
+
+            for (int i = 0; i < m_sg.Configuration.Frames.Count; i++)
+            {
+                SimpleGraphingStd.ConfigurationFrame frame = m_sg.Configuration.Frames[i];
+
+                if (i == 0)
+                {
+                    frame.Visible = true;
+                    frame.Plots[0].PlotType = SimpleGraphingStd.ConfigurationPlot.PLOTTYPE.CANDLE;
+
+                    for (int j = 2; j < frame.Plots.Count; j++)
+                    {
+                        if (frame.Plots[j].PlotType == SimpleGraphingStd.ConfigurationPlot.PLOTTYPE.CUSTOM)
+                        {
+                            frame.Plots[j].Visible = false;
+                        }
+                        else if (frame.Plots[j].PlotType == SimpleGraphingStd.ConfigurationPlot.PLOTTYPE.HIGHLOW)
+                        {
+                            if (frame.Plots[j].ExtraSettings == null)
+                                frame.Plots[j].ExtraSettings = new Dictionary<string, double>();
+                            if (!frame.Plots[j].ExtraSettings.ContainsKey("DrawLines"))
+                                frame.Plots[j].ExtraSettings.Add("DrawLines", 1.0);
+                        }
+                        else if (frame.Plots[j].PlotType == SimpleGraphingStd.ConfigurationPlot.PLOTTYPE.LINE)
+                        {
+                            if (frame.Plots[j].Name == "Regression" ||
+                                frame.Plots[j].Name == "Conf+" ||
+                                frame.Plots[j].Name == "Conf-")
+                                frame.Plots[j].Visible = true;
+                        }
+
+                        //if (frame.Plots[j].PlotType != ConfigurationPlot.PLOTTYPE.BOLLINGERBANDS)
+                        //    frame.Plots[j].Visible = false;
+                    }
+
+                    frame.Plots[4].Visible = bEnableOverlay;
+                    frame.Plots[5].Visible = true;
+                }
+                else if (i == 1)
+                {
+                    frame.Visible = true;
+                    frame.Plots[0].PlotType = SimpleGraphingStd.ConfigurationPlot.PLOTTYPE.RSI;
+                    frame.Plots[0].Interval = 14;
+                    frame.Plots[0].LineColor = SKColors.DarkGreen;
+                    frame.Plots[0].LineWidth = 2.0f;
+                    frame.Plots[0].PlotFillColor = SKColors.Transparent;
+                    frame.Plots[0].PlotLineColor = SKColors.Transparent;
+
+                    if (frame.Plots.Count > 1)
+                    {
+                        frame.Plots[1].PlotType = SimpleGraphingStd.ConfigurationPlot.PLOTTYPE.HIGHLOW;
+                        frame.Plots[1].DataName = "RSI";
+                        frame.Plots[1].DataIndex = 1;
+                        frame.Plots[1].Visible = true;
+                    }
+
+                    for (int j = 2; j < frame.Plots.Count; j++)
+                    {
+                        if (frame.Plots[j].PlotType == SimpleGraphingStd.ConfigurationPlot.PLOTTYPE.CUSTOM)
+                            frame.Plots[j].Visible = (frame.Plots[0].PlotType == SimpleGraphingStd.ConfigurationPlot.PLOTTYPE.RSI) ? false : true;
+                        else
+                            frame.Plots[j].Visible = false;
+                    }
+
+                    frame.TargetLines.Add(new SimpleGraphingStd.ConfigurationTargetLine(30, SKColors.Maroon));
+                    frame.TargetLines.Add(new SimpleGraphingStd.ConfigurationTargetLine(70, SKColors.Green));
+                    frame.YAxis.InitialMaximum = 100;
+                    frame.YAxis.InitialMinimum = 0;
+                }
+                else if (i == 2)
+                {
+                    frame.Visible = true;
+                    frame.Plots[0].PlotType = SimpleGraphingStd.ConfigurationPlot.PLOTTYPE.VOLUME;
+                    frame.Plots[0].LineColor = SKColors.Blue;
+                    frame.Plots[0].LineWidth = 1.0f;
+                    frame.Plots[0].PlotFillColor = SKColors.Transparent;
+                    frame.Plots[0].PlotLineColor = SKColors.Transparent;
+                    frame.MinMaxTarget = SimpleGraphingStd.PlotCollection.MINMAX_TARGET.COUNT;
+                }
+                else
+                {
+                    frame.Visible = false;
+                }
+
+                frame.XAxis.ValueType = SimpleGraphingStd.ConfigurationAxis.VALUE_TYPE.TIME;
+                frame.XAxis.ValueResolution = SimpleGraphingStd.ConfigurationAxis.VALUE_RESOLUTION.DAY;
+                frame.YAxis.Decimals = 2;
+            }
+        }
+
+        /// <summary>
+        /// Configure the line charts for .NET Framework 4.8
+        /// </summary>
         private void configureLineCharts()
         {
             simpleGraphingControl1.Configuration.Surface.EnableSmoothing = true;
@@ -423,10 +792,10 @@ namespace SimpleGraphingApp
 
             for (int i=0; i<simpleGraphingControl1.Configuration.Frames.Count; i++)
             {
-                ConfigurationFrame frame = simpleGraphingControl1.Configuration.Frames[i];
+                SimpleGraphing.ConfigurationFrame frame = simpleGraphingControl1.Configuration.Frames[i];
 
                 frame.Visible = true;
-                frame.Plots[0].PlotType = ConfigurationPlot.PLOTTYPE.LINE;
+                frame.Plots[0].PlotType = SimpleGraphing.ConfigurationPlot.PLOTTYPE.LINE;
                 frame.Plots[0].Interval = 20;
                 frame.Plots[0].LineColor = Color.Black;
                 frame.Plots[0].LineWidth = 1.0f;
@@ -438,7 +807,7 @@ namespace SimpleGraphingApp
 
                 if (frame.Plots.Count > 1)
                 {
-                    frame.Plots[1].PlotType = ConfigurationPlot.PLOTTYPE.SMA;
+                    frame.Plots[1].PlotType = SimpleGraphing.ConfigurationPlot.PLOTTYPE.SMA;
                     frame.Plots[1].DataName = null;
                     frame.Plots[1].DataIndex = 0;
                     frame.Plots[1].Visible = true;
@@ -446,14 +815,14 @@ namespace SimpleGraphingApp
 
                 for (int j = 2; j < frame.Plots.Count; j++)
                 {
-                    if (frame.Plots[j].PlotType == ConfigurationPlot.PLOTTYPE.CUSTOM)
+                    if (frame.Plots[j].PlotType == SimpleGraphing.ConfigurationPlot.PLOTTYPE.CUSTOM)
                         frame.Plots[j].Visible = false;
                     else
                         frame.Plots[j].Visible = true;
                 }
 
-                frame.XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.NUMBER;
-                frame.XAxis.ValueResolution = ConfigurationAxis.VALUE_RESOLUTION.DAY;
+                frame.XAxis.ValueType = SimpleGraphing.ConfigurationAxis.VALUE_TYPE.NUMBER;
+                frame.XAxis.ValueResolution = SimpleGraphing.ConfigurationAxis.VALUE_RESOLUTION.DAY;
                 frame.YAxis.Decimals = 0;
                 frame.TargetLines.Clear();
                 frame.YAxis.InitialMaximum = 1;
@@ -462,6 +831,70 @@ namespace SimpleGraphingApp
 
             if (simpleGraphingControl1.Configuration.Frames[0].Plots.Count > 4)
                 simpleGraphingControl1.Configuration.Frames[0].Plots[4].Visible = false;
+
+            string strCfgFile = getConfigFile();
+            simpleGraphingControl1.SaveConfiguration(strCfgFile);
+        }
+
+        private string getConfigFile()
+        {
+            string strPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\SimpleGraphing\\";
+            if (!Directory.Exists(strPath))
+                Directory.CreateDirectory(strPath);
+
+            strPath += "default_config.xml";
+            return strPath;
+        }
+
+        /// <summary>
+        /// Configure the line charts for .NET Standard 2.0
+        /// </summary>
+        private void configureLineCharts2()
+        {
+            m_sg.Configuration.Surface.EnableSmoothing = true;
+            m_sg.Configuration.Frames[0].EnableRelativeScaling(false, false);
+
+            for (int i = 0; i < m_sg.Configuration.Frames.Count; i++)
+            {
+                SimpleGraphingStd.ConfigurationFrame frame = m_sg.Configuration.Frames[i];
+
+                frame.Visible = true;
+                frame.Plots[0].PlotType = SimpleGraphingStd.ConfigurationPlot.PLOTTYPE.LINE;
+                frame.Plots[0].Interval = 20;
+                frame.Plots[0].LineColor = SKColors.Black;
+                frame.Plots[0].LineWidth = 1.0f;
+                frame.Plots[0].PlotFillColor = SKColors.Cyan;
+                frame.Plots[0].PlotLineColor = SKColors.Black;
+
+                if (i == 0 && frame.Plots.Count > 4)
+                    frame.Plots[5].Visible = false;
+
+                if (frame.Plots.Count > 1)
+                {
+                    frame.Plots[1].PlotType = SimpleGraphingStd.ConfigurationPlot.PLOTTYPE.SMA;
+                    frame.Plots[1].DataName = null;
+                    frame.Plots[1].DataIndex = 0;
+                    frame.Plots[1].Visible = true;
+                }
+
+                for (int j = 2; j < frame.Plots.Count; j++)
+                {
+                    if (frame.Plots[j].PlotType == SimpleGraphingStd.ConfigurationPlot.PLOTTYPE.CUSTOM)
+                        frame.Plots[j].Visible = false;
+                    else
+                        frame.Plots[j].Visible = true;
+                }
+
+                frame.XAxis.ValueType = SimpleGraphingStd.ConfigurationAxis.VALUE_TYPE.NUMBER;
+                frame.XAxis.ValueResolution = SimpleGraphingStd.ConfigurationAxis.VALUE_RESOLUTION.DAY;
+                frame.YAxis.Decimals = 0;
+                frame.TargetLines.Clear();
+                frame.YAxis.InitialMaximum = 1;
+                frame.YAxis.InitialMinimum = 0;
+            }
+
+            if (m_sg.Configuration.Frames[0].Plots.Count > 4)
+                m_sg.Configuration.Frames[0].Plots[4].Visible = false;
         }
 
         private void specialSettingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -514,7 +947,7 @@ namespace SimpleGraphingApp
 
         private void stepPrev()
         {
-            PlotCollectionSet lastData = simpleGraphingControl1.GetLastData(0, true);
+            SimpleGraphing.PlotCollectionSet lastData = simpleGraphingControl1.GetLastData(0, true);
             if (lastData == null)
                 return;
 
@@ -527,21 +960,21 @@ namespace SimpleGraphingApp
             { 
                 if (m_rgLastData.Count > 0)
                 {
-                    PlotCollectionSet lastData1 = m_rgLastData[m_rgLastData.Count - 1];
+                    SimpleGraphing.PlotCollectionSet lastData1 = m_rgLastData[m_rgLastData.Count - 1];
                     m_rgLastData.RemoveAt(m_rgLastData.Count - 1);
                     simpleGraphingControl1.AddData(lastData1, true);
                     return;
                 }
 
-                PlotCollectionSet newData = new PlotCollectionSet();
-                PlotCollectionSet lastData = simpleGraphingControl1.GetLastData();
+                SimpleGraphing.PlotCollectionSet newData = new SimpleGraphing.PlotCollectionSet();
+                SimpleGraphing.PlotCollectionSet lastData = simpleGraphingControl1.GetLastData();
                 if (lastData == null)
                     return;
 
                 for (int i = 0; i < lastData.Count; i++)
                 {
-                    PlotCollection frameData = lastData[i];
-                    PlotCollection frameNewData = new PlotCollection(frameData.Name);
+                    SimpleGraphing.PlotCollection frameData = lastData[i];
+                    SimpleGraphing.PlotCollection frameNewData = new SimpleGraphing.PlotCollection(frameData.Name);
 
                     for (int j = 0; j < frameData.Count; j++)
                     {
@@ -557,7 +990,7 @@ namespace SimpleGraphingApp
                         double dfL = Math.Min(dfO, dfC) - (Math.Abs(dfC - dfO) * m_random.NextDouble());
                         List<double> rgdfVal = new List<double>() { dfO, dfH, dfL, dfC };
 
-                        Plot p = new Plot(dfTime, rgdfVal);
+                        SimpleGraphing.Plot p = new SimpleGraphing.Plot(dfTime, rgdfVal);
                         p.Action1Active = enableActionStripMenuItem.Checked;
                         p.Action2Active = enableActionStripMenuItem.Checked;
 
@@ -626,8 +1059,10 @@ namespace SimpleGraphingApp
 
         private void btnReDraw_Click(object sender, EventArgs e)
         {
-            if (m_rgSet != null)
+            if (m_rgSet != null && simpleGraphingControl1.Visible)
                 updateGraph(m_rgSet);
+            else if (m_rgSet2 != null && pbImg.Visible)
+                updateGraph2(m_rgSet2);
         }
 
         private void simpleGraphingControl1_Load(object sender, EventArgs e)
@@ -648,6 +1083,8 @@ namespace SimpleGraphingApp
 
         private void testPlotCollectionVisualizerToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            showVisuals();
+
             if (m_rgSet == null)
             {
                 MessageBox.Show("You must first create the line or candle data.", "No Data", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -662,6 +1099,12 @@ namespace SimpleGraphingApp
             Properties.Settings.Default.Width = (uint)Width;
             Properties.Settings.Default.Height = (uint)Height;
             Properties.Settings.Default.Save();
+        }
+
+        private void showVisuals(bool bDotNetStandard2 = false)
+        {
+            simpleGraphingControl1.Visible = !bDotNetStandard2;
+            pbImg.Visible = bDotNetStandard2;
         }
     }
 }
