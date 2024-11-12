@@ -121,6 +121,21 @@ namespace SimpleGraphingStd
             return TimeZoneEx.GetTimeZoneOffset();
         }
 
+        public static Configuration GetQuickRenderConfiguration(string strName, int nValCount, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null, bool bUseTimeResolutionForValueType = false)
+        {
+            Configuration cfg = SetConfigurationToQuickRenderDefault(strName, "", nValCount, bConvertToEastern, timeResolution, bUseTimeResolutionForValueType);
+
+            if (bIncludeTitle)
+                cfg.Frames[0].TitleColor = SKColors.Black;
+            else
+                cfg.Frames[0].TitleColor = SKColors.Transparent;
+
+            if (rgTargetLines != null && rgTargetLines.Count > 0 && cfg.Frames.Count > 0)
+                cfg.Frames[0].TargetLines.AddRange(rgTargetLines);
+
+            return cfg;
+        }
+
         public static Configuration SetConfigurationToQuickRenderDefault(
             string strName,
             string strTag,
