@@ -27,7 +27,20 @@ namespace SimpleGraphingStd
         {
             Configuration cfg = new Configuration();
 
-
+            foreach (ConfigurationFrame frame in cfg.Frames)
+            {
+                frame.PlotArea.LabelFont = new SKFont(SKTypeface.FromFamilyName("Century Gothic"), 9.0f);
+                frame.XAxis.LabelFont = new SKFont(SKTypeface.FromFamilyName("Century Gothic"), 9.0f);
+                frame.XAxis.Visible = true;
+                frame.XAxis.Margin = 100;
+                frame.XAxis.TimeOffsetInHours = 0;
+                frame.YAxis.LabelFont = new SKFont(SKTypeface.FromFamilyName("Century Gothic"), 9.0f);
+                frame.YAxis.Decimals = 3;
+                frame.Plots.Add(new ConfigurationPlot());
+                frame.XAxis.ValueType = ConfigurationAxis.VALUE_TYPE.TIME;
+                frame.XAxis.ValueResolution = ConfigurationAxis.VALUE_RESOLUTION.DAY_MONTH;
+                frame.EnableRelativeScaling(true, true, 0);
+            }
 
             return cfg;
         }
@@ -153,13 +166,14 @@ namespace SimpleGraphingStd
             cfg.Frames.Add(new ConfigurationFrame());
 
             // Setting up the X Axis
-            cfg.Frames[0].XAxis.LabelFont = new SKFont(SKTypeface.FromFamilyName("Century Gothic"), 7.0f);
+            cfg.Frames[0].PlotArea.LabelFont = new SKFont(SKTypeface.FromFamilyName("Century Gothic"), 9.0f);
+            cfg.Frames[0].XAxis.LabelFont = new SKFont(SKTypeface.FromFamilyName("Century Gothic"), 8.0f);
             cfg.Frames[0].XAxis.Visible = true;
             cfg.Frames[0].XAxis.Margin = 100;
             cfg.Frames[0].XAxis.TimeOffsetInHours = dfTimeOffsetInHours;
 
             // Setting up the Y Axis
-            cfg.Frames[0].YAxis.LabelFont = new SKFont(SKTypeface.FromFamilyName("Century Gothic"), 7.0f);
+            cfg.Frames[0].YAxis.LabelFont = new SKFont(SKTypeface.FromFamilyName("Century Gothic"), 8.0f);
             cfg.Frames[0].YAxis.Decimals = 3;
 
             // Adding a plot configuration
