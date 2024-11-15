@@ -298,7 +298,7 @@ namespace SimpleGraphingStd
             canvas.Restore();
 
             float fX = 3;
-            float fY = 10;
+            float fY = 30;
             float fHt = 0;
 
             foreach (GraphPlot graphPlot in m_rgPlots)
@@ -307,7 +307,7 @@ namespace SimpleGraphingStd
                     break;
 
                 fHt = drawLabel(canvas, fX, fY, graphPlot);
-                fY += fHt;
+                fY += (fHt * 1.2f);
             }
 
             foreach (ConfigurationTargetLine line in m_config.TargetLines)
@@ -427,8 +427,8 @@ namespace SimpleGraphingStd
             var paint = new SKPaint
             {
                 Color = style.TitleBrush.Color,
-                Typeface = SKTypeface.FromFamilyName("Century Gothic"),
-                TextSize = 16,
+                Typeface = SKTypeface.FromFamilyName("Century Gothic", SKFontStyle.Bold),
+                TextSize = 16,                
                 IsAntialias = canvas.IsSmoothing
             };
 
