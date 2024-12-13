@@ -807,7 +807,7 @@ namespace SimpleGraphingApp
 
                 if (frame.Plots.Count > 1)
                 {
-                    frame.Plots[1].PlotType = SimpleGraphing.ConfigurationPlot.PLOTTYPE.SMA;
+                    frame.Plots[1].PlotType = SimpleGraphing.ConfigurationPlot.PLOTTYPE.ZLEMA;
                     frame.Plots[1].DataName = null;
                     frame.Plots[1].DataIndex = 0;
                     frame.Plots[1].Visible = true;

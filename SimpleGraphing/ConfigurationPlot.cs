@@ -72,7 +72,8 @@ namespace SimpleGraphing
             ZONE,
             BOLLINGERBANDS,
             LRSI,
-            HMA
+            HMA,
+            ZLEMA
         }
 
         public enum PLOTSHAPE
@@ -629,6 +630,9 @@ namespace SimpleGraphing
 
             else if (str == PLOTTYPE.EMA.ToString())
                 return PLOTTYPE.EMA;
+
+            else if (str == PLOTTYPE.ZLEMA.ToString())
+                return PLOTTYPE.ZLEMA;
 
             else if (str == PLOTTYPE.HMA.ToString())
                 return PLOTTYPE.HMA;
