@@ -107,6 +107,10 @@ namespace SimpleGraphingStd
                     m_idata = new GraphDataEMA(m_config);
                     break;
 
+                case ConfigurationPlot.PLOTTYPE.ZLEMA:
+                    m_idata = new GraphDataZLEMA(m_config);
+                    break;
+
                 case ConfigurationPlot.PLOTTYPE.HMA:
                     m_idata = new GraphDataHMA(m_config);
                     break;

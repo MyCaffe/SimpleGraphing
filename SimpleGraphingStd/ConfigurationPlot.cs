@@ -68,7 +68,8 @@ namespace SimpleGraphingStd
             ZONE,
             BOLLINGERBANDS,
             LRSI,
-            HMA
+            HMA,
+            ZLEMA
         }
 
         public enum PLOTSHAPE
