@@ -28,6 +28,7 @@ namespace SimpleGraphingStd
         object m_tag = null;
         object m_tagEx = null;
         Dictionary<string, float> m_rgParams = null;
+        Dictionary<string, string> m_rgParamsTxt = null;
         bool m_bScaled = false;
         bool m_bClipped = false;
         object m_syncObj = new object();
@@ -339,6 +340,25 @@ namespace SimpleGraphingStd
             }
         }
 
+        public bool SetParameter(string strParam, string strVal)
+        {
+            lock (m_syncObj)
+            {
+                if (m_rgParamsTxt == null)
+                    m_rgParamsTxt = new Dictionary<string, string>();
+                if (!m_rgParamsTxt.ContainsKey(strParam))
+                {
+                    m_rgParamsTxt.Add(strParam, strVal);
+                    return false;
+                }
+                else
+                {
+                    m_rgParamsTxt[strParam] = strVal;
+                    return true;
+                }
+            }
+        }
+
         public void AddToParameter(string strParam, double df)
         {
             AddToParameter(strParam, (float)df);
@@ -369,6 +389,18 @@ namespace SimpleGraphingStd
                     return null;
 
                 return m_rgParams[strParam];
+            }
+        }
+
+        public string GetParameterText(string strParam)
+        {
+            lock (m_syncObj)
+            {
+                if (m_rgParamsTxt == null)
+                    m_rgParamsTxt = new Dictionary<string, string>();
+                if (!m_rgParamsTxt.ContainsKey(strParam))
+                    return null;
+                return m_rgParamsTxt[strParam];
             }
         }
 
