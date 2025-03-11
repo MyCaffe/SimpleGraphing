@@ -315,6 +315,31 @@ namespace SimpleGraphing
             set { m_tagEx = value; }
         }
 
+        public void CopyParameters(Plot p)
+        {
+            if (p.m_rgParams != null)
+            {
+                if (m_rgParams == null)
+                    m_rgParams = new Dictionary<string, float>();
+
+                foreach (KeyValuePair<string, float> kv in p.m_rgParams)
+                {
+                    m_rgParams[kv.Key] = kv.Value;
+                }
+            }
+
+            if (p.m_rgParamsTxt != null)
+            {
+                if (m_rgParamsTxt == null)
+                    m_rgParamsTxt = new Dictionary<string, string>();
+
+                foreach (KeyValuePair<string, string> kv in p.m_rgParamsTxt)
+                {
+                    m_rgParamsTxt[kv.Key] = kv.Value;
+                }
+            }
+        }
+
         public bool SetParameter(string strParam, double df)
         {
             return SetParameter(strParam, (float)df);
