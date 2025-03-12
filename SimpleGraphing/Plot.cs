@@ -557,6 +557,14 @@ namespace SimpleGraphing
                             p.SetParameter(kv.Key, kv.Value);
                         }
                     }
+
+                    if (m_rgParamsTxt != null)
+                    {
+                        foreach (KeyValuePair<string, string> kv in m_rgParamsTxt)
+                        {
+                            p.SetParameter(kv.Key, kv.Value);
+                        }
+                    }
                 }
             }
 
