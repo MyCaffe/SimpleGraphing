@@ -484,6 +484,11 @@ namespace SimpleGraphingStd
             set { m_rgParams = value; }
         }
 
+        public Dictionary<string, string> ParametersText
+        {
+            get { return m_rgParamsTxt; }
+        }
+
         public string FindParameterNameContaining(string str)
         {
             lock (m_syncObj)
