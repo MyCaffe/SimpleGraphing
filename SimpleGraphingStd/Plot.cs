@@ -22,6 +22,7 @@ namespace SimpleGraphingStd
         bool m_bUseOverrideColors = false;
         string m_strName;
         float[] m_rgfY;
+        double[] m_rgdfY;
         long? m_lCount = null;
         double m_dfX;
         short m_nIdxPrimaryY = 0;
@@ -32,30 +33,54 @@ namespace SimpleGraphingStd
         bool m_bScaled = false;
         bool m_bClipped = false;
         object m_syncObj = new object();
+        BASETYPE m_baseType = BASETYPE.FLOAT;
 
-        public Plot(double dfX, double dfY, string strName = null, bool bActive = true, int nIdx = 0, bool bAction1Active = false, bool bAction2Active = false)
+        public enum BASETYPE
+        {
+            FLOAT,
+            DOUBLE
+        }
+
+        public Plot(double dfX, double dfY, string strName = null, bool bActive = true, int nIdx = 0, bool bAction1Active = false, bool bAction2Active = false, BASETYPE baseType = BASETYPE.FLOAT)
         {
             m_strName = strName;
             m_dfX = dfX;
-            m_rgfY = new float[1] { (float)dfY };
             m_bActive = bActive;
             m_nIdxPrimaryY = 0;
             m_nIndex = nIdx;
             m_bAction1Active = bAction1Active;
             m_bAction2Active = bAction2Active;
+            m_baseType = baseType;
+
+            if (baseType == BASETYPE.FLOAT)
+                m_rgfY = new float[1] { (float)dfY };
+            else
+                m_rgdfY = new double[1] { dfY };
         }
 
-        public Plot(double dfX, List<double> rgdfY, string strName = null, bool bActive = true, int nIdx = 0, bool bAction1Active = false, bool bAction2Active = false)
+        public Plot(double dfX, List<double> rgdfY, string strName = null, bool bActive = true, int nIdx = 0, bool bAction1Active = false, bool bAction2Active = false, BASETYPE baseType = BASETYPE.FLOAT)
         {
             m_strName = strName;
             m_dfX = dfX;
 
-            m_rgfY = new float[rgdfY.Count];
-            for (int i = 0; i < rgdfY.Count; i++)
+            if (baseType == BASETYPE.FLOAT)
             {
-                m_rgfY[i] = (float)rgdfY[i];
+                m_rgfY = new float[rgdfY.Count];
+                for (int i = 0; i < rgdfY.Count; i++)
+                {
+                    m_rgfY[i] = (float)rgdfY[i];
+                }
+            }
+            else
+            {
+                m_rgdfY = new double[rgdfY.Count];
+                for (int i = 0; i < rgdfY.Count; i++)
+                {
+                    m_rgdfY[i] = rgdfY[i];
+                }
             }
 
+            m_baseType = baseType;
             m_bActive = bActive;
             m_nIdxPrimaryY = (short)(rgdfY.Count - 1);
             m_nIndex = nIdx;
@@ -63,18 +88,30 @@ namespace SimpleGraphingStd
             m_bAction2Active = bAction2Active;
         }
 
-        public Plot(double dfX, List<double> rgdfY, long lCount, string strName = null, bool bActive = true, int nIdx = 0, bool bAction1Active = false, bool bAction2Active = false)
+        public Plot(double dfX, List<double> rgdfY, long lCount, string strName = null, bool bActive = true, int nIdx = 0, bool bAction1Active = false, bool bAction2Active = false, BASETYPE baseType = BASETYPE.FLOAT)
         {
             m_strName = strName;
             m_lCount = lCount;
             m_dfX = dfX;
 
-            m_rgfY = new float[rgdfY.Count];
-            for (int i = 0; i < rgdfY.Count; i++)
+            if (baseType == BASETYPE.FLOAT)
             {
-                m_rgfY[i] = (float)rgdfY[i];
+                m_rgfY = new float[rgdfY.Count];
+                for (int i = 0; i < rgdfY.Count; i++)
+                {
+                    m_rgfY[i] = (float)rgdfY[i];
+                }
+            }
+            else
+            {
+                m_rgdfY = new double[rgdfY.Count];
+                for (int i = 0; i < rgdfY.Count; i++)
+                {
+                    m_rgdfY[i] = rgdfY[i];
+                }
             }
 
+            m_baseType = baseType;
             m_bActive = bActive;
             m_nIdxPrimaryY = (short)(rgdfY.Count - 1);
             m_nIndex = nIdx;
@@ -87,6 +124,7 @@ namespace SimpleGraphingStd
             m_strName = strName;
             m_dfX = dfX;
             m_rgfY = rgfY;
+            m_baseType = BASETYPE.FLOAT;
             m_bActive = bActive;
             m_nIdxPrimaryY = (short)(rgfY.Length - 1);
             m_nIndex = nIdx;
@@ -100,6 +138,7 @@ namespace SimpleGraphingStd
             m_lCount = lCount;
             m_dfX = dfX;
             m_rgfY = rgfY;
+            m_baseType = BASETYPE.FLOAT;
             m_bActive = bActive;
             m_nIdxPrimaryY = (short)(rgfY.Length - 1);
             m_nIndex = nIdx;
@@ -107,8 +146,43 @@ namespace SimpleGraphingStd
             m_bAction2Active = bAction2Active;
         }
 
+        public Plot(double dfX, double[] rgfY, string strName = null, bool bActive = true, int nIdx = 0, bool bAction1Active = false, bool bAction2Active = false)
+        {
+            m_strName = strName;
+            m_dfX = dfX;
+            m_rgdfY = rgfY;
+            m_baseType = BASETYPE.DOUBLE;
+            m_bActive = bActive;
+            m_nIdxPrimaryY = (short)(rgfY.Length - 1);
+            m_nIndex = nIdx;
+            m_bAction1Active = bAction1Active;
+            m_bAction2Active = bAction2Active;
+        }
+
+        public Plot(double dfX, double[] rgfY, long lCount, string strName = null, bool bActive = true, int nIdx = 0, bool bAction1Active = false, bool bAction2Active = false)
+        {
+            m_strName = strName;
+            m_lCount = lCount;
+            m_dfX = dfX;
+            m_rgdfY = rgfY;
+            m_baseType = BASETYPE.DOUBLE;
+            m_bActive = bActive;
+            m_nIdxPrimaryY = (short)(rgfY.Length - 1);
+            m_nIndex = nIdx;
+            m_bAction1Active = bAction1Active;
+            m_bAction2Active = bAction2Active;
+        }
+
+        public BASETYPE BaseType
+        {
+            get { return m_baseType; }
+        }
+
         public void Save(BinaryWriter bw)
         {
+            string str = "$v.01.01";
+            byte[] rgb = Encoding.UTF8.GetBytes(str);
+            bw.Write(rgb);
             bw.Write(m_nIndex);
             bw.Write(m_bActive);
             bw.Write(m_bAction1Active);
@@ -119,12 +193,26 @@ namespace SimpleGraphingStd
             if (m_strName != null)
                 bw.Write(m_strName);
 
-            int nLen = m_rgfY.Length;
+            int nLen = (m_rgfY == null) ? 0 : m_rgfY.Length;
             bw.Write(nLen);
-            for (int i = 0; i < m_rgfY.Length; i++)
+            if (nLen > 0)
             {
-                double df = m_rgfY[i];
-                bw.Write(df);
+                for (int i = 0; i < m_rgfY.Length; i++)
+                {
+                    double df = m_rgfY[i];
+                    bw.Write(df);
+                }
+            }
+
+            nLen = (m_rgdfY == null) ? 0 : m_rgdfY.Length;
+            bw.Write(nLen);
+            if (nLen > 0)
+            {
+                for (int i = 0; i < m_rgdfY.Length; i++)
+                {
+                    double df = m_rgdfY[i];
+                    bw.Write(df);
+                }
             }
 
             bw.Write((m_lCount.HasValue) ? true : false);
@@ -161,8 +249,27 @@ namespace SimpleGraphingStd
             bw.Write(m_bScaled);
         }
 
+        public static byte[] PeekBytes(BinaryReader reader, int count)
+        {
+            // Save the current position
+            long originalPosition = reader.BaseStream.Position;
+
+            // Read the bytes
+            byte[] bytes = reader.ReadBytes(count);
+
+            // Reset the position back to where it was
+            reader.BaseStream.Position = originalPosition;
+
+            return bytes;
+        }
+
         public static Plot Load(BinaryReader br)
         {
+            byte[] rgb = PeekBytes(br, 8);
+            string strV = Encoding.UTF8.GetString(rgb);
+            if (strV == "$v.01.01")
+                return LoadEx(br);
+
             int nIdx = br.ReadInt32();
             bool bActive = br.ReadBoolean();
             bool bAction1Active = br.ReadBoolean();
@@ -174,11 +281,15 @@ namespace SimpleGraphingStd
                 strName = br.ReadString();
 
             int nCount = br.ReadInt32();
-            float[] rgfY = new float[nCount];            
-            for (int i = 0; i < nCount; i++)
+            float[] rgfY = null;
+            if (nCount > 0)
             {
-                double df = br.ReadDouble();
-                rgfY[i] = (float)df;
+                rgfY = new float[nCount];
+                for (int i = 0; i < nCount; i++)
+                {
+                    double df = br.ReadDouble();
+                    rgfY[i] = (float)df;
+                }
             }
 
             long? lCount = null;
@@ -233,6 +344,103 @@ namespace SimpleGraphingStd
             return p;
         }
 
+        public static Plot LoadEx(BinaryReader br)
+        {
+            string strV = br.ReadString();
+            if (strV != "$v.01.01")
+                throw new Exception("Invalid version!");
+            int nIdx = br.ReadInt32();
+            bool bActive = br.ReadBoolean();
+            bool bAction1Active = br.ReadBoolean();
+            bool bAction2Active = br.ReadBoolean();
+            bool bLookaheadActive = br.ReadBoolean();
+            string strName = null;
+
+            if (br.ReadBoolean())
+                strName = br.ReadString();
+
+            int nCount = br.ReadInt32();
+            float[] rgfY = null;
+            if (nCount > 0)
+            {
+                rgfY = new float[nCount];
+                for (int i = 0; i < nCount; i++)
+                {
+                    double df = br.ReadDouble();
+                    rgfY[i] = (float)df;
+                }
+            }
+
+            nCount = br.ReadInt32();
+            double[] rgdfY = null;
+            if (nCount > 0)
+            {
+                rgdfY = new double[nCount];
+                for (int i = 0; i < nCount; i++)
+                {
+                    double df = br.ReadDouble();
+                    rgdfY[i] = df;
+                }
+            }
+
+            long? lCount = null;
+            if (br.ReadBoolean())
+                lCount = br.ReadInt64();
+
+            double dfX = br.ReadDouble();
+            int nIdxPrimaryY = br.ReadInt32();
+
+            object tag = null;
+            if (br.ReadBoolean())
+            {
+                string strTag = br.ReadString();
+                DateTime dt;
+
+                if (DateTime.TryParse(strTag, out dt))
+                    tag = dt;
+                else
+                    tag = strTag;
+            }
+
+            Dictionary<string, float> rgParam = null;
+            nCount = br.ReadInt32();
+            if (nCount > 0)
+            {
+                rgParam = new Dictionary<string, float>();
+
+                for (int i = 0; i < nCount; i++)
+                {
+                    string str = br.ReadString();
+                    double df = br.ReadDouble();
+                    rgParam.Add(str, (float)df);
+                }
+            }
+
+            bool bScaled = br.ReadBoolean();
+
+            Plot p = null;
+
+            if (rgfY != null)
+                p = new Plot(dfX, rgfY, strName, bActive, nIdx, bAction1Active, bAction2Active);
+            else
+                p = new Plot(dfX, rgdfY, strName, bActive, nIdx, bAction1Active, bAction2Active);
+
+            p.LookaheadActive = bLookaheadActive;
+            p.Count = lCount;
+
+            if (tag == null)
+            {
+                DateTime dt = DateTime.FromFileTimeUtc((long)dfX);
+                tag = dt;
+            }
+
+            p.Tag = tag;
+            p.Parameters = rgParam;
+            p.Scaled = bScaled;
+
+            return p;
+        }
+
         public bool Compare(Plot p, bool bValuesOnly = false)
         {
             if (!bValuesOnly && m_nIndex != p.Index)
@@ -253,13 +461,28 @@ namespace SimpleGraphingStd
             if (!bValuesOnly && m_dfX != p.X)
                 return false;
 
-            if (m_rgfY.Length != p.m_rgfY.Length)
-                return false;
-
-            for (int i = 0; i < m_rgfY.Length; i++)
+            if (m_rgfY != null)
             {
-                if (m_rgfY[i] != p.m_rgfY[i])
+                if (m_rgfY.Length != p.m_rgfY.Length)
                     return false;
+
+                for (int i = 0; i < m_rgfY.Length; i++)
+                {
+                    if (m_rgfY[i] != p.m_rgfY[i])
+                        return false;
+                }
+            }
+
+            if (m_rgdfY != null)
+            {
+                if (m_rgdfY.Length != p.m_rgdfY.Length)
+                    return false;
+
+                for (int i = 0; i < m_rgdfY.Length; i++)
+                {
+                    if (m_rgdfY[i] != p.m_rgdfY[i])
+                        return false;
+                }
             }
 
             return true;
@@ -273,14 +496,62 @@ namespace SimpleGraphingStd
 
         public void SetYValue(float fVal, bool? bActive = null)
         {
-            m_rgfY[m_nIdxPrimaryY] = fVal;
+            if (m_rgfY != null)
+                m_rgfY[m_nIdxPrimaryY] = fVal;
+            else
+                m_rgdfY[m_nIdxPrimaryY] = fVal;
+
             if (bActive.HasValue)
                 m_bActive = bActive.Value;
         }
 
         public void SetYValues(float[] rg, bool? bActive = null)
         {
-            m_rgfY = rg;
+            if (m_baseType == BASETYPE.FLOAT)
+            {
+                m_rgfY = rg;
+            }
+            else
+            {
+                m_rgdfY = new double[rg.Length];
+                for (int i = 0; i < rg.Length; i++)
+                {
+                    m_rgdfY[i] = rg[i];
+                }
+            }
+
+            if (bActive.HasValue)
+                m_bActive = bActive.Value;
+
+            if (m_nIdxPrimaryY > rg.Length)
+                m_nIdxPrimaryY = 0;
+        }
+
+        public void SetYValue(double dfVal, bool? bActive = null)
+        {
+            if (m_rgfY != null)
+                m_rgfY[m_nIdxPrimaryY] = (float)dfVal;
+            else
+                m_rgdfY[m_nIdxPrimaryY] = dfVal;
+
+            if (bActive.HasValue)
+                m_bActive = bActive.Value;
+        }
+
+        public void SetYValues(double[] rg, bool? bActive = null)
+        {
+            if (m_baseType == BASETYPE.DOUBLE)
+            {
+                m_rgdfY = rg;
+            }
+            else
+            {
+                m_rgfY = new float[rg.Length];
+                for (int i = 0; i < rg.Length; i++)
+                {
+                    m_rgfY[i] = (float)rg[i];
+                }
+            }
 
             if (bActive.HasValue)
                 m_bActive = bActive.Value;
@@ -507,34 +778,125 @@ namespace SimpleGraphingStd
             return null;
         }
 
-        public Plot Clone(bool bCopyData = false, bool bCopyParams = true)
+        public Plot Clone(bool bCopyData = false, bool bCopyParams = true, BASETYPE? baseType = null)
         {
-            float[] rgf = m_rgfY;
-
-            if (bCopyData)
+            if (m_baseType == BASETYPE.FLOAT)
             {
-                rgf = new float[m_rgfY.Length];
-                for (int i = 0; i < m_rgfY.Length; i++)
+                if (baseType == null || baseType == m_baseType)
                 {
-                    rgf[i] = m_rgfY[i];
+                    float[] rgf = m_rgfY;
+
+                    if (bCopyData)
+                    {
+                        rgf = new float[m_rgfY.Length];
+                        for (int i = 0; i < m_rgfY.Length; i++)
+                        {
+                            rgf[i] = m_rgfY[i];
+                        }
+                    }
+
+                    return Clone(rgf, m_bActive, m_nIdxPrimaryY, bCopyParams);
+                }
+                else
+                {
+                    double[] rgdf = new double[m_rgfY.Length];
+                    for (int i = 0; i < m_rgfY.Length; i++)
+                    {
+                        rgdf[i] = m_rgfY[i];
+                    }
+                    return Clone(rgdf, m_bActive, m_nIdxPrimaryY, bCopyParams);
                 }
             }
+            else
+            {
+                if (baseType == null || baseType == m_baseType)
+                {
+                    double[] rgdf = m_rgdfY;
 
-            return Clone(rgf, m_bActive, m_nIdxPrimaryY, bCopyParams);
+                    if (bCopyData)
+                    {
+                        rgdf = new double[m_rgdfY.Length];
+                        for (int i = 0; i < m_rgdfY.Length; i++)
+                        {
+                            rgdf[i] = m_rgdfY[i];
+                        }
+                    }
+
+                    return Clone(rgdf, m_bActive, m_nIdxPrimaryY, bCopyParams);
+                }
+                else
+                {
+                    float[] rgf = new float[m_rgdfY.Length];
+                    for (int i = 0; i < m_rgdfY.Length; i++)
+                    {
+                        rgf[i] = (float)m_rgdfY[i];
+                    }
+                    return Clone(rgf, m_bActive, m_nIdxPrimaryY, bCopyParams);
+                }
+            }
         }
 
         public Plot Clone(List<double> rgY, bool bActive, int nPrimaryIdx, bool bCopyParams = true)
         {
-            float[] rgfY = new float[rgY.Count];
-            for (int i = 0; i < rgY.Count; i++)
+            if (m_baseType == BASETYPE.FLOAT)
             {
-                rgfY[i] = (float)rgY[i];
-            }
+                float[] rgfY = new float[rgY.Count];
+                for (int i = 0; i < rgY.Count; i++)
+                {
+                    rgfY[i] = (float)rgY[i];
+                }
 
-            return Clone(rgfY, bActive, nPrimaryIdx, bCopyParams);
+                return Clone(rgfY, bActive, nPrimaryIdx, bCopyParams);
+            }
+            else
+            {
+                double[] rgdfY = new double[rgY.Count];
+                for (int i = 0; i < rgY.Count; i++)
+                {
+                    rgdfY[i] = rgY[i];
+                }
+                return Clone(rgdfY, bActive, nPrimaryIdx, bCopyParams);
+            }
         }
 
         public Plot Clone(float[] rgY, bool bActive, int nPrimaryIdx, bool bCopyParams = true)
+        {
+            Plot p = new Plot(m_dfX, rgY, m_strName, bActive, m_nIndex);
+            p.m_nIdxPrimaryY = (short)nPrimaryIdx;
+            p.Action1Active = Action1Active;
+            p.Action2Active = Action2Active;
+            p.LookaheadActive = LookaheadActive;
+            p.Count = Count;
+            p.m_tag = m_tag;
+            p.m_tagEx = m_tagEx;
+            p.m_nIndex = m_nIndex;
+
+            if (bCopyParams)
+            {
+                lock (m_syncObj)
+                {
+                    if (m_rgParams != null)
+                    {
+                        foreach (KeyValuePair<string, float> kv in m_rgParams)
+                        {
+                            p.SetParameter(kv.Key, kv.Value);
+                        }
+                    }
+
+                    if (m_rgParamsTxt != null)
+                    {
+                        foreach (KeyValuePair<string, string> kv in m_rgParamsTxt)
+                        {
+                            p.SetParameter(kv.Key, kv.Value);
+                        }
+                    }
+                }
+            }
+
+            return p;
+        }
+
+        public Plot Clone(double[] rgY, bool bActive, int nPrimaryIdx, bool bCopyParams = true)
         {
             Plot p = new Plot(m_dfX, rgY, m_strName, bActive, m_nIndex);
             p.m_nIdxPrimaryY = (short)nPrimaryIdx;
@@ -597,13 +959,74 @@ namespace SimpleGraphingStd
 
         public float Y
         {
-            get { return m_rgfY[m_nIdxPrimaryY]; }
-            set { m_rgfY[m_nIdxPrimaryY] = value; }
+            get
+            {
+                if (m_baseType == BASETYPE.FLOAT)
+                    return m_rgfY[m_nIdxPrimaryY];
+                else
+                    return (float)m_rgdfY[m_nIdxPrimaryY];
+            }
+            set
+            {
+                if (m_baseType == BASETYPE.FLOAT)
+                    m_rgfY[m_nIdxPrimaryY] = value;
+                else
+                    m_rgdfY[m_nIdxPrimaryY] = value;
+            }
         }
 
         public float[] Y_values
         {
-            get { return m_rgfY; }
+            get
+            {
+                if (m_baseType == BASETYPE.FLOAT)
+                    return m_rgfY;
+                else
+                {
+                    float[] rgf = new float[m_rgdfY.Length];
+                    for (int i = 0; i < m_rgdfY.Length; i++)
+                    {
+                        rgf[i] = (float)m_rgdfY[i];
+                    }
+                    return rgf;
+                }
+            }
+        }
+
+        public double Yd
+        {
+            get
+            {
+                if (m_baseType == BASETYPE.FLOAT)
+                    return m_rgfY[m_nIdxPrimaryY];
+                else
+                    return m_rgdfY[m_nIdxPrimaryY];
+            }
+            set
+            {
+                if (m_baseType == BASETYPE.FLOAT)
+                    m_rgfY[m_nIdxPrimaryY] = (float)value;
+                else
+                    m_rgdfY[m_nIdxPrimaryY] = value;
+            }
+        }
+
+        public double[] Yd_values
+        {
+            get
+            {
+                if (m_baseType == BASETYPE.DOUBLE)
+                    return m_rgdfY;
+                else
+                {
+                    double[] rgf = new double[m_rgfY.Length];
+                    for (int i = 0; i < m_rgfY.Length; i++)
+                    {
+                        rgf[i] = m_rgfY[i];
+                    }
+                    return rgf;
+                }
+            }
         }
 
         public int PrimaryIndexY
