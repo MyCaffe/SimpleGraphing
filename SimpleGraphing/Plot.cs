@@ -346,7 +346,8 @@ namespace SimpleGraphing
 
         public static Plot LoadEx(BinaryReader br)
         {
-            string strV = br.ReadString();
+            byte[] rgb = br.ReadBytes(8);
+            string strV = Encoding.UTF8.GetString(rgb);        
             if (strV != "$v.01.01")
                 throw new Exception("Invalid version!");
             int nIdx = br.ReadInt32();
