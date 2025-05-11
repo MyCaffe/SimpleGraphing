@@ -2130,6 +2130,43 @@ namespace SimpleGraphingStd
         }
 
         /// <summary>
+        /// Synchronize a list of PlotCollections by their DateTime tags.
+        /// </summary>
+        /// <param name="rgPlots">Specifies the plot collections to synchronize</param>
+        public static void Synchronize(params PlotCollection[] rgPlots)
+        {
+            Dictionary<DateTime, List<Plot>> dict = new Dictionary<DateTime, List<Plot>>();
+
+            for (int i = 0; i < rgPlots.Count(); i++)
+            {
+                PlotCollection plots = rgPlots[i];
+                for (int j = 0; j < plots.Count; j++)
+                {
+                    Plot plot = plots[j];
+                    DateTime dt = (DateTime)plot.Tag;
+                    if (!dict.ContainsKey(dt))
+                        dict.Add(dt, new List<Plot>());
+                    dict[dt].Add(plot);
+                }
+
+                rgPlots[i].Clear();
+            }
+
+            List<KeyValuePair<DateTime, List<Plot>>> rgList = dict.OrderBy(p => p.Key).ToList();
+
+            for (int i = 0; i < rgList.Count; i++)
+            {
+                if (rgList[i].Value.Count == rgPlots.Length)
+                {
+                    for (int j = 0; j < rgPlots.Length; j++)
+                    {
+                        rgPlots[j].Add(rgList[i].Value[j]);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Convert the PlotCollection to a CalculationArray, using the Y values.
         /// </summary>
         /// <param name="nStartIdx">Optionally, specifies a starting index.</param>
