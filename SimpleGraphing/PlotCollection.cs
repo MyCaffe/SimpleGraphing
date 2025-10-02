@@ -1528,7 +1528,7 @@ namespace SimpleGraphing
 
                 if (p.Parameters != null)
                 {
-                    foreach (KeyValuePair<string, float> kv in p.Parameters)
+                    foreach (KeyValuePair<string, double> kv in p.Parameters)
                     {
                         if (bExact)
                         {
@@ -1585,7 +1585,7 @@ namespace SimpleGraphing
                         for (int j = 0; j < rgstrParamsToCopy.Length; j++)
                         {
                             string strParam = rgstrParamsToCopy[j];
-                            float? fVal = col2[nIdx].GetParameter(strParam);
+                            double? fVal = col2[nIdx].GetParameter(strParam);
 
                             if (fVal.HasValue)
                                 col[i].SetParameter(strParam, fVal.Value);
@@ -1681,7 +1681,7 @@ namespace SimpleGraphing
 
                     if (!string.IsNullOrEmpty(strParamName))
                     {
-                        float? fVal = p.GetParameterContaining(strParamName);
+                        double? fVal = p.GetParameterContaining(strParamName);
                         if (!fVal.HasValue)
                             return null;
 

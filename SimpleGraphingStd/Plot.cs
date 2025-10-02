@@ -28,7 +28,7 @@ namespace SimpleGraphingStd
         short m_nIdxPrimaryY = 0;
         object m_tag = null;
         object m_tagEx = null;
-        Dictionary<string, float> m_rgParams = null;
+        Dictionary<string, double> m_rgParams = null;
         Dictionary<string, string> m_rgParamsTxt = null;
         bool m_bScaled = false;
         bool m_bClipped = false;
@@ -238,7 +238,7 @@ namespace SimpleGraphingStd
                     bw.Write(m_rgParams.Count);
                     for (int i = 0; i < m_rgParams.Count; i++)
                     {
-                        KeyValuePair<string, float> kv = m_rgParams.ElementAt(i);
+                        KeyValuePair<string, double> kv = m_rgParams.ElementAt(i);
                         bw.Write(kv.Key);
                         double df = kv.Value;
                         bw.Write(df);
@@ -311,17 +311,17 @@ namespace SimpleGraphingStd
                     tag = strTag;
             }
 
-            Dictionary<string, float> rgParam = null;
+            Dictionary<string, double> rgParam = null;
             nCount = br.ReadInt32();
             if (nCount > 0)
             {
-                rgParam = new Dictionary<string, float>();
+                rgParam = new Dictionary<string, double>();
 
                 for (int i = 0; i < nCount; i++)
                 {
                     string str = br.ReadString();
                     double df = br.ReadDouble();
-                    rgParam.Add(str, (float)df);
+                    rgParam.Add(str, df);
                 }
             }
 
@@ -402,11 +402,11 @@ namespace SimpleGraphingStd
                     tag = strTag;
             }
 
-            Dictionary<string, float> rgParam = null;
+            Dictionary<string, double> rgParam = null;
             nCount = br.ReadInt32();
             if (nCount > 0)
             {
-                rgParam = new Dictionary<string, float>();
+                rgParam = new Dictionary<string, double>();
 
                 for (int i = 0; i < nCount; i++)
                 {
@@ -591,9 +591,9 @@ namespace SimpleGraphingStd
             if (p.m_rgParams != null)
             {
                 if (m_rgParams == null)
-                    m_rgParams = new Dictionary<string, float>();
+                    m_rgParams = new Dictionary<string, double>();
 
-                foreach (KeyValuePair<string, float> kv in p.m_rgParams)
+                foreach (KeyValuePair<string, double> kv in p.m_rgParams)
                 {
                     m_rgParams[kv.Key] = kv.Value;
                 }
@@ -611,17 +611,17 @@ namespace SimpleGraphingStd
             }
         }
 
-        public bool SetParameter(string strParam, double df)
+        public bool SetParameter(string strParam, float df)
         {
-            return SetParameter(strParam, (float)df);
+            return SetParameter(strParam, (double)df);
         }
 
-        public bool SetParameter(string strParam, float df)
+        public bool SetParameter(string strParam, double df)
         {
             lock (m_syncObj)
             {
                 if (m_rgParams == null)
-                    m_rgParams = new Dictionary<string, float>();
+                    m_rgParams = new Dictionary<string, double>();
 
                 if (!m_rgParams.ContainsKey(strParam))
                 {
@@ -655,17 +655,17 @@ namespace SimpleGraphingStd
             }
         }
 
-        public void AddToParameter(string strParam, double df)
+        public void AddToParameter(string strParam, float df)
         {
-            AddToParameter(strParam, (float)df);
+            AddToParameter(strParam, (double)df);
         }
 
-        public void AddToParameter(string strParam, float df)
+        public void AddToParameter(string strParam, double df)
         {
             lock (m_syncObj)
             {
                 if (m_rgParams == null)
-                    m_rgParams = new Dictionary<string, float>();
+                    m_rgParams = new Dictionary<string, double>();
 
                 if (!m_rgParams.ContainsKey(strParam))
                     m_rgParams.Add(strParam, df);
@@ -674,12 +674,12 @@ namespace SimpleGraphingStd
             }
         }
 
-        public float? GetParameter(string strParam)
+        public double? GetParameter(string strParam)
         {
             lock (m_syncObj)
             {
                 if (m_rgParams == null)
-                    m_rgParams = new Dictionary<string, float>();
+                    m_rgParams = new Dictionary<string, double>();
 
                 if (!m_rgParams.ContainsKey(strParam))
                     return null;
@@ -700,14 +700,14 @@ namespace SimpleGraphingStd
             }
         }
 
-        public float? GetParameterContaining(string strParam)
+        public double? GetParameterContaining(string strParam)
         {
             lock (m_syncObj)
             {
                 if (m_rgParams == null)
                     return null;
 
-                foreach (KeyValuePair<string, float> kv in m_rgParams)
+                foreach (KeyValuePair<string, double> kv in m_rgParams)
                 {
                     if (kv.Key.Contains(strParam))
                         return kv.Value;
@@ -717,7 +717,7 @@ namespace SimpleGraphingStd
             }
         }
 
-        public float? GetParameterContaining(string strParam, out string strName)
+        public double? GetParameterContaining(string strParam, out string strName)
         {
             lock (m_syncObj)
             {
@@ -725,7 +725,7 @@ namespace SimpleGraphingStd
                 if (m_rgParams == null)
                     return null;
 
-                foreach (KeyValuePair<string, float> kv in m_rgParams)
+                foreach (KeyValuePair<string, double> kv in m_rgParams)
                 {
                     if (kv.Key.Contains(strParam))
                     {
@@ -749,7 +749,7 @@ namespace SimpleGraphingStd
             }
         }
 
-        public Dictionary<string, float> Parameters
+        public Dictionary<string, double> Parameters
         {
             get { return m_rgParams; }
             set { m_rgParams = value; }
@@ -767,7 +767,7 @@ namespace SimpleGraphingStd
                 if (m_rgParams == null || m_rgParams.Count == 0)
                     return null;
 
-                foreach (KeyValuePair<string, float> kv in m_rgParams)
+                foreach (KeyValuePair<string, double> kv in m_rgParams)
                 {
                     string strKey = kv.Key.ToLower();
                     if (strKey.Contains(str.ToLower()))
@@ -877,7 +877,7 @@ namespace SimpleGraphingStd
                 {
                     if (m_rgParams != null)
                     {
-                        foreach (KeyValuePair<string, float> kv in m_rgParams)
+                        foreach (KeyValuePair<string, double> kv in m_rgParams)
                         {
                             p.SetParameter(kv.Key, kv.Value);
                         }
@@ -914,7 +914,7 @@ namespace SimpleGraphingStd
                 {
                     if (m_rgParams != null)
                     {
-                        foreach (KeyValuePair<string, float> kv in m_rgParams)
+                        foreach (KeyValuePair<string, double> kv in m_rgParams)
                         {
                             p.SetParameter(kv.Key, kv.Value);
                         }

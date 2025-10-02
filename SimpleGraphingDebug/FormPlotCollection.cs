@@ -71,7 +71,7 @@ namespace SimpleGraphingDebug
                     Color.Navy
                 };
 
-                foreach (KeyValuePair<string, float> kv in m_set[0].Last().Parameters)
+                foreach (KeyValuePair<string, double> kv in m_set[0].Last().Parameters)
                 {
                     if (kv.Key.Contains("HMA"))
                     {
