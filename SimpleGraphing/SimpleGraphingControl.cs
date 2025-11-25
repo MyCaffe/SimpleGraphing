@@ -665,7 +665,7 @@ namespace SimpleGraphing
             return QuickRender(set, nWidth, nHeight, bConvertToEastern, timeResolution, strCfgXmlFile, bIncludeTitle, rgTargetLines, bUseTimeResolutionForValueType, rgPlotRange, null, null, nMinPtRange);
         }
 
-        public static Image QuickRender(PlotCollectionSet set, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null, bool bUseTimeResolutionForValueType = false, float[] rgPlotRange = null, string strTitle = null, int? nMargin = null, int? nMinPtRange = null, bool bShowMinuteSeparators = false)
+        public static Image QuickRender(PlotCollectionSet set, int nWidth = -1, int nHeight = -1, bool bConvertToEastern = false, ConfigurationAxis.VALUE_RESOLUTION? timeResolution = null, string strCfgXmlFile = null, bool bIncludeTitle = true, List<ConfigurationTargetLine> rgTargetLines = null, bool bUseTimeResolutionForValueType = false, float[] rgPlotRange = null, string strTitle = null, int? nMargin = null, int? nMinPtRange = null, bool bShowMinuteSeparators = false, int nBoldIdx = -1)
         {
             foreach (PlotCollection col in set)
             {
@@ -687,7 +687,7 @@ namespace SimpleGraphing
 
             if (set.Count > 1)
             {
-                List<Color> rgColor = new List<Color>() { Color.Red, Color.Blue, Color.Green, Color.Purple, Color.Orange, Color.Aquamarine, Color.Fuchsia, Color.OrangeRed, Color.Lavender, Color.Navy, Color.Cyan, Color.DarkCyan };
+                List<Color> rgColor = new List<Color>() { Color.Red, Color.Blue, Color.Green, Color.Purple, Color.Orange, Color.DodgerBlue, Color.Fuchsia, Color.Lime, Color.MediumTurquoise, Color.IndianRed, Color.Cyan, Color.DarkCyan };
                 for (int i = 0; i < set.Count; i++)
                 {
                     int nClrIdx = i % rgColor.Count;
@@ -711,6 +711,7 @@ namespace SimpleGraphing
 
                     plotConfig = simpleGraphingControl1.Configuration.Frames[0].Plots[i];
                     plotConfig.LineColor = clr;
+                    plotConfig.LineWidth = (i == nBoldIdx) ? 2.0f : 1.0f;
                     plotConfig.PlotLineColor = Color.Transparent;
                     plotConfig.PlotFillColor = Color.Transparent;
                     plotConfig.PlotType = ConfigurationPlot.PLOTTYPE.LINE;
